@@ -35,6 +35,8 @@ using DDDSample1.Domain.PendingChange;
 using DDDSample1.Infrastructure.PendingChange;
 using System.Text;
 using Microsoft.AspNetCore.DataProtection;
+using DDDSample1.Domain.PendingChangeStaff;
+using DDDSample1.Infrastructure.PendingChangeStaff;
 
 namespace DDDSample1
 {
@@ -205,6 +207,8 @@ namespace DDDSample1
             // Temporary table to save pending changes
             services.AddTransient<IPendingChangesRepository, PendingChangesRepository>();
             services.AddHostedService<PatientDeletionService>();
+
+            services.AddTransient<IPendingChangesStaffRepository, PendingChangesStaffRepository>();
 
             services.AddTransient<AuditService>(provider =>
             {

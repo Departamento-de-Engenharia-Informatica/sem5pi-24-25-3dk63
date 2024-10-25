@@ -12,6 +12,10 @@ using Backend.Domain.Shared;
 using System.Reflection;
 using System.ComponentModel;
 using Backend.Domain.Staff;
+using DDDSample1.Domain.PendingChangeStaff;
+using DDDSample1.Infrastructure.PendingChangeStaff;
+using DDDSample1.Domain.PendingChange;
+
 
 namespace DDDSample1.Domain.Staff
 {
@@ -21,7 +25,7 @@ namespace DDDSample1.Domain.Staff
         private readonly IStaffRepository _staffRepository;
         private readonly EmailService _emailService;
         private readonly IUserRepository _userRepository;
-
+        private readonly IPendingChangesStaffRepository _pendingChangesStaffRepository;
         private readonly ISpecializationRepository _specializationRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -32,8 +36,7 @@ namespace DDDSample1.Domain.Staff
 private readonly AuditService _auditService;
         private readonly DDDSample1DbContext _context;
 
-        public StaffService(UserService userService,EmailService emailService ,IStaffRepository staffRepository, IUserRepository userRepository, ISpecializationRepository specializationRepository, IUnitOfWork unitOfWork, IMapper mapper, AuditService auditService, DDDSample1DbContext context)
-        {
+public StaffService(UserService userService,EmailService emailService ,IStaffRepository staffRepository, IUserRepository userRepository, ISpecializationRepository specializationRepository, IUnitOfWork unitOfWork, IMapper mapper, AuditService auditService, DDDSample1DbContext context, IPendingChangesStaffRepository pendingChangesStaffRepository)        {
             _emailService = emailService;
             _userService = userService;
             _staffRepository = staffRepository;
@@ -42,6 +45,8 @@ private readonly AuditService _auditService;
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _auditService = auditService;
+            _context = context;
+            _pendingChangesStaffRepository = pendingChangesStaffRepository;
         }
 
         public async Task<List<StaffDTO>> GetAllAsync()
@@ -387,6 +392,55 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<StaffDTO>(staff);
+        }
+
+        public async Task<UserDTO?> getUserStaff(StaffDTO staff)
+        {
+            var user = await _userRepository.GetByIdAsync(new UserId(staff.UserId));
+            if (user == null) return null;
+            return _mapper.Map<UserDTO>(user);
+        }
+        public async Task AddPendingChangesAsync(PendingChangesStaffDTO pendingChangesDto, UserId userId)
+        {
+            var pendingChanges = new PendingChangesStaff(userId)
+            {
+                Email = pendingChangesDto.Email,
+                PhoneNumber = pendingChangesDto.PhoneNumber,
+                Specialization = pendingChangesDto.Specialization
+            };
+            await _pendingChangesStaffRepository.AddPendingChangesStaffAsync(pendingChanges);
+            
+            await _unitOfWork.CommitAsync();
+        }
+        public async Task ApplyPendingChangesAsync (UserId userId)
+        {
+            var pendingChanges = await _pendingChangesStaffRepository.GetPendingChangesByUserIdAsync(userId);
+            if (pendingChanges == null)
+           {
+                throw new Exception("No pending changes found for this user.");
+            }
+            var staff = await _staffRepository.GetByUserIdAsync(userId);
+            var user = await _userRepository.GetByIdAsync(userId);
+            
+            if (pendingChanges.Email != null)
+            {
+                user.ChangeEmail(pendingChanges.Email);
+            }
+            if (pendingChanges.PhoneNumber != null)
+            {
+                user.ChangephoneNumber(pendingChanges.PhoneNumber);
+            }
+            if (pendingChanges.Specialization != null)
+            {
+                var specialization = await _specializationRepository.GetByDescriptionAsync(new Description(pendingChanges.Specialization));
+                if (specialization == null)
+                    throw new ArgumentException($"Specialization '{pendingChanges.Specialization}' not found.");
+                staff.changeSpecialization(specialization.Id);
+            }
+            await _userRepository.UpdateUserAsync(user);
+            await _staffRepository.UpdateStaffAsync(staff);
+            await _pendingChangesStaffRepository.RemovePendingChangesStaffAsync(userId);
+            await _unitOfWork.CommitAsync();
         }
     }
 }

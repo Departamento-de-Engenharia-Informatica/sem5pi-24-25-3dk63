@@ -5,7 +5,7 @@ using DDDSample1.Domain.PendingChange;
 using DDDSample1.Domain.Staff; // Ensure this is the correct namespace for the Staff class
 using DDDSample1.Domain.Users;
 using Serilog;
-
+using DDDSample1.Domain.PendingChangeStaff;
 namespace Backend.Domain.Shared
 {
     public class AuditService
@@ -69,6 +69,17 @@ namespace Backend.Domain.Shared
 
             _logger.Information(logMessage);
         }
+
+         public void LogProfileStaffUpdate(StaffDTO staff, UserDTO user, PendingChangesStaffDTO changes)
+            {
+                var updatedFields = new List<string>();
+                if (changes.Email != null && !changes.Email.Equals(user.Email))
+                    updatedFields.Add($"Email changed to: {changes.Email.Value}");
+                if (changes.PhoneNumber != null && !changes.PhoneNumber.Equals(user.phoneNumber))
+                    updatedFields.Add($"Phone Number changed to: {changes.PhoneNumber.Number}");
+                    string logMessage = $"Staff {staff.LicenseNumber}'s profile was updated by {user.Email.Value} on {DateTime.UtcNow}. Changes: {string.Join(", ", updatedFields)}";
+                _logger.Information(logMessage);
+            }
 
         public void LogEditPatientProfile(Patient patient, User user, PatientUpdateDTO dto)
         {
