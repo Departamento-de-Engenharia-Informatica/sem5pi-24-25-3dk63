@@ -81,7 +81,7 @@ namespace DDDSample1
                     var userService = context.HttpContext.RequestServices.GetRequiredService<UserService>();
                     var user = await userService.FindByEmailAsync(email);
 
-                    if (user == null)
+                    if (user == null || user.Active == false)
                     {
                         Log.Information("Login falhou: email não encontrado.");
 
@@ -89,25 +89,17 @@ namespace DDDSample1
                         context.Fail("Este email não está registrado no sistema.");
 
 
-                        // // Encrypt the email using Data Protection
-                        // var dataProtectionProvider = context.HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
-                        // var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
-                        // var encryptedEmail = protector.Protect(email);
+                        // Encrypt the email using Data Protection
+                        var dataProtectionProvider = context.HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
+                        var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
+                        var encryptedEmail = protector.Protect(email);
 
-                        // // Create cookie
-                        // context.HttpContext.Response.Cookies.Append(".AspNetCore.Cookies", encryptedEmail, new CookieOptions
-                        // {
-                        //     HttpOnly = true,
-                        //     Secure = true,
-                        //     Expires = DateTimeOffset.UtcNow.AddMinutes(30)
-                        // });
-                        
-                        // Set the token as a cookie
-                        context.HttpContext.Response.Cookies.Append("IamEmail", email, new CookieOptions
+                        // Create cookie
+                        context.HttpContext.Response.Cookies.Append(".AspNetCore.Cookies", encryptedEmail, new CookieOptions
                         {
                             HttpOnly = true,
                             Secure = true,
-                            Expires = DateTimeOffset.UtcNow.AddMinutes(30) // Adjust as necessary
+                            Expires = DateTimeOffset.UtcNow.AddMinutes(30)
                         });
 
                         context.Response.StatusCode = 302;
@@ -169,6 +161,7 @@ namespace DDDSample1
             services.AddAutoMapper(typeof(SurgeryRoomMappingProfile));
             services.AddAutoMapper(typeof(PatientMappingProfile));
             services.AddAutoMapper(typeof(OperationTypeMappingProfile));
+            services.AddAutoMapper(typeof(OperationRequestMappingProfile));
 
             // Unit of Work
             services.AddTransient<IUnitOfWork, UnitOfWork>();
