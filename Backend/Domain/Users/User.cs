@@ -69,6 +69,11 @@ namespace DDDSample1.Domain
             this.Active = true;
         }
 
+        public void ChangephoneNumber(PhoneNumber phoneNumber)
+        {
+            if (!this.Active) throw new BusinessRuleValidationException("User cannot be changed in this state");
+            this.PhoneNumber = phoneNumber;
+        }
         public void ChangeActiveFalse()
         {
             this.Active = false;
