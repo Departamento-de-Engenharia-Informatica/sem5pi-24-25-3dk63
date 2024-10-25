@@ -447,14 +447,15 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
 
         public async Task<bool?> CheckSpecialization(string specializationDescription, StaffDTO staff)
         {
-            var specialization = await _specializationRepository.GetByDescriptionAsync(new Description(specializationDescription));
-            if (specialization == null)
+            var specialization2 = await _specializationRepository.FindByIdAsync(new SpecializationId(staff.SpecializationId));
+
+            if (specialization2 == null)
                 throw new ArgumentException($"Specialization '{specializationDescription}' not found.");
-                
-            if(staff.SpecializationId.Equals(specialization.Id))
-            {
+                String specialization = specialization2.Description.Value;
+
+            if(specialization.Equals(specializationDescription))
                 return false;
-            }
+            
             return true;
         }
 
