@@ -41,10 +41,5 @@ namespace DDDSample1.Domain.Staff
         {
             this.Active = false;
         }
-
-        public void changeSpecialization(SpecializationId specializationId)
-        {
-            this.SpecializationId = specializationId;
-        }
     }
 }

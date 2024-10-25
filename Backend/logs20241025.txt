@@ -19,3 +19,6 @@
 =======
 2024-10-25 01:29:05.805 +01:00 [INF] Login bem-sucedido: email encontrado.
 >>>>>>> 10a4a23883b766953f995337772bd3ec33517a54
+2024-10-25 22:59:16.501 +01:00 [INF] Staff D200012348's profile was updated by diogoandre.8269@gmail.com on 25/10/2024 21:59:16. Changes: Phone Number changed to: +351934675002, Specialization changed to: funciona
+2024-10-25 23:00:07.835 +01:00 [INF] Staff D200012348's profile was updated by diogoandre.8269@gmail.com on 25/10/2024 22:00:07. Changes: Email changed to: ahahahahahaha.8269@gmail.com, Phone Number changed to: +351938888, Specialization changed to: funciona
+2024-10-25 23:02:01.558 +01:00 [INF] Staff D200012348's profile was updated by diogoandre.8269@gmail.com on 25/10/2024 22:02:01. Changes: Phone Number changed to: +35193888666, Specialization changed to: funciona
