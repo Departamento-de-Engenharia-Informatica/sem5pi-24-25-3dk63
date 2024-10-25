@@ -77,7 +77,11 @@ namespace Backend.Domain.Shared
                     updatedFields.Add($"Email changed to: {changes.Email.Value}");
                 if (changes.PhoneNumber != null && !changes.PhoneNumber.Equals(user.phoneNumber))
                     updatedFields.Add($"Phone Number changed to: {changes.PhoneNumber.Number}");
-                    string logMessage = $"Staff {staff.LicenseNumber}'s profile was updated by {user.Email.Value} on {DateTime.UtcNow}. Changes: {string.Join(", ", updatedFields)}";
+
+                if (changes.Specialization != null && !changes.Specialization.Equals(staff.SpecializationId))
+                    updatedFields.Add($"Specialization changed to: {changes.Specialization}");
+
+                    string logMessage = $"Staff {staff.LicenseNumber}'s profile updated was confirmed by {user.Email.Value} on {DateTime.UtcNow}. Changes: {string.Join(", ", updatedFields)}";
                 _logger.Information(logMessage);
             }
 

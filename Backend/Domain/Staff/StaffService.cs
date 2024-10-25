@@ -442,5 +442,62 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
             await _pendingChangesStaffRepository.RemovePendingChangesStaffAsync(userId);
             await _unitOfWork.CommitAsync();
         }
+
+        //await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;
+
+        public async Task<bool?> CheckSpecialization(string specializationDescription, StaffDTO staff)
+        {
+            var specialization = await _specializationRepository.GetByDescriptionAsync(new Description(specializationDescription));
+            if (specialization == null)
+                throw new ArgumentException($"Specialization '{specializationDescription}' not found.");
+                
+            if(staff.SpecializationId.Equals(specialization.Id))
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task RemovePendingChangesAsync(UserId userId)
+        {
+            var pendingChanges = await _pendingChangesStaffRepository.GetPendingChangesByUserIdAsync(userId);
+            if (pendingChanges == null)
+            {
+                return;
+            }
+            await _pendingChangesStaffRepository.RemovePendingChangesStaffAsync(userId);
+            await _unitOfWork.CommitAsync();
+        }
+
+        
+        public async Task ConfirmUpdateAsync(string token)
+        {
+            var user = await _userRepository.GetUserByConfirmationTokenAsync(token);
+            if (user == null)
+            {
+                throw new Exception("Invalid or expired confirmation token.");
+            }
+
+            var staff = await _staffRepository.GetByUserIdAsync(user.Id);
+            if (staff == null)
+            {
+                throw new Exception("Staff not found.");
+            }
+
+            try
+            {
+                var pendingChange = await _pendingChangesStaffRepository.GetPendingChangesByUserIdAsync(user.Id);
+                var pendingChangeDto = _mapper.Map<PendingChangesStaffDTO>(pendingChange);
+                var staffdto = _mapper.Map<StaffDTO>(staff);
+                var userDto = _mapper.Map<UserDTO>(user);
+                _auditService.LogProfileStaffUpdate(staffdto, userDto, pendingChangeDto);
+                await ApplyPendingChangesAsync(new UserId(user.Id.Value));
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"Update confirmation failed: {ex.Message}");
+            }
+        }
     }
 }
