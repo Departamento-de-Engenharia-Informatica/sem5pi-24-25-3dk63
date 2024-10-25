@@ -15,7 +15,7 @@ namespace DDDSample1.Domain
         public SpecializationId SpecializationId { get; private set; }
         public bool Active { get; private set; }
 
-    private OperationType()
+    public OperationType()
     {
         this.Active = true;
     }

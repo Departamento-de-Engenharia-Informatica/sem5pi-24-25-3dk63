@@ -160,6 +160,7 @@ namespace DDDSample1
             services.AddAutoMapper(typeof(UserMappingProfile));
             services.AddAutoMapper(typeof(SurgeryRoomMappingProfile));
             services.AddAutoMapper(typeof(PatientMappingProfile));
+            services.AddAutoMapper(typeof(OperationTypeMappingProfile));
 
             // Unit of Work
             services.AddTransient<IUnitOfWork, UnitOfWork>();

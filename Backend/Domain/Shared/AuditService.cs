@@ -27,7 +27,7 @@ namespace Backend.Domain.Shared
 
         public void LogDeactivateOperationType(OperationType operationType, string adminEmail)
         {
-            string logMessage = $"OperationType {operationType.Id.Value} was deactivated by Admin ({adminEmail}) on {DateTime.UtcNow}";
+            string logMessage = $"OperationType {operationType.Name.Description} ({operationType.Id.Value}) was deactivated by Admin ({adminEmail}) on {DateTime.UtcNow}";
 
             _logger.Information(logMessage);
         }

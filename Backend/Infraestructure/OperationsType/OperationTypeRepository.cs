@@ -4,6 +4,7 @@ using DDDSample1.Infrastructure.Shared;
 using Microsoft.EntityFrameworkCore;
 
 using Backend.Domain.Users.ValueObjects;
+using DDDSample1.Domain.Specialization;
 
 namespace DDDSample1.Infrastructure.OperationsType
 {
@@ -21,6 +22,12 @@ namespace DDDSample1.Infrastructure.OperationsType
     return await _context.OperationsTypes
         .FirstOrDefaultAsync(o => o.Name.Description == name);
 }
+
+        public async Task<OperationType> GetBySpecializationAsync(SpecializationId id)
+        {
+            return await _context.OperationsTypes
+                .FirstOrDefaultAsync(o => o.SpecializationId == id);
+        }
 
     }
 }

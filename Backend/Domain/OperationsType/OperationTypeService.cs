@@ -5,6 +5,7 @@ using DDDSample1.Domain.OperationsType;
 using Backend.Domain.Shared;
 using Backend.Domain.Specialization.ValueObjects;
 using DDDSample1.Domain.Specialization;
+using AutoMapper;
 
 namespace DDDSample1.OperationsType
 {
@@ -16,13 +17,15 @@ namespace DDDSample1.OperationsType
         private readonly ISpecializationRepository _specializationRepository;
         private readonly IConfiguration _configuration;
        private readonly AuditService _auditService;
-        public OperationTypeService(IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, AuditService auditService, ISpecializationRepository specializationRepository)
+       private readonly IMapper _mapper;
+        public OperationTypeService(IMapper _mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, AuditService auditService, ISpecializationRepository specializationRepository)
         {
             _unitOfWork = unitOfWork;
             _operationTypeRepository = operationTypeRepository;
             _configuration = configuration;
             _auditService = auditService;
             _specializationRepository = specializationRepository;
+            _mapper = _mapper;
         }
 
          // Obtém todos os tipos de operações
@@ -48,22 +51,15 @@ namespace DDDSample1.OperationsType
                 var operationType = await this._operationTypeRepository.GetByIdAsync(id);
                 if (operationType == null) return null;
 
-                return new OperationTypeDTO
-                {
-                    Id = operationType.Id.AsGuid(),
-                    Name = operationType.Name,
-                    Duration = operationType.Duration,
-                    RequiredStaff = operationType.RequiredStaff,
-                    SpecializationId = operationType.SpecializationId,
-                    Active = operationType.Active
-                };
-
-            } catch (Exception ex)
+                return _mapper.Map<OperationTypeDTO>(operationType);
+        } catch (Exception ex)
             {
                 throw new Exception(ex.Message);
             }
             
         }
+
+        
 
         public async Task<OperationTypeDTO> AddAsync(CreatingOperationTypeDTO dto, string adminEmail)
         {
@@ -91,15 +87,7 @@ namespace DDDSample1.OperationsType
             await this._operationTypeRepository.AddAsync(operationType);
             await _unitOfWork.CommitAsync();
 
-            return new OperationTypeDTO
-            {
-                Id = operationType.Id.AsGuid(),
-                Name = operationType.Name,
-                Duration = operationType.Duration,
-                RequiredStaff = operationType.RequiredStaff,
-                SpecializationId = operationType.SpecializationId,
-                Active = operationType.Active
-            };
+            return _mapper.Map<OperationTypeDTO>(operationType);
         }
 
         public async Task <OperationTypeDTO> DeleteAsync(OperationTypeId id) {
@@ -111,14 +99,7 @@ namespace DDDSample1.OperationsType
             this._operationTypeRepository.Remove(operationType);
             await this._unitOfWork.CommitAsync();
 
-            return new OperationTypeDTO
-            {
-                Id = operationType.Id.AsGuid(),
-                Name = operationType.Name,
-                Duration = operationType.Duration,
-                RequiredStaff = operationType.RequiredStaff,
-                SpecializationId = operationType.SpecializationId
-            };
+            return _mapper.Map<OperationTypeDTO>(operationType);
         }
 
         public async Task<OperationTypeDTO> UpdateAsync(OperationTypeDTO dto)
@@ -132,55 +113,52 @@ namespace DDDSample1.OperationsType
 
             await this._unitOfWork.CommitAsync();
 
-            return new OperationTypeDTO
-            {
-                Id = operationType.Id.AsGuid(),
-                Name = operationType.Name,
-                Duration = operationType.Duration,
-                RequiredStaff = operationType.RequiredStaff,
-                SpecializationId = operationType.SpecializationId
-            };
+            return _mapper.Map<OperationTypeDTO>(operationType);
 
         }
 
-         // Obtém uma operation pelo Nome
-        public async Task<OperationTypeDTO> GetByNameAsync(String name)
-        {
-            var operationType = await this._operationTypeRepository.GetByNameAsync(name);
-            if (operationType == null) return null;
 
-            return new OperationTypeDTO
-            {
-                Id = operationType.Id.AsGuid(),
-                Name = operationType.Name,
-                Duration = operationType.Duration,
-                RequiredStaff = operationType.RequiredStaff,
-                SpecializationId = operationType.SpecializationId
-            };
+public async Task<String> DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
+{
+    OperationType operationType = new OperationType();
+
+    if (!string.IsNullOrEmpty(name))
+    {
+        operationType = await _operationTypeRepository.GetByNameAsync(name);
+    }
+    else if (!string.IsNullOrEmpty(specialization))
+    {
+        var specializationVAR = await _specializationRepository.GetByDescriptionAsync(new Description(specialization));
+        if (specializationVAR == null) 
+            throw new BusinessRuleValidationException("A especialização não existe.");
+
+        operationType = await _operationTypeRepository.GetBySpecializationAsync(specializationVAR.Id);
+    }
+    else if (!string.IsNullOrEmpty(id))
+    {
+        operationType = await _operationTypeRepository.GetByIdAsync(new OperationTypeId(id));
+    }
+    else
+    {
+        throw new BusinessRuleValidationException("Por favor, insira um nome, uma especialização ou um id válidos.");
+    }
+
+    if (operationType == null)
+        throw new BusinessRuleValidationException("Tipo de operação não encontrado.");
+
+    if (!operationType.Active)
+        throw new BusinessRuleValidationException("O tipo de operação já se encontra inativo.");
+
+    _auditService.LogDeactivateOperationType(operationType, adminEmail);
+
+    operationType.Deactivate();
+
+    await _unitOfWork.CommitAsync();
+
+    return "Tipo de operação desativado com sucesso!!";
+}
 
     }
 
-    public async Task<OperationTypeDTO> DeactivateAsync (OperationTypeId id, string adminEmail) {
-        var operationType = await this._operationTypeRepository.GetByIdAsync(id);
-        if (operationType == null) return null;
-
-        if (!operationType.Active) throw new BusinessRuleValidationException("O tipo de operação já se encontra inativo.");
-
-        _auditService.LogDeactivateOperationType(operationType, adminEmail);
-
-        operationType.Deactivate();
-
-        await this._unitOfWork.CommitAsync();
-
-        return new OperationTypeDTO
-        {
-            Id = operationType.Id.AsGuid(),
-            Name = operationType.Name,
-            Duration = operationType.Duration,
-            RequiredStaff = operationType.RequiredStaff,
-            SpecializationId = operationType.SpecializationId
-        };
-    }
-    }
 }
 

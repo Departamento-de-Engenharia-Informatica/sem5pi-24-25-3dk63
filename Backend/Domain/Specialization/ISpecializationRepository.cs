@@ -11,5 +11,6 @@ namespace DDDSample1.Domain.Specialization
         Task<int> GetNextSequentialNumberAsync();
         Task<Specialization> GetByDescriptionAsync(Description description);
 
+
     }
 }

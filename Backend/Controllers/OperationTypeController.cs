@@ -112,27 +112,26 @@ namespace DDDSample1.Controllers
         
         // PATCH: api/OperationType/{id}
         [Authorize(Roles = "Admin")]
-        [HttpPatch("{id}")]
-        public async Task<ActionResult<OperationTypeDTO>> DeactivateAsync(Guid id)
+        [HttpPatch("deactivate")]
+        public async Task<ActionResult<OperationTypeDTO>> DeactivateAsync([FromQuery] string? name = null, [FromQuery] string? specialization = null,[FromQuery] string? id = null)
         {
             try
             {
                 var adminEmail = User.FindFirstValue(ClaimTypes.Email);
 
-                var operation = await _service.DeactivateAsync(new OperationTypeId(id), adminEmail);
+                var deactivatedOperation = await _service.DeactivateAsync(adminEmail,name, specialization,id);
 
-                if (operation == null)
+                if (deactivatedOperation == null)
                 {
                     return NotFound();
                 }
 
-                return Ok(operation);
+                return  Ok("Operation type deactivated successfully");
             }
             catch (BusinessRuleValidationException ex)
             {
                 return BadRequest(new { Message = ex.Message });
             }
         }
-        
     }
 }
