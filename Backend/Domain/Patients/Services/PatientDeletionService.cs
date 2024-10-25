@@ -25,7 +25,7 @@ public class PatientDeletionService : IHostedService, IDisposable
     {
         _logger.LogInformation("Patient deletion service started.");
 
-        _timer = new Timer(CheckForPatientDeletion, null, TimeSpan.Zero, TimeSpan.FromMinutes(10));
+        _timer = new Timer(CheckForPatientDeletion, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
 
         return Task.CompletedTask;
     }

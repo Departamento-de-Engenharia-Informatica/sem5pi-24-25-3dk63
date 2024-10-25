@@ -61,7 +61,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpPost("register-patient")]
-        [Authorize(Roles="Admin")]
+
         public async Task<ActionResult<PatientDTO>> RegisterPatient(RegisterPatientDTO dto)
         {
             var patient = await _service.RegisterPatientAsync(dto);

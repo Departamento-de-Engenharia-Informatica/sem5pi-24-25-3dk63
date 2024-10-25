@@ -3,6 +3,8 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationsType;
+using Backend.Domain.Shared;
+using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Appointments;
 using AutoMapper;
 
@@ -14,14 +16,16 @@ namespace DDDSample1.OperationRequests
         private readonly IOperationRequestRepository _operationRequestRepository;
         private readonly IAppointmentRepository _appointmentRepository;
         private readonly IConfiguration _configuration;
+        private readonly AuditService _auditService;    
         private readonly IMapper _mapper;
 
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IAppointmentRepository appointmentRepository, IConfiguration configuration, IMapper mapper)
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IAppointmentRepository appointmentRepository, IConfiguration configuration, AuditService auditService, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _operationRequestRepository = operationRequestRepository;
             _appointmentRepository = appointmentRepository;
             _configuration = configuration;
+            _auditService = auditService;
             _mapper = mapper;
         }
 
@@ -142,7 +146,50 @@ namespace DDDSample1.OperationRequests
             });
             return listDto;
         }
-    }
+        public async Task<string> UpdateRequisitionAsync(string id, UserDTO user, UpdateOperationRequisitionDto updateDto )
+        {
+            var requisition = await _operationRequestRepository.GetByIdAsync(new OperationRequestId(id));
 
-    
+            if (requisition == null)
+            {
+                throw new Exception("Operation requisition not found.");
+            }
+
+            if (requisition.Id.ToString() != user.Id.ToString())
+            {
+                throw new UnauthorizedAccessException("You are not authorized to update this requisition.");
+            }
+
+            requisition.ChangeDeadLine(new Deadline(updateDto.Deadline.Value));
+
+            if (updateDto.Priority == null)
+            {
+                throw new ArgumentNullException(nameof(updateDto.Priority), "Priority cannot be null.");
+            }
+
+            PriorityType priorityType;
+            try
+            {
+                priorityType = Enum.Parse<PriorityType>(updateDto.Priority);
+            }
+            catch (ArgumentException)
+            {
+                throw new ArgumentException($"Invalid priority type '{updateDto.Priority}'. Allowed values are: {string.Join(", ", Enum.GetNames(typeof(PriorityType)))}.");
+            }
+
+            requisition.ChangePriority(new Priority(priorityType));
+
+            var logDescription = $"Updated Deadline from {requisition.deadline} to {updateDto.Deadline} " +
+                                $"and Priority from {requisition.priority} to {updateDto.Priority}";
+
+            await _operationRequestRepository.UpdateOperationRequestAsync(requisition);
+            await _unitOfWork.CommitAsync();
+
+            _auditService.LogUpdateOperationRequisition(requisition.Id.AsString(), logDescription, user.Email.Value);
+
+            return "Operation requisition updated successfully.";
+        }
+
+
+    }
 }
