@@ -86,7 +86,7 @@ namespace Backend.Domain.Shared
 
         public void LogDeletionCompleted(User user)
         {
-            string logMessage = $"Deletion of patient with user id {user.Id} was completed on {DateTime.UtcNow}";
+            string logMessage = $"Deletion of patient with user id {user.Id.AsString()} was completed on {DateTime.UtcNow}";
             _logger.Information(logMessage);
         }
 
