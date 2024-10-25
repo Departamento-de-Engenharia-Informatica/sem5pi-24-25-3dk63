@@ -43,6 +43,11 @@ namespace DDDSample1.Controllers
 
                 var user = await _registrationService.FindByEmailAsync(new Email(dto.PersonalEmail));
 
+                if(user == null)
+                {
+                    return BadRequest("Patient is not registered in the system. Please contact the hospital to register.");
+                }
+
                 if(user.Role.Equals(new Role(RoleType.Patient)))
                 {
                     await _registrationService.SelfRegisterPatientAsync(dto, iamEmail);

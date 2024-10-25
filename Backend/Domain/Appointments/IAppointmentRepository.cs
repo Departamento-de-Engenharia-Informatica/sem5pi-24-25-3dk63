@@ -1,4 +1,5 @@
 using Backend.Domain.Users.ValueObjects;
+using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Shared;
 
 
@@ -8,6 +9,6 @@ namespace DDDSample1.Domain.Appointments
     {
         Task<int> GetNextSequentialNumberAsync();
         Task<List<Appointment>> GetByDateAsync(Date date);
-
+        Task<Appointment> GetByOperationRequestIdAsync(OperationRequestId operationRequestId);
     }
 }

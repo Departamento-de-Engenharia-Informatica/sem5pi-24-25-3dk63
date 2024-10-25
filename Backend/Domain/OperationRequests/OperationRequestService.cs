@@ -3,6 +3,8 @@ using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.Staff;
 using DDDSample1.Domain.OperationsType;
+using DDDSample1.Domain.Appointments;
+using AutoMapper;
 
 namespace DDDSample1.OperationRequests
 {
@@ -10,13 +12,17 @@ namespace DDDSample1.OperationRequests
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationRequestRepository _operationRequestRepository;
+        private readonly IAppointmentRepository _appointmentRepository;
         private readonly IConfiguration _configuration;
+        private readonly IMapper _mapper;
 
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IConfiguration configuration)
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IAppointmentRepository appointmentRepository, IConfiguration configuration, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _operationRequestRepository = operationRequestRepository;
+            _appointmentRepository = appointmentRepository;
             _configuration = configuration;
+            _mapper = mapper;
         }
 
         // Obtém todos os requests
@@ -106,25 +112,19 @@ namespace DDDSample1.OperationRequests
             };
         }
 
-        // Deleta um OperationRequest
+        // Delete an OperationRequest
         public async Task <OperationRequestDTO> DeleteAsync(OperationRequestId id) {
             var operationRequest = await this._operationRequestRepository.GetByIdAsync(id);
             if (operationRequest == null) return null;
-            
+
+            // Verify if there is an appointment associated with the operation request or if it is active
+            if(await this._appointmentRepository.GetByOperationRequestIdAsync(id) != null) throw new BusinessRuleValidationException("Não é possível excluir um pedido operação associado a uma consulta.");
             if (operationRequest.Active) throw new BusinessRuleValidationException("Não é possível excluir um pedido operação ativo.");
 
             this._operationRequestRepository.Remove(operationRequest);
             await this._unitOfWork.CommitAsync();
 
-            return new OperationRequestDTO
-            {
-                Id = operationRequest.Id.AsGuid(),
-                Deadline = operationRequest.deadline,
-                Priority = operationRequest.priority,
-                LicenseNumber = operationRequest.licenseNumber,
-                MedicalRecordNumber = operationRequest.medicalRecordNumber,
-                OperationTypeId = operationRequest.operationTypeId
-            };
+            return _mapper.Map<OperationRequestDTO>(operationRequest);
         }
 
         // Obtém um request pela prioridade
