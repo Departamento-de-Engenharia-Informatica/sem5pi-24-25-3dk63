@@ -203,6 +203,7 @@ namespace DDDSample1
 
             // Temporary table to save pending changes
             services.AddTransient<IPendingChangesRepository, PendingChangesRepository>();
+            services.AddHostedService<PatientDeletionService>();
 
             services.AddTransient<AuditService>(provider =>
             {

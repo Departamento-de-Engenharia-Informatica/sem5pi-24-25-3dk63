@@ -175,6 +175,7 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest($"Update confirmation failed: {ex.Message}");
             }
+            
         }
 
         [HttpPost("request-account-deletion")]
@@ -198,7 +199,6 @@ namespace DDDSample1.Controllers
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> ConfirmAccountDeletion(string token)
         {
-
             try
             {
                 await _service.ConfirmDeletionAsync(token);
@@ -208,6 +208,7 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest($"Error confirming deletion: {ex.Message}");
             }
+            
         }
 
     }

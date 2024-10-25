@@ -366,14 +366,11 @@ namespace DDDSample1.Patients
             }
 
             user.ConfirmationToken = Guid.NewGuid().ToString("N");
-            user.MarkForDeletion();
 
             await _userRepository.UpdateUserAsync(user);
             await _unitOfWork.CommitAsync();
 
             await _emailService.SendDeletionConfirmationEmail(user.Email.ToString(), user.ConfirmationToken);
-            
-            StartDeletionTimer(user);
         }
         
         public async Task ConfirmDeletionAsync(string token)
@@ -385,43 +382,11 @@ namespace DDDSample1.Patients
             }
 
             user.ChangeActiveFalse();
+            user.MarkForDeletion();
             user.ConfirmationToken = null;
 
             await _userRepository.UpdateUserAsync(user);
             await _unitOfWork.CommitAsync();
-
-            await DeleteUserDataAsync(user);
-
-            _auditService.LogDeletionCompleted(user);
-        }
-
-        private async Task DeleteUserDataAsync(User user)
-        {
-            var patient = await _patientRepository.FindByUserIdAsync(user.Id);
-            if (patient != null)
-            {
-                await _patientRepository.DeletePatientAsync(patient.UserId);
-            }
-
-            await _userRepository.DeleteUserAsync(user);
-            await _unitOfWork.CommitAsync();
-
-            _auditService.LogDeletionCompleted(user);
-
-        }
-
-        private void StartDeletionTimer(User user)
-        {
-            Task.Run(async () =>
-            {
-                await Task.Delay(TimeSpan.FromDays(30));
-                
-                var updatedUser = await _userRepository.GetByIdAsync(user.Id);
-                if (updatedUser != null && updatedUser.MarkedForDeletionDate.HasValue)
-                {
-                    await DeleteUserDataAsync(updatedUser);
-                }
-            });
         }
 
     }

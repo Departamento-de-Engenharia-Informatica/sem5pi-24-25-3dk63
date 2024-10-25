@@ -70,6 +70,11 @@ namespace DDDSample1.Infrastructure.Users
             await _context.SaveChangesAsync();
         }
 
-
+        public async Task<List<User>> GetUsersMarkedForDeletionAsync()
+        {
+            return await _context.Users
+                .Where(u => u.MarkedForDeletionDate.HasValue)
+                .ToListAsync();
+        }
     }
 }

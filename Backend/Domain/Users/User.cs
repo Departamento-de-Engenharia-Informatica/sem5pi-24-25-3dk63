@@ -131,7 +131,7 @@ namespace DDDSample1.Domain
 
         public void MarkForDeletion()
         {
-            this.MarkedForDeletionDate = DateTime.UtcNow;
+            this.MarkedForDeletionDate = DateTime.UtcNow.AddMinutes(20);
         }
 
         public void Anonymize()

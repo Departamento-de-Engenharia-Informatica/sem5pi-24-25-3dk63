@@ -6,6 +6,7 @@
 2024-10-25 01:47:14.501 +01:00 [INF] OperationType Operaçao0 C (eedebcd1-a98f-4aea-b5d7-de119dcba05e) was created by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 00:47:14
 2024-10-25 01:10:48.277 +01:00 [INF] Login bem-sucedido: email encontrado.
 2024-10-25 01:13:41.259 +01:00 [INF] Login bem-sucedido: email encontrado.
+<<<<<<< HEAD
 2024-10-25 02:43:29.344 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:43:29
 2024-10-25 02:48:26.388 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:48:26
 2024-10-25 02:50:03.897 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:50:03
@@ -15,3 +16,6 @@
 2024-10-25 02:59:21.401 +01:00 [INF] OperationType a5543649-3639-4675-bd0f-e1e416fcfc49 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:59:21
 2024-10-25 02:59:38.239 +01:00 [INF] OperationType eedebcd1-a98f-4aea-b5d7-de119dcba05e was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:59:38
 2024-10-25 02:59:44.773 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:59:44
+=======
+2024-10-25 01:29:05.805 +01:00 [INF] Login bem-sucedido: email encontrado.
+>>>>>>> 10a4a23883b766953f995337772bd3ec33517a54
