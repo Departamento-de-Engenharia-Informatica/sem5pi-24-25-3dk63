@@ -40,13 +40,10 @@
 2024-10-24 17:57:46.632 +01:00 [INF] Staff D200012348 was edited by Admin (lapr3dkg69sup@gmail.com) on 24/10/2024 16:57:46
 2024-10-24 18:01:39.966 +01:00 [INF] Staff D200012348 was edited by Admin (lapr3dkg69sup@gmail.com) on 24/10/2024 17:01:39
 2024-10-24 17:14:53.433 +01:00 [INF] Login falhou: email não encontrado.
-<<<<<<< HEAD
 2024-10-24 18:17:43.533 +01:00 [INF] Login bem-sucedido: email encontrado.
 2024-10-24 18:20:46.691 +01:00 [INF] Login bem-sucedido: email encontrado.
-=======
 2024-10-24 18:21:29.128 +01:00 [INF] Staff D200012348 was edited by Admin (lapr3dkg69sup@gmail.com) on 24/10/2024 17:21:29
 2024-10-24 18:22:18.177 +01:00 [INF] Staff D200012348 was edited by Admin (lapr3dkg69sup@gmail.com) on 24/10/2024 17:22:18
->>>>>>> 31b434703419d8391b7e5934202922887f86d883
 2024-10-24 22:25:39.777 +01:00 [INF] Staff D200012348 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 24/10/2024 21:25:39
 2024-10-24 23:18:43.738 +01:00 [INF] Staff D200012348 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 24/10/2024 22:18:43
 2024-10-24 23:25:34.850 +01:00 [INF] Staff D200012348 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 24/10/2024 22:25:34
