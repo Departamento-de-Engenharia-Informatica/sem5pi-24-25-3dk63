@@ -89,17 +89,25 @@ namespace DDDSample1
                         context.Fail("Este email não está registrado no sistema.");
 
 
-                        // Encrypt the email using Data Protection
-                        var dataProtectionProvider = context.HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
-                        var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
-                        var encryptedEmail = protector.Protect(email);
+                        // // Encrypt the email using Data Protection
+                        // var dataProtectionProvider = context.HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
+                        // var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
+                        // var encryptedEmail = protector.Protect(email);
 
-                        // Create cookie
-                        context.HttpContext.Response.Cookies.Append(".AspNetCore.Cookies", encryptedEmail, new CookieOptions
+                        // // Create cookie
+                        // context.HttpContext.Response.Cookies.Append(".AspNetCore.Cookies", encryptedEmail, new CookieOptions
+                        // {
+                        //     HttpOnly = true,
+                        //     Secure = true,
+                        //     Expires = DateTimeOffset.UtcNow.AddMinutes(30)
+                        // });
+                        
+                        // Set the token as a cookie
+                        context.HttpContext.Response.Cookies.Append("IamEmail", email, new CookieOptions
                         {
                             HttpOnly = true,
                             Secure = true,
-                            Expires = DateTimeOffset.UtcNow.AddMinutes(30)
+                            Expires = DateTimeOffset.UtcNow.AddMinutes(30) // Adjust as necessary
                         });
 
                         context.Response.StatusCode = 302;

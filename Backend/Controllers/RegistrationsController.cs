@@ -29,17 +29,24 @@ namespace DDDSample1.Controllers
         {
             try
             {
-                var token = HttpContext.Request.Cookies[".AspNetCore.Cookies"];
-                if (string.IsNullOrEmpty(token))
+                // var token = HttpContext.Request.Cookies[".AspNetCore.Cookies"];
+                // if (string.IsNullOrEmpty(token))
+                // {
+                //     return Unauthorized("IAM token not found. Please log in again.");
+                // }
+
+                // // Decrypt the token to get the IAM email
+                // var dataProtectionProvider = HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
+                // var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
+
+                // var iamEmail = protector.Unprotect(token);
+
+                // Retrieve the IAM email from the cookie
+                var iamEmail = HttpContext.Request.Cookies["IamEmail"];
+                if (string.IsNullOrEmpty(iamEmail))
                 {
-                    return Unauthorized("IAM token not found. Please log in again.");
+                    return BadRequest("IAM email not found. Please log in again.");
                 }
-
-                // Decrypt the token to get the IAM email
-                var dataProtectionProvider = HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
-                var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
-
-                var iamEmail = protector.Unprotect(token);
 
                 var user = await _registrationService.FindByEmailAsync(new Email(dto.PersonalEmail));
 
