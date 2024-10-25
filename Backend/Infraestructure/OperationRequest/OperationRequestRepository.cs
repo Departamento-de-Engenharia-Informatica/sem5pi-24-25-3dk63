@@ -40,5 +40,11 @@ namespace DDDSample1.Infrastructure.OperationRequests
                                                  o.medicalRecordNumber == medicalRecordNumber &&
                                                  o.Active);
         }
+
+        public async Task UpdateOperationRequestAsync(OperationRequest operationRequest)
+        {
+            _context.Entry(operationRequest).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+        }
     }
 }

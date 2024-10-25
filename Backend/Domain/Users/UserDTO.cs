@@ -12,5 +12,6 @@ namespace DDDSample1.Domain.Users
         public Name Name { get; set; }
         public PhoneNumber phoneNumber { get; set; }
         public string ConfirmationToken { get; set; }
+        public bool Active { get; set; }
     }
 }

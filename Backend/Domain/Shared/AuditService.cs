@@ -85,9 +85,16 @@ namespace Backend.Domain.Shared
             }
 
         public void LogDeletionCompleted(User user)
-    {
-        string logMessage = $"Deletion of patient with user id {user.Id} was completed on {DateTime.UtcNow}";
-        _logger.Information(logMessage);
-    }
+        {
+            string logMessage = $"Deletion of patient with user id {user.Id} was completed on {DateTime.UtcNow}";
+            _logger.Information(logMessage);
+        }
+
+        public void LogUpdateOperationRequisition(string requisitionId, string updatedFields, string userEmail)
+        {
+            string logMessage = $"Operation Requisition {requisitionId} was updated by {userEmail} on {DateTime.UtcNow}. Changes: {updatedFields}";
+
+            _logger.Information(logMessage);
+        }
     }
 }

@@ -6,6 +6,9 @@ using DDDSample1.OperationRequests;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.OperationsType;
 using DDDSample1.Domain.Users;
+using System.Security.Claims;
+using DDDSample1.Patients;
+using DDDSample1.Users;
 
 namespace DDDSample1.Controllers
 {
@@ -15,11 +18,13 @@ namespace DDDSample1.Controllers
     {
         private readonly OperationRequestService _service;
         private readonly OperationTypeService _2service;
+        private readonly UserService _3service;
 
-        public OperationRequestController(OperationRequestService service, OperationTypeService service2)
+        public OperationRequestController(OperationRequestService service, OperationTypeService service2, UserService service3)
         {
             _service = service;
             _2service = service2;
+            _3service = service3;
         }
 
         // GET: api/OperationRequest
@@ -130,5 +135,39 @@ namespace DDDSample1.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpPut("operation-requisitions/{id}")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<IActionResult> UpdateOperationRequisition(string id, [FromBody] UpdateOperationRequisitionDto updateDto)
+        {
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("Unable to find the user information.");
+            }
+
+            var user = await _3service.GetUserByUsernameAsync(userEmail);
+
+            if (user == null)
+            {
+                return Unauthorized("User not found.");
+            }
+
+            try
+            {
+                var resultMessage = await _service.UpdateRequisitionAsync(id, user, updateDto);
+                return Ok(resultMessage);
+            }
+            catch (UnauthorizedAccessException ex)
+            {
+                return Unauthorized(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return NotFound(ex.Message);
+            }
+        }
+
     }
 }

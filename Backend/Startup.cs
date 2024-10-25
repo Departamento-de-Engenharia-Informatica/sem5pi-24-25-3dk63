@@ -81,7 +81,7 @@ namespace DDDSample1
                     var userService = context.HttpContext.RequestServices.GetRequiredService<UserService>();
                     var user = await userService.FindByEmailAsync(email);
 
-                    if (user == null)
+                    if (user == null || user.Active == false)
                     {
                         Log.Information("Login falhou: email não encontrado.");
 
@@ -161,6 +161,7 @@ namespace DDDSample1
             services.AddAutoMapper(typeof(SurgeryRoomMappingProfile));
             services.AddAutoMapper(typeof(PatientMappingProfile));
             services.AddAutoMapper(typeof(OperationTypeMappingProfile));
+            services.AddAutoMapper(typeof(OperationRequestMappingProfile));
 
             // Unit of Work
             services.AddTransient<IUnitOfWork, UnitOfWork>();

@@ -119,5 +119,12 @@ namespace DDDSample1.Users
             var user = await this._userRepository.GetUserByConfirmationTokenAsync(token);
             return user == null ? null : _mapper.Map<UserDTO>(user);
         }
+
+        public async Task<UserDTO?> GetUserByUsernameAsync(string username)
+        {
+            var user = await this._userRepository.GetUserByUsernameAsync(new Username(username));
+            return user == null ? null : _mapper.Map<UserDTO>(user);
+        }
+        
     }
 }

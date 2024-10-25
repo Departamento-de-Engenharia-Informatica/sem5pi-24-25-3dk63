@@ -12,5 +12,7 @@ namespace DDDSample1.Domain.OperationRequests
         Task<List<OperationRequest>> GetByPriorityAsync(Priority priority);
         Task<bool> IsDuplicateRequestAsync(OperationTypeId operationTypeId, MedicalRecordNumber medicalRecordNumber);
 
+        Task UpdateOperationRequestAsync(OperationRequest operationRequest);
+
     }
 }
