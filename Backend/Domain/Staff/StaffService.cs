@@ -11,6 +11,7 @@ using DDDSample1.Infrastructure;
 using Backend.Domain.Shared;
 using System.Reflection;
 using System.ComponentModel;
+using Backend.Domain.Staff;
 
 namespace DDDSample1.Domain.Staff
 {
@@ -20,6 +21,7 @@ namespace DDDSample1.Domain.Staff
         private readonly IStaffRepository _staffRepository;
         private readonly EmailService _emailService;
         private readonly IUserRepository _userRepository;
+
         private readonly ISpecializationRepository _specializationRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
@@ -47,6 +49,29 @@ private readonly AuditService _auditService;
             var staffList = await _staffRepository.GetAllAsync();
             return _mapper.Map<List<StaffDTO>>(staffList);
         }
+
+        public async Task<List<StaffCompleteDTO>> GetAllAsyncCompleteInformation()
+        {
+            var staffList = await _staffRepository.GetAllAsync();
+            var userList = await _userRepository.GetAllAsync();
+
+
+            List<StaffCompleteDTO> listDto = staffList.ConvertAll(staff => new StaffCompleteDTO
+            {
+                LicenseNumber = staff.Id.Value.ToString(),
+                 Username = _userRepository.GetByIdAsync(staff.UserId).Result.Username.Value.ToString(),
+                Role = _userRepository.GetByIdAsync(staff.UserId).Result.Role.Value.ToString(),
+                Email = _userRepository.GetByIdAsync(staff.UserId).Result.Email.Value.ToString(),
+                Name = _userRepository.GetByIdAsync(staff.UserId).Result.Name.FullName.ToString(),
+                SpecializationDescription = _specializationRepository.GetByIdAsync(staff.SpecializationId).Result.Description.Value.ToString(),
+                AvailabilitySlots = staff.AvailabilitySlots.Slots,
+                Active = staff.Active
+            });
+
+            return listDto;
+        }
+
+
 
         public async Task<StaffDTO?> GetByLicenseNumberAsync(LicenseNumber licenseNumber)
         {
@@ -188,7 +213,7 @@ private readonly AuditService _auditService;
     return staff;
 
 }
-    
+
 
       private bool CheckIfExistsOnUser(string propertyName)
         {
@@ -220,7 +245,7 @@ private readonly AuditService _auditService;
             return _mapper.Map<StaffDTO>(staff);
         }
 
-        public async Task<List<StaffDTO>> SearchStaffAsync(string? name = null, string? email = null, string? specializationDescription = null)
+        public async Task<List<StaffCompleteDTO>> SearchStaffAsync(string? name = null, string? email = null, string? specializationDescription = null)
         {
             var query = from staff in _staffRepository.GetQueryable()
                         join user in _userRepository.GetQueryable() on staff.UserId equals user.Id
@@ -250,7 +275,19 @@ private readonly AuditService _auditService;
 
             var paginatedStaff = results.Select(s => s.staff).ToList();
 
-            return _mapper.Map<List<StaffDTO>>(paginatedStaff);
+            List<StaffCompleteDTO> listDto = results.ConvertAll(s => new StaffCompleteDTO
+            {
+                LicenseNumber =  s.staff.Id.ToString(),
+                Username = _userRepository.GetByIdAsync(s.staff.UserId).Result.Username.Value.ToString(),
+                Role = _userRepository.GetByIdAsync(s.staff.UserId).Result.Role.Value.ToString(),
+                Email = _userRepository.GetByIdAsync(s.staff.UserId).Result.Email.Value.ToString(),
+                Name = _userRepository.GetByIdAsync(s.staff.UserId).Result.Name.ToString(),
+                SpecializationDescription = _specializationRepository.GetByIdAsync(s.staff.SpecializationId).Result.Description.Value.ToString(),
+                AvailabilitySlots = s.staff.AvailabilitySlots.Slots,
+                Active = s.staff.Active
+
+            });
+         return listDto;
         }
 
 public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name = null, string? licenseNumber = null, string? phoneNumber = null, string? userId = null, string? specialization = null)

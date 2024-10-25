@@ -6,6 +6,7 @@ using Backend.Domain.Staff.ValueObjects;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Security.Claims;
+using Backend.Domain.Staff;
 
 namespace DDDSample1.Controllers
 {
@@ -21,9 +22,9 @@ namespace DDDSample1.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<StaffDTO>>> GetAllStaff()
+        public async Task<ActionResult<IEnumerable<StaffCompleteDTO>>> GetAllStaff()
         {
-            var staffList = await _staffService.GetAllAsync();
+            var staffList = await _staffService.GetAllAsyncCompleteInformation();
             return Ok(staffList);
         }
 
@@ -109,12 +110,12 @@ namespace DDDSample1.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPatch("deactivate")]
 public async Task<ActionResult<IEnumerable<StaffDTO>>> DeactivateStaffAsync(
-    [FromQuery] string? name = null, 
-    [FromQuery] string? licenseNumber = null, 
+    [FromQuery] string? name = null,
+    [FromQuery] string? licenseNumber = null,
     [FromQuery] string? phoneNumber = null,
     [FromQuery] string UserId = null,
     [FromQuery] string? specialization = null)
-    
+
 {
     var adminEmail = User.FindFirstValue(ClaimTypes.Email);
     var deactivatedStaff = await _staffService.DeactivateStaffAsync(adminEmail, name,licenseNumber, phoneNumber, UserId, specialization);
@@ -123,6 +124,6 @@ public async Task<ActionResult<IEnumerable<StaffDTO>>> DeactivateStaffAsync(
 
     return Ok("Staff deactivated successfully");
 }
-        
+
     }
 }

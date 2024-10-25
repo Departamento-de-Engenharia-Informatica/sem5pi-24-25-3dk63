@@ -3,6 +3,7 @@ using DDDSample1.Domain;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Users;
 using AutoMapper;
+using Backend.Domain.Users;
 
 namespace DDDSample1.Users
 {
@@ -26,6 +27,23 @@ namespace DDDSample1.Users
         {
             var list = await this._userRepository.GetAllAsync();
             return _mapper.Map<List<UserDTO>>(list);
+        }
+
+        public async Task<List<UserCompleteInformationDTO>> GetAllAsyncUserComplete()
+        {
+            var list = await this._userRepository.GetAllAsync();
+
+            List<UserCompleteInformationDTO> listDto = list.ConvertAll(user => new UserCompleteInformationDTO
+            {
+                Id = user.Id.AsGuid(),
+                Username = user.Username,
+                Role = user.Role.Value.ToString(),
+                Name = user.Name,
+                phoneNumber = user.PhoneNumber,
+                Email = user.Email,
+            });
+
+            return listDto;
         }
 
         public async Task<UserDTO> GetByIdAsync(UserId id)
@@ -62,6 +80,45 @@ namespace DDDSample1.Users
             await this._unitOfWork.CommitAsync();
 
             return _mapper.Map<UserDTO>(user);
+        }
+
+
+        public async Task<UserCompleteInformationDTO> AddAsyncCompleteInformation(CreatingUserDto dto)
+        {
+            var existingUser = await this._userRepository.FindByEmailAsync(new Email(dto.Email.Value));
+
+            if (existingUser != null)
+            {
+                throw new BusinessRuleValidationException("Email já existe no sistema, por favor tente novamente com outro email.");
+            }
+
+            int sequentialNumber = await this._userRepository.GetNextSequentialNumberAsync();
+
+            string domain = _configuration["DNS_DOMAIN"];
+            if (string.IsNullOrEmpty(domain))
+            {
+                throw new BusinessRuleValidationException("O domínio DNS não está configurado corretamente.");
+            }
+
+            int recruitmentYear = DateTime.Now.Year;
+            var role = new Role(dto.Role.Value);
+            var name = new Name(dto.FirstName, dto.LastName);
+            var phoneNumber = new PhoneNumber(dto.phoneNumber.Number);
+
+            var user = new User(role, new Email(dto.Email.Value), name, recruitmentYear, domain, sequentialNumber, phoneNumber);
+
+            await this._userRepository.AddAsync(user);
+            await this._unitOfWork.CommitAsync();
+
+            return new UserCompleteInformationDTO
+            {
+                Id = user.Id.AsGuid(),
+                Username = user.Username,
+                Role = user.Role.Value.ToString(),
+                Name = user.Name,
+                phoneNumber = user.PhoneNumber,
+                Email = user.Email,
+            };
         }
 
 
@@ -125,6 +182,6 @@ namespace DDDSample1.Users
             var user = await this._userRepository.GetUserByUsernameAsync(new Username(username));
             return user == null ? null : _mapper.Map<UserDTO>(user);
         }
-        
+
     }
 }

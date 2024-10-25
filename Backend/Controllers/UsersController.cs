@@ -3,6 +3,7 @@ using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using DDDSample1.Users;
+using Backend.Domain.Users.ValueObjects;
 
 namespace DDDSample1.Controllers
 {
@@ -20,10 +21,10 @@ namespace DDDSample1.Controllers
         // GET: api/Users
         [Authorize(Roles = "Admin")]
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<UserDTO>>> GetAll()
+        public async Task<ActionResult<IEnumerable<UserCompleteInformationDTO>>> GetAll()
         {
 
-            return await _service.GetAllAsync();
+            return await _service.GetAllAsyncUserComplete();
         }
 
         // GET: api/Users/5
@@ -42,11 +43,11 @@ namespace DDDSample1.Controllers
 
         // POST: api/Users
         [HttpPost]
-        public async Task<ActionResult<UserDTO>> Create(CreatingUserDto dto)
+        public async Task<ActionResult<UserCompleteInformationDTO>> Create(CreatingUserDto dto)
         {
             try
             {
-                var user = await _service.AddAsync(dto);
+                var user = await _service.AddAsyncCompleteInformation(dto);
                 return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
             }
             catch (BusinessRuleValidationException ex)
