@@ -25,7 +25,7 @@ public class PatientDeletionService : IHostedService, IDisposable
     {
         _logger.LogInformation("Patient deletion service started.");
 
-        _timer = new Timer(CheckForPatientDeletion, null, TimeSpan.Zero, TimeSpan.FromMinutes(1));
+        _timer = new Timer(CheckForPatientDeletion, null, TimeSpan.Zero, TimeSpan.FromDays(1));
 
         return Task.CompletedTask;
     }
@@ -37,6 +37,7 @@ public class PatientDeletionService : IHostedService, IDisposable
             var patientRepository = scope.ServiceProvider.GetRequiredService<IPatientRepository>();
             var userRepository = scope.ServiceProvider.GetRequiredService<IUserRepository>();
             var auditService = scope.ServiceProvider.GetRequiredService<AuditService>();
+            var _unitOfWork = scope.ServiceProvider.GetRequiredService<IUnitOfWork>();
 
             var usersForDeletion = await userRepository.GetUsersMarkedForDeletionAsync();
 
@@ -44,22 +45,20 @@ public class PatientDeletionService : IHostedService, IDisposable
             {
                 if (user.MarkedForDeletionDate <= DateTime.UtcNow)
                 {
-                    await DeleteUserDataAsync(user);
-
+                    await DeleteUserDataAsync(user, patientRepository, userRepository, auditService, _unitOfWork);
                     auditService.LogDeletionCompleted(user);
                 }
             }
         }
     }
 
-    private async Task DeleteUserDataAsync(User user)
+    private async Task DeleteUserDataAsync(
+        User user,
+        IPatientRepository patientRepository,
+        IUserRepository userRepository,
+        AuditService auditService,
+        IUnitOfWork unitOfWork)
     {
-
-        var patientRepository = _serviceProvider.GetRequiredService<IPatientRepository>();
-        var userRepository = _serviceProvider.GetRequiredService<IUserRepository>();
-        var auditService = _serviceProvider.GetRequiredService<AuditService>();
-        var _unitOfWork = _serviceProvider.GetRequiredService<IUnitOfWork>();
-
         var patient = await patientRepository.FindByUserIdAsync(user.Id);
         if (patient != null)
         {
@@ -67,10 +66,9 @@ public class PatientDeletionService : IHostedService, IDisposable
         }
 
         await userRepository.DeleteUserAsync(user);
-        await _unitOfWork.CommitAsync();
+        await unitOfWork.CommitAsync();
 
         auditService.LogDeletionCompleted(user);
-
     }
 
     public Task StopAsync(CancellationToken cancellationToken)

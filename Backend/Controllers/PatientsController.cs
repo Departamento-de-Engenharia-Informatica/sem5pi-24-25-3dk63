@@ -61,7 +61,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpPost("register-patient")]
-
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PatientDTO>> RegisterPatient(RegisterPatientDTO dto)
         {
             var patient = await _service.RegisterPatientAsync(dto);
@@ -149,7 +149,7 @@ namespace DDDSample1.Controllers
 
                 await _service.AddPendingChangesAsync(updateDto, patient.UserId);
 
-                await _emailService.SendUpdateEmail(userEmail, userResult.ConfirmationToken);
+                await _emailService.SendUpdateEmail(userResult.Email.ToString(), userResult.ConfirmationToken);
 
                 return Ok("Sensitive changes have been submitted and require confirmation (please check your email to confirm the changes).");
             }
@@ -182,20 +182,27 @@ namespace DDDSample1.Controllers
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> RequestAccountDeletion()
         {
-            var userId = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.NameIdentifier)?.Value;
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
 
-            if (string.IsNullOrEmpty(userId))
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("Unable to find the patient information.");
+            }
+
+            var user = await _userService.GetUserByUsernameAsync(userEmail);
+
+            if (string.IsNullOrEmpty(user.Id.ToString()))
             {
                 return Unauthorized("User not found.");
             }
 
-            await _service.RequestAccountDeletionAsync(new UserId(userId));
+            await _service.RequestAccountDeletionAsync(new UserId(user.Id));
 
             return Ok("Account deletion requested. Please check your email to confirm.");
         }
     
 
-        [HttpPost("confirm-account-deletion")]
+        [HttpGet("confirm-account-deletion")]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> ConfirmAccountDeletion(string token)
         {
