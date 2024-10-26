@@ -74,6 +74,15 @@ public async Task SendStaffNotificationEmailAsync(List<string> changedProperties
             await SendEmailAsync(email, subject, body);
         }
 
+        public async Task SendUpdateStaffEmail(string email, string token)
+        {
+            var confirmationLink = $"https://localhost:5001/api/Staff/confirm-update?token={token}";
+            var subject = "Confirm your profile update";
+            var body = $"Please click on the following link to confirm your profile update: <a href=\"{confirmationLink}\">Confirm Update</a>";
+
+            await SendEmailAsync(email, subject, body);
+        }
+
         public async Task SendDeletionConfirmationEmail(string email, string token)
         {
             var confirmationLink = $"https://localhost:5001/api/Patients/confirm-account-deletion?token={token}";

@@ -13,13 +13,15 @@ public class OperationTypeMappingProfile : Profile
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
             .ForMember(dest => dest.RequiredStaff, opt => opt.MapFrom(src => src.RequiredStaff))
-            .ForMember(dest => dest.SpecializationId, opt => opt.MapFrom(src => src.SpecializationId));
+            .ForMember(dest => dest.SpecializationId, opt => opt.MapFrom(src => src.SpecializationId))
+            .ForMember(dest=> dest.Active, opt => opt.MapFrom(src => src.Active));
 
         CreateMap<OperationTypeDTO, OperationType>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => new OperationTypeId(src.Id)))
             .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Duration))
             .ForMember(dest => dest.RequiredStaff, opt => opt.MapFrom(src => src.RequiredStaff))
-            .ForMember(dest => dest.SpecializationId, opt => opt.MapFrom(src => src.SpecializationId));
+            .ForMember(dest => dest.SpecializationId, opt => opt.MapFrom(src => src.SpecializationId))
+            .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active));
     }
 }

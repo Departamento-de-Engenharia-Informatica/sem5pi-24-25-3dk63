@@ -15,9 +15,12 @@ namespace DDDSample1.OperationRequests
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationRequestRepository _operationRequestRepository;
         private readonly IAppointmentRepository _appointmentRepository;
+
+        private readonly IStaffRepository _staffRepository;
         private readonly IConfiguration _configuration;
         private readonly AuditService _auditService;    
         private readonly IMapper _mapper;
+
 
         public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IAppointmentRepository appointmentRepository, IConfiguration configuration, AuditService auditService, IMapper mapper)
         {
@@ -155,7 +158,9 @@ namespace DDDSample1.OperationRequests
                 throw new Exception("Operation requisition not found.");
             }
 
-            if (requisition.Id.ToString() != user.Id.ToString())
+            var doctorProfile = await _staffRepository.GetByUserIdAsync(new UserId(user.Id));
+
+            if (requisition.licenseNumber != doctorProfile.Id)
             {
                 throw new UnauthorizedAccessException("You are not authorized to update this requisition.");
             }

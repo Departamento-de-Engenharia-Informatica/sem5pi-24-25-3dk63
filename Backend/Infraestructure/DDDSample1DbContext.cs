@@ -12,6 +12,8 @@ using DDDSample1.Domain.Staff;
 using DDDSample1.Infraestructure.Patients;
 using DDDSample1.Domain.PendingChange;
 using DDDSample1.Infrastructure.PendingChange;
+using DDDSample1.Domain.PendingChangeStaff;
+using DDDSample1.Infrastructure.PendingChangeStaff;
 
 namespace DDDSample1.Infrastructure
 {
@@ -26,7 +28,7 @@ namespace DDDSample1.Infrastructure
         public DbSet<Specialization> Specializations { get; set; }
         public DbSet<Patient> Patients { get; set; }
         public DbSet<PendingChanges> PendingChanges { get; set; }
-
+         public DbSet<PendingChangesStaff> PendingChangesStaff { get; set; }
         public DDDSample1DbContext(DbContextOptions<DDDSample1DbContext> options) : base(options)
         {
         }
@@ -43,7 +45,7 @@ namespace DDDSample1.Infrastructure
             modelBuilder.ApplyConfiguration(new StaffEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PatientEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new PendingChangesEntityTypeConfiguration());
-
+            modelBuilder.ApplyConfiguration(new PendingChangesStaffEntityTypeConfiguration());
         }
     }
 }
