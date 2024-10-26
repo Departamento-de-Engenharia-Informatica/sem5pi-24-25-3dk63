@@ -23,7 +23,7 @@ namespace DDDSample1.OperationRequests
 
         private readonly IStaffRepository _staffRepository;
         private readonly IConfiguration _configuration;
-        private readonly AuditService _auditService;    
+        private readonly AuditService _auditService;
         private readonly IMapper _mapper;
 
         public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IAppointmentRepository appointmentRepository, IOperationTypeRepository operationTypeRepository, IPatientRepository patientRepository, IUserRepository userRepository, IStaffRepository staffRepository, IConfiguration configuration, AuditService auditService, IMapper mapper)
@@ -134,7 +134,7 @@ namespace DDDSample1.OperationRequests
 
             // Verify if there is an appointment associated with the operation request or if it is active
             if(await this._appointmentRepository.GetByOperationRequestIdAsync(id) != null) throw new BusinessRuleValidationException("Não é possível excluir um pedido operação associado a uma consulta.");
-            if (operationRequest.Active) throw new BusinessRuleValidationException("Não é possível excluir um pedido operação ativo.");
+            //if (operationRequest.Active) throw new BusinessRuleValidationException("Não é possível excluir um pedido operação ativo.");
 
             this._operationRequestRepository.Remove(operationRequest);
             await this._unitOfWork.CommitAsync();

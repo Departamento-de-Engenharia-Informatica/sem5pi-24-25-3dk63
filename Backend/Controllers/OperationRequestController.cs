@@ -28,6 +28,8 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/OperationRequest
+        [HttpGet("all")]
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OperationRequestDTO>>> GetAll()
         {
