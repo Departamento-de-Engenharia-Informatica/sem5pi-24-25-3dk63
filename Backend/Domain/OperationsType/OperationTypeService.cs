@@ -6,6 +6,7 @@ using Backend.Domain.Shared;
 using Backend.Domain.Specialization.ValueObjects;
 using DDDSample1.Domain.Specialization;
 using AutoMapper;
+using System.Threading.Tasks.Dataflow;
 
 namespace DDDSample1.OperationsType
 {
@@ -118,39 +119,55 @@ namespace DDDSample1.OperationsType
         }
 
         public async Task<OperationTypeDTO> UpdateCurrentActiveType(UpdateOperationTypeDTO dto, Guid id)
-        {
-            var currentActiveOperationType = await this._operationTypeRepository.GetActiveOperationTypeByIdAsync(new OperationTypeId(id));
+{
+    var currentActiveOperationType = await this._operationTypeRepository.GetActiveOperationTypeByIdAsync(new OperationTypeId(id));
 
-            if (currentActiveOperationType == null)
-            {
-                return null;
-            }
+    if (currentActiveOperationType == null)
+    {
+        return null;
+    }
 
-            await _operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
-            await this._unitOfWork.CommitAsync();
+    try
+    {
+        await this._operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
+        await _unitOfWork.CommitAsync();
 
-            currentActiveOperationType.Deactivate();
+        currentActiveOperationType.Deactivate();
+        await _operationTypeRepository.AddAsync(currentActiveOperationType);
+        await _unitOfWork.CommitAsync();
 
-            await this._operationTypeRepository.AddAsync(currentActiveOperationType);
+        var newOperationType = new OperationType(
+            id: currentActiveOperationType.Id,
+            name: !string.IsNullOrWhiteSpace(dto.Name) ? new OperationName(dto.Name) : currentActiveOperationType.Name,
+            duration: new Duration(
+                dto.Preparation.HasValue ? dto.Preparation.Value : currentActiveOperationType.Duration.PreparationPhase,
+                dto.Surgery.HasValue ? dto.Surgery.Value : currentActiveOperationType.Duration.SurgeryPhase,
+                dto.Cleaning.HasValue ? dto.Cleaning.Value : currentActiveOperationType.Duration.CleaningPhase
+            ),
+            requiredStaff: new RequiredStaff
+            (
+                dto.RequiredStaff.HasValue ? dto.RequiredStaff.Value : currentActiveOperationType.RequiredStaff.RequiredNumber
+            ),
+            specializationId: currentActiveOperationType.SpecializationId
+        );
 
-            var newOperationType = new OperationType(
-                id: currentActiveOperationType.Id,
-                name: !string.IsNullOrWhiteSpace(dto.Name) ? new OperationName(dto.Name) : currentActiveOperationType.Name,
-                duration: new Duration(
-                    dto.Preparation.HasValue ? dto.Preparation.Value : currentActiveOperationType.Duration.PreparationPhase,
-                    dto.Surgery.HasValue ? dto.Surgery.Value : currentActiveOperationType.Duration.SurgeryPhase,
-                    dto.Cleaning.HasValue ? dto.Cleaning.Value : currentActiveOperationType.Duration.CleaningPhase
-                ),
-                requiredStaff: dto.RequiredStaff.HasValue ? new RequiredStaff(dto.RequiredStaff.Value) : currentActiveOperationType.RequiredStaff,
-                specializationId: currentActiveOperationType.SpecializationId
-            );
+        await this._operationTypeRepository.AddAsync(newOperationType);
+        await this._unitOfWork.CommitAsync();
 
-            await this._operationTypeRepository.AddAsync(newOperationType);
+        return _mapper.Map<OperationTypeDTO>(newOperationType);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred: {ex.Message}");
+        await this._operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
+        await _unitOfWork.CommitAsync();
 
-            await this._unitOfWork.CommitAsync();
-
-            return _mapper.Map<OperationTypeDTO>(newOperationType);
-        }
+        currentActiveOperationType.Activate();
+        await _operationTypeRepository.AddAsync(currentActiveOperationType);
+        await _unitOfWork.CommitAsync();
+        throw;
+    }
+}
 
         public async Task<String> DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
         {
