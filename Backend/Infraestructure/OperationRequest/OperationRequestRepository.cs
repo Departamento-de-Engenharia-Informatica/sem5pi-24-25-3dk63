@@ -46,5 +46,45 @@ namespace DDDSample1.Infrastructure.OperationRequests
             _context.Entry(operationRequest).State = EntityState.Modified;
             await _context.SaveChangesAsync();
         }
+
+        public async Task<List<OperationRequest>> SearchOperationRequestsAsync(string firstName, string lastName, string operationType, string status, Priority? priority)
+        {
+            var query = _context.OperationRequests.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName))
+            {
+                query = query.Where(or => 
+                    or.medicalRecordNumber != null && 
+                    _context.Patients.Any(p => 
+                        p.Id == or.medicalRecordNumber && 
+                        _context.Users.Any(u => 
+                            u.Id == p.UserId && 
+                            (string.IsNullOrWhiteSpace(firstName) || u.Name.FirstName == firstName) && 
+                            (string.IsNullOrWhiteSpace(lastName) || u.Name.LastName == lastName))));
+            }
+
+            if (!string.IsNullOrWhiteSpace(operationType))
+            {
+                query = query.Where(or => 
+                    or.operationTypeId != null && 
+                    _context.OperationsTypes.Any(op => 
+                        op.Id == or.operationTypeId && 
+                        op.Name.ToString() == operationType && 
+                        op.Active));
+            }
+
+            if (!string.IsNullOrWhiteSpace(status))
+            {
+                query = query.Where(or => or.Active.ToString().ToLower() == status.ToLower());
+            }
+
+            if (priority != null)
+            {
+                query = query.Where(or => or.priority != null && or.priority.Value == priority.Value);
+            }
+
+            return await query.ToListAsync();
+        }
+
     }
 }

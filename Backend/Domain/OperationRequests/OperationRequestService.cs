@@ -7,6 +7,8 @@ using Backend.Domain.Shared;
 using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Appointments;
 using AutoMapper;
+using Backend.Domain.OperationRequests;
+using DDDSample1.Domain.Patients;
 
 namespace DDDSample1.OperationRequests
 {
@@ -15,21 +17,27 @@ namespace DDDSample1.OperationRequests
         private readonly IUnitOfWork _unitOfWork;
         private readonly IOperationRequestRepository _operationRequestRepository;
         private readonly IAppointmentRepository _appointmentRepository;
+        private readonly IOperationTypeRepository _operationTypeRepository;
+        private readonly IPatientRepository _patientRepository;
+        private readonly IUserRepository _userRepository;
 
         private readonly IStaffRepository _staffRepository;
         private readonly IConfiguration _configuration;
         private readonly AuditService _auditService;    
         private readonly IMapper _mapper;
 
-
-        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IAppointmentRepository appointmentRepository, IConfiguration configuration, AuditService auditService, IMapper mapper)
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IAppointmentRepository appointmentRepository, IOperationTypeRepository operationTypeRepository, IPatientRepository patientRepository, IUserRepository userRepository, IStaffRepository staffRepository, IConfiguration configuration, AuditService auditService, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;
-            _operationRequestRepository = operationRequestRepository;
-            _appointmentRepository = appointmentRepository;
-            _configuration = configuration;
-            _auditService = auditService;
-            _mapper = mapper;
+            this._unitOfWork = unitOfWork;
+            this._operationRequestRepository = operationRequestRepository;
+            this._appointmentRepository = appointmentRepository;
+            this._operationTypeRepository = operationTypeRepository;
+            this._patientRepository = patientRepository;
+            this._userRepository = userRepository;
+            this._staffRepository = staffRepository;
+            this._configuration = configuration;
+            this._auditService = auditService;
+            this._mapper = mapper;
         }
 
         // Obtém todos os requests
@@ -195,6 +203,37 @@ namespace DDDSample1.OperationRequests
             return "Operation requisition updated successfully.";
         }
 
+        public async Task<List<ListOperationRequestDTO>> SearchOperationRequests(
+            string firstName, string lastName, string operationType, string status, Priority? priority)
+        {
+            var requests = await _operationRequestRepository.SearchOperationRequestsAsync(firstName, lastName, operationType, status, priority);
+
+            var result = new List<ListOperationRequestDTO>();
+
+            foreach (var or in requests)
+            {
+                var patient = await _patientRepository.FindByMedicalRecordNumberAsync(or.medicalRecordNumber);
+                var patientUser = await _userRepository.GetByIdAsync(patient?.UserId);
+
+                var operationTypeEntity = await _operationTypeRepository.GetByIdAsync(or.operationTypeId);
+                var operationTypeName = operationTypeEntity?.Active == true
+                    ? operationTypeEntity.Name.ToString()
+                    : "Unknown";
+
+                result.Add(new ListOperationRequestDTO
+                {
+                    Id = or.Id.AsGuid(),
+                    PatientName = patientUser != null ? $"{patientUser.Name.FirstName} {patientUser.Name.LastName}" : "Unknown",
+                    OperationType = operationTypeName ?? "Unknown",
+                    Status = or.Active ? "Active" : "Inactive",
+                    Priority = or.priority.ToString(),
+                    Deadline = or.deadline.Value,
+                    AssignedStaff = operationTypeEntity?.RequiredStaff?.RequiredNumber.ToString() ?? "Unknown" // Use null-conditional
+                });
+            }
+
+            return result;
+        }
 
     }
 }
