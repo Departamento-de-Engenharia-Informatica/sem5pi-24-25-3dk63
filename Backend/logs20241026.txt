@@ -14,3 +14,5 @@
 2024-10-26 10:09:01.296 +01:00 [INF] Login falhou: email não encontrado.
 2024-10-26 10:10:23.049 +01:00 [INF] Login bem-sucedido: email encontrado.
 2024-10-26 10:11:26.700 +01:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 9:11:26 AM
+2024-10-26 11:53:20.429 +01:00 [INF] OperationType Operaçao Cardiovascular (ba6fa5e1-5c96-4ba0-a486-656163e0d37a) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:53:20 AM
+2024-10-26 11:56:32.013 +01:00 [INF] OperationType Operaçao Cardiovascular (692ab096-89fd-4e6e-9f9b-1f611a2de5bf) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:56:32 AM

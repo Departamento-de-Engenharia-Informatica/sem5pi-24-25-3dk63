@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDDNetCore.Migrations
 {
     [DbContext(typeof(DDDSample1DbContext))]
-    [Migration("20241026090807_NomeDaMigraçao")]
+    [Migration("20241026095203_NomeDaMigraçao")]
     partial class NomeDaMigraçao
     {
         /// <inheritdoc />
