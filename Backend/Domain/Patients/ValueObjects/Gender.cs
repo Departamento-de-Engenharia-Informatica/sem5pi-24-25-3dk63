@@ -8,6 +8,11 @@ namespace DDDSample1.Domain.Patients
 
         public Gender(string gender)
         {
+            if(string.IsNullOrWhiteSpace(gender))
+            {
+                throw new BusinessRuleValidationException("Gender cannot be empty or null.");
+            }
+            
             this.gender = gender;
         }
 
@@ -15,5 +20,8 @@ namespace DDDSample1.Domain.Patients
         {
             yield return gender;
         }
+
+        public override string ToString() => gender;
+
     }
 }

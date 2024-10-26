@@ -8,6 +8,11 @@ namespace DDDSample1.Domain.Patients
 
         public EmergencyContact(string emergencyContact)
         {
+            if (string.IsNullOrWhiteSpace(emergencyContact))
+            {
+                throw new BusinessRuleValidationException("Emergency Contact can't be null or empty.");
+            }
+
             this.emergencyContact = emergencyContact;
         }
 
@@ -15,5 +20,7 @@ namespace DDDSample1.Domain.Patients
         {
             yield return emergencyContact;
         }
+
+        public override string ToString() => emergencyContact;
     }
 }
