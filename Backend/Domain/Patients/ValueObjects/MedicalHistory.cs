@@ -9,7 +9,6 @@ namespace DDDSample1.Domain.Patients
         public MedicalHistory(string medicalHistory)
         {
             this.medicalHistory = medicalHistory;
- 
         }
 
         protected override IEnumerable<object> GetEqualityComponents()

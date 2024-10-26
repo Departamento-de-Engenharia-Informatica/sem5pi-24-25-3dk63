@@ -106,17 +106,6 @@ namespace DDDSample1.Domain
                 this.emergencyContact = pendingChange.EmergencyContact;
             }
         }
-        public void Anonymize()
-        {
-            string unique = Guid.NewGuid().ToString("N").Substring(0, 8);
-
-            this.dateOfBirth = new DateOfBirth(DateTime.Now);
-            this.gender = new Gender("N/A");
-            this.emergencyContact = new EmergencyContact("N/A");
-            this.Active = false;
-
-            this.Id = new MedicalRecordNumber($"anonymous_{unique}");
-        }
 
         public void MarkForDeletion()
         {
