@@ -13,9 +13,9 @@ namespace DDDSample1.Domain.OperationsType
         public Duration(int preparationPhase, int surgeryPhase, int cleaningPhase)
         {
             TotalDuration =0;
-            if (preparationPhase == 0 || surgeryPhase == 0 || cleaningPhase == 0)
+            if (preparationPhase <= 0 || surgeryPhase <= 0 || cleaningPhase <= 0)
             {
-                throw new ArgumentException("All durations must be provided and bigger than 0.");
+                throw new BusinessRuleValidationException("All durations must be provided and bigger than 0.");
             }
 
             PreparationPhase = preparationPhase;

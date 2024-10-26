@@ -11,12 +11,17 @@ namespace DDDSample1.Domain.OperationsType
 
         public RequiredStaff(int requiredNumber)
         {
-            if (requiredNumber < 0)
+            if (requiredNumber <= 0)
             {
-                throw new BusinessRuleValidationException("Required number must be greater than or equal to 0.");
+                throw new BusinessRuleValidationException("Number of required staff must be bigger than 0.");
             }
 
             this.RequiredNumber = requiredNumber;
+        }
+
+        public override string ToString()
+        {
+            return this.RequiredNumber.ToString();
         }
 
     }

@@ -79,6 +79,8 @@ namespace DDDSample1.Domain
             this.Id = id;
         }
 
+        
+
     }
 }
 

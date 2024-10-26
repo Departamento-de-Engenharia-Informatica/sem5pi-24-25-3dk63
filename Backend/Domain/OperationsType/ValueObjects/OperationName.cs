@@ -12,10 +12,15 @@ namespace DDDSample1.Domain.OperationsType
         {
             if (string.IsNullOrWhiteSpace(description))
             {
-                throw new BusinessRuleValidationException("Description can't be null or empty.");
+                throw new BusinessRuleValidationException("Operation name cannot be empty or empty.");
             }
 
             this.Description = description;
+        }
+
+        public override string ToString()
+        {
+            return this.Description;
         }
 
     }

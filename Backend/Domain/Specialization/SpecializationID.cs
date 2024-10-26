@@ -29,5 +29,7 @@ namespace DDDSample1.Domain.Specialization
         {
             return (Guid)base.ObjValue;
         }
+
+        
     }
 }
