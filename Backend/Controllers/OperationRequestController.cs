@@ -136,7 +136,7 @@ namespace DDDSample1.Controllers
             }
         }
 
-        [HttpPut("operation-requisitions/{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> UpdateOperationRequisition(string id, [FromBody] UpdateOperationRequisitionDto updateDto)
         {
@@ -147,7 +147,7 @@ namespace DDDSample1.Controllers
                 return Unauthorized("Unable to find the user information.");
             }
 
-            var user = await _3service.GetUserByUsernameAsync(userEmail);
+            var user = await _3service.FindByEmailAsync(userEmail); //mudar linha
 
             if (user == null)
             {

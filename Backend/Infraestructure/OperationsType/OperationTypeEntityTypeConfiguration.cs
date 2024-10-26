@@ -10,8 +10,8 @@ namespace DDDSample1.Infraestructure.OperationTypes
     {
         public void Configure(EntityTypeBuilder<OperationType> builder)
         {
-            // Define a chave primária
-            builder.HasKey(o => o.Id);
+            // chave composta
+            builder.HasKey(o => new { o.Id, o.Active });
 
             // Configura a propriedade Name (associada ao Value Object Name)
             builder.OwnsOne(o => o.Name, name =>
@@ -20,7 +20,6 @@ namespace DDDSample1.Infraestructure.OperationTypes
                     .HasColumnName("Name")
                     .IsRequired();
             });
-
 
             builder.OwnsOne(o => o.Duration, duration =>
             {

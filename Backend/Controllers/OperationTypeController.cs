@@ -133,5 +133,25 @@ namespace DDDSample1.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpPatch("{id}")]
+        [Authorize(Roles="Admin")]
+        public async Task<ActionResult<OperationTypeDTO>> Patch(Guid id, [FromBody] UpdateOperationTypeDTO dto)
+        {
+            try
+            {
+                var updatedOperationType = await _service.UpdateCurrentActiveType(dto, id); 
+                if (updatedOperationType == null)
+                {
+                    return NotFound();
+                }
+
+                return Ok(updatedOperationType);
+            }
+            catch (BusinessRuleValidationException ex)
+            {
+                return BadRequest(new { Message = ex.Message });
+            }
+        }
     }
 }

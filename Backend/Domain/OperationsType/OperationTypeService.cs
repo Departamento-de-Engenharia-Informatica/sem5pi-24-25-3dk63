@@ -117,46 +117,80 @@ namespace DDDSample1.OperationsType
 
         }
 
+        public async Task<OperationTypeDTO> UpdateCurrentActiveType(UpdateOperationTypeDTO dto, Guid id)
+        {
+            var currentActiveOperationType = await this._operationTypeRepository.GetActiveOperationTypeByIdAsync(new OperationTypeId(id));
 
-public async Task<String> DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
-{
-    OperationType operationType = new OperationType();
+            if (currentActiveOperationType == null)
+            {
+                return null;
+            }
 
-    if (!string.IsNullOrEmpty(name))
-    {
-        operationType = await _operationTypeRepository.GetByNameAsync(name);
-    }
-    else if (!string.IsNullOrEmpty(specialization))
-    {
-        var specializationVAR = await _specializationRepository.GetByDescriptionAsync(new Description(specialization));
-        if (specializationVAR == null) 
-            throw new BusinessRuleValidationException("A especialização não existe.");
+            await _operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
+            await this._unitOfWork.CommitAsync();
 
-        operationType = await _operationTypeRepository.GetBySpecializationAsync(specializationVAR.Id);
-    }
-    else if (!string.IsNullOrEmpty(id))
-    {
-        operationType = await _operationTypeRepository.GetByIdAsync(new OperationTypeId(id));
-    }
-    else
-    {
-        throw new BusinessRuleValidationException("Por favor, insira um nome, uma especialização ou um id válidos.");
-    }
+            currentActiveOperationType.Deactivate();
 
-    if (operationType == null)
-        throw new BusinessRuleValidationException("Tipo de operação não encontrado.");
+            await this._operationTypeRepository.AddAsync(currentActiveOperationType);
 
-    if (!operationType.Active)
-        throw new BusinessRuleValidationException("O tipo de operação já se encontra inativo.");
+            var newOperationType = new OperationType(
+                id: currentActiveOperationType.Id,
+                name: !string.IsNullOrWhiteSpace(dto.Name) ? new OperationName(dto.Name) : currentActiveOperationType.Name,
+                duration: new Duration(
+                    dto.Preparation.HasValue ? dto.Preparation.Value : currentActiveOperationType.Duration.PreparationPhase,
+                    dto.Surgery.HasValue ? dto.Surgery.Value : currentActiveOperationType.Duration.SurgeryPhase,
+                    dto.Cleaning.HasValue ? dto.Cleaning.Value : currentActiveOperationType.Duration.CleaningPhase
+                ),
+                requiredStaff: dto.RequiredStaff.HasValue ? new RequiredStaff(dto.RequiredStaff.Value) : currentActiveOperationType.RequiredStaff,
+                specializationId: currentActiveOperationType.SpecializationId
+            );
 
-    _auditService.LogDeactivateOperationType(operationType, adminEmail);
+            await this._operationTypeRepository.AddAsync(newOperationType);
 
-    operationType.Deactivate();
+            await this._unitOfWork.CommitAsync();
 
-    await _unitOfWork.CommitAsync();
+            return _mapper.Map<OperationTypeDTO>(newOperationType);
+        }
 
-    return "Tipo de operação desativado com sucesso!!";
-}
+        public async Task<String> DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
+        {
+            OperationType operationType = new OperationType();
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                operationType = await _operationTypeRepository.GetByNameAsync(name);
+            }
+            else if (!string.IsNullOrEmpty(specialization))
+            {
+                var specializationVAR = await _specializationRepository.GetByDescriptionAsync(new Description(specialization));
+                if (specializationVAR == null) 
+                    throw new BusinessRuleValidationException("A especialização não existe.");
+
+                operationType = await _operationTypeRepository.GetBySpecializationAsync(specializationVAR.Id);
+            }
+            else if (!string.IsNullOrEmpty(id))
+            {
+                operationType = await _operationTypeRepository.GetByIdAsync(new OperationTypeId(id));
+            }
+            else
+            {
+                throw new BusinessRuleValidationException("Por favor, insira um nome, uma especialização ou um id válidos.");
+            }
+
+            if (operationType == null)
+                throw new BusinessRuleValidationException("Tipo de operação não encontrado.");
+
+            if (!operationType.Active)
+                throw new BusinessRuleValidationException("O tipo de operação já se encontra inativo.");
+
+            _auditService.LogDeactivateOperationType(operationType, adminEmail);
+
+            operationType.Deactivate();
+
+            await _unitOfWork.CommitAsync();
+
+            return "Tipo de operação desativado com sucesso!!";
+        }
 
     }
 

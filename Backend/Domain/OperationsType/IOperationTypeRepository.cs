@@ -9,8 +9,9 @@ namespace DDDSample1.Domain.OperationsType
     public interface IOperationTypeRepository : IRepository<OperationType, OperationTypeId>
     {
         Task<OperationType> GetByNameAsync(String name);
-
-            Task<OperationType> GetBySpecializationAsync(SpecializationId id);
+        Task<OperationType> GetBySpecializationAsync(SpecializationId id);
+        Task<OperationType> GetActiveOperationTypeByIdAsync(OperationTypeId id);
+        Task<bool> DeleteAsync(OperationTypeId id);
 
     }
 }

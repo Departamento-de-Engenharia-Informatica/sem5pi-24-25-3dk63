@@ -1,37 +1,43 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using DDDSample1.Domain.Shared;
 using Newtonsoft.Json;
-
+using DDDSample1.Domain.Shared;
 
 namespace DDDSample1.Domain.Users
 {
     public class UserId : EntityId
     {
         [JsonConstructor]
-        public UserId(Guid value) : base(value){}
+        public UserId(Guid value) : base(value) {}
 
-        public UserId(String value) : base(value)
+        public UserId(string value) : base(new Guid(value)) {}
+
+        protected override object createFromString(string text)
         {
-
-        }
-
-        override
-        protected Object createFromString(String text){
             return new Guid(text);
         }
 
-        override
-        public String AsString(){
-            Guid obj = (Guid) base.ObjValue;
-            return obj.ToString();
+        public override string AsString()
+        {
+            return ((Guid)ObjValue).ToString();
         }
 
+        public Guid AsGuid()
+        {
+            return (Guid)ObjValue;
+        }
 
-        public Guid AsGuid(){
-            return (Guid) base.ObjValue;
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (ReferenceEquals(obj, null) || GetType() != obj.GetType()) return false;
+
+            var other = (UserId)obj;
+            return AsGuid().Equals(other.AsGuid());
+        }
+
+        public override int GetHashCode()
+        {
+            return AsGuid().GetHashCode();
         }
     }
 }
