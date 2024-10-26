@@ -148,5 +148,36 @@ namespace DDDSample1.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> Search(
+            [FromQuery] string name = null,
+            [FromQuery] string operationType = null,
+            [FromQuery] string status = null,
+            [FromQuery] string priority = null)
+        {
+            Priority priorityEnum = null;
+            if (!string.IsNullOrWhiteSpace(priority))
+            {
+                if (Enum.TryParse(typeof(PriorityType), priority, true, out var parsedPriority))
+                {
+                    priorityEnum = new Priority((PriorityType)parsedPriority);
+                }
+                else
+                {
+                    return BadRequest("Invalid priority value.");
+                }
+            }
+
+            string firstName = null, lastName = null;
+            if (!string.IsNullOrWhiteSpace(name))
+            {
+                var names = name.Split(' ');
+                firstName = names[0];
+                if (names.Length > 1) lastName = names[1];
+            }
+
+            var requests = await _service.SearchOperationRequests(firstName, lastName, operationType, status, priorityEnum);
+            return Ok(requests);
+        }
     }
 }
