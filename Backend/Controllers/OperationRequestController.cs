@@ -48,9 +48,9 @@ namespace DDDSample1.Controllers
             return user;
         }
 
-         // POST: api/OperationRequest
+        // POST: api/OperationRequest
         [HttpPost]
-        //[Authorize(Roles="Doctor")]
+        [Authorize(Roles="Doctor")]
         public async Task<ActionResult<OperationRequestDTO>> Create(CreatingOperationRequestDTO dto)
         {
             var operationType = await _2service.GetByIdAsync(dto.OperationTypeId);
@@ -91,32 +91,9 @@ namespace DDDSample1.Controllers
             }
         }
 
-        // DELETE: api/OperationRequest/5
-        [Authorize(Roles = "Admin")]
-        [HttpDelete("{id}")]
-
-        public async Task<ActionResult<OperationRequestDTO>> SoftDelete(Guid id)
-        {
-            try
-            {
-                var operation = await _service.DeleteAsync(new OperationRequestId(id));
-
-                if (operation == null)
-                {
-                    return NotFound();
-                }
-
-                return Ok(operation);
-            }
-            catch (BusinessRuleValidationException ex)
-            {
-                return BadRequest(new { Message = ex.Message });
-            }
-        }
-
         
         [HttpDelete("{id}")]
-        //[Authorize(Roles = "Doctor")]
+        [Authorize(Roles = "Doctor")]
         public async Task<ActionResult<OperationRequestDTO>> DeleteOperationRequestAsync(Guid id)
         {
             try

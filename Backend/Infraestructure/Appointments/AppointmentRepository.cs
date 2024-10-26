@@ -35,15 +35,8 @@ namespace DDDSample1.Infrastructure.Appointments
 
         public async Task<Appointment> GetByOperationRequestIdAsync(OperationRequestId operationRequestId)
         {
-            var appointment = await _context.Appointments
-                .SingleOrDefaultAsync(x => x.operationRequestId == operationRequestId);
-
-            if (appointment == null)
-            {
-                throw new InvalidOperationException($"Appointment with operation request id '{operationRequestId}' not found.");
-            }
-
-            return appointment;
+            return await _context.Appointments
+                .FirstOrDefaultAsync(a => a.operationRequestId == operationRequestId);
         }
     }
 }
