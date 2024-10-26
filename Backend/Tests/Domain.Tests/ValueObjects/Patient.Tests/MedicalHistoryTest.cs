@@ -21,17 +21,6 @@ namespace Backend.Tests.Domain.Tests.ValueObjects
             Assert.Equal(medicalHistory, history.medicalHistory);
         }
 
-        [Theory]
-        [InlineData("")]
-        [InlineData("   ")]
-        [InlineData(null)]
-        public void GivenInvalidMedicalHistory_WhenConstructed_ThenBusinessRuleValidationExceptionShouldBeThrown(string invalidHistory)
-        {
-            // Act & Assert
-            var exception = Assert.Throws<BusinessRuleValidationException>(() => new MedicalHistory(invalidHistory));
-            Assert.Equal("Medical history cannot be empty or null.", exception.Message);
-        }
-
         [Fact]
         public void ToString_ShouldReturnMedicalHistory()
         {

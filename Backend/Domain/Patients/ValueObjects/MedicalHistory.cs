@@ -8,11 +8,6 @@ namespace DDDSample1.Domain.Patients
 
         public MedicalHistory(string medicalHistory)
         {
-            if (string.IsNullOrWhiteSpace(medicalHistory))
-            {
-                throw new BusinessRuleValidationException("Medical history cannot be empty or null.");
-            }
-
             this.medicalHistory = medicalHistory;
  
         }
