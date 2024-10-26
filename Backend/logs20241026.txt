@@ -19,3 +19,4 @@
 2024-10-26 11:56:32.013 +01:00 [INF] OperationType Operaçao Cardiovascular (692ab096-89fd-4e6e-9f9b-1f611a2de5bf) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:56:32 AM
 =======
 >>>>>>> 446160ce77d24addac50f5aa4e456121eda9deba
+2024-10-26 17:47:40.445 +01:00 [INF] OperationType Operaçao teste (69b02a31-6aa6-473f-b7be-cf6792563f1a) was created by Admin (lapr3dkg69sup@gmail.com) on 26/10/2024 16:47:40

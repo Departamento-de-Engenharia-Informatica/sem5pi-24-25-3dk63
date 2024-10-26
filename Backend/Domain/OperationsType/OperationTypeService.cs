@@ -169,7 +169,7 @@ namespace DDDSample1.OperationsType
     }
 }
 
-        public async Task<String> DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
+        public async Task<OperationTypeDTO>  DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
         {
             OperationType operationType = new OperationType();
 
@@ -206,7 +206,7 @@ namespace DDDSample1.OperationsType
 
             await _unitOfWork.CommitAsync();
 
-            return "Tipo de operação desativado com sucesso!!";
+            return _mapper.Map<OperationTypeDTO>(operationType);
         }
 
     }
