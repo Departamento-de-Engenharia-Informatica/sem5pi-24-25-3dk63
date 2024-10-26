@@ -46,14 +46,14 @@ namespace DDDSample1.Controllers
         // POST: api/OperationType
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<ActionResult<String>> Create(CreatingOperationTypeDTO dto)
+        public async Task<ActionResult<OperationTypeDTO>> Create(CreatingOperationTypeDTO dto)
         {
             try
             {
             var adminEmail = User.FindFirstValue(ClaimTypes.Email);
             var operationType = await _service.AddAsync(dto, adminEmail );
 
-            return "OperationType created successfully!";
+            return Ok(operationType);
             }
             catch (BusinessRuleValidationException ex)
             {
@@ -68,7 +68,7 @@ namespace DDDSample1.Controllers
             if (id != dto.Id)
             {
                 return BadRequest();
-            }
+            } 
 
             try
             {
@@ -126,7 +126,7 @@ namespace DDDSample1.Controllers
                     return NotFound();
                 }
 
-                return  Ok("Operation type deactivated successfully");
+                return  Ok(deactivatedOperation);
             }
             catch (BusinessRuleValidationException ex)
             {
