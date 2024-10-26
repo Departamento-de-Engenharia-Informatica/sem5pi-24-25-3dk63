@@ -9,7 +9,7 @@ namespace DDDSample1.Domain.OperationRequests
     public Deadline(DateTime value)
     {
         if (value < DateTime.Now)
-            throw new BusinessRuleValidationException("Deadline cannot be in the past");
+            throw new BusinessRuleValidationException("Deadline cannot be null or in the past");
 
         this.Value = value;
     }
