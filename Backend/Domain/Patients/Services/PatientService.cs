@@ -378,18 +378,15 @@ namespace DDDSample1.Patients
 
         public async Task<PatientDTO> DeletePatientAsync(MedicalRecordNumber id, string adminEmail)
         {
-            _logger.LogInformation($"Tentando deletar o paciente com medical record number ID No patient service: {id}");
-
             var patientToRemove = await _patientRepository.FindByMedicalRecordNumberAsync(id);
 
             if (patientToRemove == null) return null;
-
-            _auditService.LogDeletionPatient(patientToRemove, adminEmail);
 
             patientToRemove.ChangeActiveFalse();
             patientToRemove.MarkForDeletion();
             this._patientRepository.Remove(patientToRemove);
             await this._unitOfWork.CommitAsync();
+            _auditService.LogDeletionPatient(patientToRemove, adminEmail);
 
             return _mapper.Map<PatientDTO>(patientToRemove);
         }

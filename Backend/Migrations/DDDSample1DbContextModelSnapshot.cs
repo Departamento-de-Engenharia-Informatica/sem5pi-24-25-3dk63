@@ -91,6 +91,9 @@ namespace DDDNetCore.Migrations
                     b.Property<bool>("Active")
                         .HasColumnType("tinyint(1)");
 
+                    b.Property<DateTime?>("MarkedForDeletionDate")
+                        .HasColumnType("datetime(6)");
+
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");
 

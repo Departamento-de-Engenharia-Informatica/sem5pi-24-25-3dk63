@@ -16,7 +16,6 @@ namespace DDDSample1.Domain
         public List<AppointmentHistory> appointmentHistoryList { get; private set; }
         public int sequentialNumber { get; private set; }
         public bool Active { get; private set; }
-
         public DateTime? MarkedForDeletionDate { get; private set; }
 
         private Patient()

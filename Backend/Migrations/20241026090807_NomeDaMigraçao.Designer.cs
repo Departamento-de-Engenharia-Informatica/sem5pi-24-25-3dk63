@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDDNetCore.Migrations
 {
     [DbContext(typeof(DDDSample1DbContext))]
-    [Migration("20241026043222_ChangedOperationTypePk")]
-    partial class ChangedOperationTypePk
+    [Migration("20241026090807_NomeDaMigraçao")]
+    partial class NomeDaMigraçao
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -93,6 +93,9 @@ namespace DDDNetCore.Migrations
 
                     b.Property<bool>("Active")
                         .HasColumnType("tinyint(1)");
+
+                    b.Property<DateTime?>("MarkedForDeletionDate")
+                        .HasColumnType("datetime(6)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("longtext");

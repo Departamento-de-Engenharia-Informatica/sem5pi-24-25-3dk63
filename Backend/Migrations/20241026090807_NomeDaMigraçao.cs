@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DDDNetCore.Migrations
 {
     /// <inheritdoc />
-    public partial class PendingStaffChanfes : Migration
+    public partial class NomeDaMigraçao : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -62,6 +62,7 @@ namespace DDDNetCore.Migrations
                 {
                     Id = table.Column<string>(type: "varchar(255)", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
+                    Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
                     Name = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     PreparationPhaseDuration = table.Column<int>(type: "int", nullable: false),
@@ -70,12 +71,11 @@ namespace DDDNetCore.Migrations
                     TotalDuration = table.Column<int>(type: "int", nullable: false),
                     RequiredNumber = table.Column<int>(type: "int", nullable: false),
                     SpecializationId = table.Column<string>(type: "longtext", nullable: false)
-                        .Annotation("MySql:CharSet", "utf8mb4"),
-                    Active = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                        .Annotation("MySql:CharSet", "utf8mb4")
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OperationTypes", x => x.Id);
+                    table.PrimaryKey("PK_OperationTypes", x => new { x.Id, x.Active });
                 })
                 .Annotation("MySql:CharSet", "utf8mb4");
 
@@ -95,7 +95,8 @@ namespace DDDNetCore.Migrations
                     EmergencyContactInfo = table.Column<string>(type: "longtext", nullable: false)
                         .Annotation("MySql:CharSet", "utf8mb4"),
                     sequentialNumber = table.Column<int>(type: "int", nullable: false),
-                    Active = table.Column<bool>(type: "tinyint(1)", nullable: false)
+                    Active = table.Column<bool>(type: "tinyint(1)", nullable: false),
+                    MarkedForDeletionDate = table.Column<DateTime>(type: "datetime(6)", nullable: true)
                 },
                 constraints: table =>
                 {

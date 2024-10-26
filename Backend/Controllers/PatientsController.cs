@@ -37,15 +37,15 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<IEnumerable<SearchPatientDTO>>> SearchPatientAsync([FromQuery] string? name = null, [FromQuery] string? email = null, [FromQuery] string? dateOfBirth = null, [FromQuery] string? medicalRecordNumber = null)
         {
             var patientList = await _service.SearchPatientAsync(name, email, dateOfBirth, medicalRecordNumber);
-            
+
             if (patientList == null || patientList.Count == 0)
             {
                 return NotFound("No patients found.");
             }
-            
+
             return Ok(patientList);
         }
-        
+
         // GET: api/Patients/5
         [HttpGet("{id}")]
         public async Task<ActionResult<PatientDTO>> GetById(MedicalRecordNumber id)
@@ -96,10 +96,8 @@ namespace DDDSample1.Controllers
         public async Task<IActionResult> DeletePatientProfile(string id)
         {
             var adminEmail = User.FindFirstValue(ClaimTypes.Email);
-            _logger.LogInformation($"Tentando deletar o paciente com ID: {id}");
 
             var medicalRecordNumber = new MedicalRecordNumber(id);
-            _logger.LogInformation($"Tentando deletar o paciente com medical record number ID: {medicalRecordNumber}");
 
             var result = await _service.DeletePatientAsync(medicalRecordNumber, adminEmail);
 
@@ -108,7 +106,7 @@ namespace DDDSample1.Controllers
                 return NotFound("Patient not found.");
             }
 
-            return NoContent();
+            return Ok("Patient deleted successfully");
         }
 
         [HttpPatch("update")]
@@ -159,7 +157,7 @@ namespace DDDSample1.Controllers
             _auditService.LogProfileUpdate(patient, userResult, updateDto);
 
             await _service.ApplyPendingChangesAsync(patient.UserId);
-            
+
             return Ok("Your changes have been submitted.");
         }
 
@@ -175,7 +173,7 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest($"Update confirmation failed: {ex.Message}");
             }
-            
+
         }
 
         [HttpPost("request-account-deletion")]
@@ -200,7 +198,7 @@ namespace DDDSample1.Controllers
 
             return Ok("Account deletion requested. Please check your email to confirm.");
         }
-    
+
 
         [HttpGet("confirm-account-deletion")]
         [Authorize(Roles = "Patient")]
@@ -215,7 +213,7 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest($"Error confirming deletion: {ex.Message}");
             }
-            
+
         }
 
     }
