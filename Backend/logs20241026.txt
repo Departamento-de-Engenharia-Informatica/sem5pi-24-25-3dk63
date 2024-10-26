@@ -19,3 +19,35 @@
 2024-10-26 11:56:32.013 +01:00 [INF] OperationType Operaçao Cardiovascular (692ab096-89fd-4e6e-9f9b-1f611a2de5bf) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:56:32 AM
 =======
 >>>>>>> 446160ce77d24addac50f5aa4e456121eda9deba
+2024-10-26 12:15:55.987 +01:00 [INF] OperationType Operaçao Cardiovascular (b596e337-d743-4fa2-8b5f-437184aa8c72) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 11:15:55 AM
+2024-10-26 13:52:30.041 +01:00 [INF] OperationType Operaçao Cardiovascular (6b214c44-d554-4ffc-85e9-e3748372c77e) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 12:52:30 PM
+2024-10-26 13:54:44.340 +01:00 [INF] OperationType Operaçao Cardiovascular (49733d99-1594-4a8e-882c-0ddb45b437e0) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 12:54:44 PM
+2024-10-26 14:01:06.758 +01:00 [INF] OperationType Operaçao Cardiovascular (01e14ae7-c972-460c-9ab5-c61e91599f2b) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 1:01:06 PM
+2024-10-26 14:07:22.691 +01:00 [INF] OperationType Operaçao Cardiovascular (e09dee53-2da4-4ac1-9975-1ae5b916e10c) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 1:07:22 PM
+2024-10-26 14:20:25.097 +01:00 [INF] OperationType Operaçao Cardiovascular (a02f693b-1a92-4ec2-b17b-e51c47d0e26c) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 1:20:25 PM
+2024-10-26 14:39:17.723 +01:00 [INF] OperationType Operaçao Cardiovascular (4dca06ec-06d5-45ad-a7a0-38df72c682bb) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 1:39:17 PM
+2024-10-26 14:41:26.204 +01:00 [INF] OperationType Operaçao Cardiovascular (36c6bd80-0f7b-4e2a-b2db-323fbf12e012) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 1:41:26 PM
+2024-10-26 15:01:12.065 +01:00 [INF] OperationType Operaçao Cardiovascular (b524bb34-4126-4fad-887b-d89742953309) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:01:12 PM
+2024-10-26 15:05:42.767 +01:00 [INF] OperationType Operaçao Cardiovascular (94f1f272-0edd-4b28-8bd0-58f51a12e52c) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:05:42 PM
+2024-10-26 15:07:44.679 +01:00 [INF] OperationType Operaçao Cardiovascular (2df98ead-97d1-40ca-aab6-c8f271c40ce0) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:07:44 PM
+2024-10-26 15:09:06.048 +01:00 [INF] OperationType Operaçao Cardiovascular (3a81b5dc-4f5c-42d4-9fa5-ca9905bf81a9) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:09:06 PM
+2024-10-26 15:10:50.865 +01:00 [INF] OperationType Operaçao Cardiovascular (627a4601-05e5-47c9-b4c3-2449ad00a965) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:10:50 PM
+2024-10-26 15:18:40.409 +01:00 [INF] OperationType Operaçao Cardiovascular (16ce1c2f-3fd2-42a2-baa3-5bff00a7eb7d) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:18:40 PM
+2024-10-26 15:19:49.152 +01:00 [INF] OperationType Operaçao Cardiovascular (9c7b1188-c09e-4f23-b222-ad9d95883bff) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:19:49 PM
+2024-10-26 15:19:59.070 +01:00 [INF] OperationType Operaçao Cardiovascular (cd3d05ab-4f3c-4838-8622-e87bd74fc156) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:19:59 PM
+2024-10-26 15:20:39.934 +01:00 [INF] OperationType Operaçao Cardiovascular (645adb10-74c4-4c5b-a7fb-2bb0946919d4) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:20:39 PM
+2024-10-26 15:21:41.876 +01:00 [INF] OperationType Operaçao Cardiovascular (dccc51a1-4b75-42dd-acf4-aa687fe7a18f) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:21:41 PM
+2024-10-26 15:32:09.023 +01:00 [INF] OperationType Operaçao Cardiovascular (7d7eae76-be2f-430d-87f8-b0d59c198cf8) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:32:09 PM
+2024-10-26 15:33:02.739 +01:00 [INF] OperationType Operaçao Cardiovascular (6bd33797-9a92-4fbd-ba36-af57d5296ff9) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:33:02 PM
+2024-10-26 15:33:27.380 +01:00 [INF] OperationType Operaçao Cardiovascular (b0e016d9-bee4-4751-af72-d7b58524c65e) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:33:27 PM
+2024-10-26 15:34:01.454 +01:00 [INF] OperationType Operaçao Cardiovascular (7b5ea1e3-48a9-41dc-932a-b9045af70739) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:34:01 PM
+2024-10-26 15:36:10.350 +01:00 [INF] OperationType Operaçao Cardiovascular (bc390fa0-7e5c-4eed-9c65-541d7e2f2459) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:36:10 PM
+2024-10-26 15:37:51.344 +01:00 [INF] OperationType Operaçao Cardiovascular (6934e578-23b5-4646-81f7-240fbcce3be3) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:37:51 PM
+2024-10-26 15:39:09.632 +01:00 [INF] OperationType Operaçao Cardiovascular (8f8fcfb2-b43c-440a-afdb-198a88f15967) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:39:09 PM
+2024-10-26 15:39:35.260 +01:00 [INF] OperationType Operaçao Cardiovascular (c72a14eb-b839-4ab0-94bf-f471addf0f24) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:39:35 PM
+2024-10-26 15:40:03.543 +01:00 [INF] OperationType Operaçao Cardiovascular (c6d7e563-52eb-4ba4-8a07-5cd914eed0e1) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:40:03 PM
+2024-10-26 15:40:29.850 +01:00 [INF] OperationType Operaçao Cardiovascular (c2a89426-52c3-42f5-9831-ecd3c96ceac9) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:40:29 PM
+2024-10-26 15:43:05.525 +01:00 [INF] OperationType Operaçao Cardiovascular (dcbebffa-4afd-4fda-aa6e-9210e09ae744) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:43:05 PM
+2024-10-26 15:45:01.799 +01:00 [INF] OperationType Operaçao Cardiovascular (0104f520-2eaf-4a34-8c72-4931024d8a8b) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:45:01 PM
+2024-10-26 15:46:00.073 +01:00 [INF] OperationType Operaçao Cardiovascular (3080f297-d3b0-4118-be84-8a85c220225c) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:46:00 PM
+2024-10-26 15:52:52.566 +01:00 [INF] OperationType Operaçao Cardiovascular (c7cf81d9-8a26-4ecf-b5d8-711f5d4d9419) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:52:52 PM
