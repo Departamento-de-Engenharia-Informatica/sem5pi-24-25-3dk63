@@ -49,7 +49,7 @@ namespace DDDSample1.Patients
             return patient == null ? null : _mapper.Map<PatientDTO>(patient);
         }
 
-        
+
 
         public async Task<PatientDTO> RegisterPatientAsync(RegisterPatientDTO registerDto)
         {
@@ -58,7 +58,7 @@ namespace DDDSample1.Patients
             {
                 //Register the initial user
                 var user = await createUser(registerDto);
-                
+
 
                 // Register the patient
                 var patient = new Patient(user.Id, registerDto.dateOfBirth, registerDto.gender, registerDto.emergencyContact, _patientRepository.GetNextSequentialNumberAsync().Result);
@@ -120,7 +120,7 @@ namespace DDDSample1.Patients
 
             PropertyInfo[] properties = typeof(PatientUpdateDTO).GetProperties();
             foreach (PropertyInfo property in properties)
-            {   
+            {
                 // Verify if it is the id, if so continue to the other atributes
                 if(property.PropertyType == typeof(MedicalRecordNumber)) continue;
 
@@ -157,7 +157,7 @@ namespace DDDSample1.Patients
             await _userRepository.UpdateUserAsync(user);
             await _patientRepository.UpdatePatientAsync(patient);
             await _unitOfWork.CommitAsync();
-            
+
             if (userSensitiveDataChanged || patientSensitiveDataChanged)
             {
                 await _emailService.SendPatientNotificationEmailAsync(updateDto);
@@ -194,7 +194,7 @@ namespace DDDSample1.Patients
                 throw new Exception($"Update confirmation failed: {ex.Message}");
             }
         }
-        
+
             public async Task ApplyPendingChangesAsync(UserId userId)
         {
             var pendingChange = await _pendingChangesRepository.GetPendingChangesByUserIdAsync(userId);
@@ -235,21 +235,7 @@ namespace DDDSample1.Patients
             return patientProperty != null && patientProperty.CanWrite;
         }
 
-        public async Task<PatientDTO> DeletePatientAsync(MedicalRecordNumber id, string adminEmail)
-        {
-            _logger.LogInformation($"Tentando deletar o paciente com medical record number ID No patient service: {id}");
 
-            var patientToRemove = await _patientRepository.FindByMedicalRecordNumberAsync(id);
-
-            if (patientToRemove == null) return null;
-
-            _auditService.LogDeletionPatient(patientToRemove, adminEmail);
-
-            this._patientRepository.Remove(patientToRemove);
-            await this._unitOfWork.CommitAsync();
-
-            return _mapper.Map<PatientDTO>(patientToRemove); 
-        }
 
         public async Task<PatientDTO> GetPatientByUsername(Username email)
         {
@@ -277,7 +263,7 @@ namespace DDDSample1.Patients
             };
 
             await _pendingChangesRepository.AddPendingChangesAsync(pendingChanges);
-            
+
             await _unitOfWork.CommitAsync();
         }
 
@@ -320,8 +306,8 @@ namespace DDDSample1.Patients
                     var firstName = nameParts[0].Trim();
                     var lastName = nameParts[1].Trim();
 
-                    query = query.Where(p => 
-                        p.user.Name.FirstName.Contains(firstName) && 
+                    query = query.Where(p =>
+                        p.user.Name.FirstName.Contains(firstName) &&
                         p.user.Name.LastName.Contains(lastName));
                 }
                 else
@@ -372,7 +358,7 @@ namespace DDDSample1.Patients
 
             await _emailService.SendDeletionConfirmationEmail(user.Email.ToString(), user.ConfirmationToken);
         }
-        
+
         public async Task ConfirmDeletionAsync(string token)
         {
             var user = await _userRepository.GetUserByConfirmationTokenAsync(token);
@@ -387,6 +373,25 @@ namespace DDDSample1.Patients
 
             await _userRepository.UpdateUserAsync(user);
             await _unitOfWork.CommitAsync();
+        }
+
+
+        public async Task<PatientDTO> DeletePatientAsync(MedicalRecordNumber id, string adminEmail)
+        {
+            _logger.LogInformation($"Tentando deletar o paciente com medical record number ID No patient service: {id}");
+
+            var patientToRemove = await _patientRepository.FindByMedicalRecordNumberAsync(id);
+
+            if (patientToRemove == null) return null;
+
+            _auditService.LogDeletionPatient(patientToRemove, adminEmail);
+
+            patientToRemove.ChangeActiveFalse();
+            patientToRemove.MarkForDeletion();
+            this._patientRepository.Remove(patientToRemove);
+            await this._unitOfWork.CommitAsync();
+
+            return _mapper.Map<PatientDTO>(patientToRemove);
         }
 
     }

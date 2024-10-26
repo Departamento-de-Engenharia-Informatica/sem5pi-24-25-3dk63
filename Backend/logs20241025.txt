@@ -34,3 +34,6 @@
 2024-10-25 16:03:05.332 +01:00 [INF] Login bem-sucedido: email encontrado.
 2024-10-25 16:03:14.256 +01:00 [INF] Login bem-sucedido: email encontrado.
 >>>>>>> dca572318f9e401fa44058b0e1c1d8ac2cad2cbd
+2024-10-25 22:42:01.623 +01:00 [INF] Login bem-sucedido: email encontrado.
+2024-10-25 22:45:30.471 +01:00 [INF] Login falhou: email não encontrado.
+2024-10-25 22:46:11.741 +01:00 [INF] Login bem-sucedido: email encontrado.

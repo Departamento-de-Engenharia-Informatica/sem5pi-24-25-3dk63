@@ -16,6 +16,9 @@ namespace DDDSample1.Domain
         public List<AppointmentHistory> appointmentHistoryList { get; private set; }
         public int sequentialNumber { get; private set; }
         public bool Active { get; private set; }
+
+        public DateTime? MarkedForDeletionDate { get; private set; }
+
         private Patient()
         {
             this.Active = false;
@@ -98,7 +101,7 @@ namespace DDDSample1.Domain
             {
                 this.medicalHistory = pendingChange.MedicalHistory;
             }
-            
+
             if(pendingChange.EmergencyContact != null)
             {
                 this.emergencyContact = pendingChange.EmergencyContact;
@@ -114,6 +117,11 @@ namespace DDDSample1.Domain
             this.Active = false;
 
             this.Id = new MedicalRecordNumber($"anonymous_{unique}");
+        }
+
+        public void MarkForDeletion()
+        {
+            this.MarkedForDeletionDate = DateTime.UtcNow.AddMinutes(2);
         }
     }
 }
