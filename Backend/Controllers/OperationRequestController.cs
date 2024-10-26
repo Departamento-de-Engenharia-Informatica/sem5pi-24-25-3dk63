@@ -50,10 +50,12 @@ namespace DDDSample1.Controllers
 
         // POST: api/OperationRequest
         [HttpPost]
-        [Authorize(Roles="Doctor")]
+        //[Authorize(Roles="Doctor")]
         public async Task<ActionResult<OperationRequestDTO>> Create(CreatingOperationRequestDTO dto)
         {
             var operationType = await _2service.GetByIdAsync(dto.OperationTypeId);
+
+            if(operationType == null) throw new BusinessRuleValidationException("Operation type not found");
 
             if (!operationType.Active)
             {

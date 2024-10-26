@@ -122,7 +122,7 @@ namespace DDDSample1.OperationRequests
         // Delete an OperationRequest
         public async Task <OperationRequestDTO> DeleteAsync(OperationRequestId id) {
             var operationRequest = await this._operationRequestRepository.GetByIdAsync(id);
-            if (operationRequest == null) return null;
+            if (operationRequest == null) throw new BusinessRuleValidationException("Operation Request not found.");
 
             // Verify if there is an appointment associated with the operation request or if it is active
             if(await this._appointmentRepository.GetByOperationRequestIdAsync(id) != null) throw new BusinessRuleValidationException("Não é possível excluir um pedido operação associado a uma consulta.");
