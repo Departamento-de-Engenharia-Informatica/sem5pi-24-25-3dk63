@@ -339,6 +339,7 @@ namespace DDDSample1.Patients
                 Name = p.user.Name,
                 Email = p.user.Email,
                 dateOfBirth = p.patient.dateOfBirth,
+                MedicalRecordNumber = p.patient.Id
             }).ToList();
         }
 

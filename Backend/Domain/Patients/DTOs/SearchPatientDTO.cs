@@ -8,5 +8,6 @@ namespace DDDSample1.Domain.Patients
         public Name Name { get; set; }
         public Email Email { get; set; }
         public DateOfBirth dateOfBirth { get; set; }
+        public MedicalRecordNumber MedicalRecordNumber { get; set; }
     }
 }
