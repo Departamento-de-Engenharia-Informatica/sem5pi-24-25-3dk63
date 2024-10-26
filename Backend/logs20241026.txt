@@ -6,3 +6,8 @@
 2024-10-26 00:52:11.521 +01:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 25/10/2024 23:52:11. Changes: Specialization changed to: teste
 2024-10-26 00:54:33.998 +01:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 25/10/2024 23:54:33. Changes: Specialization changed to: teste
 2024-10-26 00:54:37.664 +01:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 25/10/2024 23:54:37. Changes: Specialization changed to: teste
+2024-10-26 00:57:30.226 +01:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 25/10/2024 23:57:30. Changes: Specialization changed to: tesate
+2024-10-26 00:57:43.019 +01:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 25/10/2024 23:57:43. Changes: Specialization changed to: funciona
+2024-10-26 00:58:14.810 +01:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 25/10/2024 23:58:14. Changes: Phone Number changed to: +351934675034, Specialization changed to: funciona
+2024-10-26 01:38:12.868 +01:00 [INF] OperationType Operaçao0 5C (9d30c016-0aa0-4952-9fa6-149e9ec84ad4) was created by Admin (lapr3dkg69sup@gmail.com) on 26/10/2024 00:38:12
+2024-10-26 01:41:51.844 +01:00 [INF] OperationType Operaçao teste (2919550c-6cef-425f-8a70-ae3474876256) was created by Admin (lapr3dkg69sup@gmail.com) on 26/10/2024 00:41:51

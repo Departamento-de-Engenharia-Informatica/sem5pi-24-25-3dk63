@@ -18,14 +18,14 @@ namespace DDDSample1.OperationsType
         private readonly IConfiguration _configuration;
        private readonly AuditService _auditService;
        private readonly IMapper _mapper;
-        public OperationTypeService(IMapper _mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, AuditService auditService, ISpecializationRepository specializationRepository)
+        public OperationTypeService(IMapper mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, AuditService auditService, ISpecializationRepository specializationRepository)
         {
             _unitOfWork = unitOfWork;
             _operationTypeRepository = operationTypeRepository;
             _configuration = configuration;
             _auditService = auditService;
             _specializationRepository = specializationRepository;
-            _mapper = _mapper;
+            _mapper = mapper;
         }
 
          // Obtém todos os tipos de operações
