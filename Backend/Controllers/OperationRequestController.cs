@@ -93,14 +93,16 @@ namespace DDDSample1.Controllers
             }
         }
 
-        
+
         [HttpDelete("{id}")]
         [Authorize(Roles = "Doctor")]
-        public async Task<ActionResult<OperationRequestDTO>> DeleteOperationRequestAsync(Guid id)
+        public async Task<ActionResult<OperationRequestDTO>> DeleteOperationRequestAsync()
         {
+
+            var id = RouteData.Values["id"];
             try
             {
-                var operation = await _service.DeleteAsync(new OperationRequestId(id));
+                var operation = await _service.DeleteAsync(new OperationRequestId(id.ToString()));
 
                 if (operation == null)
                 {

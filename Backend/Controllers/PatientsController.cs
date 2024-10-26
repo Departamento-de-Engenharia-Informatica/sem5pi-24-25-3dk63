@@ -48,9 +48,12 @@ namespace DDDSample1.Controllers
 
         // GET: api/Patients/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<PatientDTO>> GetById(MedicalRecordNumber id)
+        public async Task<ActionResult<PatientDTO>> GetById()
         {
-            var patient = await _service.GetByIdAsync(id);
+            // Obtém o ID a partir da rota
+            var id = RouteData.Values["id"];
+
+            var patient = await _service.GetByIdAsync(new MedicalRecordNumber(id.ToString()));
 
             if (patient == null)
             {
