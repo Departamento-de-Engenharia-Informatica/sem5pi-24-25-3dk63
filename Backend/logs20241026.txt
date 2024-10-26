@@ -19,6 +19,7 @@
 2024-10-26 11:56:32.013 +01:00 [INF] OperationType Operaçao Cardiovascular (692ab096-89fd-4e6e-9f9b-1f611a2de5bf) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:56:32 AM
 =======
 >>>>>>> 446160ce77d24addac50f5aa4e456121eda9deba
+<<<<<<< HEAD
 2024-10-26 12:15:55.987 +01:00 [INF] OperationType Operaçao Cardiovascular (b596e337-d743-4fa2-8b5f-437184aa8c72) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 11:15:55 AM
 2024-10-26 13:52:30.041 +01:00 [INF] OperationType Operaçao Cardiovascular (6b214c44-d554-4ffc-85e9-e3748372c77e) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 12:52:30 PM
 2024-10-26 13:54:44.340 +01:00 [INF] OperationType Operaçao Cardiovascular (49733d99-1594-4a8e-882c-0ddb45b437e0) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 12:54:44 PM
@@ -51,3 +52,6 @@
 2024-10-26 15:45:01.799 +01:00 [INF] OperationType Operaçao Cardiovascular (0104f520-2eaf-4a34-8c72-4931024d8a8b) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:45:01 PM
 2024-10-26 15:46:00.073 +01:00 [INF] OperationType Operaçao Cardiovascular (3080f297-d3b0-4118-be84-8a85c220225c) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:46:00 PM
 2024-10-26 15:52:52.566 +01:00 [INF] OperationType Operaçao Cardiovascular (c7cf81d9-8a26-4ecf-b5d8-711f5d4d9419) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:52:52 PM
+=======
+2024-10-26 17:47:40.445 +01:00 [INF] OperationType Operaçao teste (69b02a31-6aa6-473f-b7be-cf6792563f1a) was created by Admin (lapr3dkg69sup@gmail.com) on 26/10/2024 16:47:40
+>>>>>>> 179eea6abb542c2a2a1ffb07fcf9d69e31eac9dd
