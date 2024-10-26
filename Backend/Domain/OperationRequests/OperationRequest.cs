@@ -26,10 +26,20 @@ namespace DDDSample1.Domain
         MedicalRecordNumber medicalRecordNumber){
             this.Id = new OperationRequestId(Guid.NewGuid());
             this.Active = true;
+
+            if(deadline == null) throw new BusinessRuleValidationException("Deadline is required");
             this.deadline=  deadline;
+
+            if(priority == null) throw new BusinessRuleValidationException("Priority is required");
             this.priority = priority;
+
+            if(medicalRecordNumber == null) throw new BusinessRuleValidationException("Medical record number is required");
             this.medicalRecordNumber = medicalRecordNumber;
+            
+            if(operationTypeId == null) throw new BusinessRuleValidationException("Operation type is required");
             this.operationTypeId = operationTypeId;
+
+            if(licenseNumber == null) throw new BusinessRuleValidationException("License number is required");
             this.licenseNumber = licenseNumber;
 
         }
@@ -44,6 +54,36 @@ namespace DDDSample1.Domain
         {
             if (!this.Active) throw new BusinessRuleValidationException("Operation request cannot be changed in this state");
             this.priority = priority;
+        }
+
+        public void ChangeLicenseNumber(LicenseNumber licenseNumber)
+        {
+            if (!this.Active) throw new BusinessRuleValidationException("Operation request cannot be changed in this state");
+            this.licenseNumber = licenseNumber;
+        }
+
+        public void ChangeOperationTypeId(OperationTypeId operationTypeId)
+        {
+            if (!this.Active) throw new BusinessRuleValidationException("Operation request cannot be changed in this state");
+            this.operationTypeId = operationTypeId;
+        }
+
+        public void ChangeMedicalRecordNumber(MedicalRecordNumber medicalRecordNumber)
+        {
+            if (!this.Active) throw new BusinessRuleValidationException("Operation request cannot be changed in this state");
+            this.medicalRecordNumber = medicalRecordNumber;
+        }
+
+        public void Deactivate()
+        {
+            if (!this.Active) throw new BusinessRuleValidationException("Operation request is already inactive");
+            this.Active = false;
+        }
+
+        public void Activate()
+        {
+            if (this.Active) throw new BusinessRuleValidationException("Operation request is already active");
+            this.Active = true;
         }
     }
 }

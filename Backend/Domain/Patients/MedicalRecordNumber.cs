@@ -21,7 +21,7 @@ namespace DDDSample1.Domain.Patients
         private bool IsValidFormat(string value)
         {
             // Verifica se o formato corresponde a YYYYMMnnnnnn (12 dígitos)
-            return Regex.IsMatch(value, @"^\d{12}$");
+            return Regex.IsMatch(value, @"^\d{12}$"); 
         }
 
         protected override object createFromString(string text)
