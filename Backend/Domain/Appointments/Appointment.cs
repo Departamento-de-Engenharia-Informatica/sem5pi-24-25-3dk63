@@ -40,7 +40,16 @@ namespace DDDSample1.Domain
     {
         if (!this.Active) throw new BusinessRuleValidationException("Operation request cannot be changed in this state");
         this.time = time;
+    }
 
+    public void ChangeActiveTrue()
+    {
+        this.Active = true;
+    }
+
+    public void ChangeActiveFalse()
+    {
+        this.Active = false;
     }
 }
 }
