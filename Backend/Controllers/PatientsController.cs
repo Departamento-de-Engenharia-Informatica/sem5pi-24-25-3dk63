@@ -10,6 +10,7 @@ using DDDSample1.Domain.PendingChange;
 using DDDSample1.Domain;
 using DDDSample1.Users;
 using Backend.Domain.Shared;
+using DDDSample1.Domain.Appointments;
 
 namespace DDDSample1.Controllers
 {
@@ -219,5 +220,43 @@ namespace DDDSample1.Controllers
 
         }
 
+        [HttpGet("appointments")]
+        [Authorize(Roles = "Patient")]
+        public async Task<ActionResult<IEnumerable<PatientDTO>>> GetAppointmentHistory()
+        {
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("Patient information not found.");
+            }
+
+            var patient = await _service.GetPatientByUsername(new Username(userEmail));
+
+
+            return Ok(patient.appointmentHistoryList);
+        }
+
+        [HttpGet("medicalhistory")]
+        [Authorize(Roles = "Patient")]
+        public async Task<ActionResult<PatientDTO>> GetMedicalHistory()
+        {
+            var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
+
+            if (string.IsNullOrEmpty(userEmail))
+            {
+                return Unauthorized("Patient information not found.");
+            }
+
+            var patient = await _service.GetPatientByUsername(new Username(userEmail));
+
+            if (patient == null)
+            {
+                return NotFound("Patient not found.");
+            }
+
+            return Ok(patient.medicalHistory);
+
+        }
     }
 }
