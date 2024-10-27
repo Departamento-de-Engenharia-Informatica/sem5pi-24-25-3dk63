@@ -180,22 +180,23 @@ namespace DDDSample1.Controllers
             return Ok(staffList);
         }
 
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("deactivate")]
+        public async Task<ActionResult<IEnumerable<StaffDTO>>> DeactivateStaffAsync(
+            [FromQuery] string? name = null, 
+            [FromQuery] string? licenseNumber = null, 
+            [FromQuery] string? phoneNumber = null,
+            [FromQuery] string UserId = null,
+            [FromQuery] string? specialization = null)
+            
+        {
+            var adminEmail = User.FindFirstValue(ClaimTypes.Email);
+            var deactivatedStaff = await _staffService.DeactivateStaffAsync(adminEmail, name,licenseNumber, phoneNumber, UserId, specialization);
 
-public async Task<ActionResult<IEnumerable<StaffDTO>>> DeactivateStaffAsync(
-    [FromQuery] string? name = null, 
-    [FromQuery] string? licenseNumber = null, 
-    [FromQuery] string? phoneNumber = null,
-    [FromQuery] string UserId = null,
-    [FromQuery] string? specialization = null)
-    
-{
-    var adminEmail = User.FindFirstValue(ClaimTypes.Email);
-    var deactivatedStaff = await _staffService.DeactivateStaffAsync(adminEmail, name,licenseNumber, phoneNumber, UserId, specialization);
+            if (deactivatedStaff == null) return NotFound();
 
-    if (deactivatedStaff == null) return NotFound();
-
-    return Ok("Staff deactivated successfully");
-}
+            return Ok("Staff deactivated successfully");
+        }
 
     }
 }

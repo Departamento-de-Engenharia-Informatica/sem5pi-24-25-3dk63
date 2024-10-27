@@ -219,13 +219,18 @@ Debug.Assert(operationType != null, "OperationType should not be null");
 
             _auditService.LogDeactivateOperationType(operationType, adminEmail);
 
-            operationType.Deactivate();
+            // Remover o registro atual (com active = true)
+            await _operationTypeRepository.DeleteAsync(operationType.Id);
 
+            // Modificar o estado do registro
+            operationType.Deactivate(); // Certifique-se que essa função atualiza o estado apropriado
+
+            // Adicionar o registro modificado de volta à base de dados
+            await _operationTypeRepository.AddAsync(operationType);
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<OperationTypeDTO>(operationType);
         }
-
     }
 
 }

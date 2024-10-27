@@ -25,3 +25,16 @@
 2024-10-27 00:44:55.491 +01:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 11:44:55 PM
 2024-10-27 00:47:07.680 +01:00 [INF] OperationType Operaçao Cardiovascular (65a3f31d-25dd-4f1c-afd2-7afe11105a37) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 11:47:07 PM
 2024-10-27 00:47:12.221 +01:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 11:47:12 PM
+2024-10-27 16:04:15.717 +00:00 [INF] Staff D200012348 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:04:15
+2024-10-27 16:06:26.520 +00:00 [INF] Staff D200012348 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:06:26
+2024-10-27 16:06:45.812 +00:00 [INF] Staff D200012348 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:06:45
+2024-10-27 16:07:25.003 +00:00 [INF] OperationType Operaçao teste (82b4d079-c888-4867-9c92-a00af766d1b4) was created by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:07:25
+2024-10-27 16:08:10.754 +00:00 [INF] OperationType Operaçao Cardiovascular (0ce0266a-3996-4e7b-a51e-ebffd0d6a6b2) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:08:10
+2024-10-27 16:08:30.106 +00:00 [INF] OperationType Operaçao teste (82b4d079-c888-4867-9c92-a00af766d1b4) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:08:30
+2024-10-27 16:08:51.385 +00:00 [INF] OperationType Operaçao teste (82b4d079-c888-4867-9c92-a00af766d1b4) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:08:51
+2024-10-27 16:11:43.543 +00:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 27/10/2024 16:11:43. Changes: Specialization changed to: a
+2024-10-27 16:12:08.590 +00:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 27/10/2024 16:12:08. Changes: Specialization changed to: funciona
+2024-10-27 16:12:48.044 +00:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 27/10/2024 16:12:48. Changes: Phone Number changed to: +351934675054, Specialization changed to: funciona
+2024-10-27 16:19:32.347 +00:00 [INF] OperationType Operaçao teste (82b4d079-c888-4867-9c92-a00af766d1b4) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:19:32
+2024-10-27 16:19:57.508 +00:00 [INF] OperationType Operaçao Cardiovascular (0ce0266a-3996-4e7b-a51e-ebffd0d6a6b2) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:19:57
+2024-10-27 16:20:39.598 +00:00 [INF] OperationType Operaçao Cardiovascular (0ce0266a-3996-4e7b-a51e-ebffd0d6a6b2) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:20:39
