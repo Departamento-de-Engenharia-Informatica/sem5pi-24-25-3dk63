@@ -157,7 +157,7 @@ namespace DDDSample1.OperationRequests
             });
             return listDto;
         }
-        public async Task<string> UpdateRequisitionAsync(string id, UserDTO user, UpdateOperationRequisitionDto updateDto )
+        public async Task<string> UpdateRequisitionAsync(string id,string userEmail, UpdateOperationRequisitionDto updateDto )
         {
             var requisition = await _operationRequestRepository.GetByIdAsync(new OperationRequestId(id));
 
@@ -166,12 +166,21 @@ namespace DDDSample1.OperationRequests
                 throw new Exception("Operation requisition not found.");
             }
 
-            var doctorProfile = await _staffRepository.GetByUserIdAsync(new UserId(user.Id));
+            var user = await _userRepository.FindByEmailAsync(new Email(userEmail));
+            if (user == null)
+            {
+                throw new Exception("Invalid user.");
+            }
+
+            var doctorProfile = await _staffRepository.GetByUserIdAsync(user.Id);
 
             if (requisition.licenseNumber != doctorProfile.Id)
             {
                 throw new UnauthorizedAccessException("You are not authorized to update this requisition.");
             }
+
+            var logDescription = $"Updated Deadline from {requisition.deadline} to {updateDto.Deadline} " +
+                                $"and Priority from {requisition.priority} to {updateDto.Priority}";
 
             requisition.ChangeDeadLine(new Deadline(updateDto.Deadline.Value));
 
@@ -191,9 +200,6 @@ namespace DDDSample1.OperationRequests
             }
 
             requisition.ChangePriority(new Priority(priorityType));
-
-            var logDescription = $"Updated Deadline from {requisition.deadline} to {updateDto.Deadline} " +
-                                $"and Priority from {requisition.priority} to {updateDto.Priority}";
 
             await _operationRequestRepository.UpdateOperationRequestAsync(requisition);
             await _unitOfWork.CommitAsync();

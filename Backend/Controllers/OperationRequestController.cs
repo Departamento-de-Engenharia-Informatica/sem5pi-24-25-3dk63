@@ -130,16 +130,9 @@ namespace DDDSample1.Controllers
                 return Unauthorized("Unable to find the user information.");
             }
 
-            var user = await _3service.FindByEmailAsync(userEmail); //mudar linha
-
-            if (user == null)
-            {
-                return Unauthorized("User not found.");
-            }
-
             try
             {
-                var resultMessage = await _service.UpdateRequisitionAsync(id, user, updateDto);
+                var resultMessage = await _service.UpdateRequisitionAsync(id,userEmail, updateDto);
                 return Ok(resultMessage);
             }
             catch (UnauthorizedAccessException ex)
