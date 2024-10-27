@@ -1,38 +1,83 @@
-.App {
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.logo {
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
-}
-
-.App-link {
-  color: #61dafb;
-}
-
-@keyframes App-logo-spin {
+@keyframes logo-spin {
   from {
     transform: rotate(0deg);
   }
   to {
     transform: rotate(360deg);
   }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  a:nth-of-type(2) .logo {
+    animation: logo-spin infinite 20s linear;
+  }
+}
+
+.card {
+  padding: 2em;
+}
+
+.read-the-docs {
+  color: #888;
+}
+
+
+.staff-list {
+  list-style: none;
+  /* Remove a marcação padrão da lista */
+  padding: 0;
+  /* Remove o padding padrão */
+  margin: 20px 0;
+  /* Adiciona espaço acima e abaixo da lista */
+}
+
+.staff-list {
+  list-style: none;
+  /* Remove a marcação padrão da lista */
+  padding: 0;
+  /* Remove o padding padrão */
+  margin: 20px 0;
+  /* Adiciona espaço acima e abaixo da lista */
+}
+
+.staff-list li {
+  background-color: #4a4a4a;
+  /* Cor de fundo mais escura */
+  color: white;
+  /* Cor do texto */
+  margin: 5px 0;
+  /* Margem entre os itens */
+  padding: 10px;
+  /* Espaçamento interno */
+  border-radius: 5px;
+  /* Bordas arredondadas */
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  /* Sombra sutil */
+  transition: background-color 0.3s;
+  /* Efeito suave ao passar o mouse */
+}
+
+.staff-list li:hover {
+  background-color: #616161;
+  /* Cor de fundo ao passar o mouse */
 }
