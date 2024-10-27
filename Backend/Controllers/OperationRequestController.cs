@@ -9,6 +9,7 @@ using DDDSample1.Domain.Users;
 using System.Security.Claims;
 using DDDSample1.Patients;
 using DDDSample1.Users;
+using DDDSample1.Domain.Staff;
 
 namespace DDDSample1.Controllers
 {
@@ -19,12 +20,14 @@ namespace DDDSample1.Controllers
         private readonly OperationRequestService _service;
         private readonly OperationTypeService _2service;
         private readonly UserService _3service;
+        private readonly StaffService _4service;
 
-        public OperationRequestController(OperationRequestService service, OperationTypeService service2, UserService service3)
+        public OperationRequestController(OperationRequestService service, OperationTypeService service2, UserService service3, StaffService service4)
         {
             _service = service;
             _2service = service2;
             _3service = service3;
+            _4service = service4;
         }
 
         // GET: api/OperationRequest
@@ -52,7 +55,7 @@ namespace DDDSample1.Controllers
 
         // POST: api/OperationRequest
         [HttpPost]
-        //[Authorize(Roles="Doctor")]
+        [Authorize(Roles="Doctor")]
         public async Task<ActionResult<OperationRequestDTO>> Create(CreatingOperationRequestDTO dto)
         {
             var operationType = await _2service.GetByIdAsync(dto.OperationTypeId);
@@ -63,6 +66,12 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest(new { Message = "This operation type is currently inactive" });
             }
+
+            var staff = await _4service.GetByLicenseNumberAsync(dto.LicenseNumber);
+
+            if(staff == null) throw new BusinessRuleValidationException("Doctor not found");
+
+            if(!staff.Active) throw new BusinessRuleValidationException("Doctor is inactive");
 
             var operationRequest = await _service.AddAsync(dto);
 

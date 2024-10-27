@@ -251,6 +251,19 @@ namespace DDDSample1.Patients
             return _mapper.Map<PatientDTO>(patient);
         }
 
+        public async Task<PatientDTO> GetPacientByUserEmail(Email email)
+        {
+            var user = await _userRepository.FindByEmailAsync(email);
+
+            var patient = await _patientRepository.FindByUserIdAsync(user.Id);
+
+            if (patient == null)
+            {
+                return null;
+            }
+
+            return _mapper.Map<PatientDTO>(patient);
+        }
         public async Task AddPendingChangesAsync(PendingChangesDTO pendingChangesDto, UserId userId)
         {
             var pendingChanges = new PendingChanges(userId)

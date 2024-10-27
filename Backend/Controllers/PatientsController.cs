@@ -236,11 +236,11 @@ namespace DDDSample1.Controllers
                 return Unauthorized("Patient information not found.");
             }
 
-            var patient = await _service.GetPatientByUsername(new Username(userEmail));
+            var patient = await _service.GetPacientByUserEmail(new Email(userEmail));
 
-            if(patient.Active == false)
+             if (patient == null || patient.Active == false)
             {
-                return Unauthorized("Patient not active.");
+                return NotFound("Patient not found.");
             }
 
 
@@ -258,7 +258,7 @@ namespace DDDSample1.Controllers
                 return Unauthorized("Patient information not found.");
             }
 
-            var patient = await _service.GetPatientByUsername(new Username(userEmail));
+            var patient = await _service.GetPacientByUserEmail(new Email(userEmail));
 
             if (patient == null || patient.Active == false)
             {
