@@ -21,8 +21,7 @@ namespace DDDSample1.Domain.Specialization
 
         public override string AsString()
         {
-            Guid obj = (Guid)base.ObjValue;
-            return obj.ToString();
+            return base.ObjValue?.ToString();
         }
 
         public Guid AsGuid()
@@ -30,6 +29,14 @@ namespace DDDSample1.Domain.Specialization
             return (Guid)base.ObjValue;
         }
 
-        
+        public override bool Equals(object obj)
+        {
+            return obj is SpecializationId && ((SpecializationId)obj).AsGuid().Equals(this.AsGuid());
+        }
+
+        public override int GetHashCode()
+        {
+            return AsGuid().GetHashCode();
+        }
     }
 }
