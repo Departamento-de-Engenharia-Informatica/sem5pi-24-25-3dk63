@@ -147,7 +147,6 @@ namespace DDDSample1.OperationRequests
 
             // Verify if there is an appointment associated with the operation request or if it is active
             if(await this._appointmentRepository.GetByOperationRequestIdAsync(id) != null) throw new BusinessRuleValidationException("Não é possível excluir um pedido operação associado a uma consulta.");
-            //if (operationRequest.Active) throw new BusinessRuleValidationException("Não é possível excluir um pedido operação ativo.");
 
             this._operationRequestRepository.Remove(operationRequest);
             await this._unitOfWork.CommitAsync();
