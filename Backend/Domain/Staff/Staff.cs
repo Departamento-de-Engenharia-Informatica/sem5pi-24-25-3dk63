@@ -20,12 +20,13 @@ namespace DDDSample1.Domain.Staff
 
         public Staff(UserId userId, LicenseNumber licenseNumber, SpecializationId specializationId, AvailabilitySlots availabilitySlots)
         {
-            this.Id = licenseNumber;
-            this.UserId = userId;
-            this.SpecializationId = specializationId;
-            this.AvailabilitySlots = availabilitySlots;
+            this.UserId = userId ?? throw new ArgumentNullException(nameof(userId), "UserId cannot be null.");
+            this.Id = licenseNumber ?? throw new ArgumentNullException(nameof(licenseNumber), "LicenseNumber cannot be null.");
+            this.SpecializationId = specializationId ?? throw new ArgumentNullException(nameof(specializationId), "SpecializationId cannot be null.");
+            this.AvailabilitySlots = availabilitySlots ?? throw new ArgumentNullException(nameof(availabilitySlots), "AvailabilitySlots cannot be null.");
             this.Active = true;
         }
+
 
         public void MarkAsInactive()
         {
@@ -42,9 +43,24 @@ namespace DDDSample1.Domain.Staff
             this.Active = false;
         }
 
-                public void changeSpecialization(SpecializationId specializationId)
+        public void changeSpecialization(SpecializationId specializationId)
         {
             this.SpecializationId = specializationId;
         }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj is null || obj.GetType() != GetType()) return false;
+
+            var other = (Staff)obj;
+            return Id.Equals(other.Id);
+        }
+
+        public override int GetHashCode()
+        {
+            return Id.GetHashCode();
+        }
     }
+
 }
