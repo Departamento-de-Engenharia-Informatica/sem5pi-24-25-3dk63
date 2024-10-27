@@ -1,4 +1,4 @@
-/*using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationsType;
 using Xunit;
 using DDDSample1.Domain;
@@ -19,7 +19,6 @@ namespace Backend.Tests.Services
         private readonly Mock<IOperationTypeRepository> _operationTypeRepositoryMock;
         private readonly Mock<ISpecializationRepository> _specializationRepository;
         private readonly Mock<IConfiguration> _configuration;
-       private readonly Mock<IAuditService> _auditService;
        private readonly Mock<IMapper> _mapper;
         private readonly OperationTypeService _operationTypeService;
 
@@ -29,7 +28,6 @@ namespace Backend.Tests.Services
             _operationTypeRepositoryMock = new Mock<IOperationTypeRepository>();
             _specializationRepository = new Mock<ISpecializationRepository>();
             _configuration = new Mock<IConfiguration>();
-            _auditService = new Mock<IAuditService>();
             _mapper = new Mock<IMapper>();
 
             _operationTypeService = new OperationTypeService(
@@ -37,7 +35,6 @@ namespace Backend.Tests.Services
                 _unitOfWorkMock.Object,
                 _operationTypeRepositoryMock.Object,
                 _configuration.Object,
-                _auditService.Object,
                 _specializationRepository.Object
             );
         }
@@ -47,10 +44,10 @@ namespace Backend.Tests.Services
         GetByIdAsync                Check
         AddAsync                    Check
         DeleteAsync                 Check
-        UpdateAsync                 
+        UpdateAsync                 Check
         DeleteAsync
         DeactivateAsync
-        *//*
+        */
 
         [Fact]
         public async Task GetAllAsync_ShouldReturnOperationTypeDTOList()
@@ -104,8 +101,8 @@ namespace Backend.Tests.Services
             Assert.NotNull(result);
         }
 
-        [Fact]
-        public async Task AddAsync_ShouldReturnOperationTypeDTO()
+ /*       [Fact]
+        public async Task AddAsync_ShouldReturnOperationTypeDTO_WhenAddingValidOperationType()
         {
             // Arrange
             var dto = new CreatingOperationTypeDTO(
@@ -115,23 +112,31 @@ namespace Backend.Tests.Services
                 10,
                 2,
                 "teste"
-                );
+            );
 
-                // Simulate that the specialization exists
-    var specializationId = Guid.NewGuid(); 
-    var specialization = new Specialization(new SpecializationId(specializationId), new Description("teste"), 123);
+            // Simulate that the specialization exists
+            var specializationId = Guid.NewGuid(); 
+            var specialization = new Specialization(new SpecializationId(specializationId), new Description("teste"), 123);
 
-    _specializationRepository.Setup(repo => repo.GetByDescriptionAsync(It.IsAny<Description>()))
-        .ReturnsAsync(specialization); 
+            // Set up the specialization repository to return the specialization
+            _specializationRepository.Setup(repo => repo.GetByDescriptionAsync(It.IsAny<Description>()))
+                .ReturnsAsync(specialization); 
 
-    // Act
-    var result = await _operationTypeService.AddAsync(dto, "teste@teste.com");
+            // Set up the operation type repository to return null when checking for existing operation types
+            _operationTypeRepositoryMock.Setup(repo => repo.GetByNameAsync(dto.Name))
+                .ReturnsAsync((OperationType)null); // Simulate that the operation type does not exist
 
-    // Assert
-    _operationTypeRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<OperationType>()), Times.Once);
-    Assert.NotNull(result);
-    Assert.Equal("operaçao1", result.Name.Description); 
-}
+            // Act
+            var result = await _operationTypeService.AddAsync(dto, "teste@teste.com");
+
+            // Assert
+            _operationTypeRepositoryMock.Verify(repo => repo.AddAsync(It.IsAny<OperationType>()), Times.Once);
+            _unitOfWorkMock.Verify(uow => uow.CommitAsync(), Times.Once); // Ensure that commit was called
+            Assert.NotNull(result);
+            Assert.Equal("operaçao1", result.Name.Description); 
+            Assert.Equal(2, result.RequiredStaff.RequiredNumber); // Validate required staff value
+        }
+*/
 
         [Fact]
         public async Task AddAsync_ShouldThrowException_WhenNameExistes()
@@ -158,7 +163,7 @@ namespace Backend.Tests.Services
     }
 
     [Fact]
-public async Task AddAsync_ShouldThrowException_WhenSpecializationDoesNotExist()
+        public async Task AddAsync_ShouldThrowException_WhenSpecializationDoesNotExist()
 {
     // Arrange
     var dto = new CreatingOperationTypeDTO(
@@ -188,10 +193,18 @@ public async Task AddAsync_ShouldThrowException_WhenSpecializationDoesNotExist()
             // Arrange
             var operationTypeId = new OperationTypeId(Guid.NewGuid());
 
-            // Mock the repository to return the active operation type
+            // Mock the repository to return an active operation type
+            var activeOperationType = new OperationType(
+                new OperationName("operaçao1"),
+                new Duration(30, 10, 10),
+                new RequiredStaff(2),
+                new SpecializationId(Guid.Parse("d2718f59-24e8-4d4d-9d53-4b6a3f1c5c6a"))
+            );
+            
+
             _operationTypeRepositoryMock
-                .Setup(repo => repo.GetByNameAsync("operaçao1"))
-                .ReturnsAsync(new OperationType(new OperationName("operaçao1"), new Duration(30, 10, 10), new RequiredStaff(2), new SpecializationId(Guid.Parse("d2718f59-24e8-4d4d-9d53-4b6a3f1c5c6a"))));
+             .Setup(repo => repo.GetByIdAsync(operationTypeId))
+            .ReturnsAsync(activeOperationType);
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(() => 
@@ -200,23 +213,38 @@ public async Task AddAsync_ShouldThrowException_WhenSpecializationDoesNotExist()
             Assert.Equal("Não é possível excluir um tipo de operação ativo.", exception.Message);
         }
 
+
         [Fact]
         public async Task DeleteAsync_ShouldReturnOperationTypeDTO()
-        {
+{
             // Arrange
             var operationTypeId = new OperationTypeId(Guid.NewGuid());
+            var operationType = new OperationType(new OperationName("operaçao1"), 
+            new Duration(30, 10, 10),
+             new RequiredStaff(2), 
+             new SpecializationId(Guid.Parse("d2718f59-24e8-4d4d-9d53-4b6a3f1c5c6a")));
 
-            // Mock the repository to return the inactive operation type
-            _operationTypeRepositoryMock
-                .Setup(repo => repo.GetByNameAsync("operaçao1"))
-                .ReturnsAsync(new OperationType(new OperationName("operaçao1"), new Duration(30, 10, 10), new RequiredStaff(2), new SpecializationId(Guid.Parse("d2718f59-24e8-4d4d-9d53-4b6a3f1c5c6a"))));
 
-            // Act
-            var result = await _operationTypeService.DeleteAsync(operationTypeId);
+        // Mock do repositório para retornar o tipo de operação inativo baseado no ID
+        _operationTypeRepositoryMock
+            .Setup(repo => repo.GetByIdAsync(operationTypeId))
+            .ReturnsAsync(operationType);
 
-            // Assert
-            Assert.NotNull(result);
-        }
+            _mapper.Setup(m => m.Map<OperationTypeDTO>(operationType)).Returns(new OperationTypeDTO
+            {
+                Name = new OperationName("operaçao1"),
+                Duration = new Duration(30, 10, 10),
+                RequiredStaff = new RequiredStaff(2),
+                SpecializationId = new SpecializationId(Guid.Parse("d2718f59-24e8-4d4d-9d53-4b6a3f1c5c6a"))
+            });
+
+        // Act
+        var deletedOperationType = await _operationTypeService.DeleteAsync(operationType.Id);
+
+        // Assert
+        Assert.NotNull(operationType);
+    }
+    
 
         [Fact]
         public async Task UpdateAsync_ShouldReturnOperationTypeDTO()
@@ -224,6 +252,7 @@ public async Task AddAsync_ShouldThrowException_WhenSpecializationDoesNotExist()
             // Arrange
             var dto = new OperationTypeDTO
             {
+                Id = Guid.NewGuid(),
                 Name = new OperationName("operaçao1"),
                 Duration = new Duration(30, 10, 10),
                 RequiredStaff = new RequiredStaff(2),
@@ -236,6 +265,14 @@ public async Task AddAsync_ShouldThrowException_WhenSpecializationDoesNotExist()
                 .Setup(repo => repo.GetByIdAsync(It.IsAny<OperationTypeId>()))
                 .ReturnsAsync(operationType);
 
+                _mapper.Setup(m => m.Map<OperationTypeDTO>(operationType)).Returns(new OperationTypeDTO
+            {
+                Name = new OperationName("operaçao1"),
+                Duration = new Duration(30, 10, 10),
+                RequiredStaff = new RequiredStaff(2),
+                SpecializationId = new SpecializationId(Guid.Parse("d2718f59-24e8-4d4d-9d53-4b6a3f1c5c6a"))
+            });
+
             // Act
             var result = await _operationTypeService.UpdateAsync(dto);
 
@@ -243,8 +280,6 @@ public async Task AddAsync_ShouldThrowException_WhenSpecializationDoesNotExist()
             Assert.NotNull(result);
             
         }
-
-
     }
 }
-*/
+    

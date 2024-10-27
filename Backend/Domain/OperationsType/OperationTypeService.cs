@@ -7,6 +7,7 @@ using Backend.Domain.Specialization.ValueObjects;
 using DDDSample1.Domain.Specialization;
 using AutoMapper;
 using System.Threading.Tasks.Dataflow;
+using System.Diagnostics;
 
 namespace DDDSample1.OperationsType
 {
@@ -28,6 +29,17 @@ namespace DDDSample1.OperationsType
             _specializationRepository = specializationRepository;
             _mapper = mapper;
         }
+
+        public OperationTypeService(IMapper mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, ISpecializationRepository specializationRepository)
+        {
+            _unitOfWork = unitOfWork;
+            _operationTypeRepository = operationTypeRepository;
+            _configuration = configuration;
+            _specializationRepository = specializationRepository;
+            _mapper = mapper;
+        }
+
+
 
          // Obtém todos os tipos de operações
         public async Task<List<OperationTypeDTO>> GetAllAsync()
@@ -114,7 +126,11 @@ namespace DDDSample1.OperationsType
 
             await this._unitOfWork.CommitAsync();
 
-            return _mapper.Map<OperationTypeDTO>(operationType);
+            var operationType2= await this._operationTypeRepository.GetByIdAsync(new OperationTypeId(dto.Id));
+Debug.Assert(operationType != null, "OperationType should not be null");
+            var OperationTypeDTO = _mapper.Map<OperationTypeDTO>(operationType);
+
+            return OperationTypeDTO;
 
         }
 
