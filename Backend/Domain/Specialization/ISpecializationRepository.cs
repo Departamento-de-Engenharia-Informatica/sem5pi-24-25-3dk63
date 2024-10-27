@@ -10,7 +10,6 @@ namespace DDDSample1.Domain.Specialization
         Task<Specialization> FindByIdAsync(SpecializationId specializationId);
         Task<int> GetNextSequentialNumberAsync();
         Task<Specialization> GetByDescriptionAsync(Description description);
-
-
+        IQueryable<Specialization> GetQueryable();
     }
 }

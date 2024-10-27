@@ -38,5 +38,10 @@ namespace DDDSample1.Infrastructure.Specializations
 
         }
 
+        public IQueryable<Specialization> GetQueryable()
+        {
+            return _context.Specializations.AsQueryable();
+        }
+
     }
 }

@@ -153,5 +153,20 @@ namespace DDDSample1.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpGet("search")]
+        [Authorize(Roles = "Admin")]
+        public async Task<ActionResult<IEnumerable<SearchOperationTypeDTO>>> SearchOperationTypeAsync([FromQuery] string? name = null, [FromQuery] string? specialization = null, [FromQuery] string? active = null)
+        {
+            var operationTypeList = await _service.SearchOperationTypeAsync(name, specialization, active);
+
+            if (operationTypeList == null || operationTypeList.Count == 0)
+            {
+                return NotFound("No operation types found.");
+            }
+
+            return Ok(operationTypeList);
+        }
+
     }
 }

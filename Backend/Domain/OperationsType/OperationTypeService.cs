@@ -8,6 +8,7 @@ using DDDSample1.Domain.Specialization;
 using AutoMapper;
 using System.Threading.Tasks.Dataflow;
 using System.Diagnostics;
+using Microsoft.EntityFrameworkCore;
 
 namespace DDDSample1.OperationsType
 {
@@ -231,6 +232,41 @@ Debug.Assert(operationType != null, "OperationType should not be null");
 
             return _mapper.Map<OperationTypeDTO>(operationType);
         }
+
+        public async Task<List<SearchOperationTypeDTO>> SearchOperationTypeAsync(string? name = null, string? specializationDesc = null, string? active = null)
+        {
+            var query = from operationType in _operationTypeRepository.GetQueryable()
+                        join specialization in _specializationRepository.GetQueryable() on operationType.SpecializationId equals specialization.Id
+                        select new { operationType, specialization };
+
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(op => op.operationType.Name.Description.Contains(name));
+            }
+
+            var results = await query.ToListAsync();
+
+            if (!string.IsNullOrEmpty(specializationDesc))
+            {
+                results = results.Where(op => op.specialization.Description.Value.Contains(specializationDesc)).ToList();
+            }
+
+            if (!string.IsNullOrEmpty(active))
+            {
+                bool Active = active.Equals("true", StringComparison.OrdinalIgnoreCase);
+                results = results.Where(op => op.operationType.Active == Active).ToList();
+            }
+
+            return results.Select(op => new SearchOperationTypeDTO
+            {
+                Name = op.operationType.Name,
+                Specialization = op.specialization.Description,
+                Active = op.operationType.Active,
+                RequiredStaff = op.operationType.RequiredStaff,
+                Duration = op.operationType.Duration
+            }).ToList();
+        }
+
     }
 
 }

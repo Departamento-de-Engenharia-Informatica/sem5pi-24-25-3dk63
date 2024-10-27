@@ -35,6 +35,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpGet("search")]
+        [Authorize (Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<SearchPatientDTO>>> SearchPatientAsync([FromQuery] string? name = null, [FromQuery] string? email = null, [FromQuery] string? dateOfBirth = null, [FromQuery] string? medicalRecordNumber = null)
         {
             var patientList = await _service.SearchPatientAsync(name, email, dateOfBirth, medicalRecordNumber);

@@ -51,5 +51,10 @@ namespace DDDSample1.Infrastructure.OperationsType
 
             return true;
         }
+
+        public IQueryable<OperationType> GetQueryable()
+        {
+            return _context.OperationsTypes.AsQueryable();
+        }
     }
 }
