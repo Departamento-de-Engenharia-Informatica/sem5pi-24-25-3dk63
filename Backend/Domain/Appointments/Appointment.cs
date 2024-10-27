@@ -15,7 +15,7 @@ namespace DDDSample1.Domain
         public int roomNumber { get; private set; }
         public bool Active { get; private set; }
 
-    private Appointment()
+    public Appointment()
     {
         this.Active = true;
     }

@@ -20,6 +20,7 @@ namespace DDDSample1.OperationsType
         private readonly IConfiguration _configuration;
        private readonly AuditService _auditService;
        private readonly IMapper _mapper;
+       
         public OperationTypeService(IMapper mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, AuditService auditService, ISpecializationRepository specializationRepository)
         {
             _unitOfWork = unitOfWork;

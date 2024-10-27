@@ -17,7 +17,7 @@ namespace DDDSample1.Domain
         public MedicalRecordNumber medicalRecordNumber { get; private set; }
         public bool Active { get; private set; }
 
-        private OperationRequest()
+        public OperationRequest()
         {
             this.Active = true;
         }

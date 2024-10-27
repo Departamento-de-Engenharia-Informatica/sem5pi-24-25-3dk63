@@ -21,6 +21,7 @@ namespace Backend.Tests.Services
         private readonly Mock<IConfiguration> _configuration;
        private readonly Mock<IMapper> _mapper;
         private readonly OperationTypeService _operationTypeService;
+        
 
         public OperationTypeServiceTest()
         {
@@ -45,8 +46,7 @@ namespace Backend.Tests.Services
         AddAsync                    Check
         DeleteAsync                 Check
         UpdateAsync                 Check
-        DeleteAsync
-        DeactivateAsync
+        DeleteAsync                 Check
         */
 
         [Fact]
@@ -100,8 +100,8 @@ namespace Backend.Tests.Services
             // Assert
             Assert.NotNull(result);
         }
-
- /*       [Fact]
+/*
+        [Fact]
         public async Task AddAsync_ShouldReturnOperationTypeDTO_WhenAddingValidOperationType()
         {
             // Arrange
@@ -114,19 +114,20 @@ namespace Backend.Tests.Services
                 "teste"
             );
 
-            // Simulate that the specialization exists
             var specializationId = Guid.NewGuid(); 
             var specialization = new Specialization(new SpecializationId(specializationId), new Description("teste"), 123);
 
-            // Set up the specialization repository to return the specialization
             _specializationRepository.Setup(repo => repo.GetByDescriptionAsync(It.IsAny<Description>()))
                 .ReturnsAsync(specialization); 
 
-            // Set up the operation type repository to return null when checking for existing operation types
             _operationTypeRepositoryMock.Setup(repo => repo.GetByNameAsync(dto.Name))
                 .ReturnsAsync((OperationType)null); // Simulate that the operation type does not exist
 
+                _operationTypeRepositoryMock.Setup(repo => repo.AddAsync(It.IsAny<OperationType>()));
             // Act
+
+                _unitOfWorkMock.Setup(uow => uow.CommitAsync()).Returns(Task.CompletedTask);
+
             var result = await _operationTypeService.AddAsync(dto, "teste@teste.com");
 
             // Assert

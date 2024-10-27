@@ -40,6 +40,19 @@ namespace DDDSample1.OperationRequests
             this._mapper = mapper;
         }
 
+        public OperationRequestService(IUnitOfWork unitOfWork, IOperationRequestRepository operationRequestRepository, IAppointmentRepository appointmentRepository, IOperationTypeRepository operationTypeRepository, IPatientRepository patientRepository, IUserRepository userRepository, IStaffRepository staffRepository, IConfiguration configuration, IMapper mapper)
+        {
+            this._unitOfWork = unitOfWork;
+            this._operationRequestRepository = operationRequestRepository;
+            this._appointmentRepository = appointmentRepository;
+            this._operationTypeRepository = operationTypeRepository;
+            this._patientRepository = patientRepository;
+            this._userRepository = userRepository;
+            this._staffRepository = staffRepository;
+            this._configuration = configuration;
+            this._mapper = mapper;
+        }
+
         // Obtém todos os requests
         public async Task<List<OperationRequestDTO>> GetAllAsync()
         {
