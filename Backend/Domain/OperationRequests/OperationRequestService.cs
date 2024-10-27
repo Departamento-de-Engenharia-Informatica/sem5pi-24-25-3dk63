@@ -204,31 +204,60 @@ namespace DDDSample1.OperationRequests
         }
 
         public async Task<List<ListOperationRequestDTO>> SearchOperationRequests(
-            string firstName, string lastName, string operationType, string status, Priority? priority)
+            string firstName, 
+            string lastName, 
+            string operationType, 
+            string status, 
+            Priority? priority)
         {
             var requests = await _operationRequestRepository.SearchOperationRequestsAsync(firstName, lastName, operationType, status, priority);
+
+            if (!requests.Any())
+            {
+                throw new InvalidOperationException("No information found based on the search criteria.");
+            }
 
             var result = new List<ListOperationRequestDTO>();
 
             foreach (var or in requests)
             {
-                var patient = await _patientRepository.FindByMedicalRecordNumberAsync(or.medicalRecordNumber);
-                var patientUser = await _userRepository.GetByIdAsync(patient?.UserId);
+                if (or.medicalRecordNumber == null)
+                {
+                    throw new InvalidOperationException("OperationRequest is missing a valid medical record number.");
+                }
 
-                var operationTypeEntity = await _operationTypeRepository.GetByIdAsync(or.operationTypeId);
-                var operationTypeName = operationTypeEntity?.Active == true
-                    ? operationTypeEntity.Name.ToString()
-                    : "Unknown";
+                var patient = await _patientRepository.FindByMedicalRecordNumberAsync(or.medicalRecordNumber)
+                    ?? throw new InvalidOperationException("Patient information is required but was not found.");
+
+                var patientUser = await _userRepository.GetByIdAsync(patient.UserId)
+                    ?? throw new InvalidOperationException("Patient's user information is required but was not found.");
+
+                var operationTypeEntity = await _operationTypeRepository.GetByIdAsync(or.operationTypeId)
+                    ?? throw new InvalidOperationException("Operation type information is required but was not found.");
+
+                if (!operationTypeEntity.Active)
+                {
+                    throw new InvalidOperationException("Operation type must be active.");
+                }
+
+                if (or.priority == null)
+                {
+                    throw new InvalidOperationException("Priority is required for OperationRequest but was not provided.");
+                }
+                if (or.deadline == null)
+                {
+                    throw new InvalidOperationException("Deadline is required for OperationRequest but was not provided.");
+                }
 
                 result.Add(new ListOperationRequestDTO
                 {
-                    Id = or.Id.AsGuid(),
-                    PatientName = patientUser != null ? $"{patientUser.Name.FirstName} {patientUser.Name.LastName}" : "Unknown",
-                    OperationType = operationTypeName ?? "Unknown",
+                    PatientName = $"{patientUser.Name.FirstName} {patientUser.Name.LastName}",
+                    OperationType = operationTypeEntity.Name.ToString(),
                     Status = or.Active ? "Active" : "Inactive",
-                    Priority = or.priority.ToString(),
+                    Priority = or.priority.Value.ToString(),
                     Deadline = or.deadline.Value,
-                    AssignedStaff = operationTypeEntity?.RequiredStaff?.RequiredNumber.ToString() ?? "Unknown" // Use null-conditional
+                    AssignedStaff = operationTypeEntity.RequiredStaff?.RequiredNumber.ToString() 
+                        ?? throw new InvalidOperationException("Required staff information is missing.")
                 });
             }
 

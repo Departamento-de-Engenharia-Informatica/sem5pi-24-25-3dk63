@@ -152,13 +152,24 @@ namespace DDDSample1.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet("search")]
+        [Authorize(Roles = "Doctor")]
         public async Task<IActionResult> Search(
-            [FromQuery] string name = null,
+            [FromQuery] string firstName = null,
+            [FromQuery] string lastName = null,
             [FromQuery] string operationType = null,
             [FromQuery] string status = null,
             [FromQuery] string priority = null)
         {
+            status = status?.Trim();
+
+            if (!string.IsNullOrWhiteSpace(status) && 
+                !status.Equals("active", StringComparison.OrdinalIgnoreCase) && 
+                !status.Equals("inactive", StringComparison.OrdinalIgnoreCase))
+            {
+                return BadRequest("Status must be 'active' or 'inactive'.");
+            }
+
             Priority priorityEnum = null;
             if (!string.IsNullOrWhiteSpace(priority))
             {
@@ -168,16 +179,8 @@ namespace DDDSample1.Controllers
                 }
                 else
                 {
-                    return BadRequest("Invalid priority value.");
+                    return BadRequest("Invalid priority value.\nMust be elective, urgent, or emergency.");
                 }
-            }
-
-            string firstName = null, lastName = null;
-            if (!string.IsNullOrWhiteSpace(name))
-            {
-                var names = name.Split(' ');
-                firstName = names[0];
-                if (names.Length > 1) lastName = names[1];
             }
 
             var requests = await _service.SearchOperationRequests(firstName, lastName, operationType, status, priorityEnum);

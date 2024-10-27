@@ -53,29 +53,45 @@ namespace DDDSample1.Infrastructure.OperationRequests
 
             if (!string.IsNullOrWhiteSpace(firstName) || !string.IsNullOrWhiteSpace(lastName))
             {
-                query = query.Where(or => 
-                    or.medicalRecordNumber != null && 
-                    _context.Patients.Any(p => 
-                        p.Id == or.medicalRecordNumber && 
-                        _context.Users.Any(u => 
-                            u.Id == p.UserId && 
-                            (string.IsNullOrWhiteSpace(firstName) || u.Name.FirstName == firstName) && 
-                            (string.IsNullOrWhiteSpace(lastName) || u.Name.LastName == lastName))));
+                query = query.Where(or =>
+                    or.medicalRecordNumber != null &&
+                    _context.Patients.Any(p =>
+                        p.Id == or.medicalRecordNumber &&
+                        _context.Users.Any(u =>
+                            u.Id == p.UserId &&
+                            (string.IsNullOrWhiteSpace(firstName) || u.Name.FirstName.ToLower() == firstName.ToLower()) &&
+                            (string.IsNullOrWhiteSpace(lastName) || u.Name.LastName.ToLower() == lastName.ToLower()))));
             }
 
             if (!string.IsNullOrWhiteSpace(operationType))
             {
-                query = query.Where(or => 
-                    or.operationTypeId != null && 
-                    _context.OperationsTypes.Any(op => 
+                operationType = operationType.Trim();
+                var operationTypeId = new OperationTypeId(operationType);
+
+                query = query.Where(or =>
+                    or.operationTypeId != null &&
+                    _context.OperationsTypes.Any(op =>
                         op.Id == or.operationTypeId && 
-                        op.Name.ToString() == operationType && 
-                        op.Active));
+                        op.Active && 
+                        op.Id == operationTypeId));
             }
 
             if (!string.IsNullOrWhiteSpace(status))
             {
-                query = query.Where(or => or.Active.ToString().ToLower() == status.ToLower());
+                status = status.Trim();
+
+                if (status.Equals("active", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(or => or.Active == true);
+                }
+                else if (status.Equals("inactive", StringComparison.OrdinalIgnoreCase))
+                {
+                    query = query.Where(or => or.Active == false);
+                }
+                else
+                {
+                    Console.WriteLine($"Invalid status value: {status}");
+                }
             }
 
             if (priority != null)
