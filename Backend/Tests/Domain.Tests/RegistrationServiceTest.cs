@@ -82,13 +82,16 @@ namespace Backend.Tests.Services
         {
             // Arrange
             var invalidToken = "invalid-token";
+
+            // Setup the user repository to return null for the invalid token
             _userRepositoryMock.Setup(repo => repo.GetUserByConfirmationTokenAsync(invalidToken))
-                .ReturnsAsync((User)null); // Simulate no user found with the token
+                .ReturnsAsync((User)null);
 
             // Act & Assert
             var exception = await Assert.ThrowsAsync<Exception>(() => _registrationService.ConfirmEmailAsync(invalidToken));
             Assert.Equal("Invalid token or email.", exception.Message);
         }
+
 
         [Fact]
         public async Task ConfirmEmailAsync_ShouldActivateUser_WhenTokenIsValid()
@@ -100,8 +103,12 @@ namespace Backend.Tests.Services
                 ConfirmationToken = validToken
             };
 
+            var patient = new Patient(user.Id, new DateOfBirth(DateTime.Now), new Gender("Female"), new EmergencyContact("Jane Doe, +351123456789"), 1);
+
             _userRepositoryMock.Setup(repo => repo.GetUserByConfirmationTokenAsync(validToken))
-                .ReturnsAsync(user); // Simulate user found with the token
+                .ReturnsAsync(user);
+            _patientRepositoryMock.Setup(repo => repo.FindByUserIdAsync(user.Id))
+                .ReturnsAsync(patient);
             _userRepositoryMock.Setup(repo => repo.UpdateUserAsync(user)).Returns(Task.CompletedTask);
 
             // Act

@@ -61,12 +61,13 @@ namespace DDDSample1.Patients
         public async Task ConfirmEmailAsync(string token)
         {
             var user = await _userRepository.GetUserByConfirmationTokenAsync(token);
-            var patient = await _patientRepository.FindByUserIdAsync(user.Id);
             
             if (user == null)
             {
                 throw new Exception("Invalid token or email.");
             }
+
+            var patient = await _patientRepository.FindByUserIdAsync(user.Id);
 
             if (patient == null)
             {
