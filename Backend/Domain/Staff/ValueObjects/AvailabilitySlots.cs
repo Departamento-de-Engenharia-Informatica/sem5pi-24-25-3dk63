@@ -28,9 +28,15 @@ namespace Backend.Domain.Staff.ValueObjects
 
         public static AvailabilitySlots DeserializeSlots(string json)
         {
+            if (string.IsNullOrEmpty(json))
+            {
+                return new AvailabilitySlots(new List<AvailabilitySlot>());
+            }
+
             var slots = JsonSerializer.Deserialize<List<AvailabilitySlot>>(json);
             return new AvailabilitySlots(slots ?? new List<AvailabilitySlot>());
         }
+
     }
 
     public class AvailabilitySlot
