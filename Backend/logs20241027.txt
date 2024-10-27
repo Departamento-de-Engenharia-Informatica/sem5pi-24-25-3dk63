@@ -38,3 +38,5 @@
 2024-10-27 16:19:32.347 +00:00 [INF] OperationType Operaçao teste (82b4d079-c888-4867-9c92-a00af766d1b4) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:19:32
 2024-10-27 16:19:57.508 +00:00 [INF] OperationType Operaçao Cardiovascular (0ce0266a-3996-4e7b-a51e-ebffd0d6a6b2) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:19:57
 2024-10-27 16:20:39.598 +00:00 [INF] OperationType Operaçao Cardiovascular (0ce0266a-3996-4e7b-a51e-ebffd0d6a6b2) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:20:39
+2024-10-27 16:39:39.769 +00:00 [INF] Login falhou: email não encontrado.
+2024-10-27 16:40:28.353 +00:00 [INF] Login bem-sucedido: email encontrado.

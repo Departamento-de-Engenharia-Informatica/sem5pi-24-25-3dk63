@@ -52,6 +52,19 @@ namespace DDDSample1
         public void ConfigureServices(IServiceCollection services)
         {
 
+
+            services.AddCors(options =>
+              {
+                  options.AddPolicy("AllowAll",
+                      builder =>
+                      {
+                          builder.AllowAnyOrigin()
+                                 .AllowAnyMethod()
+                                 .AllowAnyHeader();
+                      });
+              });
+
+
             Log.Logger = new LoggerConfiguration()
           .MinimumLevel.Debug()
           .WriteTo.File("logs.txt", rollingInterval: RollingInterval.Day)
@@ -141,8 +154,10 @@ namespace DDDSample1
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
             app.UseRouting();
+
+            app.UseCors("AllowAll"); 
+
 
             app.UseAuthentication();
             app.UseAuthorization();
