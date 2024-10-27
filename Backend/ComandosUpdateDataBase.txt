@@ -1,0 +1,8 @@
+VPN LIGADA:
+
+
+dotnet tool install --global dotnet-ef -> so usar este na primeira vez
+
+dotnet ef migrations add NomeDaMigraçao
+
+dotnet ef database update
