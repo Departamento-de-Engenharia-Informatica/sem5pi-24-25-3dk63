@@ -11,5 +11,6 @@ namespace DDDSample1.Domain.Patients
         public MedicalHistory medicalHistory { get; set; }
         public EmergencyContact emergencyContact { get; set; }
         public List<AppointmentHistory> appointmentHistoryList { get; set; }
+        public bool Active { get; set; }
     }
 }

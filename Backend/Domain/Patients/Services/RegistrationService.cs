@@ -41,8 +41,6 @@ namespace DDDSample1.Patients
 
             user = await updateUser(user,dto,iamEmail);
 
-            patient.ChangeActiveTrue();
-            await _patientRepository.UpdatePatientAsync(patient);
             await _unitOfWork.CommitAsync();
 
             // Send the confirmation email with the token
@@ -54,6 +52,7 @@ namespace DDDSample1.Patients
             user.ChangeConfirmationToken(Guid.NewGuid().ToString("N"));
             user.ChangeActiveTrue();
             user.ChangeUsername(new Username(iamEmail));
+            user.ChangeActiveFalse();
             await _userRepository.UpdateUserAsync(user);
             return user;
         }
@@ -62,15 +61,26 @@ namespace DDDSample1.Patients
         public async Task ConfirmEmailAsync(string token)
         {
             var user = await _userRepository.GetUserByConfirmationTokenAsync(token);
+            var patient = await _patientRepository.FindByUserIdAsync(user.Id);
+            
             if (user == null)
             {
                 throw new Exception("Invalid token or email.");
+            }
+
+            if (patient == null)
+            {
+                throw new Exception("Patient not found by user id.");
             }
 
             // Activate the user account
             user.ChangeActiveTrue();
             user.ConfirmationToken = null;
             await _userRepository.UpdateUserAsync(user);
+
+            //Activate the patient account
+            patient.ChangeActiveTrue();
+            await _patientRepository.UpdatePatientAsync(patient);
         }
 
         public async Task<User> FindByEmailAsync(Email email)

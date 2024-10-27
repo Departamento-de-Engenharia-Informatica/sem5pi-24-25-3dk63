@@ -77,7 +77,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpPatch("{id}")]
-        //[Authorize(Roles="Admin")]
+        [Authorize(Roles="Admin")]
         public async Task<IActionResult> UpdatePatientProfile(PatientUpdateDTO updateDto)
         {
             if (!ModelState.IsValid)
@@ -131,7 +131,7 @@ namespace DDDSample1.Controllers
 
             var patient = await _service.GetPatientByUsername(new Username(userEmail));
 
-            if (patient == null)
+            if (patient == null || patient.Active == false)
             {
                 return Unauthorized("Patient not found.");
             }
@@ -198,6 +198,11 @@ namespace DDDSample1.Controllers
                 return Unauthorized("User not found.");
             }
 
+            if(_service.FindByUserId(new UserId(user.Id)).Result.Active == false)
+            {
+                return Unauthorized("Patient not active.");
+            }
+
             await _service.RequestAccountDeletionAsync(new UserId(user.Id));
 
             return Ok("Account deletion requested. Please check your email to confirm.");
@@ -233,6 +238,11 @@ namespace DDDSample1.Controllers
 
             var patient = await _service.GetPatientByUsername(new Username(userEmail));
 
+            if(patient.Active == false)
+            {
+                return Unauthorized("Patient not active.");
+            }
+
 
             return Ok(patient.appointmentHistoryList);
         }
@@ -250,7 +260,7 @@ namespace DDDSample1.Controllers
 
             var patient = await _service.GetPatientByUsername(new Username(userEmail));
 
-            if (patient == null)
+            if (patient == null || patient.Active == false)
             {
                 return NotFound("Patient not found.");
             }

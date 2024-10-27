@@ -14,7 +14,8 @@ public class PatientMappingProfile : Profile
             .ForMember(dest => dest.gender, opt => opt.MapFrom(src => src.gender))
             .ForMember(dest => dest.medicalHistory, opt => opt.MapFrom(src => src.medicalHistory))
             .ForMember(dest => dest.emergencyContact, opt => opt.MapFrom(src => src.emergencyContact))
-            .ForMember(dest => dest.appointmentHistoryList, opt => opt.MapFrom(src => src.appointmentHistoryList));
+            .ForMember(dest => dest.appointmentHistoryList, opt => opt.MapFrom(src => src.appointmentHistoryList))
+            .ForMember(dest=> dest.Active, opt => opt.MapFrom(src => src.Active));;
 
         CreateMap<PatientDTO, Patient>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => src.Id)) // Assuming Id is already in correct string format
@@ -23,6 +24,7 @@ public class PatientMappingProfile : Profile
             .ForMember(dest => dest.medicalHistory, opt => opt.MapFrom(src => src.medicalHistory))
             .ForMember(dest => dest.emergencyContact, opt => opt.MapFrom(src => src.emergencyContact))
             .ForMember(dest => dest.appointmentHistoryList, opt => opt.MapFrom(src => src.appointmentHistoryList))
-            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId));
+            .ForMember(dest => dest.UserId, opt => opt.MapFrom(src => src.UserId))
+            .ForMember(dest => dest.Active, opt => opt.MapFrom(src => src.Active));
     }
 }

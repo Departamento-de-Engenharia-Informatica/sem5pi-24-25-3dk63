@@ -368,6 +368,11 @@ namespace DDDSample1.Patients
                 throw new Exception("Invalid or expired confirmation token.");
             }
 
+            if(FindByUserId(user.Id).Result.Active == false)
+            {
+                throw new BusinessRuleValidationException("Patient not active.");
+            }
+
             user.ChangeActiveFalse();
             user.MarkForDeletion();
             user.ConfirmationToken = null;
@@ -392,5 +397,10 @@ namespace DDDSample1.Patients
             return _mapper.Map<PatientDTO>(patientToRemove);
         }
 
+        public async Task<PatientDTO> FindByUserId(UserId id)
+        {
+            var patient = await _patientRepository.FindByUserIdAsync(id);
+            return patient == null ? null : _mapper.Map<PatientDTO>(patient);
+        }
     }
 }
