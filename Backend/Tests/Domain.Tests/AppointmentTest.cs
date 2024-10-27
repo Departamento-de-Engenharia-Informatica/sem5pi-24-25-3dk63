@@ -29,8 +29,8 @@ namespace Domain.Tests
         }
 
         [Theory]
-        [InlineData("2025-10-26", "09:00", "2024-10-27")]
-        [InlineData("2025-10-28", "10:30", "2024-10-29")]
+        [InlineData("2025-10-26", "09:00", "2026-10-27")]
+        [InlineData("2025-10-28", "10:30", "2026-10-29")]
         public void WhenChangingDate_ThenDateIsUpdated(string originalDateStr, string originalTimeStr, string newDateStr)
         {
             var operationRequestId = new OperationRequestId(Guid.NewGuid());
