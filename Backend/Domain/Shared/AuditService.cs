@@ -87,6 +87,18 @@ namespace Backend.Domain.Shared
 
         public void LogEditPatientProfile(Patient patient, User user, PatientUpdateDTO dto)
         {
+            var updatedFields = new List<string>();
+            if (dto.Email != null && !dto.Email.Equals(user.Email))
+                updatedFields.Add($"Email changed to: {dto.Email.Value}");
+            if (dto.PhoneNumber != null && !dto.PhoneNumber.Equals(user.PhoneNumber))
+                updatedFields.Add($"Phone Number changed to: {dto.PhoneNumber.Number}");
+            if (dto.Name != null && !dto.Name.Equals(user.Name))
+                updatedFields.Add($"Name changed to: {dto.Name}");
+            if (dto.emergencyContact != null && !dto.emergencyContact.Equals(patient.emergencyContact))
+                updatedFields.Add($"Emergency contact changed to: {dto.emergencyContact}");
+            if (dto.medicalHistory != null && !dto.medicalHistory.Equals(patient.medicalHistory))
+                updatedFields.Add($"Medical history changed to: {dto.medicalHistory}");
+
             string logMessage = $"Patient {patient.Id} profile was edited on {DateTime.UtcNow}";
             _logger.Information(logMessage);
         }

@@ -24,9 +24,8 @@ namespace DDDSample1.Domain
         public async Task SendPatientNotificationEmailAsync(PatientUpdateDTO dto)
         {
             var subject = "Patient Profile Updated";
-            var body = $"Your profile has been updated with changes to sensitive data. Please review the changes below: \n\n";
-
-            body += $"Updated Attributes:\n";
+            var body = "<p>Your profile has been updated with changes to sensitive data. Please review the changes below:</p>";
+            body += "<p>Updated Attributes:</p><ul>";
 
             PropertyInfo[] properties = typeof(PatientUpdateDTO).GetProperties();
             foreach (PropertyInfo property in properties)
@@ -36,10 +35,11 @@ namespace DDDSample1.Domain
                     var newValue = property.GetValue(dto, null);
                     if (newValue != null)
                     {
-                        body += $"- {property.Name}: {newValue}\n";
+                        body += $"<li><strong>{property.Name}:</strong> {newValue}</li>";
                     }
                 }
             }
+            body += "</ul>";
 
             await SendEmailAsync(dto.Email.ToString(), subject, body);
         }
