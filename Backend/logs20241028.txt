@@ -1,1 +1,3 @@
 2024-10-28 08:00:04.938 +00:00 [INF] Login falhou: email não encontrado.
+2024-10-28 09:18:52.539 +00:00 [INF] Login falhou: email não encontrado.
+2024-10-28 13:24:54.842 +00:00 [INF] Login falhou: email não encontrado.
