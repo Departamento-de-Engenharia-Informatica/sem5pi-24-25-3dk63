@@ -1,4 +1,6 @@
-yarn install
 
-yarn dev
+npm install
 
+npm start build
+
+npm run dev

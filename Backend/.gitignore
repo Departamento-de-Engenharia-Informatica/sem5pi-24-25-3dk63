@@ -8,11 +8,4 @@ Backend/bin/
 *.dgfiles
 *.g.props
 Backend/obj/Debug/
-<<<<<<< HEAD
 Backend/obj/Debug/net8.0/
-=======
-Backend/obj/Debug/net8.0/
-# Ignorar diretórios bin e obj
-Backend/Testes/bin/
-Backend/Testes/obj/
->>>>>>> 234af50 (resolver ficheiro demasiado longo)
