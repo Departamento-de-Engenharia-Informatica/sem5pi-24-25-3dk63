@@ -4,6 +4,7 @@ using DDDSample1.Domain.Shared;
 using Microsoft.AspNetCore.Authorization;
 using DDDSample1.Users;
 using Backend.Domain.Users.ValueObjects;
+using System.Security.Claims;
 
 namespace DDDSample1.Controllers
 {
@@ -19,7 +20,7 @@ namespace DDDSample1.Controllers
         }
 
         // GET: api/Users
-        [Authorize(Roles = "Admin")]
+        //[Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<IEnumerable<UserCompleteInformationDTO>>> GetAll()
         {
@@ -105,5 +106,25 @@ namespace DDDSample1.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [Authorize]
+        [HttpGet("me")]
+        public async Task<ActionResult<UserCompleteInformationDTO>> GetCurrentUser()
+        {
+            var email = User.FindFirst(ClaimTypes.Email)?.Value;
+            if (string.IsNullOrEmpty(email))
+            {
+                return Unauthorized();
+            }
+
+            var user = await _service.FindByEmailAsync(email);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(user);
+        }
+
     }
 }

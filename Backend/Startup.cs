@@ -37,6 +37,8 @@ using System.Text;
 using Microsoft.AspNetCore.DataProtection;
 using DDDSample1.Domain.PendingChangeStaff;
 using DDDSample1.Infrastructure.PendingChangeStaff;
+using Microsoft.Extensions.Options;
+using Microsoft.CodeAnalysis.Options;
 
 namespace DDDSample1
 {
@@ -52,23 +54,22 @@ namespace DDDSample1
         public void ConfigureServices(IServiceCollection services)
         {
 
-
             services.AddCors(options =>
-              {
-                  options.AddPolicy("AllowAll",
-                      builder =>
-                      {
-                          builder.AllowAnyOrigin()
-                                 .AllowAnyMethod()
-                                 .AllowAnyHeader();
-                      });
-              });
+            {
+                  options.AddPolicy("CorsPolicy", builder =>
+                {
+                    builder.WithOrigins("http://localhost:5173")
+                        .AllowAnyMethod()
+                        .AllowAnyHeader()
+                        .AllowCredentials();
+                });
+            });
 
 
             Log.Logger = new LoggerConfiguration()
-          .MinimumLevel.Debug()
-          .WriteTo.File("logs.txt", rollingInterval: RollingInterval.Day)
-          .CreateLogger();
+            .MinimumLevel.Debug()
+            .WriteTo.File("logs.txt", rollingInterval: RollingInterval.Day)
+            .CreateLogger();
 
 
             services.AddDataProtection();
@@ -83,7 +84,13 @@ namespace DDDSample1
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             })
-            .AddCookie()
+            .AddCookie(options => {
+
+                options.Cookie.SameSite = SameSiteMode.None;
+                options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+            })
+
             .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
             {
                 options.ClientId = Configuration.GetValue<string>("GoogleKeys:ClientId");
@@ -156,7 +163,7 @@ namespace DDDSample1
 
             app.UseRouting();
 
-            app.UseCors("AllowAll"); 
+            app.UseCors("CorsPolicy"); 
 
 
             app.UseAuthentication();
