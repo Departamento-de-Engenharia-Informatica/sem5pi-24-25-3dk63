@@ -1,3 +1,3 @@
 ﻿<Project>
-  <Import Project="..\buildMultiTargeting\DDDNetCore.props" />
+  <Import Project="../buildMultiTargeting/DDDNetCore.props" />
 </Project>
