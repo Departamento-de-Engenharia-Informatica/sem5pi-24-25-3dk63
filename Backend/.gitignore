@@ -1,11 +1,14 @@
-Backend/Testes/bin
-Backend/obj/
+Backend/Testes/bin/
+Backend/Testes/obj/
 Backend/bin/
+Backend/obj/
+
 *.cache
 *.nuget.*
 *.assets.json
 *.dgprops.json
 *.dgfiles
 *.g.props
+
 Backend/obj/Debug/
 Backend/obj/Debug/net8.0/
