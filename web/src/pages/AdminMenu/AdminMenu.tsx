@@ -1,41 +1,16 @@
 import React from "react";
-import PatientList from "./PatientList"; // Certifique-se de que este componente seja importado corretamente
+import PatientList from "./PatientList"; // Ajuste o caminho conforme necessário
 
-function AdminMenu() {
-  const [activeTab, setActiveTab] = React.useState("patients");
-
-  const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
-  };
-
+const AdminMenu: React.FC = () => {
   return (
-    <div className="flex flex-col w-64 bg-white shadow-lg rounded-lg p-4">
-      <h2 className="text-2xl font-semibold mb-4">Administração</h2>
-      <ul className="space-y-2">
-        <li
-          className={`cursor-pointer py-2 px-4 rounded-lg transition duration-200 ${
-            activeTab === "patients" ? "bg-blue-500 text-white" : "hover:bg-blue-100"
-          }`}
-          onClick={() => handleTabChange("patients")}
-        >
-          Gerenciar Pacientes
-        </li>
-        <li
-          className={`cursor-pointer py-2 px-4 rounded-lg transition duration-200 ${
-            activeTab === "staff" ? "bg-blue-500 text-white" : "hover:bg-blue-100"
-          }`}
-          onClick={() => handleTabChange("staff")}
-        >
-          Gerenciar Funcionários
-        </li>
-      </ul>
-
-      <div className="mt-4 flex-grow bg-gray-50 rounded-lg p-4">
-        {activeTab === "patients" && <PatientList />}
-        {/* Aqui você pode adicionar o componente para Gerenciar Funcionários quando implementado */}
+    <div className="p-8 bg-gray-50 min-h-screen">
+      <h1 className="text-3xl font-bold text-center mb-6">Administração</h1>
+      <div className="bg-white shadow-lg rounded-lg p-6">
+        <PatientList /> {/* O título "Gerenciar Pacientes" estará no PatientList */}
       </div>
+      {/* Você pode adicionar mais seções de gerenciamento aqui */}
     </div>
   );
-}
+};
 
 export default AdminMenu;
