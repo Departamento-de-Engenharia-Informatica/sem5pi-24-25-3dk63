@@ -10,7 +10,6 @@ function LoginPage() {
         }
 
         try {
-
             const response = await fetch("https://localhost:5001/api/login", {
                 method: "POST",
                 headers: {
@@ -20,8 +19,7 @@ function LoginPage() {
                 body: JSON.stringify({ token }),
             });
 
-
-          console.log(await response.json());
+            console.log(await response.json());
         } catch (error) {
             console.error("Erro na requisição ao backend:", error);
         }
@@ -29,22 +27,25 @@ function LoginPage() {
 
     return (
         <GoogleOAuthProvider clientId="3330913078-gnja0ha00r03ep3l3k7kf92q2c2428o1.apps.googleusercontent.com">
-            <div >
-                <main >
-                    <h1 >
-                        Bem-vindo à Página de Login
+            <div className="flex items-center justify-center min-h-screen bg-gray-100">
+                <main className="bg-white rounded-lg shadow-lg p-8 w-80">
+                    <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
+                        Faça Login
                     </h1>
-                    <GoogleLogin
-                        type="standard"
-                        shape="pill"
-                        theme="outline"
-                        text="continue_with"
-                        size="large"
-                        locale="en-GB"
-                        logo_alignment="center"
-                        width="400"
-                        onSuccess={handleLoginSuccess}
-                    />
+                    <div className="flex justify-center">
+                        <div className="w-full">
+                            <GoogleLogin
+                                type="standard"
+                                shape="pill"
+                                theme="outline"
+                                text="continue_with"
+                                size="large"
+                                locale="en-GB"
+                                logo_alignment="center"
+                                onSuccess={handleLoginSuccess}
+                            />
+                        </div>
+                    </div>
                 </main>
             </div>
         </GoogleOAuthProvider>

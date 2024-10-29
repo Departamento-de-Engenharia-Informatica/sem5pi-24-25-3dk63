@@ -43,6 +43,16 @@ namespace DDDSample1.Patients
             _auditService = auditService;
         }
 
+
+        public async Task<List<PatientDTO>> GetAllPatientsAsync()
+        {
+            var patients = await _patientRepository.GetAllAsync(); // Ensure that your repository has this method implemented
+
+            return _mapper.Map<List<PatientDTO>>(patients);
+        }
+
+
+
         public async Task<PatientDTO> GetByIdAsync(MedicalRecordNumber id)
         {
             var patient = await this._patientRepository.GetByIdAsync(id);

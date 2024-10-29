@@ -19,6 +19,7 @@ namespace DDDSample1.Infrastructure.Patients
             _logger = logger;
         }
 
+
         public async Task<bool> EmailExistsAsync(string email)
         {
             // Check for existence in the Users table

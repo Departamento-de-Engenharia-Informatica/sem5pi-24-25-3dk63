@@ -35,12 +35,18 @@ namespace DDDSample1.Controllers
         }
 
 
-//get
+        //get
 
         // GET: api/Patients
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<PatientDTO>>> GetAllPatients()
+        {
+            var patients = await _service.GetAllPatientsAsync(); // Ensure this method exists in your service
+            return Ok(patients);
+        }
 
         [HttpGet("search")]
-        [Authorize (Roles = "Admin")]
+        //[Authorize (Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<SearchPatientDTO>>> SearchPatientAsync([FromQuery] string? name = null, [FromQuery] string? email = null, [FromQuery] string? dateOfBirth = null, [FromQuery] string? medicalRecordNumber = null)
         {
             var patientList = await _service.SearchPatientAsync(name, email, dateOfBirth, medicalRecordNumber);

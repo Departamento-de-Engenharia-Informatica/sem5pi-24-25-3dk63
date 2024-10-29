@@ -36,6 +36,8 @@ namespace DDDSample1.Controllers
 
         }
 
+        
+
         [HttpGet]
         public async Task<ActionResult<IEnumerable<StaffCompleteDTO>>> GetAllStaff()
         {
@@ -81,7 +83,7 @@ namespace DDDSample1.Controllers
             }
 
             var staff = await _staffService.GetByLicenseNumberAsync(new LicenseNumber(licenseNumber));
-            
+
             if (staff == null)
             {
                 return NotFound("Unable to find the staff information.");
@@ -113,7 +115,7 @@ namespace DDDSample1.Controllers
                 await _staffService.AddPendingChangesAsync(updateDto, new UserId(userStaff.Id));
 
                     if (userStaff.Email?.Value != null)
-                    {   
+                    {
                         await _emailService.SendUpdateStaffEmail(userStaff.Email.Value, userStaff.ConfirmationToken);
                     }
                     else
@@ -149,7 +151,7 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest($"Update confirmation failed: {ex.Message}");
             }
-            
+
         }
 
         [Authorize(Roles = "Admin")]
@@ -183,12 +185,12 @@ namespace DDDSample1.Controllers
         [Authorize(Roles = "Admin")]
         [HttpPatch("deactivate")]
         public async Task<ActionResult<IEnumerable<StaffDTO>>> DeactivateStaffAsync(
-            [FromQuery] string? name = null, 
-            [FromQuery] string? licenseNumber = null, 
+            [FromQuery] string? name = null,
+            [FromQuery] string? licenseNumber = null,
             [FromQuery] string? phoneNumber = null,
             [FromQuery] string UserId = null,
             [FromQuery] string? specialization = null)
-            
+
         {
             var adminEmail = User.FindFirstValue(ClaimTypes.Email);
             var deactivatedStaff = await _staffService.DeactivateStaffAsync(adminEmail, name,licenseNumber, phoneNumber, UserId, specialization);

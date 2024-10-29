@@ -16,7 +16,7 @@ namespace DDDSample1.Domain.Patients
         void Remove(Patient patient);
         Task<Patient> FindByUserIdAsync(UserId id);
         IQueryable<Patient> GetQueryable();
-
+        Task<List<Patient>> GetAllAsync();
         Task DeletePatientAsync(UserId id);
 
     }
