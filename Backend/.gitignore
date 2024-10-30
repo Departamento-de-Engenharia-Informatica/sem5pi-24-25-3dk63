@@ -1,8 +1,11 @@
-Backend/Testes/bin/
-Backend/Testes/obj/
-Backend/bin/
-Backend/obj/
+**/bin/
+**/obj/
 
+*.dll
+*.exe
+*.pdb
+*.editorconfig
+*.json
 *.cache
 *.nuget.*
 *.assets.json
