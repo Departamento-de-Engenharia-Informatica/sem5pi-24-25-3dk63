@@ -39,9 +39,9 @@ namespace DDDSample1.Controllers
 
         // GET: api/Patients
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PatientDTO>>> GetAllPatients()
+        public async Task<ActionResult<IEnumerable<PatientCompleteDTO>>> GetAllPatients()
         {
-            var patients = await _service.GetAllPatientsAsync(); // Ensure this method exists in your service
+            var patients = await _service.GetAllPatientsAsync();
             return Ok(patients);
         }
 
@@ -89,7 +89,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpPatch("{id}")]
-        [Authorize(Roles="Admin")]
+        //[Authorize(Roles="Admin")]
         public async Task<IActionResult> UpdatePatientProfile(PatientUpdateDTO updateDto)
         {
             if (!ModelState.IsValid)

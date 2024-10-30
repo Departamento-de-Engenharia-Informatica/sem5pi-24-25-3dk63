@@ -1,13 +1,18 @@
+// Checkbox.tsx
 interface CheckboxProps {
-  label: string;
   isChecked: boolean;
-  // onChange: React.ChangeEventHandler<HTMLInputElement>;
+  label: string;
+  onChange: () => void;
 }
 
-const Checkbox: React.FC<CheckboxProps> = ({ label, isChecked }) => {
+const Checkbox: React.FC<CheckboxProps> = ({ label, isChecked, onChange }) => {
   return (
     <label className="capitalize">
-      <input type="checkbox" checked={isChecked} />
+      <input
+        type="checkbox"
+        checked={isChecked}
+        onChange={onChange} 
+      />
       {label}
     </label>
   );

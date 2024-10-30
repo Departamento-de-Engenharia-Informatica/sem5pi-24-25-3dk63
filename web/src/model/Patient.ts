@@ -19,4 +19,6 @@ export interface Patient {
     emergencyContact: string;
   };
   active: boolean;
+  [key: string]: any;
+
 }

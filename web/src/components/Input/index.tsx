@@ -1,4 +1,7 @@
+import React from "react";
+
 interface InputProps {
+  label?: string;
   value?: string;
   defaultValue?: string | number;
   onChange?: (val: string) => void;
@@ -11,9 +14,11 @@ interface InputProps {
   disabled?: boolean;
   autoComplete?: string;
   inputRef?: React.RefObject<HTMLInputElement>;
+  readOnly?: boolean;
 }
 
 const Input: React.FC<InputProps> = ({
+  label,
   value,
   onChange,
   type = "text",
@@ -26,43 +31,30 @@ const Input: React.FC<InputProps> = ({
   className,
   inputRef,
   defaultValue,
+  readOnly,
 }) => {
   return (
     <div className={`flex flex-col gap-y-1 ${className}`}>
-      <label
-        htmlFor={name || placeholder}
-        className="ml-1 font-bold text-slate-500"
-      >
-        {name || placeholder}
-      </label>
-      <p className="-mt-2 mb-1 ml-1 text-sm text-slate-500">{description}</p>
-      {onChange === undefined ? (
-        <input
-          className="w-full rounded-lg border border-slate-500 bg-slate-100 px-4 py-2.5 text-left
-          disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
-          placeholder={placeholder}
-          type={type}
-          name={name || placeholder}
-          step={step}
-          disabled={disabled}
-          defaultValue={defaultValue}
-          autoComplete={autoComplete}
-          ref={inputRef}
-        />
-      ) : (
-        <input
-          className="w-full rounded-lg border border-slate-500 bg-slate-100 px-4 py-2.5 text-left disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
-          placeholder={placeholder}
-          type={type}
-          name={name || placeholder}
-          disabled={disabled}
-          step={step}
-          defaultValue={defaultValue}
-          value={value}
-          onChange={(e) => onChange(e.target.value)}
-          ref={inputRef}
-        />
+      {label && (
+        <label htmlFor={name || placeholder} className="ml-1 font-bold text-slate-500">
+          {label}
+        </label>
       )}
+      <p className="-mt-2 mb-1 ml-1 text-sm text-slate-500">{description}</p>
+      <input
+        className="w-full rounded-lg border border-slate-500 bg-slate-100 px-4 py-2.5 text-left disabled:cursor-not-allowed disabled:bg-slate-300 disabled:text-slate-500"
+        placeholder={placeholder}
+        type={type}
+        name={name || placeholder}
+        step={step}
+        disabled={disabled}
+        defaultValue={defaultValue}
+        value={value}
+        onChange={onChange ? (e) => onChange(e.target.value) : undefined} // Condicional para onChange
+        autoComplete={autoComplete}
+        readOnly={readOnly} 
+        ref={inputRef}
+      />
     </div>
   );
 };

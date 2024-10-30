@@ -44,12 +44,36 @@ namespace DDDSample1.Patients
         }
 
 
-        public async Task<List<PatientDTO>> GetAllPatientsAsync()
+        public async Task<List<PatientCompleteDTO>> GetAllPatientsAsync()
         {
-            var patients = await _patientRepository.GetAllAsync(); // Ensure that your repository has this method implemented
+            // Recupera todos os pacientes e usuários
+            var patients = await _patientRepository.GetAllAsync();
+            var users = await _userRepository.GetAllAsync();
 
-            return _mapper.Map<List<PatientDTO>>(patients);
+            // Cria um dicionário para facilitar a busca de usuários pelo UserId
+            var userDictionary = users.ToDictionary(u => u.Id.Value, u => u);
+
+            // Mapeia a lista de pacientes para PatientCompleteDTO
+            var patientCompleteList = patients.Select(patient => new PatientCompleteDTO
+            {
+                id = patient.Id,
+                userId = patient.UserId,
+                // Preenche os campos do DTO usando os dados do usuário associado
+                personalEmail = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Email : null,
+                iamEmail = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Email : null, // Se houver, ajuste conforme necessário
+                name = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Name : null,
+                dateOfBirth = patient.dateOfBirth,
+                gender = patient.gender,
+                emergencyContact = patient.emergencyContact,
+                phoneNumber = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].PhoneNumber : null,
+                medicalHistory = patient.medicalHistory,
+                appointmentHistoryList = patient.appointmentHistoryList,
+                active = patient.Active
+            }).ToList();
+
+            return patientCompleteList;
         }
+
 
 
 
