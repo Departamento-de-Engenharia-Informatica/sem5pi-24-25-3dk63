@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   getAllPatients,
   deletePatientProfile,
-  updatePatientProfile,
 } from "@/service/patientService";
 
 interface IPatient {
