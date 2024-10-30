@@ -3,7 +3,7 @@ import {
   getAllPatients,
   deletePatientProfile,
   updatePatientProfile,
-} from "@/service/patientService"; // Ajuste o caminho conforme necessário
+} from "@/service/patientService";
 
 interface IPatient {
   id: {
@@ -80,10 +80,15 @@ const PatientList: React.FC = () => {
       <table className="min-w-full bg-gray-100 border border-gray-300 rounded-lg">
         <thead>
           <tr className="bg-gray-200">
-            <th className="px-4 py-2 text-left text-gray-600">ID do Paciente</th>
+            <th className="px-4 py-2 text-left text-gray-600">Medical Record Number</th>
+            <th className="px-4 py-2 text-left text-gray-600">User Id</th>
             <th className="px-4 py-2 text-left text-gray-600">Data de Nascimento</th>
             <th className="px-4 py-2 text-left text-gray-600">Contato de Emergência</th>
-            <th className="px-4 py-2 text-left text-gray-600">Ações</th>
+            <th className="px-4 py-2 text-left text-gray-600">Sexo</th>
+            <th className="px-4 py-2 text-left text-gray-600">Histórico Médico</th>
+            <th className="px-4 py-2 text-left text-gray-600">Ativo</th>
+
+            <th className="px-12 py-2 text-left text-gray-600">Ações</th>
           </tr>
         </thead>
         <tbody>
@@ -97,9 +102,13 @@ const PatientList: React.FC = () => {
             patients.map((patient, index) => (
               <tr key={index} className="hover:bg-gray-200 transition duration-200">
                 <td className="px-4 py-3 border-b border-gray-300">{patient.id.value}</td>
+                <td className="px-4 py-3 border-b border-gray-300">{patient.userId.value}</td>
                 <td className="px-4 py-3 border-b border-gray-300">{patient.dateOfBirth.date}</td>
                 <td className="px-4 py-3 border-b border-gray-300">{patient.emergencyContact.emergencyContact}</td>
-                <td className="px-4 py-3 border-b border-gray-300 flex space-x-2">
+                <td className="px-4 py-3 border-b border-gray-300">{patient.gender.gender}</td>
+                <td className="px-4 py-3 border-b border-gray-300">{patient.medicalHistory.medicalHistory.toString()}</td>
+                <td className="px-4 py-3 border-b border-gray-300">{patient.active.valueOf().toString()}</td>
+                <td className="px-4 py-10 border-b border-gray-300 flex space-x-3">
                   <button
                     className="text-blue-600 hover:underline transition duration-200"
                     onClick={() => setSelectedPatient(patient)}
