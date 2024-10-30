@@ -1,37 +1,15 @@
 import React, { useEffect, useState } from "react";
-import {
-  getAllPatients,
-  deletePatientProfile,
-} from "@/service/patientService";
-
-interface IPatient {
-  id: {
-    value: string;
-  };
-  dateOfBirth: {
-    date: string;
-  };
-  emergencyContact: {
-    emergencyContact: string;
-  };
-  gender: {
-    gender: string;
-  };
-  medicalHistory: {
-    medicalHistory: string;
-  };
-  userId: {
-    value: string;
-  };
-  active: boolean;
-}
+import { useInjection } from "inversify-react";
+import { TYPES } from "@/inversify/types";
+import { IPatientService } from "@/service/IService/IPatientService";
+import { Patient } from "@/model/Patient";
 
 const PatientList: React.FC = () => {
-  const [patients, setPatients] = useState<IPatient[]>([]);
-  const [selectedPatient, setSelectedPatient] = useState<IPatient | null>(null);
-  const [isEditing, setIsEditing] = useState(false);
+  const [patients, setPatients] = useState<Patient[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const patientService = useInjection<IPatientService>(TYPES.patientService);
 
   useEffect(() => {
     fetchPatients();
@@ -41,35 +19,14 @@ const PatientList: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const patientsData = await getAllPatients();
-      console.log("Pacientes carregados:", patientsData);
+      const patientsData = await patientService.getPatients();
       setPatients(patientsData);
     } catch (error) {
       setError("Erro ao buscar pacientes.");
-      console.error("Error fetching patients:", error);
+      console.error("Erro ao buscar pacientes:", error);
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleDelete = async (id: string) => {
-    try {
-      await deletePatientProfile(id);
-      fetchPatients();
-    } catch (error) {
-      console.error("Erro ao excluir paciente:", error);
-    }
-  };
-
-  const handleEdit = (patient: IPatient) => {
-    setSelectedPatient(patient);
-    setIsEditing(true);
-  };
-
-  const handleCloseEdit = () => {
-    setSelectedPatient(null);
-    setIsEditing(false);
-    fetchPatients();
   };
 
   return (
@@ -79,54 +36,32 @@ const PatientList: React.FC = () => {
       <table className="min-w-full bg-gray-100 border border-gray-300 rounded-lg">
         <thead>
           <tr className="bg-gray-200">
-            <th className="px-4 py-2 text-left text-gray-600">Medical Record Number</th>
-            <th className="px-4 py-2 text-left text-gray-600">User Id</th>
+            <th className="px-4 py-2 text-left text-gray-600">ID</th>
+            <th className="px-4 py-2 text-left text-gray-600">User ID</th>
             <th className="px-4 py-2 text-left text-gray-600">Data de Nascimento</th>
             <th className="px-4 py-2 text-left text-gray-600">Contato de Emergência</th>
             <th className="px-4 py-2 text-left text-gray-600">Sexo</th>
             <th className="px-4 py-2 text-left text-gray-600">Histórico Médico</th>
             <th className="px-4 py-2 text-left text-gray-600">Ativo</th>
-
-            <th className="px-12 py-2 text-left text-gray-600">Ações</th>
           </tr>
         </thead>
         <tbody>
           {patients.length === 0 ? (
             <tr>
-              <td colSpan={4} className="text-center p-4 text-gray-500">
+              <td colSpan={7} className="text-center p-4 text-gray-500">
                 Nenhum paciente encontrado.
               </td>
             </tr>
           ) : (
-            patients.map((patient, index) => (
-              <tr key={index} className="hover:bg-gray-200 transition duration-200">
+            patients.map((patient) => (
+              <tr key={patient.id.value} className="hover:bg-gray-200 transition duration-200">
                 <td className="px-4 py-3 border-b border-gray-300">{patient.id.value}</td>
                 <td className="px-4 py-3 border-b border-gray-300">{patient.userId.value}</td>
                 <td className="px-4 py-3 border-b border-gray-300">{patient.dateOfBirth.date}</td>
                 <td className="px-4 py-3 border-b border-gray-300">{patient.emergencyContact.emergencyContact}</td>
                 <td className="px-4 py-3 border-b border-gray-300">{patient.gender.gender}</td>
-                <td className="px-4 py-3 border-b border-gray-300">{patient.medicalHistory.medicalHistory.toString()}</td>
-                <td className="px-4 py-3 border-b border-gray-300">{patient.active.valueOf().toString()}</td>
-                <td className="px-4 py-10 border-b border-gray-300 flex space-x-3">
-                  <button
-                    className="text-blue-600 hover:underline transition duration-200"
-                    onClick={() => setSelectedPatient(patient)}
-                  >
-                    Ver
-                  </button>
-                  <button
-                    className="text-yellow-600 hover:underline transition duration-200"
-                    onClick={() => handleEdit(patient)}
-                  >
-                    Editar
-                  </button>
-                  <button
-                    className="text-red-600 hover:underline transition duration-200"
-                    onClick={() => handleDelete(patient.id.value)}
-                  >
-                    Excluir
-                  </button>
-                </td>
+                <td className="px-4 py-3 border-b border-gray-300">{patient.medicalHistory.medicalHistory}</td>
+                <td className="px-4 py-3 border-b border-gray-300">{patient.active.toString()}</td>
               </tr>
             ))
           )}

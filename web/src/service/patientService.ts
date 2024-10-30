@@ -1,45 +1,15 @@
-import axios from 'axios';
+import { inject, injectable } from "inversify";
+import { TYPES } from "../inversify/types";
+import type { HttpService } from "./IService/HttpService";
+import { Patient } from "@/model/Patient";
+import { IPatientService } from "./IService/IPatientService";
 
-const API_URL = 'https://localhost:5001/api/patients';
+@injectable()
+export class PatientService implements IPatientService {
+  constructor(@inject(TYPES.api) private http: HttpService) {}
 
-interface SearchPatientsQuery {
-    name?: string;
-    email?: string;
-    dateOfBirth?: string;
-    medicalRecordNumber?: string;
+  async getPatients(): Promise<Patient[]> {
+    const res = await this.http.get<Patient[]>("/patients");
+    return res.data;
+  }
 }
-
-export const searchPatients = async (query: SearchPatientsQuery): Promise<any[]> => {
-    const response = await axios.get(`${API_URL}/search`, { params: query });
-    return response.data;
-};
-
-export const getPatientById = async (id: string): Promise<any> => {
-    const response = await axios.get(`${API_URL}/${id}`);
-    return response.data;
-};
-
-export const registerPatient = async (dto: any): Promise<any> => {
-    const response = await axios.post(`${API_URL}/register-patient`, dto);
-    return response.data;
-};
-
-export const updatePatientProfile = async (id: string, updateDto: any): Promise<any> => {
-    const response = await axios.patch(`${API_URL}/${id}`, updateDto);
-    return response.data;
-};
-
-export const deletePatientProfile = async (id: string): Promise<any> => {
-    const response = await axios.delete(`${API_URL}/${id}`);
-    return response.data;
-};
-
-export const getAllPatients = async (): Promise<any[]> => {
-    try {
-        const response = await axios.get(API_URL);
-        return response.data;
-    } catch (error) {
-        console.error('Error fetching patients:', error);
-        throw error;
-    }
-};
