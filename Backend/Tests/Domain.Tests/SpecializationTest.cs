@@ -4,7 +4,7 @@ using DDDSample1.Domain.Specialization;
 using Backend.Domain.Specialization.ValueObjects;
 using DDDSample1.Domain.Shared;
 
-namespace DDDSample1.Tests.Domain.Specializations
+namespace Domain.Tests
 {
     public class SpecializationTests
     {

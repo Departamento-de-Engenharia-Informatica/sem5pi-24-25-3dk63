@@ -9,7 +9,7 @@ using Backend.Domain.Specialization.ValueObjects;
 using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.Specialization;
 
-namespace DDDSample1.Tests.Domain.Specializations
+namespace Backend.Tests.Services
 {
     public class SpecializationServiceTests
     {

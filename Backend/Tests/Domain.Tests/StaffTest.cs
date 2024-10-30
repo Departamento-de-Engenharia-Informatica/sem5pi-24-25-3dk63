@@ -6,7 +6,7 @@ using DDDSample1.Domain.Users;
 using DDDSample1.Domain.Specialization;
 using DDDSample1.Domain.Staff;
 
-namespace DDDSample1.Tests.Domain.Staffs
+namespace Domain.Tests
 {
     public class StaffTests
     {
