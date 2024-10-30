@@ -183,5 +183,11 @@ namespace DDDSample1.Users
             return user == null ? null : _mapper.Map<UserDTO>(user);
         }
 
+        public async Task<UserDTO> checkIfAccountExists(string email)
+        {
+            var user = await this._userRepository.FindByEmailAsync(new Email(email));
+            return user == null ? null : _mapper.Map<UserDTO>(user);
+        }
+
     }
 }
