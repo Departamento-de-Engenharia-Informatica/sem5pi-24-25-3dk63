@@ -5,7 +5,6 @@
 *.exe
 *.pdb
 *.editorconfig
-*.json
 *.cache
 *.nuget.*
 *.assets.json
