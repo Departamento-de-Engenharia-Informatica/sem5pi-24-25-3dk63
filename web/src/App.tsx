@@ -1,10 +1,9 @@
 // src/App.tsx
 import "reflect-metadata";
-import './App.css';
 import Test from './pages/Test';
 import LoginPage from './pages/Login';
 import AdminPage from './pages/AdminMenu/AdminMenu';
-import PatientList from './pages/AdminPatient/PatientList'; // Importe o PatientList
+import PatientList from './pages/AdminPatient/PatientList';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
@@ -16,18 +15,21 @@ function App() {
   return (
     <Provider container={container} standalone>
       <Router>
-        <div className="flex flex-col min-h-screen">
-          <header className="bg-blue-600 text-white p-4">
+        <div className="flex flex-col h-screen bg-background text-text">
+          <header className="bg-primary text-white p-4 text-center flex-shrink-0">
+            {/* Conteúdo do cabeçalho */}
           </header>
-          <main className="flex-grow bg-gray-100">
-            <Routes>
-              <Route path="/test" element={<Test />} />
-              <Route path="/" element={<LoginPage />} />
-              <Route path="/admin" element={<AdminPage />} />
-              <Route path="/admin/patients" element={<PatientList setAlertMessage={setAlertMessage} />} />
-            </Routes>
+          <main className="flex-grow flex justify-center items-center overflow-hidden">
+            <div className="w-full p-8">
+              <Routes>
+                <Route path="/test" element={<Test />} />
+                <Route path="/" element={<LoginPage />} />
+                <Route path="/admin" element={<AdminPage />} />
+                <Route path="/admin/patients" element={<PatientList setAlertMessage={setAlertMessage} />} />
+              </Routes>
+            </div>
           </main>
-          <footer className="bg-blue-600 text-white text-center p-4">
+          <footer className="bg-primary text-white text-center p-4 flex-shrink-0">
             © 2024 Sua Empresa. Todos os direitos reservados.
           </footer>
         </div>
