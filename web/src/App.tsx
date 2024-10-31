@@ -3,7 +3,7 @@ import "reflect-metadata";
 import Test from './pages/Test';
 import LoginPage from './pages/Login';
 import AdminPage from './pages/AdminMenu/AdminMenu';
-import PatientList from './pages/AdminPatient/PatientList';
+import AdminPatient from './pages/AdminPatient';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
@@ -25,7 +25,7 @@ function App() {
                 <Route path="/test" element={<Test />} />
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/admin" element={<AdminPage />} />
-                <Route path="/admin/patients" element={<PatientList setAlertMessage={setAlertMessage} />} />
+                <Route path="/admin/patients" element={<AdminPatient setAlertMessage={setAlertMessage} />} />
               </Routes>
             </div>
           </main>

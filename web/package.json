@@ -19,6 +19,7 @@
   "dependencies": {
     "@fontsource/inter": "^5.1.0",
     "@fontsource/rubik": "^5.1.0",
+    "@heroicons/react": "^2.1.5",
     "@netlify/blobs": "^7.0.0",
     "@react-oauth/google": "^0.12.1",
     "@react-three/fiber": "^8.17.10",
