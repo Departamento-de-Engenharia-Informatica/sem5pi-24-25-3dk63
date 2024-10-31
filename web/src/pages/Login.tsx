@@ -49,9 +49,19 @@ function LoginPage() {
             if (response.ok) {
                 const claims = await response.json();
                 const userRole = claims.find((claim: { type: string; value: string }) => claim.type === "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.value;
-
+                const status = claims.find((claim: { type: string; value: boolean }) => claim.type === "http://schemas.microsoft.com/ws/2008/06/identity/claims/status")?.value;
+                
                 if (userRole === "Admin") {
                     navigate("/admin");
+                }else if(userRole === "Patient"){
+                    if (!status)
+                    {
+                        // Dps mudar para navigate("/register-patient")
+                        navigate("/patient");
+                    } else {
+                        //navigate("/patient");
+                    }
+                    
                 } else {
                     navigate("/");
                 }

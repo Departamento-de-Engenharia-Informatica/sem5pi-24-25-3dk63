@@ -4,10 +4,13 @@ import Test from './pages/Test';
 import LoginPage from './pages/Login';
 import AdminPage from './pages/AdminMenu/AdminMenu';
 import AdminPatient from './pages/AdminPatient';
+import PatientPage from './pages/PatientMenu/PatientMenu';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
 import React, { useState } from "react";
+import { Patient } from './model/Patient';
+import NewPatient from "./pages/AdminPatient/NewPatient";
 
 function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -26,6 +29,9 @@ function App() {
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/patients" element={<AdminPatient setAlertMessage={setAlertMessage} />} />
+                <Route path="/patient" element={<PatientPage />} />
+                <Route path="/patient/register" element={<NewPatient />} />
+
               </Routes>
             </div>
           </main>
