@@ -1,8 +1,10 @@
 import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 function LoginPage() {
     const navigate = useNavigate();
+    const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
     const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
         const token = credentialResponse.credential;
@@ -26,18 +28,40 @@ function LoginPage() {
             console.log(result);
 
             if (response.ok) {
-                // Aqui você pode redirecionar com base na role
-                const userRole = result.role; // Se a role foi retornada
-                if (userRole === "Admin") {
-                    navigate("/admin");
-                } else {
-                    navigate("/"); // ou qualquer outra página para usuários temporários
-                }
+                fetchClaims();
             } else {
+                setErrorMessage(result.Message);
                 console.error("Login falhou:", result.Message);
             }
         } catch (error) {
+            setErrorMessage("Erro na requisição ao backend.");
             console.error("Erro na requisição ao backend:", error);
+        }
+    };
+
+    const fetchClaims = async () => {
+        try {
+            const response = await fetch("https://localhost:5001/api/claims", {
+                method: "GET",
+                credentials: "include",
+            });
+
+            if (response.ok) {
+                const claims = await response.json();
+                const userRole = claims.find((claim: { type: string; value: string }) => claim.type === "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.value;
+
+                if (userRole === "Admin") {
+                    navigate("/admin");
+                } else {
+                    navigate("/");
+                }
+            } else {
+                setErrorMessage("Erro ao obter claims do usuário.");
+                console.error("Erro ao obter claims:", response.status);
+            }
+        } catch (error) {
+            setErrorMessage("Erro ao fazer requisição para obter claims.");
+            console.error("Erro na requisição ao obter claims:", error);
         }
     };
 
@@ -48,6 +72,9 @@ function LoginPage() {
                     <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
                         Faça Login
                     </h1>
+                    {errorMessage && (
+                        <div className="text-red-500 mb-4 text-center">{errorMessage}</div>
+                    )}
                     <div className="flex justify-center">
                         <div className="w-full">
                             <GoogleLogin

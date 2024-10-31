@@ -39,6 +39,7 @@ namespace DDDSample1.Controllers
 
         // GET: api/Patients
         [HttpGet]
+        [Authorize (Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<PatientCompleteDTO>>> GetAllPatients()
         {
             var patients = await _service.GetAllPatientsAsync();

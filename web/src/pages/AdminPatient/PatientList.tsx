@@ -120,8 +120,8 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     }
   };
 
-  return (
-    <div>
+  return (  
+    <div >
       {loading && <Loading loadingText />}
       {error && <Alert type="error" message={error} />}
 
