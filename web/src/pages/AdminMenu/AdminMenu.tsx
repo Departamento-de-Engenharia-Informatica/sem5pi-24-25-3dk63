@@ -2,6 +2,7 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/Button/index";
 import Alert from "@/components/Alert/index";
+import HamburgerMenu from "@/components/HamburgerMenu"; 
 
 const AdminMenu: React.FC = () => {
   const navigate = useNavigate();
@@ -15,8 +16,16 @@ const AdminMenu: React.FC = () => {
     setAlertMessage("Gerenciar Staff em desenvolvimento!");
   };
 
+  const menuOptions = [
+    { label: "Homepage", action: () => navigate("/") },
+  ];
+
   return (
-    <div className="pt-20 p-8 bg-gray-50 min-h-screen"> {/* Adicionado pt-20 */}
+    <div className="relative pt-20 p-8 bg-gray-50 min-h-screen">
+      <div className="fixed top-1 left-4 z-10">
+        <HamburgerMenu options={menuOptions} />
+      </div>
+
       <h1 className="text-3xl font-bold text-center mb-6">Administração</h1>
       {alertMessage && (
         <div className="mb-4">
