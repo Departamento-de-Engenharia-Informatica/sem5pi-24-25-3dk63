@@ -1,6 +1,9 @@
 import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
+import { useNavigate } from "react-router-dom";
 
 function LoginPage() {
+    const navigate = useNavigate();
+
     const handleLoginSuccess = async (credentialResponse: CredentialResponse) => {
         const token = credentialResponse.credential;
 
@@ -15,11 +18,24 @@ function LoginPage() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                credentials: "include", // Inclui cookies
+                credentials: "include",
                 body: JSON.stringify({ token }),
             });
 
-            console.log(await response.json());
+            const result = await response.json();
+            console.log(result);
+
+            if (response.ok) {
+                // Aqui você pode redirecionar com base na role
+                const userRole = result.role; // Se a role foi retornada
+                if (userRole === "Admin") {
+                    navigate("/admin");
+                } else {
+                    navigate("/"); // ou qualquer outra página para usuários temporários
+                }
+            } else {
+                console.error("Login falhou:", result.Message);
+            }
         } catch (error) {
             console.error("Erro na requisição ao backend:", error);
         }

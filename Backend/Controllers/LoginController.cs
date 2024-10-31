@@ -13,58 +13,53 @@ namespace DDDSample1.Presentation.Controllers
 {
     public class LoginController : Controller
     {
-
         UserService userService;
 
         public LoginController(UserService userService)
         {
             this.userService = userService;
         }
-       
-
-
-       [HttpGet("api/login")]
-        public async Task<IActionResult> Login()
-        {
-           
-            var properties = new AuthenticationProperties
-            {
-                RedirectUri = "/api/claims" 
-            }; 
-
-  
-        await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, properties);
-        return new EmptyResult(); 
-        }
 
         [HttpPost("api/login")]
         public async Task<IActionResult> Login([FromBody] TokenRequest request)
         {
+            try
+            {
+                // Valida o token do Google
+                var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
+                var emailGoogle = payload.Email;
 
-             
-            var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
-            var emailGoogle = payload.Email;
-            var userDto = userService.checkIfAccountExists(emailGoogle).Result;                                                                                                               
-            var claims = new List<Claim>();
-            if (userDto != null)
-            { 
-                claims = new List<Claim>
+                // Verifica se o usuário já existe
+                var userDto = await userService.checkIfAccountExists(emailGoogle);
+
+                // Cria a lista de claims
+                var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Role, userDto.Role.ToString()),
-                    new Claim("Active", userDto.Active ? "1" : "0"),
-                    new Claim("UserId", userDto.Id.ToString())
+                    new Claim(ClaimTypes.Email, emailGoogle) // Adiciona o email
                 };
-            }
-            else
-            { 
-              //  identity.AddClaim(new Claim(ClaimTypes.Role, "Temporary"));
-                claims = [new Claim(ClaimTypes.Role, "Temporary")];
-            }
 
-            var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-            await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-            
-            return Ok(new { Message = "Login bem-sucedido" });
+                if (userDto != null)
+                { 
+                    claims.Add(new Claim(ClaimTypes.Role, userDto.Role.ToString()));
+                    claims.Add(new Claim("Active", userDto.Active ? "1" : "0"));
+                    claims.Add(new Claim("UserId", userDto.Id.ToString()));
+                }
+                else
+                { 
+                    claims.Add(new Claim(ClaimTypes.Role, "Temporary"));
+                }
+
+                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+                
+                return Ok(new { 
+                    Message = "Login bem-sucedido"
+                });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { Message = "Erro na validação do token", Error = ex.Message });
+            }
         }
 
         [HttpGet("api/claims")]
@@ -90,14 +85,11 @@ namespace DDDSample1.Presentation.Controllers
             {
                 return Unauthorized(new { Message = "Usuário não autenticado" });
             }
-
-
+        }
     }
 }
 
 public class TokenRequest
 {
     public string Token { get; set; }
-}
-
 }
