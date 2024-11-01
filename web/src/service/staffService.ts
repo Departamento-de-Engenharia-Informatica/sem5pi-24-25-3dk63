@@ -14,4 +14,9 @@ export class StaffService implements IStaffService {
 
     return res.data;
   }
+
+  async deleteStaff(id: string): Promise<void> {
+    await this.http.delete(`/staff/${id}`);
+    console.log("Staff deleted:", id);
+  }
 }

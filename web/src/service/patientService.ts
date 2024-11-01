@@ -17,6 +17,11 @@ export class PatientService implements IPatientService {
     return res.data;
   }
 
+  async deletePatient(id: string): Promise<void> {
+    await this.http.delete(`/patients/${id}`);
+    console.log("Patient deleted:", id);
+  }
+
 async updatePatient(id: string, updatedData: Partial<PatientUpdateDTO>): Promise<void> {
   const patientUpdateDto: PatientUpdateDTO = {
     id: { value: id },

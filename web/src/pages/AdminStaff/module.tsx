@@ -13,7 +13,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalStaffs, setTotalStaffs] = useState<number>(0);
-  const itemsPerPage = 1;
+  const itemsPerPage = 10;
 
   const headers = [
     "License Number",
@@ -33,9 +33,10 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
 
   const fetchStaffs = async () => {
     setLoading(true);
+    setError(null);
     try {
       const staffsData = await staffService.getStaffs();
-      setTotalStaffs(staffsData.length); // Armazena o total de staffs
+      setTotalStaffs(staffsData.length);
       const filteredData = staffsData.map((staffUser) => ({
         "License Number": staffUser.licenseNumber,
         Username: staffUser.username,
@@ -45,6 +46,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         "Specialization Description": staffUser.specializationDescription,
         "Availability Slots": staffUser.availabilitySlots,
         Ativo: staffUser.active ? "Sim" : "Não",
+        id: staffUser.licenseNumber,
       }));
 
       const startIndex = (currentPage - 1) * itemsPerPage;
@@ -58,9 +60,33 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     }
   };
 
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Tem certeza que deseja excluir este membro da equipe?")) {
+      try {
+        await staffService.deleteStaff(id);
+        setStaffs((prev) => prev.filter((staff) => staff.id !== id));
+        setAlertMessage("Membro da equipe excluído com sucesso.");
+      } catch (error) {
+        console.error("Erro ao excluir membro da equipe:", error);
+        setAlertMessage("Erro ao excluir membro da equipe.");
+      }
+    }
+  };
+
   useEffect(() => {
     fetchStaffs();
-  }, [currentPage]); 
+  }, [currentPage]);
 
-  return { staffs, loading, error, headers, menuOptions, totalStaffs, currentPage, setCurrentPage, itemsPerPage };
+  return {
+    staffs,
+    loading,
+    error,
+    headers,
+    menuOptions,
+    totalStaffs,
+    currentPage,
+    setCurrentPage,
+    itemsPerPage,
+    handleDelete
+  };
 };

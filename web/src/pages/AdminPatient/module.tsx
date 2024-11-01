@@ -12,7 +12,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [patientsPerPage] = useState(1);
+  const [patientsPerPage] = useState(10); 
 
   const headers = [
     "Medical Record Number",
@@ -22,7 +22,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     "Data de Nascimento",
     "Sexo",
     "Telefone de Contato",
-    "Ativo"
+    "Ativo",
   ];
 
   const menuOptions = [
@@ -44,6 +44,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         Sexo: patientUser.gender.gender,
         "Telefone de Contato": patientUser.phoneNumber.number,
         Ativo: patientUser.active ? "Sim" : "Não",
+        id: patientUser.id.value,
       }));
 
       setPatients(filteredData);
@@ -53,6 +54,19 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
       setAlertMessage("Erro ao buscar pacientes.");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Tem certeza que deseja excluir este paciente?")) {
+      try {
+        await patientService.deletePatient(id);
+        setPatients((prev) => prev.filter((patient) => patient.id !== id));
+        setAlertMessage("Paciente excluído com sucesso.");
+      } catch (error) {
+        console.error("Erro ao excluir paciente:", error);
+        setAlertMessage("Erro ao excluir paciente.");
+      }
     }
   };
 
@@ -67,5 +81,15 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     currentPage * patientsPerPage
   );
 
-  return { patients: currentPatients, loading, error, headers, menuOptions, totalPages, currentPage, setCurrentPage };
+  return {
+    patients: currentPatients,
+    loading,
+    error,
+    headers,
+    menuOptions,
+    totalPages,
+    currentPage,
+    setCurrentPage,
+    handleDelete
+  };
 };

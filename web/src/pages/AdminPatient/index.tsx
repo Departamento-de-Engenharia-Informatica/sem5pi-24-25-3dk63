@@ -1,10 +1,11 @@
 import React from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
-import Table from "@/components/Table/Table";
+import Table from "@/components/Table";
 import Pagination from "@/components/Pagination";
 import { usePatientListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
+import Button from "@/components/Button"; // Importando o botão
 
 interface PatientListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -19,7 +20,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     menuOptions,
     totalPages,
     currentPage,
-    setCurrentPage
+    setCurrentPage,
   } = usePatientListModule(setAlertMessage);
 
   return (
@@ -29,7 +30,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
         <div className="overflow-x-auto">
-          <Table headers={headers} data={patients} />
+          <Table headers={headers} data={patients}  />
         </div>
         <Pagination
           totalPages={totalPages}
