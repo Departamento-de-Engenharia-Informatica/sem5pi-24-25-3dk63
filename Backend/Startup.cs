@@ -129,11 +129,7 @@ namespace DDDSample1
                         await context.Response.CompleteAsync();
 
                         return;
-                    }else{
-
-                        Log.Information("Login bem-sucedido: email encontrado.");
                     }
-
                     var identity = (ClaimsIdentity)context.Principal.Identity;
                     identity.AddClaim(new Claim("urn:google:access_token", context.AccessToken));
                     identity.AddClaim(new Claim("urn:google:expires_in", context.ExpiresIn.ToString()));
