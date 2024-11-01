@@ -2,7 +2,7 @@
 import "reflect-metadata";
 import Test from './pages/Test';
 import LoginPage from './pages/Login';
-import AdminPage from './pages/AdminMenu/AdminMenu';
+import AdminPage from './pages/AdminMenu';
 import AdminPatient from './pages/AdminPatient';
 import PatientPage from './pages/PatientMenu/PatientMenu';
 import AdminStaff from './pages/AdminStaff';

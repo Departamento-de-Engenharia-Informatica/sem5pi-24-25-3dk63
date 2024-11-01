@@ -4,23 +4,22 @@ import Button from "@/components/Button/index";
 import Alert from "@/components/Alert/index";
 import HamburgerMenu from "@/components/HamburgerMenu";
 
-const AdminMenu: React.FC = () => {
-  const navigate = useNavigate();
-  const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
+import { useAdminMenuModule } from "./module";
 
-  const handleManagePatients = () => {
-    navigate("/admin/patient");
-  };
 
-  const handleManageStaff = () => {
-    navigate("/admin/staff");
-  };
 
-  const menuOptions = [
-    { label: "Homepage", action: () => navigate("/") },
-  ];
+const AdminMenu: React.FC = () =>
+  {
 
-  return (
+  const {
+    handleManagePatients,
+    handleManageStaff,
+    menuOptions,
+    alertMessage,
+
+  } = useAdminMenuModule();
+
+return (
     <div className="relative pt-20 p-8 bg-gray-50 min-h-screen">
       <div className="fixed top-1 left-4 z-10">
         <HamburgerMenu options={menuOptions} />
@@ -47,3 +46,4 @@ const AdminMenu: React.FC = () => {
 };
 
 export default AdminMenu;
+
