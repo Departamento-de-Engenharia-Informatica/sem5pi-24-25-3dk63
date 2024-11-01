@@ -361,9 +361,9 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
 }
 
 
-        public async Task<StaffDTO?> DeactivateAsync(LicenseNumber licenseNumber, string adminEmail)
+        public async Task<StaffDTO?> DeactivateAsync(String licenseNumber, string adminEmail)
         {
-            var staff = await _staffRepository.GetByLicenseNumberAsync(licenseNumber);
+            var staff = await _staffRepository.GetByLicenseNumberAsync(new LicenseNumber(licenseNumber));
             if (staff == null) return null;
 
             _auditService.LogDeactivateStaff(staff, adminEmail);

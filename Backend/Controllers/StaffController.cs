@@ -140,6 +140,8 @@ namespace DDDSample1.Controllers
 
             return Ok("Your changes have been submitted.");
         }
+
+        
         [HttpGet("confirm-update")]
         public async Task<IActionResult> ConfirmEmail(string token)
         {
@@ -184,8 +186,8 @@ namespace DDDSample1.Controllers
         }
 
         [Authorize(Roles = "Admin")]
-        [HttpPatch("deactivate")]
-        public async Task<ActionResult<IEnumerable<StaffDTO>>> DeactivateStaffAsync(
+        [HttpPatch("deactivate2")]
+        public async Task<ActionResult<IEnumerable<StaffDTO>>> DeactivateStaff2Async(
             [FromQuery] string? name = null,
             [FromQuery] string? licenseNumber = null,
             [FromQuery] string? phoneNumber = null,
@@ -195,6 +197,19 @@ namespace DDDSample1.Controllers
         {
             var adminEmail = User.FindFirstValue(ClaimTypes.Email);
             var deactivatedStaff = await _staffService.DeactivateStaffAsync(adminEmail, name,licenseNumber, phoneNumber, UserId, specialization);
+
+            if (deactivatedStaff == null) return NotFound();
+
+            return Ok("Staff deactivated successfully");
+        }
+
+        [Authorize(Roles = "Admin")]
+        [HttpPatch("deactivate/{LicenseNumber}")]
+        public async Task<ActionResult<IEnumerable<StaffDTO>>> DeactivateStaffAsync(string LicenseNumber)
+
+        {
+            var adminEmail = User.FindFirstValue(ClaimTypes.Email);
+            var deactivatedStaff = await _staffService.DeactivateAsync(LicenseNumber, adminEmail);
 
             if (deactivatedStaff == null) return NotFound();
 

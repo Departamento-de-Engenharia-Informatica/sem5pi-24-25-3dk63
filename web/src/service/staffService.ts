@@ -27,10 +27,7 @@ export class StaffService implements IStaffService {
     return res.data;
   }
 
-  async deactivateStaff(staff: StaffUser): Promise<StaffUser> {
-    const res = await this.http.patch<StaffUser>("/staff/deactivate", staff);
-    console.log("Dados retornados do deactivateStaff:", res.data);
-
-    return res.data;
+  async deactivateStaff(id: string): Promise<void> {
+    await this.http.patch(`/staff/deactivate/${id}`, {});
   }
 }

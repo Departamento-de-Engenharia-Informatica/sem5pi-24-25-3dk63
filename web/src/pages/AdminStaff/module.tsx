@@ -24,7 +24,8 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     "Specialization Description",
     "Availability Slots",
     "Ativo",
-  ];
+    "Ações",
+  ];  
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
@@ -46,6 +47,12 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         "Specialization Description": staffUser.specializationDescription,
         "Availability Slots": staffUser.availabilitySlots,
         Ativo: staffUser.active ? "Sim" : "Não",
+        Ações: (
+          <div>
+            <button onClick={() => handleEdit(staffUser.licenseNumber)}>Editar</button>
+            <button onClick={() => handleDeactivate(staffUser.licenseNumber)}>Desativar</button>
+          </div>
+        ),
         id: staffUser.licenseNumber,
       }));
 
@@ -69,6 +76,24 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
       } catch (error) {
         console.error("Erro ao excluir membro da equipe:", error);
         setAlertMessage("Erro ao excluir membro da equipe.");
+      }
+    }
+  };
+
+  const handleEdit = (id: string) => {
+    // Navigate to edit page or open edit modal
+    navigate(`/staff/edit/${id}`);
+  };
+
+  const handleDeactivate = async (id: string) => {
+    if (window.confirm("Tem a certeza que deseja desativar este staff?")) {
+      try {
+        await staffService.deactivateStaff(id);
+        fetchStaffs(); // Refresh the list after deactivation
+        setAlertMessage("Staff desativado com sucesso.");
+      } catch (error) {
+        console.error("Erro ao desativar staff:", error);
+        setAlertMessage("Erro ao desativar staff.");
       }
     }
   };
