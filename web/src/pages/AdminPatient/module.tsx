@@ -1,17 +1,20 @@
-// module.jsx
+// module.tsx
 import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IPatientService } from "@/service/IService/IPatientService";
+import { useNavigate } from "react-router-dom";
 
-export const usePatientListModule = (
-  setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>
-) => {
+export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
+
+  const navigate = useNavigate();
+
+  const patientService = useInjection<IPatientService>(TYPES.patientService);
+
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const patientService = useInjection<IPatientService>(TYPES.patientService);
 
   const headers = [
     "Medical Record Number",
@@ -21,6 +24,11 @@ export const usePatientListModule = (
     "Data de Nascimento",
     "Sexo",
     "Telefone de Contato",
+  ];
+
+  const menuOptions = [
+    { label: "Homepage", action: () => navigate("/") },
+    { label: "AdminMenu", action: () => navigate("/admin") },
   ];
 
   const fetchPatients = async () => {
@@ -51,5 +59,5 @@ export const usePatientListModule = (
     fetchPatients();
   }, []);
 
-  return { patients, loading, error, headers };
+  return { patients, loading, error, headers, menuOptions };
 };

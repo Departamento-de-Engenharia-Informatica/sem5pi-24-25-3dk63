@@ -2,18 +2,18 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import Button from "@/components/Button/index";
 import Alert from "@/components/Alert/index";
-import HamburgerMenu from "@/components/HamburgerMenu"; 
+import HamburgerMenu from "@/components/HamburgerMenu";
 
 const AdminMenu: React.FC = () => {
   const navigate = useNavigate();
   const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
 
   const handleManagePatients = () => {
-    navigate("/admin/patients");
+    navigate("/admin/patient");
   };
 
   const handleManageStaff = () => {
-    setAlertMessage("Gerenciar Staff em desenvolvimento!");
+    navigate("/admin/staff");
   };
 
   const menuOptions = [

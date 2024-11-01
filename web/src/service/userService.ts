@@ -7,7 +7,7 @@ import { GoogleUserInfo } from "@/model/GoogleUserInfo";
 import { Role } from "@/model/Role";
 import { User } from "@/model/User";
 
-import { HttpService } from "./IService/HttpService";
+import type { HttpService } from "./IService/HttpService";
 import { IUserService, UserSession } from "./IService/IUserService";
 
 import axios from "axios";

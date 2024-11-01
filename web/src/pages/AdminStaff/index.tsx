@@ -3,21 +3,21 @@ import React from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
 import Table from "@/components/Table/Table";
-import { usePatientListModule } from "./module";
+import { useStaffListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 
-interface PatientListProps {
+interface StaffListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
+const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
   const {
-    patients,
+    staffs,
     loading,
     error,
     headers,
     menuOptions
-  } = usePatientListModule(setAlertMessage);
+  } = useStaffListModule(setAlertMessage);
 
   return (
     <div className="relative">
@@ -26,11 +26,11 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
         <div className="overflow-x-auto">
-          <Table headers={headers} data={patients} />
+          <Table headers={headers} data={staffs} />
         </div>
       </div>
     </div>
   );
 };
 
-export default PatientList;
+export default StaffList;

@@ -1,8 +1,5 @@
-import { IPaginationDTO } from "@/dto/IPaginationDTO";
-import { GoogleUserInfo } from "@/model/GoogleUserInfo";
-import { Role } from "@/model/Role";
-import { Staff } from "@/model/Staff";
+import { StaffUser } from "@/model/StaffUser";
 
-export interface StaffSession {
-  staff: Staff;
+export interface IStaffService {
+  getStaffs(): Promise<StaffUser[]>;
 }

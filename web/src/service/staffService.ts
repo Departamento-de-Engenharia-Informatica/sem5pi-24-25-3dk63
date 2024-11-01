@@ -1,40 +1,17 @@
-// services/staffService.ts
-import axios from 'axios';
+import { inject, injectable } from "inversify";
+import { TYPES } from "../inversify/types";
+import type { HttpService } from "./IService/HttpService";
+import { IStaffService } from "./IService/IStaffService";
+import { StaffUser } from "@/model/StaffUser";
 
-const API_URL = 'https://localhost:5001/api/staff'; 
+@injectable()
+export class StaffService implements IStaffService {
+  constructor(@inject(TYPES.api) private http: HttpService) {}
 
-interface SearchStaffQuery {
-    name?: string;
-    email?: string;
-    specialization?: string;
+  async getStaffs(): Promise<StaffUser[]> {
+    const res = await this.http.get<StaffUser[]>("/staff");
+    console.log("Dados retornados do getAllStaffs:", res.data);
+
+    return res.data;
+  }
 }
-
-export const searchStaff = async (query: SearchStaffQuery): Promise<any[]> => {
-    const response = await axios.get(`${API_URL}/search`, { params: query });
-    return response.data;
-};
-
-export const getAllStaff = async (): Promise<any[]> => {
-    const response = await axios.get(API_URL);
-    return response.data;
-};
-
-export const getStaffByLicenseNumber = async (licenseNumber: string): Promise<any> => {
-    const response = await axios.get(`${API_URL}/${licenseNumber}`);
-    return response.data;
-};
-
-export const createStaff = async (staffDto: any): Promise<any> => {
-    const response = await axios.post(API_URL, staffDto);
-    return response.data;
-};
-
-export const updateStaffProfile = async (licenseNumber: string, updateDto: any): Promise<any> => {
-    const response = await axios.patch(`${API_URL}/update/${licenseNumber}`, updateDto);
-    return response.data;
-};
-
-export const deleteStaff = async (licenseNumber: string): Promise<any> => {
-    const response = await axios.delete(`${API_URL}/${licenseNumber}`);
-    return response.data;
-};
