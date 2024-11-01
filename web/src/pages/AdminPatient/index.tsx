@@ -1,8 +1,8 @@
-// index.tsx
 import React from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
 import Table from "@/components/Table/Table";
+import Pagination from "@/components/Pagination";
 import { usePatientListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 
@@ -16,7 +16,10 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     loading,
     error,
     headers,
-    menuOptions
+    menuOptions,
+    totalPages,
+    currentPage,
+    setCurrentPage
   } = usePatientListModule(setAlertMessage);
 
   return (
@@ -28,6 +31,11 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         <div className="overflow-x-auto">
           <Table headers={headers} data={patients} />
         </div>
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );

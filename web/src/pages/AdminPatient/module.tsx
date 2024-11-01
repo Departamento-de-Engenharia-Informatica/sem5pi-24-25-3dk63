@@ -1,4 +1,3 @@
-// module.tsx
 import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
@@ -6,15 +5,14 @@ import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
 
 export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
-
   const navigate = useNavigate();
-
   const patientService = useInjection<IPatientService>(TYPES.patientService);
 
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const [currentPage, setCurrentPage] = useState(1);
+  const [patientsPerPage] = useState(1);
 
   const headers = [
     "Medical Record Number",
@@ -62,5 +60,12 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     fetchPatients();
   }, []);
 
-  return { patients, loading, error, headers, menuOptions };
+  const totalPages = Math.ceil(patients.length / patientsPerPage);
+
+  const currentPatients = patients.slice(
+    (currentPage - 1) * patientsPerPage,
+    currentPage * patientsPerPage
+  );
+
+  return { patients: currentPatients, loading, error, headers, menuOptions, totalPages, currentPage, setCurrentPage };
 };

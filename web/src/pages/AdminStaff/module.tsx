@@ -1,4 +1,3 @@
-// module.tsx
 import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
@@ -6,14 +5,15 @@ import { IStaffService } from "@/service/IService/IStaffService";
 import { useNavigate } from "react-router-dom";
 
 export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
-
   const navigate = useNavigate();
-
   const staffService = useInjection<IStaffService>(TYPES.staffService);
 
   const [staffs, setStaffs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [totalStaffs, setTotalStaffs] = useState<number>(0);
+  const itemsPerPage = 1;
 
   const headers = [
     "License Number",
@@ -35,6 +35,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     setLoading(true);
     try {
       const staffsData = await staffService.getStaffs();
+      setTotalStaffs(staffsData.length); // Armazena o total de staffs
       const filteredData = staffsData.map((staffUser) => ({
         "License Number": staffUser.licenseNumber,
         Username: staffUser.username,
@@ -46,7 +47,9 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         Ativo: staffUser.active ? "Sim" : "Não",
       }));
 
-      setStaffs(filteredData);
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedStaffs = filteredData.slice(startIndex, startIndex + itemsPerPage);
+      setStaffs(paginatedStaffs);
     } catch (error) {
       setError("Erro ao buscar staffs.");
       setAlertMessage("Erro ao buscar staffs.");
@@ -57,7 +60,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
 
   useEffect(() => {
     fetchStaffs();
-  }, []);
+  }, [currentPage]); 
 
-  return { staffs, loading, error, headers, menuOptions };
+  return { staffs, loading, error, headers, menuOptions, totalStaffs, currentPage, setCurrentPage, itemsPerPage };
 };
