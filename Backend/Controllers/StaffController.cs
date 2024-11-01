@@ -139,7 +139,7 @@ namespace DDDSample1.Controllers
             await _staffService.ApplyPendingChangesAsync(new UserId(userStaff.Id));
 
             return Ok("Your changes have been submitted.");
-}
+        }
         [HttpGet("confirm-update")]
         public async Task<IActionResult> ConfirmEmail(string token)
         {
