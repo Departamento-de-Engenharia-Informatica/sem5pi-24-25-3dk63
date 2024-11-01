@@ -24,6 +24,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     "Data de Nascimento",
     "Sexo",
     "Telefone de Contato",
+    "Ativo"
   ];
 
   const menuOptions = [
@@ -44,7 +45,9 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         "Data de Nascimento": patientUser.dateOfBirth.date,
         Sexo: patientUser.gender.gender,
         "Telefone de Contato": patientUser.phoneNumber.number,
+        Ativo: patientUser.active ? "Sim" : "Não",
       }));
+
       setPatients(filteredData);
     } catch (error) {
       setError("Erro ao buscar pacientes.");

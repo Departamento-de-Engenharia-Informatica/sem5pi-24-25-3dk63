@@ -1,6 +1,5 @@
 // src/App.tsx
 import "reflect-metadata";
-import Test from './pages/Test';
 import LoginPage from './pages/Login';
 import AdminPage from './pages/AdminMenu';
 import AdminPatient from './pages/AdminPatient';
@@ -25,7 +24,6 @@ function App() {
           <main className="flex-grow flex justify-center items-center overflow-hidden">
             <div className="w-full p-8">
               <Routes>
-                <Route path="/test" element={<Test />} />
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/admin" element={<AdminPage />} />
                 <Route path="/admin/patient" element={<AdminPatient setAlertMessage={setAlertMessage} />} />
@@ -37,7 +35,7 @@ function App() {
             </div>
           </main>
           <footer className="bg-primary text-white text-center p-4 flex-shrink-0">
-            © 2024 Sua Empresa. Todos os direitos reservados.
+            © 2024 CliniTech. Todos os direitos reservados.
           </footer>
         </div>
       </Router>

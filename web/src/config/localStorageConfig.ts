@@ -1,3 +1,3 @@
 export const localStorageConfig = {
-  token: "@MedicalApp:token",
+  token: "@CliniTech:token",
 };

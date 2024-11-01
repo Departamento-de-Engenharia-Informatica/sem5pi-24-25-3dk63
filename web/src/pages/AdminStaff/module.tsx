@@ -23,6 +23,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     "Nome Completo",
     "Specialization Description",
     "Availability Slots",
+    "Ativo",
   ];
 
   const menuOptions = [
@@ -42,6 +43,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         "Nome Completo": staffUser.name,
         "Specialization Description": staffUser.specializationDescription,
         "Availability Slots": staffUser.availabilitySlots,
+        Ativo: staffUser.active ? "Sim" : "Não",
       }));
 
       setStaffs(filteredData);
