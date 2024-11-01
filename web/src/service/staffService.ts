@@ -14,4 +14,18 @@ export class StaffService implements IStaffService {
 
     return res.data;
   }
+
+  async editStaff(staff: StaffUser): Promise<StaffUser> {
+    const res = await this.http.put<StaffUser>("/staff", staff);
+    console.log("Dados retornados do editStaff:", res.data);
+
+    return res.data;
+  }
+
+  async deactivateStaff(staff: StaffUser): Promise<StaffUser> {
+    const res = await this.http.patch<StaffUser>("/staff/deactivate", staff);
+    console.log("Dados retornados do deactivateStaff:", res.data);
+
+    return res.data;
+  }
 }
