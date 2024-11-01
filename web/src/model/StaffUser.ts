@@ -4,6 +4,7 @@ export interface StaffUser {
   username: string;
   role: string;
   email: string;
+  phoneNumber: string;
   name: string; 
   specializationDescription: string;
   availabilitySlots: any[];

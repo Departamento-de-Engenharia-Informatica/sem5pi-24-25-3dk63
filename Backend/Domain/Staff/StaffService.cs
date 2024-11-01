@@ -66,6 +66,7 @@ public StaffService(UserService userService,EmailService emailService ,IStaffRep
                 LicenseNumber = staff.Id.Value.ToString(),
                  Username = _userRepository.GetByIdAsync(staff.UserId).Result.Username.Value.ToString(),
                 Role = _userRepository.GetByIdAsync(staff.UserId).Result.Role.Value.ToString(),
+                PhoneNumber = _userRepository.GetByIdAsync(staff.UserId).Result.PhoneNumber.Number.ToString(),
                 Email = _userRepository.GetByIdAsync(staff.UserId).Result.Email.Value.ToString(),
                 Name = _userRepository.GetByIdAsync(staff.UserId).Result.Name.FullName.ToString(),
                 SpecializationDescription = _specializationRepository.GetByIdAsync(staff.SpecializationId).Result.Description.Value.ToString(),
