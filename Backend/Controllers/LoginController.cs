@@ -20,22 +20,28 @@ namespace DDDSample1.Presentation.Controllers
             this.userService = userService;
         }
 
-        [HttpPost("api/login")]
-        public async Task<IActionResult> Login([FromBody] TokenRequest request)
+        [HttpGet("api/login")]
+        public async Task<IActionResult> Login()
+        {
+            var properties = new AuthenticationProperties { RedirectUri = Url.Action("Index", "Home") };
+
+            await HttpContext.ChallengeAsync(GoogleDefaults.AuthenticationScheme, properties);
+            return new EmptyResult();
+        }
+
+        [HttpPost("api/weblogin")]
+        public async Task<IActionResult> WebLogin([FromBody] TokenRequest request)
         {
             try
             {
-                // Valida o token do Google
                 var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
                 var emailGoogle = payload.Email;
 
-                // Verifica se o usuário já existe
                 var userDto = await userService.checkIfAccountExists(emailGoogle);
 
-                // Cria a lista de claims
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Email, emailGoogle) // Adiciona o email
+                    new Claim(ClaimTypes.Email, emailGoogle)
                 };
 
                 if (userDto != null)

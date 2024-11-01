@@ -15,7 +15,7 @@ function LoginPage() {
         }
 
         try {
-            const response = await fetch("https://localhost:5001/api/login", {
+            const response = await fetch("https://localhost:5001/api/weblogin", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
