@@ -36,9 +36,10 @@ namespace DDDSample1.Controllers
 
         }
 
-        
 
+        // GET: api/Staff
         [HttpGet]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<StaffCompleteDTO>>> GetAllStaff()
         {
             var staffList = await _staffService.GetAllAsyncCompleteInformation();

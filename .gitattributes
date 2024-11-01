@@ -1,0 +1,30 @@
+# Define o comportamento padrão para arquivos de texto
+* text=auto
+
+# Força o uso de LF (Line Feed) para todos os arquivos de código
+*.js text eol=lf
+*.jsx text eol=lf
+*.ts text eol=lf
+*.tsx text eol=lf
+*.json text eol=lf
+*.css text eol=lf
+*.scss text eol=lf
+*.html text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+
+# Mantém os arquivos binários inalterados
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.ico binary
+*.pdf binary
+*.mov binary
+*.mp4 binary
+*.zip binary
+
+# Força o CRLF em scripts de Windows
+*.bat text eol=crlf
+*.cmd text eol=crlf
