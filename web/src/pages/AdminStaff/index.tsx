@@ -1,12 +1,11 @@
 import React from "react";
-import Loading from "@/components/Loading/index";
-import Alert from "@/components/Alert/index";
+import Loading from "@/components/Loading";
+import Alert from "@/components/Alert";
 import Table from "@/components/Table";
 import { useStaffListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
-import { PendingStaffChangesDTO } from "@/dto/PendingStaffChangesDTO";
 
 interface StaffListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -23,16 +22,45 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     currentPage,
     setCurrentPage,
     itemsPerPage,
-    isModalVisible,           // Controle do modal
-    setIsModalVisible,        // Função para controlar a visibilidade do modal
-    staffToEdit,              // Staff atualmente sendo editado
-    setStaffToEdit,  
-    saveChanges,         // Função para definir o staff a ser editado
+    isModalVisible,
+    setIsModalVisible,
+    staffToEdit,
+    setStaffToEdit,
+    handleEdit,
+    handleDelete,
+    handleDeactivate,
+    saveChanges,
   } = useStaffListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalStaffs / itemsPerPage);
 
-  
+  const renderActions = (staff: any) => (
+    <div className="flex flex-wrap gap-2">
+      <button
+        onClick={() => handleEdit(staff)}
+        className="flex-1 min-w-[100px] px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 text-sm"
+      >
+        Editar
+      </button>
+      <button
+        onClick={() => handleDeactivate(staff.id)}
+        className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
+      >
+        Desativar
+      </button>
+      <button
+        onClick={() => handleDelete(staff.id)}
+        className="flex-1 min-w-[100px] px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 text-sm"
+      >
+        Eliminar
+      </button>
+    </div>
+  );
+
+  const tableData = staffs.map((staff) => ({
+    ...staff,
+    Ações: renderActions(staff),
+  }));
 
   return (
     <div className="relative">
@@ -41,67 +69,61 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
         <div className="overflow-x-auto">
-          <Table headers={headers} data={staffs}  />
+          <Table headers={headers} data={tableData} />
         </div>
         <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
-          />
-          </div>
+        />
+      </div>
 
-
-          {isModalVisible && (
-            <Modal
-              isVisible={isModalVisible}
-              setIsVisible={setIsModalVisible}
-              title="Editar Informações do Staff"
-            >
-              <div>
-              <label>Email</label>
+      {isModalVisible && (
+        <Modal
+          isVisible={isModalVisible}
+          setIsVisible={setIsModalVisible}
+          title="Editar Informações do Staff"
+        >
+          <div>
+            <label>Email</label>
             <input
-                type="email"
-                // Mude aqui: Acesse o valor do email corretamente
-                value={staffToEdit?.email?.value || ""} 
-                onChange={(e) =>
-                    setStaffToEdit((prev: any) => ({
-                        ...prev,
-                        // Altere para o novo formato que envolve o email
-                        email: { value: e.target.value }, 
-                    }))
-                }
+              type="email"
+              value={staffToEdit?.email?.value || ""}
+              onChange={(e) =>
+                setStaffToEdit((prev: any) => ({
+                  ...prev,
+                  email: { value: e.target.value },
+                }))
+              }
             />
-          <label>Telefone</label>
-                  <input
-                      type="text"
-                      // Mude aqui: Acesse o número do telefone corretamente
-                      value={staffToEdit?.phoneNumber?.number || ""} 
-                      onChange={(e) =>
-                          setStaffToEdit((prev: any) => ({
-                              ...prev,
-                              // Altere para o novo formato que envolve o telefone
-                              phoneNumber: { number: e.target.value }, 
-                          }))
-                      }
-                  />
-                <label>Specialization</label>
-                <input
-                  type="text"
-                  value={staffToEdit?.specialization || ""}
-                  onChange={(e) =>
-                    setStaffToEdit((prev: any) => ({
-                      ...prev,
-                      specialization: e.target.value,
-                    }))
-                  }
-                />
-    
-                <button onClick={saveChanges}>Salvar</button>
-              </div>
-            </Modal>
-          )}
-        </div>
-      );
-    };
+            <label>Telefone</label>
+            <input
+              type="text"
+              value={staffToEdit?.phoneNumber?.number || ""}
+              onChange={(e) =>
+                setStaffToEdit((prev: any) => ({
+                  ...prev,
+                  phoneNumber: { number: e.target.value },
+                }))
+              }
+            />
+            <label>Specialization</label>
+            <input
+              type="text"
+              value={staffToEdit?.specialization || ""}
+              onChange={(e) =>
+                setStaffToEdit((prev: any) => ({
+                  ...prev,
+                  specialization: e.target.value,
+                }))
+              }
+            />
+            <button onClick={saveChanges}>Salvar</button>
+          </div>
+        </Modal>
+      )}
+    </div>
+  );
+};
 
 export default StaffList;

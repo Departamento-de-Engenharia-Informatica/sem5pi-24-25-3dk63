@@ -27,7 +27,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     "Email",
     "Telefone",
     "Nome Completo",
-    "Specialization Description",
+    "Specialization",
     "Availability Slots",
     "Ativo",
     "Ações",
@@ -51,33 +51,9 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         Email: staffUser.email,
         "Telefone": staffUser.phoneNumber,
         "Nome Completo": staffUser.name,
-        "Specialization Description": staffUser.specializationDescription,
+        "Specialization": staffUser.specializationDescription,
         "Availability Slots": staffUser.availabilitySlots,
         Ativo: staffUser.active ? "Sim" : "Não",
-        Ações: (
-        <div className="flex flex-wrap gap-2">
-          <button
-            onClick={() => handleEdit(staffUser)}
-            className="flex-1 min-w-[100px] px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 text-sm"
-          >
-            Editar
-          </button>
-          <button
-            onClick={() => handleDeactivate(staffUser.licenseNumber)}
-            className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
-          >
-            Desativar
-          </button>
-          <button
-            onClick={() => handleDelete(staffUser.licenseNumber)}
-            className="flex-1 min-w-[100px] px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 text-sm"
-          >
-            Eliminar
-          </button>
-        </div>
-
-
-        ),
         id: staffUser.licenseNumber,
       }));
 
@@ -91,6 +67,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
       setLoading(false);
     }
   };
+
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Tem certeza que deseja excluir este staff?")) {
@@ -110,16 +87,18 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
 
     const newStaff = {
       email: {
-        value: staff.email
+        value: staff.Email
       },
       phoneNumber: {
-        number: staff.phoneNumber
+        number: staff.Telefone
       },
-      specialization: staff.specializationDescription
+      specialization: staff.Specialization
+
     };
+    console.log("New staff to edit:", newStaff); // Log do novo staff a ser editado
 
     setStaffToEdit(newStaff); // Define o staff para edição
-    setLicenseToEdit(staff.licenseNumber); // Define o licenseNumber para edição
+    setLicenseToEdit(staff.id); // Define o licenseNumber para edição
     setIsModalVisible(true); // Mostra o modal
   };
 
