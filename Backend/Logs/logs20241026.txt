@@ -11,15 +11,9 @@
 2024-10-26 00:58:14.810 +01:00 [INF] Staff D200012348's profile updated was confirmed by diogoandre.8269@gmail.com on 25/10/2024 23:58:14. Changes: Phone Number changed to: +351934675034, Specialization changed to: funciona
 2024-10-26 01:38:12.868 +01:00 [INF] OperationType Operaçao0 5C (9d30c016-0aa0-4952-9fa6-149e9ec84ad4) was created by Admin (lapr3dkg69sup@gmail.com) on 26/10/2024 00:38:12
 2024-10-26 01:41:51.844 +01:00 [INF] OperationType Operaçao teste (2919550c-6cef-425f-8a70-ae3474876256) was created by Admin (lapr3dkg69sup@gmail.com) on 26/10/2024 00:41:51
-<<<<<<< HEAD
-2024-10-26 10:09:01.296 +01:00 [INF] Login falhou: email não encontrado.
-2024-10-26 10:10:23.049 +01:00 [INF] Login bem-sucedido: email encontrado.
 2024-10-26 10:11:26.700 +01:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 9:11:26 AM
 2024-10-26 11:53:20.429 +01:00 [INF] OperationType Operaçao Cardiovascular (ba6fa5e1-5c96-4ba0-a486-656163e0d37a) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:53:20 AM
 2024-10-26 11:56:32.013 +01:00 [INF] OperationType Operaçao Cardiovascular (692ab096-89fd-4e6e-9f9b-1f611a2de5bf) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:56:32 AM
-=======
->>>>>>> 446160ce77d24addac50f5aa4e456121eda9deba
-<<<<<<< HEAD
 2024-10-26 12:15:55.987 +01:00 [INF] OperationType Operaçao Cardiovascular (b596e337-d743-4fa2-8b5f-437184aa8c72) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 11:15:55 AM
 2024-10-26 13:52:30.041 +01:00 [INF] OperationType Operaçao Cardiovascular (6b214c44-d554-4ffc-85e9-e3748372c77e) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 12:52:30 PM
 2024-10-26 13:54:44.340 +01:00 [INF] OperationType Operaçao Cardiovascular (49733d99-1594-4a8e-882c-0ddb45b437e0) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 12:54:44 PM
@@ -52,16 +46,11 @@
 2024-10-26 15:45:01.799 +01:00 [INF] OperationType Operaçao Cardiovascular (0104f520-2eaf-4a34-8c72-4931024d8a8b) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:45:01 PM
 2024-10-26 15:46:00.073 +01:00 [INF] OperationType Operaçao Cardiovascular (3080f297-d3b0-4118-be84-8a85c220225c) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:46:00 PM
 2024-10-26 15:52:52.566 +01:00 [INF] OperationType Operaçao Cardiovascular (c7cf81d9-8a26-4ecf-b5d8-711f5d4d9419) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 2:52:52 PM
-=======
 2024-10-26 17:47:40.445 +01:00 [INF] OperationType Operaçao teste (69b02a31-6aa6-473f-b7be-cf6792563f1a) was created by Admin (lapr3dkg69sup@gmail.com) on 26/10/2024 16:47:40
->>>>>>> 179eea6abb542c2a2a1ffb07fcf9d69e31eac9dd
-<<<<<<< HEAD
-2024-10-26 23:48:10.394 +01:00 [INF] Login bem-sucedido: email encontrado.
 2024-10-26 23:52:03.590 +01:00 [INF] OperationType Operaçao Cardiovascular (3dc16879-057d-43ac-bf21-fd39355f3ee3) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:52:03 PM
 2024-10-26 23:52:29.784 +01:00 [INF] OperationType Operaçao Cardiovascular (b4146478-a5e8-452c-b67d-eb02d3f9bbd3) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:52:29 PM
 2024-10-26 23:54:17.015 +01:00 [INF] OperationType Operaçao Cardiovascular (7385502b-23d2-4332-9b36-135c4ac38bf8) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:54:17 PM
 2024-10-26 23:57:20.313 +01:00 [INF] OperationType Operaçao Cardiovascular (abba2772-35b5-413a-b91d-6adc5564343c) was created by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:57:20 PM
 2024-10-26 23:57:24.785 +01:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:57:24 PM
 2024-10-26 23:59:06.939 +01:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/26/2024 10:59:06 PM
-=======
->>>>>>> 77fd50d0ca6116a8c9b8492c587e5ce0cb84b7ba
+

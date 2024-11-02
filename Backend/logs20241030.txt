@@ -1,2 +1,0 @@
-2024-10-30 18:19:03.280 +00:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-30 18:19:47.736 +00:00 [INF] Login falhou: email não encontrado.

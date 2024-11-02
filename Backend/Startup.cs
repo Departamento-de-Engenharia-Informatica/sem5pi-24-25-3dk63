@@ -66,10 +66,16 @@ namespace DDDSample1
             });
 
 
+            var logDirectory = Path.Combine(AppContext.BaseDirectory, "Logs");
+            if (!Directory.Exists(logDirectory))
+            {
+                Directory.CreateDirectory(logDirectory);
+            }
+
             Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Debug()
-            .WriteTo.File("logs.txt", rollingInterval: RollingInterval.Day)
-            .CreateLogger();
+                .MinimumLevel.Debug()
+                .WriteTo.File(Path.Combine(logDirectory, "logs.txt"), rollingInterval: RollingInterval.Day) // Use o caminho da pasta Logs
+                .CreateLogger();
 
 
             services.AddDataProtection();
@@ -159,7 +165,7 @@ namespace DDDSample1
 
             app.UseRouting();
 
-            app.UseCors("CorsPolicy"); 
+            app.UseCors("CorsPolicy");
 
 
             app.UseAuthentication();

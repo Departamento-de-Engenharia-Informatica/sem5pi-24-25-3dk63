@@ -1,0 +1,2 @@
+
+2024-10-21 20:20:42.480 +01:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/21/2024 7:20:42 PM

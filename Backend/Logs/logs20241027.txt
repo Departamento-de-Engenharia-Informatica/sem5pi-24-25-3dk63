@@ -38,13 +38,8 @@
 2024-10-27 16:19:32.347 +00:00 [INF] OperationType Operaçao teste (82b4d079-c888-4867-9c92-a00af766d1b4) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:19:32
 2024-10-27 16:19:57.508 +00:00 [INF] OperationType Operaçao Cardiovascular (0ce0266a-3996-4e7b-a51e-ebffd0d6a6b2) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:19:57
 2024-10-27 16:20:39.598 +00:00 [INF] OperationType Operaçao Cardiovascular (0ce0266a-3996-4e7b-a51e-ebffd0d6a6b2) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 27/10/2024 16:20:39
-2024-10-27 16:39:39.769 +00:00 [INF] Login falhou: email não encontrado.
-2024-10-27 16:40:28.353 +00:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-27 16:51:07.549 +00:00 [INF] Login falhou: email não encontrado.
-2024-10-27 16:51:16.796 +00:00 [INF] Login falhou: email não encontrado.
 2024-10-27 18:42:42.179 +00:00 [INF] OperationType Operaçao Cardiovascular (1463d370-d327-440a-af55-2ceb91ee06f0) was created by Admin (lapr3dkg69sup@gmail.com) on 10/27/2024 6:42:42 PM
 2024-10-27 18:42:59.683 +00:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/27/2024 6:42:59 PM
-2024-10-27 18:57:41.110 +00:00 [INF] Login bem-sucedido: email encontrado.
 2024-10-27 19:01:18.493 +00:00 [INF] OperationType Operaçao Cardiovascular (96c7840d-f0b3-46fc-9a5e-9e36acf679e8) was created by Admin (lapr3dkg69sup@gmail.com) on 10/27/2024 7:01:18 PM
 2024-10-27 19:01:32.553 +00:00 [INF] OperationType Operaçao Cardiovascular (9b989d2a-15e6-4b79-b7a2-c1bce33958b9) was created by Admin (lapr3dkg69sup@gmail.com) on 10/27/2024 7:01:32 PM
 2024-10-27 19:01:49.079 +00:00 [INF] Patient 199005000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 10/27/2024 7:01:49 PM

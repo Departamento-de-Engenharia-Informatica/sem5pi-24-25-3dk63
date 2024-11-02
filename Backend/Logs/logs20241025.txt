@@ -4,9 +4,6 @@
 2024-10-25 01:45:06.055 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was created by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 00:45:06
 2024-10-25 01:46:40.913 +01:00 [INF] OperationType DDDSample1.Domain.OperationsType.OperationName (a5543649-3639-4675-bd0f-e1e416fcfc49) was created by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 00:46:40
 2024-10-25 01:47:14.501 +01:00 [INF] OperationType Operaçao0 C (eedebcd1-a98f-4aea-b5d7-de119dcba05e) was created by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 00:47:14
-2024-10-25 01:10:48.277 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 01:13:41.259 +01:00 [INF] Login bem-sucedido: email encontrado.
-<<<<<<< HEAD
 2024-10-25 02:43:29.344 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:43:29
 2024-10-25 02:48:26.388 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:48:26
 2024-10-25 02:50:03.897 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:50:03
@@ -16,30 +13,8 @@
 2024-10-25 02:59:21.401 +01:00 [INF] OperationType a5543649-3639-4675-bd0f-e1e416fcfc49 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:59:21
 2024-10-25 02:59:38.239 +01:00 [INF] OperationType eedebcd1-a98f-4aea-b5d7-de119dcba05e was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:59:38
 2024-10-25 02:59:44.773 +01:00 [INF] OperationType 87fd4ec3-0fb4-4c6b-ba99-fc024a16bc3f was deactivated by Admin (lapr3dkg69sup@gmail.com) on 25/10/2024 01:59:44
-=======
-2024-10-25 01:29:05.805 +01:00 [INF] Login bem-sucedido: email encontrado.
->>>>>>> 10a4a23883b766953f995337772bd3ec33517a54
-<<<<<<< HEAD
-<<<<<<< HEAD
-2024-10-25 18:40:47.474 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 18:41:59.434 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 18:43:44.365 +01:00 [INF] Login falhou: email não encontrado.
-2024-10-25 19:00:12.681 +01:00 [INF] Login bem-sucedido: email encontrado.
 2024-10-25 19:00:25.523 +01:00 [INF] OperationType Operaçao Cardiovascular (744fe028-6cfc-4a2b-8b43-da956163a8ae) was created by Admin (lapr3dkg69sup@gmail.com) on 10/25/2024 6:00:25 PM
 2024-10-25 19:02:45.916 +01:00 [INF] OperationType Diogo n sabe fazer (4d181cf3-0e47-42f8-8f1d-62b6f50143bf) was created by Admin (lapr3dkg69sup@gmail.com) on 10/25/2024 6:02:45 PM
-=======
-2024-10-25 15:44:21.468 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 15:45:47.016 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 16:01:21.065 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 16:03:00.126 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 16:03:05.332 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 16:03:14.256 +01:00 [INF] Login bem-sucedido: email encontrado.
->>>>>>> dca572318f9e401fa44058b0e1c1d8ac2cad2cbd
-2024-10-25 22:42:01.623 +01:00 [INF] Login bem-sucedido: email encontrado.
-2024-10-25 22:45:30.471 +01:00 [INF] Login falhou: email não encontrado.
-2024-10-25 22:46:11.741 +01:00 [INF] Login bem-sucedido: email encontrado.
-=======
 2024-10-25 22:59:16.501 +01:00 [INF] Staff D200012348's profile was updated by diogoandre.8269@gmail.com on 25/10/2024 21:59:16. Changes: Phone Number changed to: +351934675002, Specialization changed to: funciona
 2024-10-25 23:00:07.835 +01:00 [INF] Staff D200012348's profile was updated by diogoandre.8269@gmail.com on 25/10/2024 22:00:07. Changes: Email changed to: ahahahahahaha.8269@gmail.com, Phone Number changed to: +351938888, Specialization changed to: funciona
 2024-10-25 23:02:01.558 +01:00 [INF] Staff D200012348's profile was updated by diogoandre.8269@gmail.com on 25/10/2024 22:02:01. Changes: Phone Number changed to: +35193888666, Specialization changed to: funciona
->>>>>>> acc1aba2f2792a23819a5fa29dd46f52822932a3
