@@ -28,3 +28,6 @@
 2024-11-02 16:12:06.696 +00:00 [INF] OperationType Operaçao teste (721c45ec-5a93-42da-9f73-c82a7a993dff) was deactivated by Admin (lapr3dkg69sup@gmail.com) on 02/11/2024 16:12:06
 2024-11-02 16:15:35.502 +00:00 [INF] OperationType Operaçao2 (322e9c92-d23c-4302-879c-34249c142f09) was created by Admin (lapr3dkg69sup@gmail.com) on 02/11/2024 16:15:35
 2024-11-02 16:18:33.297 +00:00 [INF] OperationType Operaçao Cardiovascular (1a2fa181-35ed-4688-99ef-3c0388e26dc0) was created by Admin (lapr3dkg69sup@gmail.com) on 02/11/2024 16:18:33
+2024-11-02 17:25:31.887 +00:00 [INF] Patient 199008000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/2/2024 5:25:31 PM
+2024-11-02 17:29:56.016 +00:00 [INF] Patient 199002000004 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/2/2024 5:29:56 PM
+2024-11-02 17:29:56.031 +00:00 [INF] User 1f527719-ecae-4fa1-9dc7-8a1b3868dd57 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/2/2024 5:29:56 PM

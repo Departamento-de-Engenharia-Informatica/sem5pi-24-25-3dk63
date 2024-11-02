@@ -6,6 +6,7 @@ using DDDSample1.Domain.Staff; // Ensure this is the correct namespace for the S
 using DDDSample1.Domain.Users;
 using Serilog;
 using DDDSample1.Domain.PendingChangeStaff;
+using Microsoft.EntityFrameworkCore;
 namespace Backend.Domain.Shared
 {
     public class AuditService
@@ -16,6 +17,13 @@ namespace Backend.Domain.Shared
         public AuditService(Serilog.ILogger logger)
         {
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
+
+        public void LogDeletionUser(User user, string adminEmail)
+        {
+            string logMessage = $"User {user.Id.AsString()} was deleted by Admin ({adminEmail}) on {DateTime.UtcNow}";
+
+            _logger.Information(logMessage);
         }
 
         public void LogDeletionPatient(Patient patient, string adminEmail)
@@ -102,7 +110,7 @@ namespace Backend.Domain.Shared
             string logMessage = $"Patient {patient.Id} profile was edited on {DateTime.UtcNow}";
             _logger.Information(logMessage);
         }
-        
+
 
         public void LogEditStaff(DDDSample1.Domain.Staff.Staff staff, string adminEmail)
         {

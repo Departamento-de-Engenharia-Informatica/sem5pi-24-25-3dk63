@@ -189,6 +189,9 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<IEnumerable<StaffDTO>>> SearchStaffAsync([FromQuery] string? name = null, [FromQuery] string? email = null, [FromQuery] string? specialization = null)
         {
             var staffList = await _staffService.SearchStaffAsync(name, email, specialization);
+
+            if (staffList == null) return NotFound();
+            
             return Ok(staffList);
         }
 

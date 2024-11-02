@@ -58,7 +58,7 @@ namespace DDDSample1.Patients
                 userId = patient.UserId,
 
                 personalEmail = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Email : null,
-                iamEmail = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Email : null, 
+                iamEmail = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Email : null,
                 name = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Name : null,
                 dateOfBirth = patient.dateOfBirth,
                 gender = patient.gender,
@@ -333,7 +333,7 @@ namespace DDDSample1.Patients
             await _unitOfWork.CommitAsync();
         }
 
-        public async Task<List<SearchPatientDTO>> SearchPatientAsync(string? name = null, string? email = null, string? dateOfBirth = null, string? medicalRecordNumber = null)
+        public async Task<List<PatientCompleteDTO>> SearchPatientAsync(string? name = null, string? email = null, string? dateOfBirth = null, string? medicalRecordNumber = null)
         {
             var query = from patient in _patientRepository.GetQueryable()
                         join user in _userRepository.GetQueryable() on patient.UserId equals user.Id
@@ -341,26 +341,19 @@ namespace DDDSample1.Patients
 
             if (!string.IsNullOrEmpty(name))
             {
-                // Check if the name contains an underscore and split it
-                var nameParts = name.Split('_', StringSplitOptions.RemoveEmptyEntries);
-
-                // Verify that we have two parts for first and last name
-                if (nameParts.Length == 2)
+                var nomes = name.Split(" ");
+                if (nomes.Length < 2)
                 {
-                    // Trim spaces from both parts
-                    var firstName = nameParts[0].Trim();
-                    var lastName = nameParts[1].Trim();
-
-                    query = query.Where(p =>
-                        p.user.Name.FirstName.Contains(firstName) &&
-                        p.user.Name.LastName.Contains(lastName));
+                    query = query.Where(s => s.user.Name.FirstName.Contains(name) || s.user.Name.LastName.Contains(name));
                 }
                 else
                 {
-                    throw new ArgumentException("Name must be in the format <firstName>_<lastName>.");
+                    string primeiroNome = nomes[0];
+                    string ultimoNome = nomes[nomes.Length - 1];
+                    query = query.Where(s => s.user.Name.FirstName.Contains(primeiroNome) && s.user.Name.LastName.Contains(ultimoNome));
                 }
-            }
 
+            }
             var results = await query.ToListAsync();
 
             if (!string.IsNullOrEmpty(email))
@@ -379,13 +372,20 @@ namespace DDDSample1.Patients
                 results = results.Where(p => p.patient.Id.Value == medicalRecordNumber).ToList();
             }
 
-            return results.Select(p => new SearchPatientDTO
+            var paginatedPatient  = results.Select(r => r.patient).ToList();
+
+            List<PatientCompleteDTO> listDto = results.ConvertAll(r => new PatientCompleteDTO
             {
-                Name = p.user.Name,
-                Email = p.user.Email,
-                dateOfBirth = p.patient.dateOfBirth,
-                MedicalRecordNumber = p.patient.Id
-            }).ToList();
+                id = r.patient.Id,
+                name = r.user.Name,
+                personalEmail = r.user.Email,
+                iamEmail = r.user.Email,
+                dateOfBirth = r.patient.dateOfBirth,
+                gender = r.patient.gender,
+                phoneNumber = r.user.PhoneNumber,
+                active = r.patient.Active
+            });
+            return listDto;
         }
 
         public async Task RequestAccountDeletionAsync(UserId userId)
@@ -430,14 +430,17 @@ namespace DDDSample1.Patients
         public async Task<PatientDTO> DeletePatientAsync(MedicalRecordNumber id, string adminEmail)
         {
             var patientToRemove = await _patientRepository.FindByMedicalRecordNumberAsync(id);
+            var user = await _userRepository.GetByIdAsync(patientToRemove.UserId);
 
             if (patientToRemove == null) return null;
 
             patientToRemove.ChangeActiveFalse();
             patientToRemove.MarkForDeletion();
             this._patientRepository.Remove(patientToRemove);
+            this._userRepository.Remove(user);
             await this._unitOfWork.CommitAsync();
             _auditService.LogDeletionPatient(patientToRemove, adminEmail);
+            _auditService.LogDeletionUser(user, adminEmail);
 
             return _mapper.Map<PatientDTO>(patientToRemove);
         }
