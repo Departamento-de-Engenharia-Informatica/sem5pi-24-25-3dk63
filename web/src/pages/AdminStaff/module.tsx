@@ -3,7 +3,6 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IStaffService } from "@/service/IService/IStaffService";
 import { useNavigate } from "react-router-dom";
-import { PendingStaffChangesDTO } from "@/dto/PendingStaffChangesDTO";
 
 export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();

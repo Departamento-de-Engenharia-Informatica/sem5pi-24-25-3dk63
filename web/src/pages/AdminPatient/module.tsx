@@ -3,17 +3,14 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
-import { set } from "node_modules/cypress/types/lodash";
 
 export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const patientService = useInjection<IPatientService>(TYPES.patientService);
-
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [patientsPerPage] = useState(10);
   const [totalPatients, setTotalPatients] = useState<number>(0);
 
 
@@ -42,6 +39,8 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setError(null);
     try {
       const patientsData = await patientService.getPatients();
+      console.log("Dados retornados do getPatients:", patientsData);
+      setTotalPatients(patientsData.length);
       const filteredData = patientsData.map((patientUser) => ({
         "Medical Record Number": patientUser.id.value,
         "Nome Completo": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
