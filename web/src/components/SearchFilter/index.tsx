@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa';
 
 interface SearchFilterProps {
   attributes: string[];
-  labels: Record<string, string>; 
+  labels: Record<string, string>;
   onSearch: (query: Record<string, string>) => void;
   results: any[];
   renderResult: (result: any) => JSX.Element;
@@ -10,6 +11,7 @@ interface SearchFilterProps {
 
 const SearchFilter: React.FC<SearchFilterProps> = ({ attributes, labels, onSearch, results, renderResult }) => {
   const [query, setQuery] = useState<Record<string, string>>({});
+  const [expandedFields, setExpandedFields] = useState<Record<string, boolean>>({});
 
   const handleChange = (attribute: string, value: string) => {
     setQuery(prev => ({ ...prev, [attribute]: value }));
@@ -19,29 +21,61 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ attributes, labels, onSearc
     onSearch(query);
   };
 
+  const handleReset = () => {
+    const resetQuery = Object.fromEntries(attributes.map(attr => [attr, '']));
+    setQuery(resetQuery);
+    onSearch(resetQuery);
+  };
+
+  const toggleField = (attribute: string) => {
+    setExpandedFields(prev => ({ ...prev, [attribute]: !prev[attribute] }));
+  };
+
   return (
     <div className="p-4">
-      <div className="mb-4">
+      <div className="flex flex-wrap items-start space-y-4 lg:space-y-0 lg:space-x-4">
         {attributes.map(attribute => (
-          <div key={attribute} className="mb-2">
-            <label className="block text-sm font-medium text-gray-700">
-              {labels[attribute] || attribute}
-            </label>
-            <input
-              type="text"
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-              onChange={e => handleChange(attribute, e.target.value)}
-            />
+          <div
+            key={attribute}
+            className="relative border rounded-md shadow-sm p-2 bg-white w-full sm:w-auto flex-1"
+            style={{ backgroundColor: "#f8f9fa", borderColor: "#cbd5e0", minWidth: "150px" }}
+          >
+            <div
+              className="flex justify-between items-center cursor-pointer text-gray-800"
+              onClick={() => toggleField(attribute)}
+            >
+              <label className="text-sm font-medium">
+                {labels[attribute] || attribute}
+              </label>
+              {expandedFields[attribute] ? <FaChevronUp color="#4a5568" /> : <FaChevronDown color="#4a5568" />}
+            </div>
+            {expandedFields[attribute] && (
+              <input
+                type="text"
+                value={query[attribute] || ''}
+                className="mt-2 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                style={{ backgroundColor: "#ffffff", border: "1px solid #cbd5e0", color: "#2d3748" }}
+                onChange={e => handleChange(attribute, e.target.value)}
+              />
+            )}
           </div>
         ))}
-        <button
-          onClick={handleSearch}
-          className="mt-2 px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
-        >
-          Search
-        </button>
+        <div className="flex space-x-2 mt-4 lg:mt-0 ml-auto">
+          <button
+            onClick={handleReset}
+            className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+          >
+            Reset
+          </button>
+          <button
+            onClick={handleSearch}
+            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+          >
+            Search
+          </button>
+        </div>
       </div>
-      <div>
+      <div className="mt-4">
         {results.map(result => (
           <div key={result.id} className="mb-2">
             {renderResult(result)}
