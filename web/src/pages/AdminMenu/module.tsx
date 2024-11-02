@@ -19,11 +19,15 @@ export const useAdminMenuModule = () => {
   const handleManageStaff = () => {
     navigate("/admin/staff");
   };
+  
+  const handleManageOperationTypes = () => {
+    navigate("/admin/operation-type");
+  }
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
   ];
 
-  return {  setAlertMessage, handleManagePatients, handleManageStaff, menuOptions, alertMessage };
+  return {  setAlertMessage, handleManagePatients, handleManageStaff,handleManageOperationTypes, menuOptions, alertMessage, };
 
 }

@@ -347,19 +347,21 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
                 }
             }
 
-    // Depois de obter os resultados, podemos aplicar qualquer lógica adicional, se necessário
-    var staffResult = results.FirstOrDefault();
+            // Depois de obter os resultados, podemos aplicar qualquer lógica adicional, se necessário
+            var staffResult = results.FirstOrDefault();
 
 
-    if (staffResult == null) return null;
+            if (staffResult == null) return null;
 
-    // Log e desativação
-    _auditService.LogDeactivateStaff(staffResult.staff, adminEmail);
-    staffResult.staff.Deactivate();
-    await _unitOfWork.CommitAsync();
+            
 
-    return _mapper.Map<StaffDTO>(staffResult.staff);
-}
+            // Log e desativação
+            _auditService.LogDeactivateStaff(staffResult.staff, adminEmail);
+            staffResult.staff.Deactivate();
+            await _unitOfWork.CommitAsync();
+
+            return _mapper.Map<StaffDTO>(staffResult.staff);
+        }
 
 
         public async Task<StaffDTO?> DeactivateAsync(String licenseNumber, string adminEmail)
@@ -446,12 +448,17 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
 
         //await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;
 
+        public async Task<bool?> CheckSpecializationExists(string specializationDescription)
+        {
+            var specialization = await _specializationRepository.GetByDescriptionAsync(new Description(specializationDescription));
+            if (specialization == null)
+                return false;
+            return true;
+        }
         public async Task<bool?> CheckSpecialization(string specializationDescription, StaffDTO staff)
         {
             var specialization2 = await _specializationRepository.FindByIdAsync(new SpecializationId(staff.SpecializationId));
 
-            if (specialization2 == null)
-                throw new ArgumentException($"Specialization '{specializationDescription}' not found.");
                 String specialization = specialization2.Description.Value;
 
             if(specialization.Equals(specializationDescription))

@@ -3,14 +3,13 @@ import { TYPES } from "../inversify/types";
 import type { HttpService } from "./IService/HttpService";
 import { IStaffService } from "./IService/IStaffService";
 import { StaffUser } from "@/model/StaffUser";
-
+import { PendingStaffChangesDTO } from "@/dto/PendingStaffChangesDTO";
 @injectable()
 export class StaffService implements IStaffService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
 
   async getStaffs(): Promise<StaffUser[]> {
     const res = await this.http.get<StaffUser[]>("/staff");
-    console.log("Dados retornados do getAllStaffs:", res.data);
 
     return res.data;
   }
@@ -20,11 +19,11 @@ export class StaffService implements IStaffService {
     console.log("Staff deleted:", id);
   }
 
-  async editStaff(staff: StaffUser): Promise<StaffUser> {
-    const res = await this.http.put<StaffUser>("/staff", staff);
-    console.log("Dados retornados do editStaff:", res.data);
-
-    return res.data;
+  async editStaff(licenseNumber: string, staff: PendingStaffChangesDTO): Promise<void>{
+    let id = licenseNumber;
+    const res = await this.http.patch(`/staff/update/${id}`, staff);
+    console.log("Staff edited:", res.data);
+    window.confirm(res.data as string);
   }
 
   async deactivateStaff(id: string): Promise<void> {

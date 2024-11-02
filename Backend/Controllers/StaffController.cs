@@ -76,7 +76,7 @@ namespace DDDSample1.Controllers
 
         [HttpPatch("update/{licenseNumber}")]
         [Authorize(Roles = "Admin")]
-         public async Task<IActionResult> UpdatStaffProfile(string licenseNumber,PendingChangesStaffDTO updateDto)
+        public async Task<IActionResult> UpdatStaffProfile(string licenseNumber, PendingChangesStaffDTO updateDto)
         {
             if (!ModelState.IsValid)
             {
@@ -84,7 +84,7 @@ namespace DDDSample1.Controllers
             }
 
             var staff = await _staffService.GetByLicenseNumberAsync(new LicenseNumber(licenseNumber));
-
+            Console.WriteLine("RECEBI ESTA MIERDA", staff);
             if (staff == null)
             {
                 return NotFound("Unable to find the staff information.");
@@ -100,10 +100,20 @@ namespace DDDSample1.Controllers
             bool phoneChanged = updateDto.PhoneNumber != null && updateDto.PhoneNumber.Number != userStaff.phoneNumber.Number;
             bool specializationChanged = false;
 
+
+
             if (updateDto.Specialization != null)
             {
-                specializationChanged = (await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;
+                specializationChanged = (await _staffService.CheckSpecializationExists(updateDto.Specialization)) ?? false;
             }
+
+            if(!specializationChanged)
+            {
+                    return Ok("Invalid specialization, please insert a valid one.");
+            }
+
+            specializationChanged = (await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;
+            
 
             await _staffService.RemovePendingChangesAsync(new UserId(userStaff.Id));
 

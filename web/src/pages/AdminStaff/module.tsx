@@ -3,6 +3,7 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IStaffService } from "@/service/IService/IStaffService";
 import { useNavigate } from "react-router-dom";
+import { PendingStaffChangesDTO } from "@/dto/PendingStaffChangesDTO";
 
 export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
@@ -13,6 +14,10 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalStaffs, setTotalStaffs] = useState<number>(0);
+  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [staffToEdit, setStaffToEdit] = useState<any | null>(null); 
+  const [LicenseStaffToEdit, setLicenseToEdit] = useState<any | null>(null); 
+
   const itemsPerPage = 10;
 
   const headers = [
@@ -51,7 +56,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         Ativo: staffUser.active ? "Sim" : "Não",
         Ações: (
           <div>
-            <button onClick={() => handleEdit(staffUser.licenseNumber)}>Editar</button>
+            <button onClick={() => handleEdit(staffUser)}>Editar</button>
             <button onClick={() => handleDeactivate(staffUser.licenseNumber)}>Desativar</button>
           </div>
         ),
@@ -82,9 +87,22 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     }
   };
 
-  const handleEdit = (id: string) => {
-    // Navigate to edit page or open edit modal
-    navigate(`/staff/edit/${id}`);
+  const handleEdit = async (staff: any) => {
+    console.log("Editing staff?/:", staff); // Log do staff a ser editado
+
+    const newStaff = {
+      email: {
+        value: staff.email
+      },
+      phoneNumber: {
+        number: staff.phoneNumber
+      },
+      specialization: staff.specializationDescription
+    };
+
+    setStaffToEdit(newStaff); // Define o staff para edição
+    setLicenseToEdit(staff.licenseNumber); // Define o licenseNumber para edição
+    setIsModalVisible(true); // Mostra o modal
   };
 
   const handleDeactivate = async (id: string) => {
@@ -93,12 +111,32 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         await staffService.deactivateStaff(id);
         fetchStaffs(); // Refresh the list after deactivation
         setAlertMessage("Staff desativado com sucesso.");
+        window.confirm("Staff desativado com sucesso. Ação registada no log.");
       } catch (error) {
         console.error("Erro ao desativar staff:", error);
         setAlertMessage("Erro ao desativar staff.");
       }
     }
-  };
+  }
+
+  const saveChanges = async () => {
+    if (staffToEdit) {
+
+        try {
+            await staffService.editStaff(LicenseStaffToEdit, staffToEdit); // Aqui você chama com o licenseNumber
+            setAlertMessage("Informações do staff atualizadas com sucesso.");
+            fetchStaffs(); // Refresh the staff list
+        } catch (error) {
+            console.error("Erro ao editar informações do staff:", error);
+            setAlertMessage("Erro ao editar informações do staff.");
+        } finally {
+            setIsModalVisible(false); // Close the modal after saving
+        }
+    }
+};
+
+  
+  ;
 
   useEffect(() => {
     fetchStaffs();
@@ -114,6 +152,13 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     currentPage,
     setCurrentPage,
     itemsPerPage,
-    handleDelete
+    isModalVisible,
+    setIsModalVisible,
+    handleDelete,
+    handleEdit,
+    handleDeactivate,
+    staffToEdit,
+    setStaffToEdit,
+    saveChanges
   };
 };

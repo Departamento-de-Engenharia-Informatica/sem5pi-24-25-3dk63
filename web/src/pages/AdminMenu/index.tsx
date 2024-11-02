@@ -14,6 +14,7 @@ const AdminMenu: React.FC = () =>
   const {
     handleManagePatients,
     handleManageStaff,
+    handleManageOperationTypes,
     menuOptions,
     alertMessage,
 
@@ -38,6 +39,9 @@ return (
           </Button>
           <Button onClick={handleManageStaff} name="gerenciar-staff">
             Gerenciar Staff
+          </Button>
+          <Button onClick={handleManageOperationTypes} name="gerenciar-tiposDeOperacao">
+            Gerenciar tipos de operação
           </Button>
         </div>
       </div>
