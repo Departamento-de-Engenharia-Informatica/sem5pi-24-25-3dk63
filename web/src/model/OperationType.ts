@@ -1,5 +1,6 @@
 // src/model/OperationType.ts
 export interface OperationType {
+    id: string;
     name: {
       description: string;
     };

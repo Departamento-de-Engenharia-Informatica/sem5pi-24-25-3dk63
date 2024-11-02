@@ -27,10 +27,10 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
 
   const totalPages = Math.ceil(totalOTypes / itemsPerPage);
 
-  const renderActions = (staff: any) => (
+  const renderActions = (OTypes: any) => (
     <div className="flex flex-wrap gap-2">
       <button
-        onClick={() => handleDeactivate(staff.id)}
+        onClick={() => handleDeactivate(OTypes.id)}
         className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
       >
         Desativar

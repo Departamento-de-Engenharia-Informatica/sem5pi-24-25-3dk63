@@ -138,7 +138,7 @@ namespace DDDSample1.Controllers
             }
             catch (BusinessRuleValidationException ex)
             {
-                return BadRequest(new { Message = ex.Message });
+                return Ok(new { Message = ex.Message });
             }
         }
 

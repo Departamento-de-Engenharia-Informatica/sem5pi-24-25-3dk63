@@ -34,7 +34,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     { label: "AdminMenu", action: () => navigate("/admin") },
   ];
 
-  const fetchStaffs = async () => {
+  const fetchOperationsTypes = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -42,6 +42,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
       console.log("Dados retornados do getOperationTypes:", opsTypedata);
       setTotalOTypes(opsTypedata.length);
       const filteredData = opsTypedata.map((OperationType) => ({
+        id: OperationType.id,
         Nome: OperationType.name.description,
         "Required Staff": OperationType.requiredStaff.requiredNumber,
         "Preparation Time": OperationType.duration.preparationPhase,
@@ -67,9 +68,10 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
     const handleDeactivate = async (id: string) => {
     if (window.confirm("Tem a certeza que deseja desativar este operation type?")) {
+      console.log("Desativar Operation Type com id:", id);
       try {
-        fetchStaffs();
         await operationTypeService.deactivateOperationType(id);
+        fetchOperationsTypes();
         setAlertMessage("Operation Type desativado com sucesso.");
         window.confirm("Operation Type desativado com sucesso. Ação registada no log.");
       } catch (error) {
@@ -80,7 +82,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   }
 
   useEffect(() => {
-    fetchStaffs();
+    fetchOperationsTypes();
   }, [currentPage]);
 
 

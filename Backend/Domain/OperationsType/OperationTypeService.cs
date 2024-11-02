@@ -55,6 +55,7 @@ namespace DDDSample1.OperationsType
                 RequiredStaff = operationType.RequiredStaff,
                 SpecializationId = operationType.SpecializationId
             });
+
             return listDto;
         }
 
@@ -64,6 +65,7 @@ namespace DDDSample1.OperationsType
 
             List<SearchOperationTypeDTO> listDto = list.ConvertAll(operationType => new SearchOperationTypeDTO
             {
+                Id =  operationType.Id.AsGuid(),
                 Name = operationType.Name,
                 Specialization = _specializationRepository.GetByIdAsync(operationType.SpecializationId).Result.Description,
                 Active = operationType.Active,
@@ -98,7 +100,7 @@ namespace DDDSample1.OperationsType
             var name = new OperationName(dto.Name);
 
             var operation =  await this._operationTypeRepository.GetByNameAsync(dto.Name);
-
+Console.WriteLine(operation);
             if (operation != null)
             {
                 throw new BusinessRuleValidationException("Operation type já existe no sistema, por favor tente novamente com outro nome.");

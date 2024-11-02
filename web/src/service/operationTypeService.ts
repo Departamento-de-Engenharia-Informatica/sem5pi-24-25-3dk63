@@ -15,6 +15,6 @@ export class OperationTypeService implements IOperationTypeService {
   }
 
   async deactivateOperationType(id: string): Promise<void> {
-    //await this.http.put(`/OperationType/deactivate/${id}`);
+    await this.http.patch(`/OperationType/deactivate?id=${id}`, {});
   }
 }

@@ -84,7 +84,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   };
 
   const handleEdit = async (staff: any) => {
-    console.log("Editing staff?/:", staff); // Log do staff a ser editado
+    console.log("Editing staff?/:", staff);
 
     const newStaff = {
       email: {
@@ -96,11 +96,11 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
       specialization: staff.Specialization
 
     };
-    console.log("New staff to edit:", newStaff); // Log do novo staff a ser editado
+    console.log("New staff to edit:", newStaff); 
 
-    setStaffToEdit(newStaff); // Define o staff para edição
-    setLicenseToEdit(staff.id); // Define o licenseNumber para edição
-    setIsModalVisible(true); // Mostra o modal
+    setStaffToEdit(newStaff); 
+    setLicenseToEdit(staff.id); 
+    setIsModalVisible(true); 
   };
 
   const handleDeactivate = async (id: string) => {
