@@ -8,7 +8,6 @@ import { PendingStaffChangesDTO } from "@/dto/PendingStaffChangesDTO";
 export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const staffService = useInjection<IStaffService>(TYPES.staffService);
-
   const [staffs, setStaffs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -27,7 +26,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     "Email",
     "Telefone",
     "Nome Completo",
-    "Specialization",
+    "Specialization Id",
     "Availability Slots",
     "Ativo",
     "Ações",
@@ -53,7 +52,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         Email: staffUser.email,
         "Telefone": staffUser.phoneNumber,
         "Nome Completo": staffUser.name,
-        "Specialization": staffUser.specializationDescription,
+        "Specialization Id": staffUser.specializationDescription,
         "Availability Slots": staffUser.availabilitySlots,
         Ativo: staffUser.active ? "Sim" : "Não",
         id: staffUser.licenseNumber,

@@ -13,7 +13,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalOTypes, setTotalOTypes] = useState<number>(0);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   const itemsPerPage = 10;
 
@@ -27,7 +27,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     "Specialization",
     "Ativo",
     "Ações",
-  ];  
+  ];
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
@@ -38,21 +38,21 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setLoading(true);
     setError(null);
     try {
-      console.log("OIIIII");
       const opsTypedata = await operationTypeService.getOperationTypes();
-      console.log("OIIIII222");
+      console.log("Dados retornados do getOperationTypes:", opsTypedata);
       setTotalOTypes(opsTypedata.length);
-      console.log("OIIIII222");
       const filteredData = opsTypedata.map((OperationType) => ({
-        "Nome": OperationType.name.description,
+        Nome: OperationType.name.description,
         "Required Staff": OperationType.requiredStaff.requiredNumber,
         "Preparation Time": OperationType.duration.preparationPhase,
         "Surgery Time": OperationType.duration.surgeryPhase,
         "Cleaning Time": OperationType.duration.cleaningPhase,
         "Total Time": OperationType.duration.totalDuration,
-        "Specialization": OperationType.specialization,
+        Specialization: OperationType.specialization.value,
         Ativo: OperationType.active ? "Sim" : "Não",
       }));
+
+      console.log("Dados filtrados:", filteredData);
 
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
@@ -65,11 +65,32 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     }
   };
 
-  ;
+    const handleDeactivate = async (id: string) => {
+    if (window.confirm("Tem a certeza que deseja desativar este operation type?")) {
+      try {
+        fetchStaffs();
+        await operationTypeService.deactivateOperationType(id);
+        setAlertMessage("Operation Type desativado com sucesso.");
+        window.confirm("Operation Type desativado com sucesso. Ação registada no log.");
+      } catch (error) {
+        console.error("Erro ao desativar Operation Type:", error);
+        setAlertMessage("Erro ao desativar Operation Type.");
+      }
+    }
+  }
 
   useEffect(() => {
     fetchStaffs();
   }, [currentPage]);
+
+
+    const handleAddOperationType = () => {
+    // Aqui você pode implementar a lógica para adicionar um novo tipo de operação
+    // Por exemplo, abrir um modal ou redirecionar para uma página de criação
+    // faz para mostrar alguma coisa
+    setIsModalVisible(true);
+  };
+
 
   return {
     OTypes,
@@ -83,5 +104,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     itemsPerPage,
     isModalVisible,
     setIsModalVisible,
+    handleDeactivate,
+    handleAddOperationType,
   };
 };

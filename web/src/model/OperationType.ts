@@ -1,23 +1,22 @@
 // src/model/OperationType.ts
 export interface OperationType {
     name: {
-      description: string; // Adjust the type if OperationName in C# is more specific
+      description: string;
     };
     specialization: {
-      value: string; // Adjust the type if Duration in C# represents a different format, e.g., "hh:mm:ss"
+      value: string;
     };
     active: boolean;
     [key: string]: any;
 
     requiredStaff: {
-      requiredNumber: number; // Adjust the type based on the RequiredStaff definition in C#
+      requiredNumber: number;
     };
     duration: {
       preparationPhase: number;
       surgeryPhase: number;
-      cleaningPhase: number;      
+      cleaningPhase: number;
       totalDuration: number;
     };
 
   }
-  

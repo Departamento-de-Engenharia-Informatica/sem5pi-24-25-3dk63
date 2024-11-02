@@ -9,9 +9,12 @@ export class OperationTypeService implements IOperationTypeService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
 
   async getOperationTypes(): Promise<OperationType[]> {
-    console.log("OIIIIISERVICE");
-    const res = await this.http.get<OperationType[]>("/OperationType");
+    const res = await this.http.get<OperationType[]>("/OperationType/all");
 
     return res.data;
+  }
+
+  async deactivateOperationType(id: string): Promise<void> {
+    //await this.http.put(`/OperationType/deactivate/${id}`);
   }
 }
