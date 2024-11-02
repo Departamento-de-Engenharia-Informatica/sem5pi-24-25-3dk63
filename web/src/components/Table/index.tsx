@@ -7,7 +7,7 @@ interface TableProps {
 
 const Table: React.FC<TableProps> = ({ headers, data }) => {
   return (
-    <div className="overflow-x-auto">
+    <div className="overflow-x-auto max-w-full">
       <table className="min-w-full hidden lg:table bg-white">
         <thead>
           <tr>

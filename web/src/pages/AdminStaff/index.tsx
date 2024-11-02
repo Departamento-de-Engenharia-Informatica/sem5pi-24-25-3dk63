@@ -7,6 +7,7 @@ import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
 import SearchFilter from "@/components/SearchFilter";
+import DropdownMenu from "@/components/DropdownMenu";
 
 interface StaffListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -37,29 +38,32 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
 
   const totalPages = Math.ceil(totalStaffs / itemsPerPage);
 
-  const renderActions = (staff: any) => (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => handleEdit(staff)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 text-sm"
-      >
-        Editar
-      </button>
-      <button
-        onClick={() => handleDeactivate(staff.id)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
-      >
-        Desativar
-      </button>
-      <button
-        onClick={() => handleDelete(staff.id)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 text-sm"
-      >
-        Eliminar
-      </button>
-    </div>
-  );
+  const renderActions = (staff: any) => {
+    const options = [
+      {
+        label: "Editar",
+        onClick: () => handleEdit(staff),
+        className: "text-blue-500",
+      },
+      {
+        label: "Desativar",
+        onClick: () => handleDeactivate(staff.id),
+        className: "text-yellow-500",
+      },
+      {
+        label: "Eliminar",
+        onClick: () => handleDelete(staff.id),
+        className: "text-red-500",
+      },
+    ];
 
+
+    return (
+        <div className="flex flex-wrap gap-2">
+          <DropdownMenu options={options} buttonLabel="Ações" />
+        </div>
+      );
+  };
   const tableData = staffs.map((staff) => ({
     ...staff,
     Ações: renderActions(staff),

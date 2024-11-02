@@ -5,8 +5,9 @@ import Table from "@/components/Table";
 import Pagination from "@/components/Pagination";
 import { usePatientListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
-import Button from "@/components/Button"; // Importando o botão
+import Button from "@/components/Button";
 import SearchFilter from "@/components/SearchFilter";
+import DropdownMenu from "@/components/DropdownMenu"; 
 
 interface PatientListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -27,34 +28,35 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     itemsPerPage,
   } = usePatientListModule(setAlertMessage);
 
-
   const totalPages = Math.ceil(totalPatients / itemsPerPage);
 
+  const renderActions = (patient: any) => {
+    const options = [
+      {
+        label: "Editar",
+        onClick: () => handleDelete(patient.id),
+        className: "text-blue-500",
+      },
+      {
+        label: "Desativar",
+        onClick: () => handleDelete(patient.id),
+        className: "text-yellow-500",
+      },
+      {
+        label: "Eliminar",
+        onClick: () => handleDelete(patient.id),
+        className: "text-red-500",
+      },
+    ];
 
-  const renderActions = (patient: any) => (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => handleDelete(patient.id)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 text-sm"
-      >
-        Editar
-      </button>
-      <button
-        onClick={() => handleDelete(patient.id)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
-      >
-        Desativar
-      </button>
-      <button
-        onClick={() => handleDelete(patient.id)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 text-sm"
-      >
-        Eliminar
-      </button>
-    </div>
-  );
+    return (
+      <div className="flex flex-wrap gap-2">
+        <DropdownMenu options={options} buttonLabel="Ações" />
+      </div>
+    );
+  };
 
- const tableData = patients.map((patient) => ({
+  const tableData = patients.map((patient) => ({
     ...patient,
     Ações: renderActions(patient),
   }));
@@ -74,17 +76,17 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
           onSearch={searchPatients}
           results={[]}
           renderResult={() => <></>}
-      />
-      {loading && <Loading loadingText />}
-      {error && <Alert type="error" message={error} />}
-      <div className="overflow-x-auto">
-        <Table headers={headers} data={tableData} />
-      </div>
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
+        />
+        {loading && <Loading loadingText />}
+        {error && <Alert type="error" message={error} />}
+        <div className="overflow-x-auto">
+          <Table headers={headers} data={tableData} />
+        </div>
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
       </div>
     </div>
   );
