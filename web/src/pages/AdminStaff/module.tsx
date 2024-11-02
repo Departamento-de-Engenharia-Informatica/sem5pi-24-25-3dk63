@@ -43,6 +43,8 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     setError(null);
     try {
       const staffsData = await staffService.getStaffs();
+
+      console.log("Dados retornados do getStaffs:", staffsData);
       setTotalStaffs(staffsData.length);
       const filteredData = staffsData.map((staffUser) => ({
         "License Number": staffUser.licenseNumber,
@@ -133,7 +135,37 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
 };
 
 
-  ;
+    //search staff
+const searchStaffs = async (query: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log("Query:", query);
+      const staffsData = await staffService.searchStaffs(query);
+      console.log("Dados retornados do searchPatients:", staffsData);
+
+      const filteredData = staffsData.map(( staffUser) => ({
+         "License Number": staffUser.licenseNumber,
+        Username: staffUser.username,
+        Role: staffUser.role,
+        Email: staffUser.email,
+        "Telefone": staffUser.phoneNumber,
+        "Nome Completo": staffUser.name,
+        "Specialization": staffUser.specializationDescription,
+        "Availability Slots": staffUser.availabilitySlots,
+        Ativo: staffUser.active ? "Sim" : "Não",
+      }));
+
+      setStaffs(filteredData);
+    } catch (error) {
+      setError("Erro ao buscar staffs.");
+      console.error("Erro ao buscar staffs:", error);
+      setAlertMessage("Erro ao buscar staffs.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   useEffect(() => {
     fetchStaffs();
@@ -156,6 +188,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     handleDeactivate,
     staffToEdit,
     setStaffToEdit,
-    saveChanges
+    saveChanges,
+    searchStaffs,
   };
 };

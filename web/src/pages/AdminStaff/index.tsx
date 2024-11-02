@@ -6,6 +6,7 @@ import { useStaffListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
+import SearchFilter from "@/components/SearchFilter";
 
 interface StaffListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -30,6 +31,8 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     handleDelete,
     handleDeactivate,
     saveChanges,
+    searchStaffs,
+
   } = useStaffListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalStaffs / itemsPerPage);
@@ -66,6 +69,12 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     <div className="relative">
       <HamburgerMenu options={menuOptions} />
       <div className="container mx-auto p-4">
+       <SearchFilter
+          attributes={['Nome Completo', 'Email Pessoal', 'Specialization']}
+          onSearch={searchStaffs}
+          results={[]}
+          renderResult={() => <></>}
+        />
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
         <div className="overflow-x-auto">
