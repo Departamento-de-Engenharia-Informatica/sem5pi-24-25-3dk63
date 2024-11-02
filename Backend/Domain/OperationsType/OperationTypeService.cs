@@ -100,7 +100,6 @@ namespace DDDSample1.OperationsType
             var name = new OperationName(dto.Name);
 
             var operation =  await this._operationTypeRepository.GetByNameAsync(dto.Name);
-Console.WriteLine(operation);
             if (operation != null)
             {
                 throw new BusinessRuleValidationException("Operation type já existe no sistema, por favor tente novamente com outro nome.");

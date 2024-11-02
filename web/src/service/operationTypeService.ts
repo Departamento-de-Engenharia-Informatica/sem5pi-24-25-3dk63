@@ -3,6 +3,7 @@ import { TYPES } from "../inversify/types";
 import type { HttpService } from "./IService/HttpService";
 import { IOperationTypeService } from "./IService/IOperationTypeService";
 import { OperationType } from "@/model/OperationType";
+import { CreatingOperationTypeDTO } from "@/dto/CreatingOperationTypeDTO";
 
 @injectable()
 export class OperationTypeService implements IOperationTypeService {
@@ -16,5 +17,9 @@ export class OperationTypeService implements IOperationTypeService {
 
   async deactivateOperationType(id: string): Promise<void> {
     await this.http.patch(`/OperationType/deactivate?id=${id}`, {});
+  }
+
+  async addOperationType(operationType: CreatingOperationTypeDTO): Promise<void> {
+    await this.http.post("/OperationType", operationType);
   }
 }

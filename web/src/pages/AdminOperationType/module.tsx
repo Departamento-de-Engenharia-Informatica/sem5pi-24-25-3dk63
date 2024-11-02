@@ -3,6 +3,7 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IOperationTypeService } from "@/service/IService/IOperationTypeService";
 import { useNavigate } from "react-router-dom";
+import { CreatingOperationTypeDTO } from "@/dto/CreatingOperationTypeDTO";
 
 export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalOTypes, setTotalOTypes] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [creatingOperationType, setCreatingOperationType] = useState<any | null>(null);
 
   const itemsPerPage = 10;
 
@@ -87,11 +89,37 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
 
     const handleAddOperationType = () => {
-    // Aqui você pode implementar a lógica para adicionar um novo tipo de operação
-    // Por exemplo, abrir um modal ou redirecionar para uma página de criação
-    // faz para mostrar alguma coisa
+      console.log("Adicionar novo Tipo de Operação");
+      const newOperationTypeDTO = {
+        name: "",
+        requiredStaff: 0,
+        preparationTime: 0,
+        surgeryTime: 0,
+        cleaningTime: 0,
+        specialization: "",
+        active: true,
+      };
+      console.log("Novo Tipo de Operação:", newOperationTypeDTO);
+
+    setCreatingOperationType(newOperationTypeDTO);
     setIsModalVisible(true);
   };
+
+  const saveOperationType = async () => {
+    if (!creatingOperationType) {
+      return;
+    }
+    try {
+      console.log("Salvando Tipo de Operação:", creatingOperationType);
+      await operationTypeService.addOperationType(creatingOperationType);
+       window.confirm("Tipo de Operação criado com sucesso.");
+      setIsModalVisible(false);
+      fetchOperationsTypes();
+    } catch (BusinessRuleValidationException) {
+      console.error("Erro ao criar Tipo de Operação:", error);
+       window.confirm("Erro ao criar Tipo de Operação.");
+    }
+  }
 
 
   return {
@@ -108,5 +136,10 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setIsModalVisible,
     handleDeactivate,
     handleAddOperationType,
+    creatingOperationType,
+    setCreatingOperationType,
+    saveOperationType,
   };
 };
+  
+

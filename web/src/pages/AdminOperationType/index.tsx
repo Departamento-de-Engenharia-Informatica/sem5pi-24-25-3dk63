@@ -5,6 +5,8 @@ import Table from "@/components/Table";
 import { useOpTypesListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
+import Modal from "@/components/Modal";
+
 
 interface OperationTypeListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -21,8 +23,14 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     currentPage,
     setCurrentPage,
     itemsPerPage,
+    isModalVisible,
+    setIsModalVisible,
     handleDeactivate,
     handleAddOperationType,
+    creatingOperationType,
+    setCreatingOperationType,
+    saveOperationType,
+
   } = useOpTypesListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalOTypes / itemsPerPage);
@@ -68,7 +76,97 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
           onPageChange={setCurrentPage}
         />
       </div>
+      {isModalVisible && (
+  <Modal
+    isVisible={isModalVisible}
+    setIsVisible={setIsModalVisible}
+    title="Criar Novo Tipo de Operação"
+  >
+    <div className="p-4">
+      <label className="block text-sm font-medium text-gray-700">Nome</label>
+      <input
+        type="text"
+        value={creatingOperationType?.name || ""}
+        onChange={(e) =>
+          setCreatingOperationType((prev:any) => ({
+            ...prev,
+            name: e.target.value,
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+
+      <label className="block text-sm font-medium text-gray-700 mt-4">Tempo de Preparação</label>
+      <input
+        type="number"
+        onChange={(e) =>
+          setCreatingOperationType((prev:any) => ({
+            ...prev,
+            preparation: parseInt(e.target.value, 10),
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+
+      <label className="block text-sm font-medium text-gray-700 mt-4">Tempo de Cirurgia</label>
+      <input
+        type="number"
+        onChange={(e) =>
+          setCreatingOperationType((prev:any) => ({
+            ...prev,
+            surgery: parseInt(e.target.value, 10),
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+
+      <label className="block text-sm font-medium text-gray-700 mt-4">Tempo de Limpeza</label>
+      <input
+        type="number"
+        onChange={(e) =>
+          setCreatingOperationType((prev:any) => ({
+            ...prev,
+            cleaning: parseInt(e.target.value, 10),
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+
+      <label className="block text-sm font-medium text-gray-700 mt-4">Pessoal Necessário</label>
+      <input
+        type="number"
+        onChange={(e) =>
+          setCreatingOperationType((prev:any) => ({
+            ...prev,
+            requiredStaff: parseInt(e.target.value, 10),
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+
+      <label className="block text-sm font-medium text-gray-700 mt-4">Especialidade</label>
+      <input
+        type="text"
+        onChange={(e) =>
+          setCreatingOperationType((prev:any) => ({
+            ...prev,
+            speciality: e.target.value,
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+
+      <button
+        onClick={saveOperationType}
+        className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
+      >
+        Salvar
+      </button>
     </div>
+  </Modal>
+)}
+    </div>
+    
   );
 };
 
