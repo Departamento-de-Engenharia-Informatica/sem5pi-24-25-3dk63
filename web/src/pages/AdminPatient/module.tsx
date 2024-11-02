@@ -29,7 +29,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     "Sexo",
     "Telefone de Contato",
     "Ativo",
-    "Ações",
+    "",
   ];
 
   const menuOptions = [

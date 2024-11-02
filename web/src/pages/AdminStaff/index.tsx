@@ -66,7 +66,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
   };
   const tableData = staffs.map((staff) => ({
     ...staff,
-    Ações: renderActions(staff),
+    " ": renderActions(staff),
   }));
 
   return (

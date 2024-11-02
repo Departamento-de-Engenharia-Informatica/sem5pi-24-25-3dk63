@@ -29,7 +29,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     "Specialization",
     "Availability Slots",
     "Ativo",
-    "Ações",
+    " ",
   ];
 
   const menuOptions = [

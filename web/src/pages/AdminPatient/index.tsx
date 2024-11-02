@@ -7,7 +7,7 @@ import { usePatientListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Button from "@/components/Button";
 import SearchFilter from "@/components/SearchFilter";
-import DropdownMenu from "@/components/DropdownMenu"; 
+import DropdownMenu from "@/components/DropdownMenu";
 
 interface PatientListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -58,7 +58,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
 
   const tableData = patients.map((patient) => ({
     ...patient,
-    Ações: renderActions(patient),
+    "": renderActions(patient),
   }));
 
   return (
