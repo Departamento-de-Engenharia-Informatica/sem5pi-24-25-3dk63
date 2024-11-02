@@ -29,6 +29,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     "Sexo",
     "Telefone de Contato",
     "Ativo",
+    "Ações",
   ];
 
   const menuOptions = [
@@ -52,7 +53,10 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         Ativo: patientUser.active ? "Sim" : "Não",
         id: patientUser.id.value,
       }));
-     const startIndex = (currentPage - 1) * itemsPerPage;
+
+      console.log("Dados filtrados:", filteredData);
+
+      const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedPatients = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setPatients(paginatedPatients);
     } catch (error) {
@@ -109,7 +113,7 @@ const searchPatients = async (query: Record<string, string>) => {
 
   useEffect(() => {
     fetchPatients();
-  }, []);
+  }, [currentPage]);
 
 
   return {

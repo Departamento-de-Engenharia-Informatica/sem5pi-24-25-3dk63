@@ -42,7 +42,6 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     setError(null);
     try {
       const staffsData = await staffService.getStaffs();
-
       console.log("Dados retornados do getStaffs:", staffsData);
       setTotalStaffs(staffsData.length);
       const filteredData = staffsData.map((staffUser) => ({
@@ -57,6 +56,8 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         Ativo: staffUser.active ? "Sim" : "Não",
         id: staffUser.licenseNumber,
       }));
+
+      console.log("Dados filtrados:", filteredData);
 
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedStaffs = filteredData.slice(startIndex, startIndex + itemsPerPage);
@@ -75,10 +76,10 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
       try {
         await staffService.deleteStaff(id);
         setStaffs((prev) => prev.filter((staff) => staff.id !== id));
-        setAlertMessage("Membro da equipe excluído com sucesso.");
+        setAlertMessage("Staff excluído com sucesso.");
       } catch (error) {
-        console.error("Erro ao excluir membro da equipe:", error);
-        setAlertMessage("Erro ao excluir membro da equipe.");
+        console.error("Erro ao excluir Staff:", error);
+        setAlertMessage("Erro ao excluir Staff.");
       }
     }
   };
@@ -96,11 +97,11 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
       specialization: staff.Specialization
 
     };
-    console.log("New staff to edit:", newStaff); 
+    console.log("New staff to edit:", newStaff);
 
-    setStaffToEdit(newStaff); 
-    setLicenseToEdit(staff.id); 
-    setIsModalVisible(true); 
+    setStaffToEdit(newStaff);
+    setLicenseToEdit(staff.id);
+    setIsModalVisible(true);
   };
 
   const handleDeactivate = async (id: string) => {
