@@ -16,7 +16,7 @@ namespace DDDSample1.Controllers
         private readonly OperationTypeService _service;
 
 
-
+        
         public OperationTypeController(OperationTypeService service)
         {
             _service = service;
@@ -28,6 +28,14 @@ namespace DDDSample1.Controllers
         {
             return await _service.GetAllAsync();
         }
+
+        // GET: api/OperationType
+        [HttpGet ("all")]
+        public async Task<ActionResult<IEnumerable<SearchOperationTypeDTO>>> GetOperationTypeAll()
+        {
+            return await _service.GetAllOperationTypeAsync();
+        }
+
 
         // GET: api/OperationType/5
         [HttpGet("{id}")]
@@ -68,7 +76,7 @@ namespace DDDSample1.Controllers
             if (id != dto.Id)
             {
                 return BadRequest();
-            } 
+            }
 
             try
             {
@@ -109,7 +117,7 @@ namespace DDDSample1.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
-        
+
         // PATCH: api/OperationType/{id}
         [Authorize(Roles = "Admin")]
         [HttpPatch("deactivate")]
@@ -140,7 +148,7 @@ namespace DDDSample1.Controllers
         {
             try
             {
-                var updatedOperationType = await _service.UpdateCurrentActiveType(dto, id); 
+                var updatedOperationType = await _service.UpdateCurrentActiveType(dto, id);
                 if (updatedOperationType == null)
                 {
                     return NotFound();

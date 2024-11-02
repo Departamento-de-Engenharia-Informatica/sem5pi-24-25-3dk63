@@ -154,7 +154,6 @@ const searchStaffs = async (query: Record<string, string>) => {
         "Availability Slots": staffUser.availabilitySlots,
         Ativo: staffUser.active ? "Sim" : "Não",
       }));
-
       setStaffs(filteredData);
     } catch (error) {
       setError("Erro ao buscar staffs.");

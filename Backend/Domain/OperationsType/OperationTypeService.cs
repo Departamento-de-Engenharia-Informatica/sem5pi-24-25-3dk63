@@ -21,7 +21,7 @@ namespace DDDSample1.OperationsType
         private readonly IConfiguration _configuration;
        private readonly AuditService _auditService;
        private readonly IMapper _mapper;
-       
+
         public OperationTypeService(IMapper mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, AuditService auditService, ISpecializationRepository specializationRepository)
         {
             _unitOfWork = unitOfWork;
@@ -58,6 +58,22 @@ namespace DDDSample1.OperationsType
             return listDto;
         }
 
+        public async Task<List<SearchOperationTypeDTO>> GetAllOperationTypeAsync()
+        {
+            var list = await this._operationTypeRepository.GetAllAsync();
+
+            List<SearchOperationTypeDTO> listDto = list.ConvertAll(operationType => new SearchOperationTypeDTO
+            {
+                Name = operationType.Name,
+                Specialization = _specializationRepository.GetByIdAsync(operationType.SpecializationId).Result.Description,
+                Active = operationType.Active,
+                RequiredStaff = operationType.RequiredStaff,
+                Duration = operationType.Duration
+            });
+            return listDto;
+        }
+
+
         // Obtém uma operation pelo ID
 
         public async Task<OperationTypeDTO> GetByIdAsync(OperationTypeId id)
@@ -71,10 +87,10 @@ namespace DDDSample1.OperationsType
             {
                 throw new Exception(ex.Message);
             }
-            
+
         }
 
-        
+
 
         public async Task<OperationTypeDTO> AddAsync(CreatingOperationTypeDTO dto, string adminEmail)
         {
@@ -108,7 +124,7 @@ namespace DDDSample1.OperationsType
         public async Task <OperationTypeDTO> DeleteAsync(OperationTypeId id) {
             var operationType = await this._operationTypeRepository.GetByIdAsync(id);
             if (operationType == null) return null;
-            
+
             if (operationType.Active) throw new BusinessRuleValidationException("Não é possível excluir um tipo de operação ativo.");
 
             this._operationTypeRepository.Remove(operationType);
@@ -198,7 +214,7 @@ Debug.Assert(operationType != null, "OperationType should not be null");
             else if (!string.IsNullOrEmpty(specialization))
             {
                 var specializationVAR = await _specializationRepository.GetByDescriptionAsync(new Description(specialization));
-                if (specializationVAR == null) 
+                if (specializationVAR == null)
                     throw new BusinessRuleValidationException("A especialização não existe.");
 
                 operationType = await _operationTypeRepository.GetBySpecializationAsync(specializationVAR.Id);
