@@ -29,14 +29,15 @@ namespace DDDSample1.Domain.Staff
         private readonly ISpecializationRepository _specializationRepository;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly List<string> _sensitiveAttributes = new List<string> { "Email", "emergencyContact"};
-        private readonly List<string> _sensitiveAttributesStaff = new List<string> { "Email", "PhoneNumber"};
+        private readonly List<string> _sensitiveAttributes = new List<string> { "Email", "emergencyContact" };
+        private readonly List<string> _sensitiveAttributesStaff = new List<string> { "Email", "PhoneNumber" };
 
 
-private readonly AuditService _auditService;
+        private readonly AuditService _auditService;
         private readonly DDDSample1DbContext _context;
 
-public StaffService(UserService userService,EmailService emailService ,IStaffRepository staffRepository, IUserRepository userRepository, ISpecializationRepository specializationRepository, IUnitOfWork unitOfWork, IMapper mapper, AuditService auditService, DDDSample1DbContext context, IPendingChangesStaffRepository pendingChangesStaffRepository)        {
+        public StaffService(UserService userService, EmailService emailService, IStaffRepository staffRepository, IUserRepository userRepository, ISpecializationRepository specializationRepository, IUnitOfWork unitOfWork, IMapper mapper, AuditService auditService, DDDSample1DbContext context, IPendingChangesStaffRepository pendingChangesStaffRepository)
+        {
             _emailService = emailService;
             _userService = userService;
             _staffRepository = staffRepository;
@@ -64,7 +65,7 @@ public StaffService(UserService userService,EmailService emailService ,IStaffRep
             List<StaffCompleteDTO> listDto = staffList.ConvertAll(staff => new StaffCompleteDTO
             {
                 LicenseNumber = staff.Id.Value.ToString(),
-                 Username = _userRepository.GetByIdAsync(staff.UserId).Result.Username.Value.ToString(),
+                Username = _userRepository.GetByIdAsync(staff.UserId).Result.Username.Value.ToString(),
                 Role = _userRepository.GetByIdAsync(staff.UserId).Result.Role.Value.ToString(),
                 PhoneNumber = _userRepository.GetByIdAsync(staff.UserId).Result.PhoneNumber.Number.ToString(),
                 Email = _userRepository.GetByIdAsync(staff.UserId).Result.Email.Value.ToString(),
@@ -136,92 +137,96 @@ public StaffService(UserService userService,EmailService emailService ,IStaffRep
             var userStaff = await _userRepository.GetByIdAsync(staff.UserId);
             if (staff == null) return null;
 
-             // Atualizar informações do staff
+            // Atualizar informações do staff
             await UpdateStaffInfo(staff, userStaff, updateDto);
-             // Logar alterações METER ADMIN
+            // Logar alterações METER ADMIN
             _auditService.LogEditStaff(staff, adminEmail);
 
-             return true;
-                }
+            return true;
+        }
 
         private async Task<Staff> UpdateStaffInfo(Staff staff, User user, StaffUpdateDTO updateDto)
-{
-    if (user == null) throw new ArgumentNullException(nameof(user), "User cannot be null");
-
-    if (staff == null) throw new ArgumentNullException(nameof(staff), "Staff cannot be null");
-
-    bool userSensitiveDataChanged = false;
-
-    // Obter propriedades do DTO
-    PropertyInfo[] properties = typeof(StaffUpdateDTO).GetProperties();
-
-    //criar lista para armaazenar propriedades alteradas e as mudanças tipo: email de "a" para "b"
-    List<string> changedProperties = new List<string>();
-
-    foreach (PropertyInfo property in properties)
-    {
-        //ignorr caso tentem alterar o id
-        if (property.PropertyType == typeof(LicenseNumber)) continue;
-
-        var newValue = property.GetValue(updateDto, null);
-        var atualValue = new object();
-
-        if(user.GetType().GetProperty(property.Name) != null)
         {
-            atualValue = user.GetType().GetProperty(property.Name)?.GetValue(user, null);
-        }
-        else atualValue = staff.GetType().GetProperty(property.Name)?.GetValue(staff, null);
+            if (user == null) throw new ArgumentNullException(nameof(user), "User cannot be null");
 
+            if (staff == null) throw new ArgumentNullException(nameof(staff), "Staff cannot be null");
 
-        if(property.Name == "SpecializationDescription")
-        {
-            var specialization = await _specializationRepository.GetByDescriptionAsync(new Description(newValue.ToString()));
-            if (specialization == null){
-                throw new BusinessRuleValidationException($"Specialization '{newValue.ToString()}' not found.");}
-                else{
-                    typeof(Staff).GetProperty("SpecializationId")?.SetValue(staff, specialization.Id);
-                }
-                continue;
-        }
+            bool userSensitiveDataChanged = false;
 
-        if (newValue != null && !newValue.Equals(atualValue))
-        {
-            if (CheckIfExistsOnUser(property.Name))
+            // Obter propriedades do DTO
+            PropertyInfo[] properties = typeof(StaffUpdateDTO).GetProperties();
+
+            //criar lista para armaazenar propriedades alteradas e as mudanças tipo: email de "a" para "b"
+            List<string> changedProperties = new List<string>();
+
+            foreach (PropertyInfo property in properties)
             {
-                // Atualizar valor na entidade User
-                typeof(User).GetProperty(property.Name)?.SetValue(user, newValue);
+                //ignorr caso tentem alterar o id
+                if (property.PropertyType == typeof(LicenseNumber)) continue;
 
-                if (_sensitiveAttributesStaff.Contains(property.Name))
+                var newValue = property.GetValue(updateDto, null);
+                var atualValue = new object();
+
+                if (user.GetType().GetProperty(property.Name) != null)
                 {
-                    changedProperties.Add($"{property.Name}: Valor alterado: {atualValue} -> Valor atual: {newValue}");
-                    userSensitiveDataChanged = true;
+                    atualValue = user.GetType().GetProperty(property.Name)?.GetValue(user, null);
+                }
+                else atualValue = staff.GetType().GetProperty(property.Name)?.GetValue(staff, null);
+
+
+                if (property.Name == "SpecializationDescription")
+                {
+                    var specialization = await _specializationRepository.GetByDescriptionAsync(new Description(newValue.ToString()));
+                    if (specialization == null)
+                    {
+                        throw new BusinessRuleValidationException($"Specialization '{newValue.ToString()}' not found.");
+                    }
+                    else
+                    {
+                        typeof(Staff).GetProperty("SpecializationId")?.SetValue(staff, specialization.Id);
+                    }
+                    continue;
+                }
+
+                if (newValue != null && !newValue.Equals(atualValue))
+                {
+                    if (CheckIfExistsOnUser(property.Name))
+                    {
+                        // Atualizar valor na entidade User
+                        typeof(User).GetProperty(property.Name)?.SetValue(user, newValue);
+
+                        if (_sensitiveAttributesStaff.Contains(property.Name))
+                        {
+                            changedProperties.Add($"{property.Name}: Valor alterado: {atualValue} -> Valor atual: {newValue}");
+                            userSensitiveDataChanged = true;
+                        }
+                    }
+                    else if (CheckIfExistsOnStaff(property.Name))
+                    {
+                        // Atualizar valor na entidade Staff
+                        typeof(Staff).GetProperty(property.Name)?.SetValue(staff, newValue);
+                    }
+
                 }
             }
-            else if (CheckIfExistsOnStaff(property.Name)){
-                // Atualizar valor na entidade Staff
-                typeof(Staff).GetProperty(property.Name)?.SetValue(staff, newValue);
+
+            // Atualizar entidades no repositório
+            await _userRepository.UpdateUserAsync(user);
+            await _staffRepository.UpdateStaffAsync(staff);
+            await _unitOfWork.CommitAsync();
+
+            // Enviar notificação se dados sensíveis forem alterados
+            if (userSensitiveDataChanged)
+            {
+                await _emailService.SendStaffNotificationEmailAsync(changedProperties, updateDto);
             }
 
+            return staff;
+
         }
-    }
-
-    // Atualizar entidades no repositório
-    await _userRepository.UpdateUserAsync(user);
-    await _staffRepository.UpdateStaffAsync(staff);
-    await _unitOfWork.CommitAsync();
-
-    // Enviar notificação se dados sensíveis forem alterados
-    if (userSensitiveDataChanged )
-    {
-        await _emailService.SendStaffNotificationEmailAsync(changedProperties, updateDto);
-    }
-
-    return staff;
-
-}
 
 
-      private bool CheckIfExistsOnUser(string propertyName)
+        private bool CheckIfExistsOnUser(string propertyName)
         {
             PropertyInfo userProperty = typeof(User).GetProperty(propertyName);
             return userProperty != null && userProperty.CanWrite;
@@ -243,9 +248,12 @@ public StaffService(UserService userService,EmailService emailService ,IStaffRep
         public async Task<StaffDTO?> DeleteAsync(LicenseNumber licenseNumber)
         {
             var staff = await _staffRepository.GetByLicenseNumberAsync(licenseNumber);
+            var user = await _userRepository.GetByIdAsync(staff.UserId);
             if (staff == null) return null;
 
             _staffRepository.Remove(staff);
+            _userRepository.Remove(user);
+
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<StaffDTO>(staff);
@@ -266,6 +274,7 @@ public StaffService(UserService userService,EmailService emailService ,IStaffRep
 
             if (!string.IsNullOrEmpty(email))
             {
+
                 results = results.Where(s => s.user.Email.Value == email).ToList();
             }
 
@@ -283,20 +292,21 @@ public StaffService(UserService userService,EmailService emailService ,IStaffRep
 
             List<StaffCompleteDTO> listDto = results.ConvertAll(s => new StaffCompleteDTO
             {
-                LicenseNumber =  s.staff.Id.ToString(),
+                LicenseNumber = s.staff.Id.Value.ToString(),
                 Username = _userRepository.GetByIdAsync(s.staff.UserId).Result.Username.Value.ToString(),
                 Role = _userRepository.GetByIdAsync(s.staff.UserId).Result.Role.Value.ToString(),
                 Email = _userRepository.GetByIdAsync(s.staff.UserId).Result.Email.Value.ToString(),
                 Name = _userRepository.GetByIdAsync(s.staff.UserId).Result.Name.ToString(),
+                PhoneNumber = _userRepository.GetByIdAsync(s.staff.UserId).Result.PhoneNumber.Number.ToString(),
                 SpecializationDescription = _specializationRepository.GetByIdAsync(s.staff.SpecializationId).Result.Description.Value.ToString(),
                 AvailabilitySlots = s.staff.AvailabilitySlots.Slots,
                 Active = s.staff.Active
 
             });
-         return listDto;
+            return listDto;
         }
 
-public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name = null, string? licenseNumber = null, string? phoneNumber = null, string? userId = null, string? specialization = null)
+        public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail, string? name = null, string? licenseNumber = null, string? phoneNumber = null, string? userId = null, string? specialization = null)
         {
             var query = from staff in _staffRepository.GetQueryable()
                         join user in _userRepository.GetQueryable() on staff.UserId equals user.Id
@@ -353,7 +363,7 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
 
             if (staffResult == null) return null;
 
-            
+
 
             // Log e desativação
             _auditService.LogDeactivateStaff(staffResult.staff, adminEmail);
@@ -412,19 +422,19 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
                 Specialization = pendingChangesDto.Specialization
             };
             await _pendingChangesStaffRepository.AddPendingChangesStaffAsync(pendingChanges);
-            
+
             await _unitOfWork.CommitAsync();
         }
-        public async Task ApplyPendingChangesAsync (UserId userId)
+        public async Task ApplyPendingChangesAsync(UserId userId)
         {
             var pendingChanges = await _pendingChangesStaffRepository.GetPendingChangesByUserIdAsync(userId);
             if (pendingChanges == null)
-           {
+            {
                 throw new Exception("No pending changes found for this user.");
             }
             var staff = await _staffRepository.GetByUserIdAsync(userId);
             var user = await _userRepository.GetByIdAsync(userId);
-            
+
             if (pendingChanges.Email != null)
             {
                 user.ChangeEmail(pendingChanges.Email);
@@ -459,11 +469,11 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
         {
             var specialization2 = await _specializationRepository.FindByIdAsync(new SpecializationId(staff.SpecializationId));
 
-                String specialization = specialization2.Description.Value;
+            String specialization = specialization2.Description.Value;
 
-            if(specialization.Equals(specializationDescription))
+            if (specialization.Equals(specializationDescription))
                 return false;
-            
+
             return true;
         }
 
@@ -478,7 +488,7 @@ public async Task<StaffDTO?> DeactivateStaffAsync(String adminEmail,string? name
             await _unitOfWork.CommitAsync();
         }
 
-        
+
         public async Task ConfirmUpdateAsync(string token)
         {
             var user = await _userRepository.GetUserByConfirmationTokenAsync(token);

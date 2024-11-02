@@ -20,7 +20,7 @@ namespace DDDSample1.Controllers
     [ApiController]
     public class StaffController : ControllerBase
     {
-         private readonly StaffService _staffService;
+        private readonly StaffService _staffService;
         private readonly UserService _userService;
         private readonly EmailService _emailService;
         private readonly AuditService _auditService;
@@ -60,7 +60,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<StaffDTO>> CreateStaffAsync(CreatingStaffDTO staffDto)
         {
             try
@@ -107,13 +107,13 @@ namespace DDDSample1.Controllers
                 specializationChanged = (await _staffService.CheckSpecializationExists(updateDto.Specialization)) ?? false;
             }
 
-            if(!specializationChanged)
+            if (!specializationChanged)
             {
-                    return Ok("Invalid specialization, please insert a valid one.");
+                return Ok("Invalid specialization, please insert a valid one.");
             }
 
             specializationChanged = (await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;
-            
+
 
             await _staffService.RemovePendingChangesAsync(new UserId(userStaff.Id));
 
@@ -125,33 +125,33 @@ namespace DDDSample1.Controllers
 
                 await _staffService.AddPendingChangesAsync(updateDto, new UserId(userStaff.Id));
 
-                    if (userStaff.Email?.Value != null)
-                    {
-                        await _emailService.SendUpdateStaffEmail(userStaff.Email.Value, userStaff.ConfirmationToken);
-                    }
-                    else
-                    {
-                        return BadRequest("Unable to send confirmation email due to missing email information.");
-                    }
+                if (userStaff.Email?.Value != null)
+                {
+                    await _emailService.SendUpdateStaffEmail(userStaff.Email.Value, userStaff.ConfirmationToken);
+                }
+                else
+                {
+                    return BadRequest("Unable to send confirmation email due to missing email information.");
+                }
 
                 return Ok("Sensitive changes have been submitted and require confirmation from the staff member.");
             }
 
-            if(!specializationChanged)
+            if (!specializationChanged)
             {
                 return Ok("Staffs profile already up to date.");
             }
 
             await _staffService.AddPendingChangesAsync(updateDto, new UserId(userStaff.Id));
 
-             _auditService.LogProfileStaffUpdate(staff, userStaff, updateDto);
+            _auditService.LogProfileStaffUpdate(staff, userStaff, updateDto);
 
             await _staffService.ApplyPendingChangesAsync(new UserId(userStaff.Id));
 
             return Ok("Your changes have been submitted.");
         }
 
-        
+
         [HttpGet("confirm-update")]
         public async Task<IActionResult> ConfirmEmail(string token)
         {
@@ -206,7 +206,7 @@ namespace DDDSample1.Controllers
 
         {
             var adminEmail = User.FindFirstValue(ClaimTypes.Email);
-            var deactivatedStaff = await _staffService.DeactivateStaffAsync(adminEmail, name,licenseNumber, phoneNumber, UserId, specialization);
+            var deactivatedStaff = await _staffService.DeactivateStaffAsync(adminEmail, name, licenseNumber, phoneNumber, UserId, specialization);
 
             if (deactivatedStaff == null) return NotFound();
 

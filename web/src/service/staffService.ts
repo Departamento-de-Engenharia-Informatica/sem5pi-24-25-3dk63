@@ -14,6 +14,12 @@ export class StaffService implements IStaffService {
     return res.data;
   }
 
+  async searchStaffs(query: Record<string, string>): Promise<StaffUser[]> {
+    const queryString = new URLSearchParams(query).toString();
+    const res = await this.http.get<StaffUser[]>(`/staff/search?${queryString}`);
+    return res.data;
+  }
+
   async deleteStaff(id: string): Promise<void> {
     await this.http.delete(`/staff/${id}`);
     console.log("Staff deleted:", id);
