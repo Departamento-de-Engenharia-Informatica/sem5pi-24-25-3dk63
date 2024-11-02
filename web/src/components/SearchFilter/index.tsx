@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 
 interface SearchFilterProps {
   attributes: string[];
+  labels: Record<string, string>; 
   onSearch: (query: Record<string, string>) => void;
   results: any[];
   renderResult: (result: any) => JSX.Element;
 }
 
-const SearchFilter: React.FC<SearchFilterProps> = ({ attributes, onSearch, results, renderResult }) => {
+const SearchFilter: React.FC<SearchFilterProps> = ({ attributes, labels, onSearch, results, renderResult }) => {
   const [query, setQuery] = useState<Record<string, string>>({});
 
   const handleChange = (attribute: string, value: string) => {
@@ -23,7 +24,9 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ attributes, onSearch, resul
       <div className="mb-4">
         {attributes.map(attribute => (
           <div key={attribute} className="mb-2">
-            <label className="block text-sm font-medium text-gray-700">{attribute}</label>
+            <label className="block text-sm font-medium text-gray-700">
+              {labels[attribute] || attribute}
+            </label>
             <input
               type="text"
               className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

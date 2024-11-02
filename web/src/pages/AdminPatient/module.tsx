@@ -3,6 +3,7 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
+import { set } from "node_modules/cypress/types/lodash";
 
 export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
@@ -12,7 +13,12 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [patientsPerPage] = useState(10); 
+  const [patientsPerPage] = useState(10);
+  const [totalPatients, setTotalPatients] = useState<number>(0);
+
+
+  const itemsPerPage = 10;
+
 
   const headers = [
     "Medical Record Number",
@@ -46,11 +52,11 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         Ativo: patientUser.active ? "Sim" : "Não",
         id: patientUser.id.value,
       }));
-
-      setPatients(filteredData);
+     const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedPatients = filteredData.slice(startIndex, startIndex + itemsPerPage);
+      setPatients(paginatedPatients);
     } catch (error) {
       setError("Erro ao buscar pacientes.");
-      console.error("Erro ao buscar pacientes:", error);
       setAlertMessage("Erro ao buscar pacientes.");
     } finally {
       setLoading(false);
@@ -70,26 +76,53 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     }
   };
 
+      //search staff
+const searchPatients = async (query: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    try {
+      console.log("Query:", query);
+      const patientsData = await patientService.searchPatients(query);
+      console.log("Dados retornados do searchPatients:", patientsData);
+
+     const filteredData = patientsData.map((patientUser) => ({
+        "Medical Record Number": patientUser.id.value,
+        "Nome Completo": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
+        "Email Pessoal": patientUser.personalEmail.value,
+        "Email IAM": patientUser.iamEmail.value,
+        "Data de Nascimento": patientUser.dateOfBirth.date,
+        Sexo: patientUser.gender.gender,
+        "Telefone de Contato": patientUser.phoneNumber.number,
+        Ativo: patientUser.active ? "Sim" : "Não",
+        id: patientUser.id.value,
+      }));
+      setPatients(filteredData);
+    } catch (error) {
+      setError("Erro ao buscar staffs.");
+      console.error("Erro ao buscar staffs:", error);
+      setAlertMessage("Erro ao buscar staffs.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
   useEffect(() => {
     fetchPatients();
   }, []);
 
-  const totalPages = Math.ceil(patients.length / patientsPerPage);
-
-  const currentPatients = patients.slice(
-    (currentPage - 1) * patientsPerPage,
-    currentPage * patientsPerPage
-  );
 
   return {
-    patients: currentPatients,
+    patients,
     loading,
     error,
     headers,
     menuOptions,
-    totalPages,
     currentPage,
     setCurrentPage,
-    handleDelete
+    handleDelete,
+    totalPatients,
+    itemsPerPage,
+    searchPatients,
   };
 };

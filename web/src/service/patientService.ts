@@ -17,6 +17,12 @@ export class PatientService implements IPatientService {
     return res.data;
   }
 
+  async searchPatients(query: Record<string, string>): Promise<PatientUser[]> {
+    let queryString = new URLSearchParams(query).toString();
+    let res = await this.http.get<PatientUser[]>(`/patients/search?${queryString}`);
+    return res.data;
+  }
+
   async deletePatient(id: string): Promise<void> {
     await this.http.delete(`/patients/${id}`);
     console.log("Patient deleted:", id);
