@@ -14,9 +14,9 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalStaffs, setTotalStaffs] = useState<number>(0);
-  const [isModalVisible, setIsModalVisible] = useState(false); 
-  const [staffToEdit, setStaffToEdit] = useState<any | null>(null); 
-  const [LicenseStaffToEdit, setLicenseToEdit] = useState<any | null>(null); 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [staffToEdit, setStaffToEdit] = useState<any | null>(null);
+  const [LicenseStaffToEdit, setLicenseToEdit] = useState<any | null>(null);
 
   const itemsPerPage = 10;
 
@@ -31,7 +31,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     "Availability Slots",
     "Ativo",
     "Ações",
-  ];  
+  ];
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
@@ -55,10 +55,28 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         "Availability Slots": staffUser.availabilitySlots,
         Ativo: staffUser.active ? "Sim" : "Não",
         Ações: (
-          <div>
-            <button onClick={() => handleEdit(staffUser)}>Editar</button>
-            <button onClick={() => handleDeactivate(staffUser.licenseNumber)}>Desativar</button>
-          </div>
+        <div className="flex flex-wrap gap-2">
+          <button
+            onClick={() => handleEdit(staffUser)}
+            className="flex-1 min-w-[100px] px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 text-sm"
+          >
+            Editar
+          </button>
+          <button
+            onClick={() => handleDeactivate(staffUser.licenseNumber)}
+            className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
+          >
+            Desativar
+          </button>
+          <button
+            onClick={() => handleDelete(staffUser.licenseNumber)}
+            className="flex-1 min-w-[100px] px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 text-sm"
+          >
+            Eliminar
+          </button>
+        </div>
+
+
         ),
         id: staffUser.licenseNumber,
       }));
@@ -75,7 +93,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este membro da equipe?")) {
+    if (window.confirm("Tem certeza que deseja excluir este staff?")) {
       try {
         await staffService.deleteStaff(id);
         setStaffs((prev) => prev.filter((staff) => staff.id !== id));
@@ -135,7 +153,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     }
 };
 
-  
+
   ;
 
   useEffect(() => {
