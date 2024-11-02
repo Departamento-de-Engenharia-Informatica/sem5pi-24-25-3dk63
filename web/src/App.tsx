@@ -5,6 +5,7 @@ import AdminPage from './pages/AdminMenu';
 import AdminPatient from './pages/AdminPatient';
 import PatientPage from './pages/PatientMenu/PatientMenu';
 import AdminStaff from './pages/AdminStaff';
+import AdminOperationType from './pages/AdminOperationType';
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
@@ -30,7 +31,7 @@ function App() {
                 <Route path="/admin/staff" element={<AdminStaff setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient" element={<PatientPage />} />
                 <Route path="/patient/register" element={<NewPatient />} />
-
+                <Route path="/admin/operation-type" element={<AdminOperationType setAlertMessage={setAlertMessage} />} />
               </Routes>
             </div>
           </main>

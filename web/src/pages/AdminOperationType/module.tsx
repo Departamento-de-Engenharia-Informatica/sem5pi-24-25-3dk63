@@ -4,9 +4,9 @@ import { TYPES } from "@/inversify/types";
 import { IOperationTypeService } from "@/service/IService/IOperationTypeService";
 import { useNavigate } from "react-router-dom";
 
-export const useOperationTypeListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
+export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
-  const operationTypeService = useInjection<IOperationTypeService>(TYPES.staffService);
+  const operationTypeService = useInjection<IOperationTypeService>(TYPES.operationTypeService);
 
   const [OTypes, setOTypes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -14,7 +14,6 @@ export const useOperationTypeListModule = (setAlertMessage: React.Dispatch<React
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalOTypes, setTotalOTypes] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false); 
-  const [staffToEdit, setStaffToEdit] = useState<any | null>(null); 
 
   const itemsPerPage = 10;
 
@@ -39,27 +38,25 @@ export const useOperationTypeListModule = (setAlertMessage: React.Dispatch<React
     setLoading(true);
     setError(null);
     try {
+      console.log("OIIIII");
       const opsTypedata = await operationTypeService.getOperationTypes();
+      console.log("OIIIII222");
       setTotalOTypes(opsTypedata.length);
+      console.log("OIIIII222");
       const filteredData = opsTypedata.map((OperationType) => ({
-        "Nome": OperationType.name,
-        "Required Staff": OperationType.requiredStaff,
-        "Preparation Time": OperationType.preparationTime,
-        "Surgery Time": OperationType.surgeryTime,
-        "Cleaning Time": OperationType.cleaningTime,
-        "Total Time": OperationType.totalTime,
+        "Nome": OperationType.name.description,
+        "Required Staff": OperationType.requiredStaff.requiredNumber,
+        "Preparation Time": OperationType.duration.preparationPhase,
+        "Surgery Time": OperationType.duration.surgeryPhase,
+        "Cleaning Time": OperationType.duration.cleaningPhase,
+        "Total Time": OperationType.duration.totalDuration,
         "Specialization": OperationType.specialization,
         Ativo: OperationType.active ? "Sim" : "Não",
-        Ações: (
-          <div>
-            <button onClick={() => handleDeactivate(staffUser.licenseNumber)}>Desativar</button>
-          </div>
-        ),
       }));
 
       const startIndex = (currentPage - 1) * itemsPerPage;
-      const paginatedStaffs = filteredData.slice(startIndex, startIndex + itemsPerPage);
-      setTotalOTypes(paginatedStaffs);
+      const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
+      setOTypes(paginatedOperationTypes);
     } catch (error) {
       setError("Erro ao listar tipos de operação.");
       setAlertMessage("Erro ao listar tipos de operação.");
@@ -86,7 +83,5 @@ export const useOperationTypeListModule = (setAlertMessage: React.Dispatch<React
     itemsPerPage,
     isModalVisible,
     setIsModalVisible,
-    staffToEdit,
-    setStaffToEdit,
   };
 };

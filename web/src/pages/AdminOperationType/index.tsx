@@ -12,7 +12,7 @@ interface OperationTypeListProps {
 
 const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
   const {
-    staffs,
+    OTypes,
     loading,
     error,
     headers,
@@ -34,7 +34,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
         <div className="overflow-x-auto">
-          <Table headers={headers} data={staffs}  />
+          <Table headers={headers} data={OTypes}  />
         </div>
         <Pagination
           totalPages={totalPages}
