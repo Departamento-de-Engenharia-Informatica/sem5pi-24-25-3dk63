@@ -267,7 +267,10 @@ namespace DDDSample1.Domain.Staff
 
             if (!string.IsNullOrEmpty(name))
             {
-                query = query.Where(s => s.user.Name.FirstName.Contains(name) || s.user.Name.LastName.Contains(name));
+                var nomes = name.Split(" "); 
+                string primeiroNome = nomes[0]; 
+                string ultimoNome = nomes[nomes.Length - 1]; 
+                query = query.Where(s => s.user.Name.FirstName.Contains(primeiroNome) || s.user.Name.LastName.Contains(ultimoNome));
             }
 
             var results = await query.ToListAsync();

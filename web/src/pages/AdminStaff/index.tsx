@@ -70,7 +70,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
       <HamburgerMenu options={menuOptions} />
       <div className="container mx-auto p-4">
        <SearchFilter
-          attributes={['Nome Completo', 'Email Pessoal', 'Specialization']}
+          attributes={['Name', 'Email', 'Specialization']}
           onSearch={searchStaffs}
           results={[]}
           renderResult={() => <></>}

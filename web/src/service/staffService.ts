@@ -15,8 +15,8 @@ export class StaffService implements IStaffService {
   }
 
   async searchStaffs(query: Record<string, string>): Promise<StaffUser[]> {
-    const queryString = new URLSearchParams(query).toString();
-    const res = await this.http.get<StaffUser[]>(`/staff/search?${queryString}`);
+    let queryString = new URLSearchParams(query).toString();
+    let res = await this.http.get<StaffUser[]>(`/staff/search?${queryString}`);
     return res.data;
   }
 
