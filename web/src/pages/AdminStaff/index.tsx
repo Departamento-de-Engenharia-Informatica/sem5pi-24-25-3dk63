@@ -79,49 +79,57 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
       </div>
 
       {isModalVisible && (
-        <Modal
-          isVisible={isModalVisible}
-          setIsVisible={setIsModalVisible}
-          title="Editar Informações do Staff"
-        >
-          <div>
-            <label>Email</label>
-            <input
-              type="email"
-              value={staffToEdit?.email?.value || ""}
-              onChange={(e) =>
-                setStaffToEdit((prev: any) => ({
-                  ...prev,
-                  email: { value: e.target.value },
-                }))
-              }
-            />
-            <label>Telefone</label>
-            <input
-              type="text"
-              value={staffToEdit?.phoneNumber?.number || ""}
-              onChange={(e) =>
-                setStaffToEdit((prev: any) => ({
-                  ...prev,
-                  phoneNumber: { number: e.target.value },
-                }))
-              }
-            />
-            <label>Specialization</label>
-            <input
-              type="text"
-              value={staffToEdit?.specialization || ""}
-              onChange={(e) =>
-                setStaffToEdit((prev: any) => ({
-                  ...prev,
-                  specialization: e.target.value,
-                }))
-              }
-            />
-            <button onClick={saveChanges}>Salvar</button>
-          </div>
-        </Modal>
-      )}
+  <Modal
+    isVisible={isModalVisible}
+    setIsVisible={setIsModalVisible}
+    title="Editar Informações do Staff"
+  >
+    <div className="p-4">
+      <label className="block text-sm font-medium text-gray-700">Email</label>
+      <input
+        type="email"
+        value={staffToEdit?.email?.value || ""}
+        onChange={(e) =>
+          setStaffToEdit((prev:any) => ({
+            ...prev,
+            email: { value: e.target.value },
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+      <label className="block text-sm font-medium text-gray-700 mt-4">Telefone</label>
+      <input
+        type="text"
+        value={staffToEdit?.phoneNumber?.number || ""}
+        onChange={(e) =>
+          setStaffToEdit((prev:any) => ({
+            ...prev,
+            phoneNumber: { number: e.target.value },
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+      <label className="block text-sm font-medium text-gray-700 mt-4">Especialização</label>
+      <input
+        type="text"
+        value={staffToEdit?.specialization || ""}
+        onChange={(e) =>
+          setStaffToEdit((prev:any) => ({
+            ...prev,
+            specialization: e.target.value,
+          }))
+        }
+        className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+      />
+      <button
+        onClick={saveChanges}
+        className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
+      >
+        Salvar
+      </button>
+    </div>
+  </Modal>
+)}
     </div>
   );
 };
