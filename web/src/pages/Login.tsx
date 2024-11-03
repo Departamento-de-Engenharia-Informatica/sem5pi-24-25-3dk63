@@ -85,7 +85,7 @@ function LoginPage() {
                         </div>
                     )}
                     <p className="text-gray-600 mb-6 text-center">
-                        Por favor, faça login com sua conta Google para continuar
+                        Por favor, faça login com a sua conta Google para continuar
                     </p>
                     <div className="flex justify-center">
                         <div className="w-full">
