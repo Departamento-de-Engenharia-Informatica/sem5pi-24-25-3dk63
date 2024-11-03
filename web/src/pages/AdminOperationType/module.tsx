@@ -20,20 +20,20 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const itemsPerPage = 10;
 
   const headers = [
-    "Nome",
+    "Name",
     "Required Staff",
     "Preparation Time",
     "Surgery Time",
     "Cleaning Time",
     "Total Time",
     "Specialization",
-    "Ativo",
-    "Ações",
+    "Active",
+    "Actions",
   ];
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
-    { label: "AdminMenu", action: () => navigate("/admin") },
+    { label: "Admin Menu", action: () => navigate("/admin") },
   ];
 
   const fetchOperationsTypes = async () => {
@@ -41,65 +41,64 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setError(null);
     try {
       const opsTypedata = await operationTypeService.getOperationTypes();
-      console.log("Dados retornados do getOperationTypes:", opsTypedata);
+      console.log("Data returned from getOperationTypes:", opsTypedata);
       setTotalOTypes(opsTypedata.length);
       const filteredData = opsTypedata.map((OperationType) => ({
         id: OperationType.id,
-        Nome: OperationType.name.description,
+        Name: OperationType.name.description,
         "Required Staff": OperationType.requiredStaff.requiredNumber,
         "Preparation Time": OperationType.duration.preparationPhase,
         "Surgery Time": OperationType.duration.surgeryPhase,
         "Cleaning Time": OperationType.duration.cleaningPhase,
         "Total Time": OperationType.duration.totalDuration,
         Specialization: OperationType.specialization.value,
-        Ativo: OperationType.active ? "Sim" : "Não",
+        Active: OperationType.active ? "Yes" : "No",
       }));
 
-      console.log("Dados filtrados:", filteredData);
+      console.log("Filtered Data:", filteredData);
 
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setOTypes(paginatedOperationTypes);
     } catch (error) {
-      setError("Erro ao listar tipos de operação.");
-      setAlertMessage("Erro ao listar tipos de operação.");
+      setError("Error fetching operation types.");
+      setAlertMessage("Error fetching operation types.");
     } finally {
       setLoading(false);
     }
   };
 
-    const handleDeactivate = async (id: string) => {
-    if (window.confirm("Tem a certeza que deseja desativar este operation type?")) {
-      console.log("Desativar Operation Type com id:", id);
+  const handleDeactivate = async (id: string) => {
+    if (window.confirm("Are you sure you want to deactivate this operation type?")) {
+      console.log("Deactivating Operation Type with id:", id);
       try {
         await operationTypeService.deactivateOperationType(id);
         fetchOperationsTypes();
-        setAlertMessage("Operation Type desativado com sucesso.");
-        window.confirm("Operation Type desativado com sucesso. Ação registada no log.");
+        setAlertMessage("Operation Type deactivated successfully.");
+        window.confirm("Operation Type deactivated successfully. Action logged.");
       } catch (error) {
-        console.error("Erro ao desativar Operation Type:", error);
-        setAlertMessage("Erro ao desativar Operation Type.");
+        console.error("Error deactivating Operation Type:", error);
+        setAlertMessage("Error deactivating Operation Type.");
       }
     }
-  }
+  };
 
   useEffect(() => {
     fetchOperationsTypes();
   }, [currentPage]);
 
-
-    const handleAddOperationType = () => {
-      console.log("Adicionar novo Tipo de Operação");
-      const newOperationTypeDTO = {
-        name: "",
-        requiredStaff: 0,
-        preparationTime: 0,
-        surgeryTime: 0,
-        cleaningTime: 0,
-        specialization: "",
-        active: true,
-      };
-      console.log("Novo Tipo de Operação:", newOperationTypeDTO);
+  const handleAddOperationType = () => {
+    console.log("Add new Operation Type");
+    const newOperationTypeDTO = {
+      name: "",
+      requiredStaff: 0,
+      preparationTime: 0,
+      surgeryTime: 0,
+      cleaningTime: 0,
+      specialization: "",
+      active: true,
+    };
+    console.log("New Operation Type:", newOperationTypeDTO);
 
     setCreatingOperationType(newOperationTypeDTO);
     setIsModalVisible(true);
@@ -110,17 +109,16 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
       return;
     }
     try {
-      console.log("Salvando Tipo de Operação:", creatingOperationType);
+      console.log("Saving Operation Type:", creatingOperationType);
       await operationTypeService.addOperationType(creatingOperationType);
-       window.confirm("Tipo de Operação criado com sucesso.");
+      window.confirm("Operation Type created successfully.");
       setIsModalVisible(false);
       fetchOperationsTypes();
-    } catch (BusinessRuleValidationException) {
-      console.error("Erro ao criar Tipo de Operação:", error);
-       window.confirm("Erro ao criar Tipo de Operação.");
+    } catch (error) {
+      console.error("Error creating Operation Type:", error);
+      window.confirm("Error creating Operation Type.");
     }
-  }
-
+  };
 
   return {
     OTypes,
@@ -141,5 +139,3 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     saveOperationType,
   };
 };
-  
-

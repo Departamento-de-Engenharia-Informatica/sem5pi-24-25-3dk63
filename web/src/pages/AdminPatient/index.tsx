@@ -33,17 +33,17 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
   const renderActions = (patient: any) => {
     const options = [
       {
-        label: "Editar",
+        label: "Edit",
         onClick: () => handleDelete(patient.id),
         className: "text-blue-500",
       },
       {
-        label: "Desativar",
+        label: "Deactivate",
         onClick: () => handleDelete(patient.id),
         className: "text-yellow-500",
       },
       {
-        label: "Eliminar",
+        label: "Delete",
         onClick: () => handleDelete(patient.id),
         className: "text-red-500",
       },
@@ -51,7 +51,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
 
     return (
       <div className="flex flex-wrap gap-2">
-        <DropdownMenu options={options} buttonLabel="Ações" />
+        <DropdownMenu options={options} buttonLabel="Actions" />
       </div>
     );
   };
@@ -68,9 +68,9 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         <SearchFilter
           attributes={['Name', 'Email', 'dateOfBirth', 'medicalRecordNumber']}
           labels={{
-            Name: 'Nome',
-            Email: 'E-mail',
-            dateOfBirth: 'Data de Nascimento',
+            Name: 'Name',
+            Email: 'Email',
+            dateOfBirth: 'Date of Birth',
             medicalRecordNumber: 'Medical Record Number'
           }}
           onSearch={searchPatients}

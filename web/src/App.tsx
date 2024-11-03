@@ -36,7 +36,7 @@ function App() {
             </div>
           </main>
           <footer className="bg-[#284b62] text-white text-center p-4 flex-shrink-0 shadow-md">
-            <p className="text-sm">© 2024 CliniTech. Todos os direitos reservados.</p>
+            <p className="text-sm">© 2024 CliniTech. All rights reserved.</p>
           </footer>
         </div>
       </Router>

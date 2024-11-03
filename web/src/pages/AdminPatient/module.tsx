@@ -7,31 +7,30 @@ import { useNavigate } from "react-router-dom";
 export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const patientService = useInjection<IPatientService>(TYPES.patientService);
+
   const [patients, setPatients] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPatients, setTotalPatients] = useState<number>(0);
 
-
   const itemsPerPage = 10;
-
 
   const headers = [
     "Medical Record Number",
-    "Nome Completo",
-    "Email Pessoal",
-    "Email IAM",
-    "Data de Nascimento",
-    "Sexo",
-    "Telefone de Contato",
-    "Ativo",
+    "Full Name",
+    "Personal Email",
+    "IAM Email",
+    "Date of Birth",
+    "Gender",
+    "Contact Phone",
+    "Active",
     "",
   ];
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
-    { label: "AdminMenu", action: () => navigate("/admin") },
+    { label: "Admin Menu", action: () => navigate("/admin") },
   ];
 
   const fetchPatients = async () => {
@@ -39,81 +38,79 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setError(null);
     try {
       const patientsData = await patientService.getPatients();
-      console.log("Dados retornados do getPatients:", patientsData);
+      console.log("Data returned from getPatients:", patientsData);
       setTotalPatients(patientsData.length);
       const filteredData = patientsData.map((patientUser) => ({
         "Medical Record Number": patientUser.id.value,
-        "Nome Completo": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
-        "Email Pessoal": patientUser.personalEmail.value,
-        "Email IAM": patientUser.iamEmail.value,
-        "Data de Nascimento": patientUser.dateOfBirth.date,
-        Sexo: patientUser.gender.gender,
-        "Telefone de Contato": patientUser.phoneNumber.number,
-        Ativo: patientUser.active ? "Sim" : "Não",
+        "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
+        "Personal Email": patientUser.personalEmail.value,
+        "IAM Email": patientUser.iamEmail.value,
+        "Date of Birth": patientUser.dateOfBirth.date,
+        Gender: patientUser.gender.gender,
+        "Contact Phone": patientUser.phoneNumber.number,
+        Active: patientUser.active ? "Yes" : "No",
         id: patientUser.id.value,
       }));
 
-      console.log("Dados filtrados:", filteredData);
+      console.log("Filtered data:", filteredData);
 
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedPatients = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setPatients(paginatedPatients);
     } catch (error) {
-      setError("Erro ao buscar pacientes.");
-      setAlertMessage("Erro ao buscar pacientes.");
+      setError("Error fetching patients.");
+      setAlertMessage("Error fetching patients.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este paciente?")) {
+    if (window.confirm("Are you sure you want to delete this patient?")) {
       try {
         await patientService.deletePatient(id);
         setPatients((prev) => prev.filter((patient) => patient.id !== id));
-        setAlertMessage("Paciente excluído com sucesso.");
+        setAlertMessage("Patient deleted successfully.");
       } catch (error) {
-        console.error("Erro ao excluir paciente:", error);
-        setAlertMessage("Erro ao excluir paciente.");
+        console.error("Error deleting patient:", error);
+        setAlertMessage("Error deleting patient.");
       }
     }
   };
 
-      //search staff
-const searchPatients = async (query: Record<string, string>) => {
+  // Search patients
+  const searchPatients = async (query: Record<string, string>) => {
     setLoading(true);
     setError(null);
     try {
       console.log("Query:", query);
       const patientsData = await patientService.searchPatients(query);
-      console.log("Dados retornados do searchPatients:", patientsData);
+      console.log("Data returned from searchPatients:", patientsData);
 
-     const filteredData = patientsData.map((patientUser) => ({
+      const filteredData = patientsData.map((patientUser) => ({
         "Medical Record Number": patientUser.id.value,
-        "Nome Completo": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
-        "Email Pessoal": patientUser.personalEmail.value,
-        "Email IAM": patientUser.iamEmail.value,
-        "Data de Nascimento": patientUser.dateOfBirth.date,
-        Sexo: patientUser.gender.gender,
-        "Telefone de Contato": patientUser.phoneNumber.number,
-        Ativo: patientUser.active ? "Sim" : "Não",
+        "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
+        "Personal Email": patientUser.personalEmail.value,
+        "IAM Email": patientUser.iamEmail.value,
+        "Date of Birth": patientUser.dateOfBirth.date,
+        Gender: patientUser.gender.gender,
+        "Contact Phone": patientUser.phoneNumber.number,
+        Active: patientUser.active ? "Yes" : "No",
         id: patientUser.id.value,
       }));
       setPatients(filteredData);
     } catch (error) {
-      setError("Erro ao buscar staffs.");
-      console.error("Erro ao buscar staffs:", error);
-      setAlertMessage("Erro ao buscar staffs.");
+      setError("Error fetching staff.");
+      console.error("Error fetching staff:", error);
+      setAlertMessage("Error fetching staff.");
     } finally {
       setLoading(false);
     }
   };
 
-
   useEffect(() => {
     fetchPatients();
   }, [currentPage]);
-
 
   return {
     patients,

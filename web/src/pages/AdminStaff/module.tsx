@@ -14,7 +14,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [totalStaffs, setTotalStaffs] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [staffToEdit, setStaffToEdit] = useState<any | null>(null);
-  const [LicenseStaffToEdit, setLicenseToEdit] = useState<any | null>(null);
+  const [licenseStaffToEdit, setLicenseToEdit] = useState<any | null>(null);
 
   const itemsPerPage = 10;
 
@@ -23,17 +23,17 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     "Username",
     "Role",
     "Email",
-    "Telefone",
-    "Nome Completo",
+    "Phone",
+    "Full Name",
     "Specialization",
     "Availability Slots",
-    "Ativo",
+    "Active",
     " ",
   ];
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
-    { label: "AdminMenu", action: () => navigate("/admin") },
+    { label: "Admin Menu", action: () => navigate("/admin") },
   ];
 
   const fetchStaffs = async () => {
@@ -41,60 +41,58 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     setError(null);
     try {
       const staffsData = await staffService.getStaffs();
-      console.log("Dados retornados do getStaffs:", staffsData);
+      console.log("Data returned from getStaffs:", staffsData);
       setTotalStaffs(staffsData.length);
       const filteredData = staffsData.map((staffUser) => ({
         "License Number": staffUser.licenseNumber,
         Username: staffUser.username,
         Role: staffUser.role,
         Email: staffUser.email,
-        "Telefone": staffUser.phoneNumber,
-        "Nome Completo": staffUser.name,
-        "Specialization": staffUser.specializationDescription,
+        Phone: staffUser.phoneNumber,
+        "Full Name": staffUser.name,
+        Specialization: staffUser.specializationDescription,
         "Availability Slots": staffUser.availabilitySlots,
-        Ativo: staffUser.active ? "Sim" : "Não",
+        Active: staffUser.active ? "Yes" : "No",
         id: staffUser.licenseNumber,
       }));
 
-      console.log("Dados filtrados:", filteredData);
+      console.log("Filtered data:", filteredData);
 
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedStaffs = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setStaffs(paginatedStaffs);
     } catch (error) {
-      setError("Erro ao buscar staffs.");
-      setAlertMessage("Erro ao buscar staffs.");
+      setError("Error fetching staff.");
+      setAlertMessage("Error fetching staff.");
     } finally {
       setLoading(false);
     }
   };
 
-
   const handleDelete = async (id: string) => {
-    if (window.confirm("Tem certeza que deseja excluir este staff?")) {
+    if (window.confirm("Are you sure you want to delete this staff?")) {
       try {
         await staffService.deleteStaff(id);
         setStaffs((prev) => prev.filter((staff) => staff.id !== id));
-        setAlertMessage("Staff excluído com sucesso.");
+        setAlertMessage("Staff deleted successfully.");
       } catch (error) {
-        console.error("Erro ao excluir Staff:", error);
-        setAlertMessage("Erro ao excluir Staff.");
+        console.error("Error deleting staff:", error);
+        setAlertMessage("Error deleting staff.");
       }
     }
   };
 
   const handleEdit = async (staff: any) => {
-    console.log("Editing staff?/:", staff);
+    console.log("Editing staff:", staff);
 
     const newStaff = {
       email: {
         value: staff.Email
       },
       phoneNumber: {
-        number: staff.Telefone
+        number: staff.Phone
       },
       specialization: staff.Specialization
-
     };
     console.log("New staff to edit:", newStaff);
 
@@ -104,66 +102,63 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   };
 
   const handleDeactivate = async (id: string) => {
-    if (window.confirm("Tem a certeza que deseja desativar este staff?")) {
+    if (window.confirm("Are you sure you want to deactivate this staff?")) {
       try {
         await staffService.deactivateStaff(id);
         fetchStaffs(); // Refresh the list after deactivation
-        setAlertMessage("Staff desativado com sucesso.");
-        window.confirm("Staff desativado com sucesso. Ação registada no log.");
+        setAlertMessage("Staff deactivated successfully.");
+        window.confirm("Staff deactivated successfully. Action logged.");
       } catch (error) {
-        console.error("Erro ao desativar staff:", error);
-        setAlertMessage("Erro ao desativar staff.");
+        console.error("Error deactivating staff:", error);
+        setAlertMessage("Error deactivating staff.");
       }
     }
-  }
+  };
 
   const saveChanges = async () => {
     if (staffToEdit) {
-
-        try {
-            await staffService.editStaff(LicenseStaffToEdit, staffToEdit); // Aqui você chama com o licenseNumber
-            setAlertMessage("Informações do staff atualizadas com sucesso.");
-            fetchStaffs(); // Refresh the staff list
-        } catch (error) {
-            console.error("Erro ao editar informações do staff:", error);
-            setAlertMessage("Erro ao editar informações do staff.");
-        } finally {
-            setIsModalVisible(false); // Close the modal after saving
-        }
+      try {
+        await staffService.editStaff(licenseStaffToEdit, staffToEdit);
+        setAlertMessage("Staff information updated successfully.");
+        fetchStaffs(); // Refresh the staff list
+      } catch (error) {
+        console.error("Error updating staff information:", error);
+        setAlertMessage("Error updating staff information.");
+      } finally {
+        setIsModalVisible(false); // Close the modal after saving
+      }
     }
-};
+  };
 
-
-    //search staff
-const searchStaffs = async (query: Record<string, string>) => {
+  // Search staff
+  const searchStaffs = async (query: Record<string, string>) => {
     setLoading(true);
     setError(null);
     try {
       console.log("Query:", query);
       const staffsData = await staffService.searchStaffs(query);
-      console.log("Dados retornados do searchPatients:", staffsData);
+      console.log("Data returned from searchStaffs:", staffsData);
 
-      const filteredData = staffsData.map(( staffUser) => ({
-         "License Number": staffUser.licenseNumber,
+      const filteredData = staffsData.map((staffUser) => ({
+        "License Number": staffUser.licenseNumber,
         Username: staffUser.username,
         Role: staffUser.role,
         Email: staffUser.email,
-        "Telefone": staffUser.phoneNumber,
-        "Nome Completo": staffUser.name,
-        "Specialization": staffUser.specializationDescription,
+        Phone: staffUser.phoneNumber,
+        "Full Name": staffUser.name,
+        Specialization: staffUser.specializationDescription,
         "Availability Slots": staffUser.availabilitySlots,
-        Ativo: staffUser.active ? "Sim" : "Não",
+        Active: staffUser.active ? "Yes" : "No",
       }));
       setStaffs(filteredData);
     } catch (error) {
-      setError("Erro ao buscar staffs.");
-      console.error("Erro ao buscar staffs:", error);
-      setAlertMessage("Erro ao buscar staffs.");
+      setError("Error fetching staff.");
+      console.error("Error fetching staff:", error);
+      setAlertMessage("Error fetching staff.");
     } finally {
       setLoading(false);
     }
   };
-
 
   useEffect(() => {
     fetchStaffs();

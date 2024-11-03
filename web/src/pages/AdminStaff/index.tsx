@@ -40,17 +40,17 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
   const renderActions = (staff: any) => {
     const options = [
       {
-        label: "Editar",
+        label: "Edit",
         onClick: () => handleEdit(staff),
         className: "text-blue-500",
       },
       {
-        label: "Desativar",
+        label: "Deactivate",
         onClick: () => handleDeactivate(staff.id),
         className: "text-yellow-500",
       },
       {
-        label: "Eliminar",
+        label: "Delete",
         onClick: () => handleDelete(staff.id),
         className: "text-red-500",
       },
@@ -58,7 +58,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
 
     return (
       <div className="flex flex-wrap gap-2">
-        <DropdownMenu options={options} buttonLabel="Ações" />
+        <DropdownMenu options={options} buttonLabel="Actions" />
       </div>
     );
   };
@@ -75,9 +75,9 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
         <SearchFilter
           attributes={['Name', 'Email', 'Specialization']}
           labels={{
-            Name: 'Nome',
-            Email: 'E-mail',
-            Specialization: 'Especialização',
+            Name: 'Name',
+            Email: 'Email',
+            Specialization: 'Specialization',
           }}
           onSearch={searchStaffs}
           results={[]}
@@ -100,7 +100,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
         <Modal
           isVisible={isModalVisible}
           setIsVisible={setIsModalVisible}
-          title="Editar Informações do Staff"
+          title="Edit Staff Information"
         >
           <div className="p-6">
             <label className="block text-sm font-medium text-gray-700">Email</label>
@@ -115,7 +115,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
             />
-            <label className="block text-sm font-medium text-gray-700 mt-4">Telefone</label>
+            <label className="block text-sm font-medium text-gray-700 mt-4">Phone</label>
             <input
               type="text"
               value={staffToEdit?.phoneNumber?.number || ""}
@@ -127,7 +127,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
             />
-            <label className="block text-sm font-medium text-gray-700 mt-4">Especialização</label>
+            <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
             <input
               type="text"
               value={staffToEdit?.specialization || ""}
@@ -143,7 +143,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               onClick={saveChanges}
               className="mt-6 w-full bg-[#284b62] text-white font-semibold py-2 rounded-md hover:bg-opacity-80 transition duration-200"
             >
-              Salvar
+              Save
             </button>
           </div>
         </Modal>

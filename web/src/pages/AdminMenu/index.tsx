@@ -6,27 +6,22 @@ import HamburgerMenu from "@/components/HamburgerMenu";
 
 import { useAdminMenuModule } from "./module";
 
-
-
-const AdminMenu: React.FC = () =>
-  {
-
+const AdminMenu: React.FC = () => {
   const {
     handleManagePatients,
     handleManageStaff,
     handleManageOperationTypes,
     menuOptions,
     alertMessage,
-
   } = useAdminMenuModule();
 
-return (
+  return (
     <div className="relative pt-20 p-8 bg-gray-50 min-h-screen">
       <div className="fixed top-1 left-4 z-10">
         <HamburgerMenu options={menuOptions} />
       </div>
 
-      <h1 className="text-3xl font-bold text-center mb-6">Administração</h1>
+      <h1 className="text-3xl font-bold text-center mb-6">Administration</h1>
       {alertMessage && (
         <div className="mb-4">
           <Alert type="warning" message={alertMessage} />
@@ -34,14 +29,14 @@ return (
       )}
       <div className="bg-white shadow-lg rounded-lg p-6">
         <div className="flex flex-col space-y-4">
-          <Button onClick={handleManagePatients} name="gerenciar-pacientes">
-            Gerenciar Pacientes
+          <Button onClick={handleManagePatients} name="manage-patients">
+            Manage Patients
           </Button>
-          <Button onClick={handleManageStaff} name="gerenciar-staff">
-            Gerenciar Staff
+          <Button onClick={handleManageStaff} name="manage-staff">
+            Manage Staff
           </Button>
-          <Button onClick={handleManageOperationTypes} name="gerenciar-tiposDeOperacao">
-            Gerenciar tipos de operação
+          <Button onClick={handleManageOperationTypes} name="manage-operation-types">
+            Manage Operation Types
           </Button>
         </div>
       </div>
@@ -50,4 +45,3 @@ return (
 };
 
 export default AdminMenu;
-
