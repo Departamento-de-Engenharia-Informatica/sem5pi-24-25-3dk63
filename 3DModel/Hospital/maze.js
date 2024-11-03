@@ -6,6 +6,7 @@ import SurgeryRoomDoor from "./SurgeryRoomDoor.js";
 import Cama from "./cama.js";
 import Adereco from "./adereco.js";
 import Patient from "./patient.js";
+import WallWithDoorFrame from "./WallWithDoorFrame.js";
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 /*
@@ -52,11 +53,14 @@ export default class Maze {
             this.adereco = new Adereco({textureUrl: description.aderecoTextureUrl, scale: 2 });
 
             this.patient = new Patient({patientTextureUrl: description.patientTextureUrl, patientModelOBJUrl: description.patientModelOBJUrl});
+
+            this.wallWithDoorFrame = new WallWithDoorFrame({ textureUrl: description.wallTextureUrl, width: 1, height: 2.0 });
             
             // Build the maze
             let wallObject;
             let doorObject;
             let surgeryRoomDoorObject;
+            let wallWithDoorFrameObject;
             let porta1 = true;
 
             for (let i = 0; i <= description.size.width; i++) { // In order to represent the eastmost walls, the map width is one column greater than the actual maze width
@@ -93,56 +97,56 @@ export default class Maze {
 
                         this.fixSmallGapWest(i, j, description);
                         
-                        let surgeryRoomDoorObject = this.surgeryRoomDoor.object.clone();
+                        wallWithDoorFrameObject = this.wallWithDoorFrame.object.clone();
                     if (porta1) {
                         // Primeira porta
-                        surgeryRoomDoorObject.rotateY(Math.PI / 2.0);
-                        surgeryRoomDoorObject.position.set(i - description.size.width / 2.0, 0.5, j - description.size.height / 2.0 + 0.5);
+                        wallWithDoorFrameObject.rotateY(Math.PI / 2.0);
+                        wallWithDoorFrameObject.position.set(i - description.size.width / 2.0, 0.5, j - description.size.height / 2.0 + 0.5);
                     } else {
                         // Segunda porta espelhada
-                        surgeryRoomDoorObject.scale.x = -1; // Espelha a segunda porta no eixo X
-                        surgeryRoomDoorObject.rotateY(Math.PI / 2.0);
-                        surgeryRoomDoorObject.position.set(i - description.size.width / 2.0, 0.5, j - description.size.height / 2.0 + 0.5);
+                        wallWithDoorFrameObject.scale.x = -1; // Espelha a segunda porta no eixo X
+                        wallWithDoorFrameObject.rotateY(Math.PI / 2.0);
+                        wallWithDoorFrameObject.position.set(i - description.size.width / 2.0, 0.5, j - description.size.height / 2.0 + 0.5);
                     }
 
-                        this.object.add(surgeryRoomDoorObject);
+                        this.object.add(wallWithDoorFrameObject);
                         porta1 = !porta1; // Alterna o valor de porta1
                     }
                     if(description.map[j][i] == 7) {
 
                         this.fixSmallGapWest(i, j, description);
-                        surgeryRoomDoorObject = this.surgeryRoomDoor.object.clone();
+                        wallWithDoorFrameObject = this.wallWithDoorFrame.object.clone();
 
                         if (porta1) {
                             // Primeira porta
-                            surgeryRoomDoorObject.position.set(i - description.size.width / 2.0 - 0.5, 0.5, j - description.size.height / 2.0 );
+                            wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 - 0.5, 0.5, j - description.size.height / 2.0 );
                         } else {
                             // Segunda porta espelhada
-                            surgeryRoomDoorObject.scale.x = -1; // Espelha a segunda porta no eixo X
-                            surgeryRoomDoorObject.rotateY(Math.PI);
-                            surgeryRoomDoorObject.position.set(i - description.size.width / 2.0 - 0.5, 0.5, j - description.size.height / 2.0 + 1);
+                            wallWithDoorFrameObject.scale.x = -1; // Espelha a segunda porta no eixo X
+                            wallWithDoorFrameObject.rotateY(Math.PI);
+                            wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 - 0.5, 0.5, j - description.size.height / 2.0 + 1);
                         }
 
-                        this.object.add(surgeryRoomDoorObject);
+                        this.object.add(wallWithDoorFrameObject);
                         porta1 = !porta1; // Alterna o valor de porta1
                     }
                     if(description.map[j][i] == 8) {
 
                         this.fixSmallGapWest(i, j, description);
 
-                        surgeryRoomDoorObject = this.surgeryRoomDoor.object.clone();
+                        wallWithDoorFrameObject = this.wallWithDoorFrame.object.clone();
 
                         if (porta1) {
                             // Primeira porta
-                            surgeryRoomDoorObject.rotateY(Math.PI);
-                            surgeryRoomDoorObject.position.set(i - description.size.width / 2.0 + 0.5, 0.5, j - description.size.height / 2.0 );
+                            wallWithDoorFrameObject.rotateY(Math.PI);
+                            wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 + 0.5, 0.5, j - description.size.height / 2.0 );
                         } else {
                             // Segunda porta espelhada
-                            surgeryRoomDoorObject.scale.x = -1; // Espelha a segunda porta no eixo X
-                            surgeryRoomDoorObject.position.set(i - description.size.width / 2.0 + 0.5, 0.5, j - description.size.height / 2.0 + 1);
+                            wallWithDoorFrameObject.scale.x = -1; // Espelha a segunda porta no eixo X
+                            wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 + 0.5, 0.5, j - description.size.height / 2.0 + 1);
                         }
 
-                        this.object.add(surgeryRoomDoorObject);
+                        this.object.add(wallWithDoorFrameObject);
                         porta1 = !porta1; // Alterna o valor de porta1
                     }
                      
@@ -153,7 +157,7 @@ export default class Maze {
                     }
 
                     if (description.map[j][i] == 4) {
-                        this.clonarCama(i, j, description); 
+                       this.clonarCama(i, j, description); 
                     }
 
                     
