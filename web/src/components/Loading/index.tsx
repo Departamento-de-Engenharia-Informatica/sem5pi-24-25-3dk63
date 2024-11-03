@@ -1,8 +1,6 @@
 import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
-
 import { RepeatIcon } from "@/styles/Icons";
-
 import "react-loading-skeleton/dist/skeleton.css";
 
 interface LoadingProps {
@@ -13,9 +11,9 @@ const Loading: React.FC<LoadingProps> = ({ loadingText = true }) => {
   return (
     <div className="mt-6 w-full pr-8">
       {loadingText && (
-        <h1 className="flex w-full items-center justify-center text-center text-4xl font-bold">
-          Loading
-          <div className="flex justify-start">
+        <h1 className="flex w-full items-center justify-center text-center text-4xl font-bold text-[#284b62]">
+          Carregando
+          <div className="flex justify-start ml-2">
             <motion.span
               animate={{ translateY: [-5, 0, -5] }}
               transition={{
@@ -49,10 +47,10 @@ const Loading: React.FC<LoadingProps> = ({ loadingText = true }) => {
               .
             </motion.span>
           </div>
-          <RepeatIcon className="ml-4 h-8 w-8 animate-spin" />
+          <RepeatIcon className="ml-4 h-8 w-8 animate-spin text-[#284b62]" />
         </h1>
       )}
-      <Skeleton className="mt-8 h-28 w-full" count={4} />
+      <Skeleton className="mt-8 h-28 w-full bg-[#e0e0e0]" count={4} />
     </div>
   );
 };
