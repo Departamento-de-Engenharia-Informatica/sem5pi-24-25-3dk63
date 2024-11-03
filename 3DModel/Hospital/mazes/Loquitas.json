@@ -1,0 +1,32 @@
+{
+    "groundTextureUrl": "./textures/ground.jpg",
+    "wallTextureUrl": "./textures/wall.jpg",
+    "doorTextureUrl": "./textures/door.jpg",
+    "surgeryRoomDoorTextureUrl": "./textures/surgeryRoomDoor.png",
+    "camaTextureUrl": "./textures/bed.obj",
+    "aderecoTextureUrl": "./textures/adereco.obj",
+    "patientTextureUrl": "./textures/ManColors.png",
+    "patientModelOBJUrl": "./textures/Man.obj",
+
+    "size": { "width": 11, "height": 12 },
+    "map": [ 
+
+        [3, 2, 2, 2, 3, 5, 2, 3, 2, 2, 2, 1],
+        [1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1],
+        [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
+        [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+        [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
+        [1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1],
+        [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
+        [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+        [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
+        [1, 0, 0, 0, 6, 0, 0, 8, 0, 0, 0, 1],
+        [1, 0, 9, 0, 6, 0, 0, 8, 0, 4, 0, 1],
+        [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+        [2, 2, 2, 2, 2, 5, 2, 2, 2, 2, 2, 0]
+
+    ],
+    "initialPosition": [4, 5],
+    "initialDirection": 0.0,
+    "exitLocation": [-0.5, 6]
+}
