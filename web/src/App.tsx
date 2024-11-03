@@ -18,11 +18,11 @@ function App() {
   return (
     <Provider container={container} standalone>
       <Router>
-        <div className="flex flex-col h-screen bg-background text-text">
-          <header className="bg-primary text-white p-4 text-center flex-shrink-0">
-            {/* Conteúdo do cabeçalho */}
+        <div className="flex flex-col h-screen bg-gray-100 text-gray-900">
+          <header className="bg-[#284b62] text-white p-4 text-center flex-shrink-0 shadow-md">
+            <h1 className="text-lg font-semibold tracking-wide">CliniTech Portal</h1>
           </header>
-          <main className="flex-grow flex justify-center items-center overflow-hidden">
+          <main className="flex-grow flex justify-center items-center overflow-y-auto bg-white">
             <div className="w-full p-8">
               <Routes>
                 <Route path="/" element={<LoginPage />} />
@@ -35,8 +35,8 @@ function App() {
               </Routes>
             </div>
           </main>
-          <footer className="bg-primary text-white text-center p-4 flex-shrink-0">
-            © 2024 CliniTech. Todos os direitos reservados.
+          <footer className="bg-[#284b62] text-white text-center p-4 flex-shrink-0 shadow-md">
+            <p className="text-sm">© 2024 CliniTech. Todos os direitos reservados.</p>
           </footer>
         </div>
       </Router>

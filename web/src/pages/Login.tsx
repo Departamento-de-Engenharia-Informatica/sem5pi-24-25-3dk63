@@ -1,6 +1,7 @@
 import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oauth/google";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import logo from '@/assets/image.png';
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -50,18 +51,13 @@ function LoginPage() {
                 const claims = await response.json();
                 const userRole = claims.find((claim: { type: string; value: string }) => claim.type === "http://schemas.microsoft.com/ws/2008/06/identity/claims/role")?.value;
                 const status = claims.find((claim: { type: string; value: boolean }) => claim.type === "http://schemas.microsoft.com/ws/2008/06/identity/claims/status")?.value;
-                
+
                 if (userRole === "Admin") {
                     navigate("/admin");
-                }else if(userRole === "Patient"){
-                    if (!status)
-                    {
-                        // Dps mudar para navigate("/register-patient")
+                } else if (userRole === "Patient") {
+                    if (!status) {
                         navigate("/patient");
-                    } else {
-                        //navigate("/patient");
                     }
-                    
                 } else {
                     navigate("/");
                 }
@@ -77,21 +73,27 @@ function LoginPage() {
 
     return (
         <GoogleOAuthProvider clientId="3330913078-gnja0ha00r03ep3l3k7kf92q2c2428o1.apps.googleusercontent.com">
-            <div className="flex items-center justify-center min-h-screen bg-gray-100">
-                <main className="bg-white rounded-lg shadow-lg p-8 w-80">
-                    <h1 className="text-2xl font-bold mb-6 text-center text-gray-800">
-                        Faça Login
+            <div className="flex items-center justify-center min-h-screen bg-gray-50">
+                <main className="bg-white rounded-2xl shadow-lg p-10 w-full max-w-md">
+                    <img src={logo} alt="CliniTech Logo" className="w-32 h-auto mb-6 mx-auto" /> {/* Adicionando a imagem */}
+                    <h1 className="text-3xl font-bold mb-8 text-[#284b62] text-center">
+                        Bem-vindo(a) ao CliniTech
                     </h1>
                     {errorMessage && (
-                        <div className="text-red-500 mb-4 text-center">{errorMessage}</div>
+                        <div className="text-red-600 mb-4 text-center font-semibold">
+                            {errorMessage}
+                        </div>
                     )}
+                    <p className="text-gray-600 mb-6 text-center">
+                        Por favor, faça login com sua conta Google para continuar
+                    </p>
                     <div className="flex justify-center">
                         <div className="w-full">
                             <GoogleLogin
                                 type="standard"
                                 shape="pill"
                                 theme="outline"
-                                text="continue_with"
+                                text="signin_with"
                                 size="large"
                                 locale="en-GB"
                                 logo_alignment="center"

@@ -9,6 +9,7 @@ interface ModalProps {
   className?: string;
   onClose?: () => void;
 }
+
 const Modal: React.FC<ModalProps> = ({
   isVisible,
   setIsVisible,
@@ -30,23 +31,23 @@ const Modal: React.FC<ModalProps> = ({
       <>
         <section
           aria-label="modal-overlay"
-          onClick={() => setIsVisible((cur) => !cur)}
-          className="fixed left-0 top-0 h-screen w-screen bg-slate-300 p-6 opacity-70 shadow-lg"
+          onClick={() => setIsVisible(false)}
+          className="fixed left-0 top-0 h-screen w-screen bg-gray-800 opacity-50" // Fundo escurecido
         ></section>
         <div className="fixed left-0 top-0 z-20 flex h-screen w-screen items-center justify-center">
           <motion.div
             initial={{ bottom: 0, opacity: 0 }}
             animate={{ bottom: 150, opacity: 1 }}
-            transition={{ duration: 0.2 }}
-            className={`flex h-fit w-4/5 flex-col rounded-xl bg-slate-300 p-8 ${className} `}
+            transition={{ duration: 0.3 }} // Transição um pouco mais longa
+            className={`flex w-full max-w-lg flex-col rounded-2xl bg-white p-8 shadow-2xl ${className}`} // Alterando o fundo e sombra
           >
             <button
               onClick={() => setIsVisible(false)}
-              className="z-40 self-end text-2xl font-black text-red-500 hover:text-red-600"
+              className="self-end text-2xl font-bold text-red-500 hover:text-red-600"
             >
-              X
+              &times; {/* Usando símbolo 'X' */}
             </button>
-            <span className="-mt-9 mb-6 w-full text-center text-4xl font-black capitalize">
+            <span className="mb-4 w-full text-center text-3xl font-bold capitalize text-[#284b62]"> {/* Mudando a cor do título */}
               {title}
             </span>
             <div className="max-h-[75vh] overflow-y-auto">{children}</div>

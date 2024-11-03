@@ -69,7 +69,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ attributes, labels, onSearc
           </button>
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-700"
+            className="px-4 py-2 bg-[#284b62] text-white rounded-md hover:bg-[#3a617d]"
           >
             Search
           </button>

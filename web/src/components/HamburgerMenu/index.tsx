@@ -13,17 +13,15 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ options }) => {
   };
 
   return (
-    <div className="fixed top-0 left-0 m-1"> 
+    <div className="fixed top-0 left-0 m-2">
       <button
         onClick={toggleMenu}
-        className="p-2 rounded focus:outline-none"
-        style={{ color: "var(--primary)" }}
+        className="p-4 rounded-md focus:outline-none bg-[#ffffff] text-[#284b62]"
       >
-        {/* Hamburger Icon */}
         <div className="space-y-1">
-          <span className="block w-6 h-0.5 bg-white"></span>
-          <span className="block w-6 h-0.5 bg-white"></span>
-          <span className="block w-6 h-0.5 bg-white"></span>
+          <span className="block w-6 h-0.5 bg-[#284b62]"></span>
+          <span className="block w-6 h-0.5 bg-[#284b62]"></span>
+          <span className="block w-6 h-0.5 bg-[#284b62]"></span>
         </div>
       </button>
 
@@ -33,7 +31,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ options }) => {
             <button
               key={index}
               onClick={option.action}
-              className="block w-full px-4 py-2 text-left hover:bg-primary-500 hover:text-white"
+              className="block w-full px-4 py-2 text-left text-gray-700 hover:bg-[#284b62] hover:text-white rounded-md transition-colors duration-150"
             >
               {option.label}
             </button>

@@ -8,31 +8,44 @@ interface TableProps {
 const Table: React.FC<TableProps> = ({ headers, data }) => {
   return (
     <div className="overflow-x-auto max-w-full">
-      <table className="min-w-full hidden lg:table bg-white">
+      <table className="min-w-full hidden lg:table bg-white rounded-lg shadow-sm">
         <thead>
-          <tr>
+          <tr className="bg-[#284b62] text-white">
             {headers.map((header, index) => (
-              <th key={index} className="py-2 px-4 border-b text-left">{header}</th>
+              <th
+                key={index}
+                className="py-3 px-4 border-b text-left font-semibold text-sm uppercase tracking-wider"
+              >
+                {header}
+              </th>
             ))}
           </tr>
         </thead>
         <tbody>
           {data.map((item, index) => (
-            <tr key={index} className="hover:bg-gray-100">
+            <tr
+              key={index}
+              className="even:bg-gray-50 hover:bg-[#f1f5f9] transition-colors duration-150"
+            >
               {headers.map((header, headerIndex) => (
-                <td key={headerIndex} className="py-2 px-4 border-b">{item[header]}</td>
+                <td
+                  key={headerIndex}
+                  className="py-3 px-4 border-b text-gray-700 text-sm"
+                >
+                  {item[header]}
+                </td>
               ))}
             </tr>
           ))}
         </tbody>
       </table>
 
-      {/* Versão Vertical para telas menores */}
+      {/* Mobile-friendly vertical layout for smaller screens */}
       <div className="block lg:hidden">
         {data.map((item, index) => (
-          <div key={index} className="border-b border-gray-200 p-4">
+          <div key={index} className="border-b border-gray-200 p-4 bg-white shadow-sm rounded-lg mb-4">
             {headers.map((header, headerIndex) => (
-              <div key={headerIndex} className="flex justify-between py-1">
+              <div key={headerIndex} className="flex justify-between py-2 text-gray-700">
                 <span className="font-semibold">{header}:</span>
                 <span>{item[header]}</span>
               </div>
