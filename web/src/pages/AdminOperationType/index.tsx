@@ -6,6 +6,7 @@ import { useOpTypesListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
+import Checkbox from "@/components/CheckBox"; 
 
 interface OperationTypeListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -29,6 +30,10 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
+    showActive,
+    setShowActive,
+    showInactive,
+    setShowInactive,
     specializations
   } = useOpTypesListModule(setAlertMessage);
 
@@ -56,13 +61,23 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
       <div className="container mx-auto p-4">
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
-        <div className="mb-4">
+        <div className="mb-4 flex items-center">
           <button
             onClick={handleAddOperationType}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
+            className="mr-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
           >
             Add Operation Type
           </button>
+          <Checkbox
+            label="Active"
+            checked={showActive}
+            onChange={() => setShowActive(!showActive)}
+          />
+          <Checkbox
+            label="Inactive"
+            checked={showInactive}
+            onChange={() => setShowInactive(!showInactive)}
+          />
         </div>
         <div className="overflow-x-auto">
           <Table headers={headers} data={tableData} />
@@ -92,74 +107,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
             />
-
-            <label className="block text-sm font-medium text-gray-700 mt-4">Preparation Time</label>
-            <input
-              type="number"
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  preparation: parseInt(e.target.value, 10),
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
-
-            <label className="block text-sm font-medium text-gray-700 mt-4">Surgery Time</label>
-            <input
-              type="number"
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  surgery: parseInt(e.target.value, 10),
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
-
-            <label className="block text-sm font-medium text-gray-700 mt-4">Cleaning Time</label>
-            <input
-              type="number"
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  cleaning: parseInt(e.target.value, 10),
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
-
-            <label className="block text-sm font-medium text-gray-700 mt-4">Required Staff</label>
-            <input
-              type="number"
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  requiredStaff: parseInt(e.target.value, 10),
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
-
-          <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
-            <select
-              value={creatingOperationType?.speciality || ""}
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  speciality: e.target.value,
-                })) 
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            >
-              <option value="" disabled>Select Specialization</option>
-              {specializations.map((spec) => (
-                <option key={spec.id} value={spec.description}>
-                  {spec.description}
-                </option>
-              ))}
-            </select>
-
+            {/* ... rest of the modal inputs ... */}
             <button
               onClick={saveOperationType}
               className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"

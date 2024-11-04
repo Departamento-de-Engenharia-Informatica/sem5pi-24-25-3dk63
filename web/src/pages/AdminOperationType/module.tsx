@@ -18,6 +18,8 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [creatingOperationType, setCreatingOperationType] = useState<any | null>(null);
   const [specializations, setSpecializations] = useState<any[]>([]);
+  const [showActive, setShowActive] = useState<boolean>(true);
+  const [showInactive, setShowInactive] = useState<boolean>(true);
 
   const itemsPerPage = 10;
 
@@ -43,22 +45,33 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setError(null);
     try {
       const opsTypedata = await operationTypeService.getOperationTypes();
-      console.log("Data returned from getOperationTypes:", opsTypedata);
       setTotalOTypes(opsTypedata.length);
-      const filteredData = opsTypedata.map((OperationType) => ({
-        id: OperationType.id,
-        Name: OperationType.name.description,
-        "Required Staff": OperationType.requiredStaff.requiredNumber,
-        "Preparation Time": OperationType.duration.preparationPhase,
-        "Surgery Time": OperationType.duration.surgeryPhase,
-        "Cleaning Time": OperationType.duration.cleaningPhase,
-        "Total Time": OperationType.duration.totalDuration,
-        Specialization: OperationType.specialization.value,
-        Active: OperationType.active ? "Yes" : "No",
-      }));
-
-      console.log("Filtered Data:", filteredData);
-
+  
+      const filteredData = opsTypedata
+        .filter((OperationType) => {
+          // Filtrar com base nas checkboxes de status
+          if (showActive && showInactive) {
+            return true; // Mostrar todos
+          } else if (showActive) {
+            return OperationType.active;
+          } else if (showInactive) {
+            return !OperationType.active;
+          } else {
+            return false; 
+          }
+        })
+        .map((OperationType) => ({
+          id: OperationType.id,
+          Name: OperationType.name.description,
+          "Required Staff": OperationType.requiredStaff.requiredNumber,
+          "Preparation Time": OperationType.duration.preparationPhase,
+          "Surgery Time": OperationType.duration.surgeryPhase,
+          "Cleaning Time": OperationType.duration.cleaningPhase,
+          "Total Time": OperationType.duration.totalDuration,
+          Specialization: OperationType.specialization.value,
+          Active: OperationType.active ? "Yes" : "No",
+        }));
+  
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setOTypes(paginatedOperationTypes);
@@ -69,6 +82,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
       setLoading(false);
     }
   };
+  
 
   const handleDeactivate = async (id: string) => {
     if (window.confirm("Are you sure you want to deactivate this operation type?")) {
@@ -87,7 +101,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
   useEffect(() => {
     fetchOperationsTypes();
-  }, [currentPage]);
+  }, [currentPage, showActive, showInactive]);
 
   const handleAddOperationType = () => {
     console.log("Add new Operation Type");
@@ -152,6 +166,11 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
-    specializations
+    specializations,
+    showActive,
+    setShowActive,
+    showInactive,
+    setShowInactive,
   };
+  
 };

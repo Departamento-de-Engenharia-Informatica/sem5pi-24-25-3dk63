@@ -11,6 +11,7 @@ namespace DDDSample1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class OperationTypeController : ControllerBase
     {
         private readonly OperationTypeService _service;
@@ -181,6 +182,20 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<IEnumerable<OperationTypeDTO>>> GetActiveOperationTypes()
         {
             var operationTypeList = await _service.GetAllActiveOperationTypeAsync();
+
+            if (operationTypeList == null || operationTypeList.Count == 0)
+            {
+                return NotFound("No active operation types found.");
+            }
+
+            return Ok(operationTypeList);   
+        }
+
+        [HttpGet("deactive")]
+        [Authorize(Roles="Admin")]
+        public async Task<ActionResult<IEnumerable<OperationTypeDTO>>> GetDeactiveOperationTypes()
+        {
+            var operationTypeList = await _service.GetAllDeactiveOperationTypeAsync();
 
             if (operationTypeList == null || operationTypeList.Count == 0)
             {

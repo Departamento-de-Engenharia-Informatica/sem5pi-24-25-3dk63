@@ -11,6 +11,15 @@ const PatientMenu: React.FC = () => {
     navigate("/patient/register");
   };
 
+  const handleAppointments = () => {
+    navigate("/patient/appointments");
+  };
+
+  const handleMedicalRecords = () => {
+    navigate("/patient/medical-records");
+  };
+
+
   return (
     <div className="pt-20 p-8 bg-gray-50 min-h-screen"> {/* Adicionado pt-20 */}
       <h1 className="text-3xl font-bold text-center mb-6">Paciente</h1>
@@ -24,6 +33,13 @@ const PatientMenu: React.FC = () => {
           <Button onClick={handleCreatePatient} name="registar-paciente">
             Registar paciente
           </Button>
+          <Button onClick={handleAppointments} name="appointments">
+            Access Appointments
+          </Button>
+          <Button onClick={handleMedicalRecords} name="medical-records">
+            View Medical Records
+          </Button>
+
         </div>
       </div>
     </div>
