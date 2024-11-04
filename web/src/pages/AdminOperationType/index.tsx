@@ -29,6 +29,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
+    specializations
   } = useOpTypesListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalOTypes / itemsPerPage);
@@ -140,17 +141,24 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
             />
 
-            <label className="block text-sm font-medium text-gray-700 mt-4">Specialty</label>
-            <input
-              type="text"
+          <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
+            <select
+              value={creatingOperationType?.speciality || ""}
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
                   speciality: e.target.value,
-                }))
+                })) 
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
+            >
+              <option value="" disabled>Select Specialization</option>
+              {specializations.map((spec) => (
+                <option key={spec.id} value={spec.description}>
+                  {spec.description}
+                </option>
+              ))}
+            </select>
 
             <button
               onClick={saveOperationType}

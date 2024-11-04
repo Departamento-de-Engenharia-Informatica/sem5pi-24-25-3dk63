@@ -2,12 +2,13 @@ import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IOperationTypeService } from "@/service/IService/IOperationTypeService";
+import { ISpecializationService } from "@/service/IService/ISpecializationService";
 import { useNavigate } from "react-router-dom";
-import { CreatingOperationTypeDTO } from "@/dto/CreatingOperationTypeDTO";
 
 export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const operationTypeService = useInjection<IOperationTypeService>(TYPES.operationTypeService);
+  const specializationsService = useInjection<ISpecializationService>(TYPES.specializationsService);
 
   const [OTypes, setOTypes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -16,6 +17,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [totalOTypes, setTotalOTypes] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [creatingOperationType, setCreatingOperationType] = useState<any | null>(null);
+  const [specializations, setSpecializations] = useState<any[]>([]);
 
   const itemsPerPage = 10;
 
@@ -89,6 +91,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
   const handleAddOperationType = () => {
     console.log("Add new Operation Type");
+    fetchSpecializations();
     const newOperationTypeDTO = {
       name: "",
       requiredStaff: 0,
@@ -118,7 +121,19 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
       console.error("Error creating Operation Type:", error);
       window.confirm("Error creating Operation Type.");
     }
-  };
+  }
+  const fetchSpecializations = async () => {
+    try {
+      const specializations = await specializationsService.getSpecializations();
+      console.log("Specializations:", specializations);
+      console.log("AQUI OK");
+      setSpecializations(specializations);
+      console.log("SAME");
+    } catch (error) {
+      console.error("Error fetching specializations:", error);
+    }
+  }
+  ;
 
   return {
     OTypes,
@@ -137,5 +152,6 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
+    specializations
   };
 };

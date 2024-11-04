@@ -4,5 +4,6 @@ export const TYPES = {
   localStorage: Symbol.for("LocalStorage"),
   staffService: Symbol.for("StaffService"),
   operationTypeService: Symbol.for("OperationTypeService"),
+  specializationsService: Symbol.for("SpecializationsService"),
   api: Symbol.for("Api"),
 };
