@@ -33,6 +33,11 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     { label: "Admin Menu", action: () => navigate("/admin") },
   ];
 
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("en-CA"); 
+  };
+
   const fetchPatients = async () => {
     setLoading(true);
     setError(null);
@@ -40,12 +45,13 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
       const patientsData = await patientService.getPatients();
       console.log("Data returned from getPatients:", patientsData);
       setTotalPatients(patientsData.length);
+
       const filteredData = patientsData.map((patientUser) => ({
         "Medical Record Number": patientUser.id.value,
         "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
         "Personal Email": patientUser.personalEmail.value,
         "IAM Email": patientUser.iamEmail.value,
-        "Date of Birth": patientUser.dateOfBirth.date,
+        "Date of Birth": formatDate(patientUser.dateOfBirth.date),
         Gender: patientUser.gender.gender,
         "Contact Phone": patientUser.phoneNumber.number,
         Active: patientUser.active ? "Yes" : "No",
@@ -92,7 +98,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
         "Personal Email": patientUser.personalEmail.value,
         "IAM Email": patientUser.iamEmail.value,
-        "Date of Birth": patientUser.dateOfBirth.date,
+        "Date of Birth": formatDate(patientUser.dateOfBirth.date),
         Gender: patientUser.gender.gender,
         "Contact Phone": patientUser.phoneNumber.number,
         Active: patientUser.active ? "Yes" : "No",

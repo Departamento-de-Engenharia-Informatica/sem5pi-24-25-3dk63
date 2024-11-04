@@ -26,7 +26,7 @@ namespace DDDSample1.Domain
 
         public Patient(DateOfBirth dateOfBirth, Gender gender, EmergencyContact emergencyContact, int sequentialNumber)
         {
-            this.Id = new MedicalRecordNumber(MedicalRecordNumber.GenerateNewRecordNumber(dateOfBirth.date, sequentialNumber));
+            this.Id = new MedicalRecordNumber(MedicalRecordNumber.GenerateNewRecordNumber(dateOfBirth.date.Date, sequentialNumber));
             this.Active = false;
             this.dateOfBirth = dateOfBirth;
             this.gender = gender;

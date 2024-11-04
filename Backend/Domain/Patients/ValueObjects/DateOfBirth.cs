@@ -8,12 +8,12 @@ namespace DDDSample1.Domain.Patients
 
         public DateOfBirth(DateTime date)
         {
-            if (date > DateTime.Now)
+            if (date.Date > DateTime.Now.Date)
             {
                 throw new ArgumentException("Date of birth cannot be in the future.");
             }
 
-            this.date = date;
+            this.date = date.Date;
         }
 
         protected override IEnumerable<object> GetEqualityComponents()
@@ -23,7 +23,7 @@ namespace DDDSample1.Domain.Patients
 
         public override string ToString()
         {
-            return date.ToString("yyyy-MM-dd");
+            return date.ToString("yyyy-MM-dd", System.Globalization.CultureInfo.InvariantCulture);
         }
     }
 }
