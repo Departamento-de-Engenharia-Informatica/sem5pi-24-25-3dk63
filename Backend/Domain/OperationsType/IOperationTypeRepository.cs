@@ -13,6 +13,8 @@ namespace DDDSample1.Domain.OperationsType
         Task<OperationType> GetActiveOperationTypeByIdAsync(OperationTypeId id);
         Task<bool> DeleteAsync(OperationTypeId id);
         IQueryable<OperationType> GetQueryable();
+        //get all active
+        Task<List<OperationType>> GetAllActiveAsync();
 
     }
 }

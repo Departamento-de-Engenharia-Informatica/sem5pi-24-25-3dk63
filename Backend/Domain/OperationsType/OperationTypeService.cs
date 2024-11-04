@@ -284,6 +284,23 @@ Debug.Assert(operationType != null, "OperationType should not be null");
             }).ToList();
         }
 
+        public async Task<List<SearchOperationTypeDTO>> GetAllActiveOperationTypeAsync()
+        {
+            var list = await this._operationTypeRepository.GetAllActiveAsync();
+
+            List<SearchOperationTypeDTO> listDto = list.ConvertAll(operationType => new SearchOperationTypeDTO
+            {
+                Id =  operationType.Id.AsGuid(),
+                Name = operationType.Name,
+                Specialization = _specializationRepository.GetByIdAsync(operationType.SpecializationId).Result.Description,
+                Active = operationType.Active,
+                RequiredStaff = operationType.RequiredStaff,
+                Duration = operationType.Duration
+            });
+            return listDto;
+        }
+
+
     }
 
 }

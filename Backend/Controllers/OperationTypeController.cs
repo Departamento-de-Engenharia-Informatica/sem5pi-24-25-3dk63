@@ -176,5 +176,18 @@ namespace DDDSample1.Controllers
             return Ok(operationTypeList);
         }
 
+        [HttpGet("active")]
+        [Authorize(Roles="Admin")]
+        public async Task<ActionResult<IEnumerable<OperationTypeDTO>>> GetActiveOperationTypes()
+        {
+            var operationTypeList = await _service.GetAllActiveOperationTypeAsync();
+
+            if (operationTypeList == null || operationTypeList.Count == 0)
+            {
+                return NotFound("No active operation types found.");
+            }
+
+            return Ok(operationTypeList);   
+        }
     }
 }

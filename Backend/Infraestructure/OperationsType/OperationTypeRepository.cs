@@ -56,5 +56,12 @@ namespace DDDSample1.Infrastructure.OperationsType
         {
             return _context.OperationsTypes.AsQueryable();
         }
+
+        public async Task<List<OperationType>> GetAllActiveAsync()
+        {
+            return await _context.OperationsTypes
+                .Where(o => o.Active)
+                .ToListAsync();
+        }
     }
 }
