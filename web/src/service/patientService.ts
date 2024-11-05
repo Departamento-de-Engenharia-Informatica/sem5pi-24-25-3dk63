@@ -51,7 +51,7 @@ export class PatientService implements IPatientService {
   }
 
   async getMedicalRecords(): Promise<PatientUser[]> {
-    const res = await this.http.get<PatientUser[]>(`/patients/medical-records`);
+    const res = await this.http.get<PatientUser[]>(`/patients/medicalhistory`);
     return res.data;
   }
 

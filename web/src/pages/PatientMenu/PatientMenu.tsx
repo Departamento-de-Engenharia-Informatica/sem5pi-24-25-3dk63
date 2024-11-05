@@ -16,7 +16,7 @@ const PatientMenu: React.FC = () => {
   };
 
   const handleMedicalRecords = () => {
-    navigate("/patient/medical-records");
+    navigate("/patient/medical-record");
   };
 
 

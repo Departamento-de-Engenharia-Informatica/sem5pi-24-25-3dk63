@@ -32,8 +32,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
 
   const renderActions = (appointment: any) => (
     <div className="flex flex-wrap gap-2">
-      {/* Aqui você pode adicionar ações específicas para cada compromisso */}
-      {/* Exemplo: <button onClick={() => handleEdit(appointment.id)}>Edit</button> */}
+    
     </div>
   );
 
@@ -46,8 +45,11 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
     <div className="relative">
       <HamburgerMenu options={menuOptions} />
       <div className="container mx-auto p-4">
-        {loading && <Loading loadingText />}
+        {loading && <Loading loadingText={true} />}
         {error && <Alert type="error" message={error} />}
+        {!loading && appointments.length === 0 && (
+          <Alert type="info" message="You don't have any appointments." />
+        )}
         <div className="mb-4 flex items-center">
           <Checkbox
             label="Active"
