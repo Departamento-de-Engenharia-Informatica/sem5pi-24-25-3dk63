@@ -13,6 +13,8 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPatients, setTotalPatients] = useState<number>(0);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [creatingPatient, setCreatingPatient] = useState<any | null>(null);
 
   const itemsPerPage = 10;
 
@@ -42,34 +44,36 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setLoading(true);
     setError(null);
     try {
-      const patientsData = await patientService.getPatients();
-      console.log("Data returned from getPatients:", patientsData);
-      setTotalPatients(patientsData.length);
+        const patientsData = await patientService.getPatients();
+        console.log("Data returned from getPatients:", patientsData);
+        setTotalPatients(patientsData.length);
 
-      const filteredData = patientsData.map((patientUser) => ({
-        "Medical Record Number": patientUser.id.value,
-        "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
-        "Personal Email": patientUser.personalEmail.value,
-        "IAM Email": patientUser.iamEmail.value,
-        "Date of Birth": formatDate(patientUser.dateOfBirth.date),
-        Gender: patientUser.gender.gender,
-        "Contact Phone": patientUser.phoneNumber.number,
-        Active: patientUser.active ? "Yes" : "No",
-        id: patientUser.id.value,
-      }));
+        const filteredData = patientsData.map((patientUser) => ({
+            "Medical Record Number": patientUser.id.value,
+            "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
+            "Personal Email": patientUser.personalEmail.value,
+            "IAM Email": patientUser.iamEmail.value,
+            "Date of Birth": formatDate(patientUser.dateOfBirth.date),
+            Gender: patientUser.gender.gender,
+            "Contact Phone": patientUser.phoneNumber.number,
+            Active: patientUser.active ? "Yes" : "No",
+            id: patientUser.id.value,
+        }));
 
-      console.log("Filtered data:", filteredData);
+        console.log("Filtered data:", filteredData);
 
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const paginatedPatients = filteredData.slice(startIndex, startIndex + itemsPerPage);
-      setPatients(paginatedPatients);
-    } catch (error) {
-      setError("Error fetching patients.");
-      setAlertMessage("Error fetching patients.");
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const paginatedPatients = filteredData.slice(startIndex, startIndex + itemsPerPage);
+        setPatients(paginatedPatients);
+    } catch (error: any) {
+        console.error("Error fetching patients:", error); // Log the actual error
+        setError("Error fetching patients.");
+        setAlertMessage("Error fetching patients.");
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
-  };
+};
+
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this patient?")) {
@@ -81,6 +85,40 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         console.error("Error deleting patient:", error);
         setAlertMessage("Error deleting patient.");
       }
+    }
+  };
+
+  const handleAddPatient = () => {
+    console.log("Add new Patient");
+    const newPatientDTO = {
+      dateOfBirth: { date: "" },
+      gender: { value: "" },
+      emergencyContact: { emergencyContact: "" },
+      appointmentHistoryList: [],
+      email: { value: "" },
+      firstName: { value: "" },
+      lastName: { value: "" },
+      phoneNumber: { number: "" },
+    };
+    console.log("New Patient:", newPatientDTO);
+
+    setCreatingPatient(newPatientDTO);
+    setIsModalVisible(true);
+  };
+
+  const savePatient = async () => {
+    if (!creatingPatient) {
+      return;
+    }
+    try {
+      console.log("Saving Patient:", creatingPatient);
+      await patientService.createPatient(creatingPatient);
+      window.confirm("Patient created successfully.");
+      setIsModalVisible(false);
+      fetchPatients();
+    } catch (error) {
+      console.error("Error creating Patient:", error);
+      window.confirm("Error creating Patient.");
     }
   };
 
@@ -127,6 +165,12 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     currentPage,
     setCurrentPage,
     handleDelete,
+    isModalVisible,
+    setIsModalVisible,
+    handleAddPatient,
+    creatingPatient,
+    setCreatingPatient,
+    savePatient,
     totalPatients,
     itemsPerPage,
     searchPatients,

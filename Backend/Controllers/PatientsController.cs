@@ -81,6 +81,8 @@ namespace DDDSample1.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PatientDTO>> RegisterPatient(RegisterPatientDTO dto)
         {
+            Console.WriteLine("PhoneNumber: " + dto.phoneNumber);
+
             var patient = await _service.RegisterPatientAsync(dto);
             if (patient == null)
             {

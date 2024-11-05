@@ -38,7 +38,8 @@ async updatePatient(id: string, updatedData: Partial<PatientUpdateDTO>): Promise
 }
 
 async createPatient(patientData: PatientCreateDTO): Promise<PatientUser> {
-  const res = await this.http.post<PatientUser>("/patients", patientData);
+  console.log("Creating Patient:", patientData);
+  const res = await this.http.post<PatientUser>("/Patients/register-patient", patientData);
   console.log("Patient created:", res.data);
   return res.data;
 }
