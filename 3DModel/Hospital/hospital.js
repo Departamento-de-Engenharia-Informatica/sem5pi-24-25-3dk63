@@ -13,9 +13,9 @@
 import * as THREE from "three";
 import Stats from "three/addons/libs/stats.module.js";
 import Orientation from "./orientation.js";
-import { generalData, mazeData, lightsData, fogData, cameraData } from "./default_data.js";
+import { generalData, hallData, lightsData, fogData, cameraData } from "./default_data.js";
 import { merge } from "./merge.js";
-import Maze from "./maze.js";
+import Hall from "./floor.js";
 import Lights from "./lights.js";
 import Fog from "./fog.js";
 import Camera from "./camera.js";
@@ -26,7 +26,7 @@ import UserInterface from "./user_interface.js";
  *  setDevicePixelRatio: Boolean
  * }
  *
- * mazeParameters = {
+ * hallParameters = {
  *  url: String,
  *  credits: String,
  *  scale: Vector3
@@ -136,17 +136,14 @@ import UserInterface from "./user_interface.js";
  * }
  */
 
-export default class ThumbRaiser {
-    constructor(generalParameters, mazeParameters, lightsParameters, fogParameters, fixedViewCameraParameters, firstPersonViewCameraParameters, thirdPersonViewCameraParameters, topViewCameraParameters, miniMapCameraParameters) {
+export default class Floor {
+    constructor(generalParameters, hallParameters, lightsParameters, fogParameters, fixedViewCameraParameters, topViewCameraParameters) {
         this.generalParameters = merge({}, generalData, generalParameters);
-        this.mazeParameters = merge({}, mazeData, mazeParameters);
+        this.hallParameters = merge({}, hallData, hallParameters);
         this.lightsParameters = merge({}, lightsData, lightsParameters);
         this.fogParameters = merge({}, fogData, fogParameters);
         this.fixedViewCameraParameters = merge({}, cameraData, fixedViewCameraParameters);
-        this.firstPersonViewCameraParameters = merge({}, cameraData, firstPersonViewCameraParameters);
-        this.thirdPersonViewCameraParameters = merge({}, cameraData, thirdPersonViewCameraParameters);
         this.topViewCameraParameters = merge({}, cameraData, topViewCameraParameters);
-        this.miniMapCameraParameters = merge({}, cameraData, miniMapCameraParameters);
 
         // Create a 2D scene (the viewports frames)
         this.scene2D = new THREE.Scene();
@@ -164,8 +161,8 @@ export default class ThumbRaiser {
         // Create a 3D scene (the game itself)
         this.scene3D = new THREE.Scene();
 
-        // Create the maze
-        this.maze = new Maze(this.mazeParameters);
+        // Create the hall
+        this.hall = new Hall(this.hallParameters);
 
         // Create the lights
         this.lights = new Lights(this.lightsParameters);
@@ -173,19 +170,9 @@ export default class ThumbRaiser {
         // Create the fog
         this.fog = new Fog(this.fogParameters);
 
-        // Create the cameras corresponding to the four different views: fixed view, first-person view, third-person view and top view
+        // Create the cameras corresponding to the view: fixed view
         this.fixedViewCamera = new Camera(this.fixedViewCameraParameters, window.innerWidth, window.innerHeight);
-        this.firstPersonViewCamera = new Camera(this.firstPersonViewCameraParameters, window.innerWidth, window.innerHeight);
-        this.thirdPersonViewCamera = new Camera(this.thirdPersonViewCameraParameters, window.innerWidth, window.innerHeight);
         this.topViewCamera = new Camera(this.topViewCameraParameters, window.innerWidth, window.innerHeight);
-
-        // Create the mini-map camera
-        this.miniMapCamera = new Camera(this.miniMapCameraParameters, window.innerWidth, window.innerHeight);
-
-        // Create the statistics and make its node invisible
-        this.statistics = new Stats();
-        this.statistics.dom.style.visibility = "hidden";
-        document.body.appendChild(this.statistics.dom);
 
         // Create a renderer and turn on shadows in the renderer
         this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -199,7 +186,6 @@ export default class ThumbRaiser {
         document.body.appendChild(this.renderer.domElement);
 
         // Set the mouse move action (none)
-        this.dragMiniMap = false;
         this.changeCameraDistance = false;
         this.changeCameraOrientation = false;
 
@@ -220,25 +206,18 @@ export default class ThumbRaiser {
         this.zoom.step = 0.1;
         this.reset = document.getElementById("reset");
         this.resetAll = document.getElementById("reset-all");
-        this.helpPanel = document.getElementById("help-panel");
-        this.helpPanel.style.visibility = "hidden";
-        this.subwindowsPanel = document.getElementById("subwindows-panel");
+        /*this.helpPanel = document.getElementById("help-panel");
+        this.helpPanel.style.visibility = "hidden";*/
+        /*this.subwindowsPanel = document.getElementById("subwindows-panel");
+        this.subwindowsPanel.style.visibility = "hidden";
         this.multipleViewsCheckBox = document.getElementById("multiple-views");
-        this.multipleViewsCheckBox.checked = false;
-        this.userInterfaceCheckBox = document.getElementById("user-interface");
-        this.userInterfaceCheckBox.checked = true;
-        this.miniMapCheckBox = document.getElementById("mini-map");
-        this.miniMapCheckBox.checked = true;
-        this.helpCheckBox = document.getElementById("help");
-        this.helpCheckBox.checked = false;
-        this.statisticsCheckBox = document.getElementById("statistics");
-        this.statisticsCheckBox.checked = false;
+        this.multipleViewsCheckBox.checked = false;*/
 
         // Set the active view camera (fixed view)
         this.setActiveViewCamera(this.fixedViewCamera);
 
         // Arrange viewports by view mode
-        this.arrangeViewports(this.multipleViewsCheckBox.checked);
+        this.arrangeViewports();
 
         // Register the event handler to be called on window resize
         window.addEventListener("resize", event => this.windowResize(event));
@@ -267,11 +246,6 @@ export default class ThumbRaiser {
         this.vertical.addEventListener("change", event => this.elementChange(event));
         this.distance.addEventListener("change", event => this.elementChange(event));
         this.zoom.addEventListener("change", event => this.elementChange(event));
-        this.multipleViewsCheckBox.addEventListener("change", event => this.elementChange(event));
-        this.userInterfaceCheckBox.addEventListener("change", event => this.elementChange(event));
-        this.helpCheckBox.addEventListener("change", event => this.elementChange(event));
-        this.statisticsCheckBox.addEventListener("change", event => this.elementChange(event));
-
         // Register the event handler to be called on input button click
         this.reset.addEventListener("click", event => this.buttonClick(event));
         this.resetAll.addEventListener("click", event => this.buttonClick(event));
@@ -280,7 +254,7 @@ export default class ThumbRaiser {
     }
 
     displayPanel() {
-        this.view.options.selectedIndex = ["fixed", "first-person", "third-person", "top"].indexOf(this.activeViewCamera.view);
+        this.view.options.selectedIndex = ["fixed"].indexOf(this.activeViewCamera.view);
         this.projection.options.selectedIndex = ["perspective", "orthographic"].indexOf(this.activeViewCamera.projection);
         this.horizontal.value = this.activeViewCamera.orientation.h.toFixed(0);
         this.vertical.value = this.activeViewCamera.orientation.v.toFixed(0);
@@ -302,11 +276,8 @@ export default class ThumbRaiser {
         this.displayPanel();
     }
 
-    arrangeViewports(multipleViews) {
-        this.fixedViewCamera.setViewport(multipleViews);
-        this.firstPersonViewCamera.setViewport(multipleViews);
-        this.thirdPersonViewCamera.setViewport(multipleViews);
-        this.topViewCamera.setViewport(multipleViews);
+    arrangeViewports() {
+        this.fixedViewCamera.setViewport();
     }
 
     pointerIsOverViewport(pointer, viewport) {
@@ -319,21 +290,13 @@ export default class ThumbRaiser {
 
     getPointedViewport(pointer) {
         let viewport;
-        // Check if the pointer is over the mini-map camera viewport
-        if (this.miniMapCheckBox.checked) {
-            viewport = this.miniMapCamera.getViewport();
-            if (this.pointerIsOverViewport(pointer, viewport)) {
-                return this.miniMapCamera.view;
-            }
-        }
+
         // Check if the pointer is over the remaining camera viewports
         let cameras;
-        if (this.multipleViewsCheckBox.checked) {
-            cameras = [this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera];
-        }
-        else {
+
+
             cameras = [this.activeViewCamera];
-        }
+        
         for (const camera of cameras) {
             viewport = camera.getViewport();
             if (this.pointerIsOverViewport(pointer, viewport)) {
@@ -344,38 +307,8 @@ export default class ThumbRaiser {
         return "none";
     }
 
-    setViewMode(multipleViews) { // Single-view mode: false; multiple-views mode: true
-        this.multipleViewsCheckBox.checked = multipleViews;
-        this.arrangeViewports(this.multipleViewsCheckBox.checked);
-    }
-
-    setUserInterfaceVisibility(visible) {
-        this.userInterfaceCheckBox.checked = visible;
-        this.viewsPanel.style.visibility = visible ? "visible" : "hidden";
-        this.subwindowsPanel.style.visibility = visible ? "visible" : "hidden";
-        this.userInterface.setVisibility(visible);
-    }
-
-    setMiniMapVisibility(visible) { // Hidden: false; visible: true
-        this.miniMapCheckBox.checked = visible;
-    }
-
-    setHelpVisibility(visible) { // Hidden: false; visible: true
-        this.helpCheckBox.checked = visible;
-        this.helpPanel.style.visibility = visible ? "visible" : "hidden";
-    }
-
-    setStatisticsVisibility(visible) { // Hidden: false; visible: true
-        this.statisticsCheckBox.checked = visible;
-        this.statistics.dom.style.visibility = visible ? "visible" : "hidden";
-    }
-
     windowResize() {
         this.fixedViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
-        this.firstPersonViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
-        this.thirdPersonViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
-        this.topViewCamera.updateWindowSize(window.innerWidth, window.innerHeight);
-        this.miniMapCamera.updateWindowSize(window.innerWidth, window.innerHeight);
         this.renderer.setSize(window.innerWidth, window.innerHeight);
     }
 
@@ -392,9 +325,9 @@ export default class ThumbRaiser {
                     }
                 }
                 else { // One of the remaining cameras selected
-                    const cameraIndex = ["fixed", "first-person", "third-person", "top"].indexOf(cameraView);
+                    const cameraIndex = ["fixed"].indexOf(cameraView);
                     this.view.options.selectedIndex = cameraIndex;
-                    this.setActiveViewCamera([this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera][cameraIndex]);
+                    this.setActiveViewCamera([this.fixedViewCamera][cameraIndex]);
                     if (event.buttons == 1) { // Primary button down
                         this.changeCameraDistance = true;
                     }
@@ -437,8 +370,6 @@ export default class ThumbRaiser {
     }
 
     mouseUp(event) {
-        // Reset mouse move action
-        this.dragMiniMap = false;
         this.changeCameraDistance = false;
         this.changeCameraOrientation = false;
     }
@@ -451,9 +382,9 @@ export default class ThumbRaiser {
         // Select the camera whose view is being pointed
         const cameraView = this.getPointedViewport(this.mousePosition);
         if (cameraView != "none" && cameraView != "mini-map") { // One of the remaining cameras selected
-            const cameraIndex = ["fixed", "first-person", "third-person", "top"].indexOf(cameraView);
+            const cameraIndex = ["fixed"].indexOf(cameraView);
             this.view.options.selectedIndex = cameraIndex;
-            const activeViewCamera = [this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera][cameraIndex];
+            const activeViewCamera = [this.fixedViewCamera][cameraIndex];
             activeViewCamera.updateZoom(-0.001 * event.deltaY);
             this.setActiveViewCamera(activeViewCamera);
         }
@@ -467,7 +398,7 @@ export default class ThumbRaiser {
     elementChange(event) {
         switch (event.target.id) {
             case "view":
-                this.setActiveViewCamera([this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera][this.view.options.selectedIndex]);
+                this.setActiveViewCamera([this.fixedViewCamera, this.topViewCamera][this.view.options.selectedIndex]);
                 break;
             case "projection":
                 this.activeViewCamera.setActiveProjection(["perspective", "orthographic"][this.projection.options.selectedIndex]);
@@ -492,56 +423,14 @@ export default class ThumbRaiser {
                     }
                 }
                 break;
-            case "multiple-views":
-                this.setViewMode(event.target.checked);
-                break;
-            case "user-interface":
-                this.setUserInterfaceVisibility(event.target.checked);
-                break;
-            case "help":
-                this.setHelpVisibility(event.target.checked);
-                break;
-            case "statistics":
-                this.setStatisticsVisibility(event.target.checked);
-                break;
         }
-    }
-
-    buttonClick(event) {
-        switch (event.target.id) {
-            case "reset":
-                this.activeViewCamera.initialize();
-                break;
-            case "reset-all":
-                this.fixedViewCamera.initialize();
-                this.firstPersonViewCamera.initialize();
-                this.thirdPersonViewCamera.initialize();
-                this.topViewCamera.initialize();
-                break;
-        }
-        this.displayPanel();
-    }
-
-    finalSequence() {
-        // Disable the fog
-        this.fog.enabled = false;
-        // Reconfigure the third-person view camera
-        this.thirdPersonViewCamera.setOrientation(new Orientation(180.0, this.thirdPersonViewCamera.initialOrientation.v));
-        this.thirdPersonViewCamera.setDistance(this.thirdPersonViewCamera.initialDistance);
-        this.thirdPersonViewCamera.setZoom(2.0);
-        // Set it as the active view camera
-        this.setActiveViewCamera(this.thirdPersonViewCamera);
-        // Set single-view mode
-        this.setViewMode(false);
-        // Set the final action
-        this.animations.fadeToAction("Dance", 0.2);
     }
 
     update() {
         if (!this.gameRunning) {
-            if (this.maze.loaded) { 
-                // Add the maze and the lights to the scene
-                this.scene3D.add(this.maze.object);
+            if (this.hall.loaded) { 
+                // Add the hall and the lights to the scene
+                this.scene3D.add(this.hall.object);
                 this.scene3D.add(this.lights.object);
 
                 // Create the clock
@@ -556,14 +445,8 @@ export default class ThumbRaiser {
         }
         else {
 
-            // Update first-person view
             const target = new THREE.Vector3(5,5,5);
-            this.firstPersonViewCamera.setTarget(target);
-            this.thirdPersonViewCamera.setTarget(target);
             this.topViewCamera.setTarget(target);
-
-            // Update statistics
-            this.statistics.update();
 
             // Render primary viewport(s)
             this.renderer.clear();
@@ -575,28 +458,16 @@ export default class ThumbRaiser {
                 this.scene3D.fog = null;
             }
             let cameras;
-            if (this.multipleViewsCheckBox.checked) {
-                cameras = [this.fixedViewCamera, this.firstPersonViewCamera, this.thirdPersonViewCamera, this.topViewCamera];
-            }
-            else {
+
                 cameras = [this.activeViewCamera];
-            }
+            
             for (const camera of cameras) {
                 const viewport = camera.getViewport();
-                this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
                 this.renderer.render(this.scene3D, camera.object);
                 this.renderer.render(this.scene2D, this.camera2D);
                 this.renderer.clearDepth();
             }
 
-            // Render secondary viewport (mini-map)
-            if (this.miniMapCheckBox.checked) {
-                this.scene3D.fog = null;
-                const viewport = this.miniMapCamera.getViewport();
-                this.renderer.setViewport(viewport.x, viewport.y, viewport.width, viewport.height);
-                this.renderer.render(this.scene3D, this.miniMapCamera.object);
-                this.renderer.render(this.scene2D, this.camera2D);
-            }
         }
     }
 }

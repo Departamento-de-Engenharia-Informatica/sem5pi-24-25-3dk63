@@ -32,7 +32,6 @@ export default class Camera {
         // Compute half of the size of the target plane as a function of the camera's distance to the target and the field-of-view
         this.initialHalfSize = Math.tan(THREE.MathUtils.degToRad(this.initialFov / 2.0)) * this.initialDistance;
 
-        // The player direction (expressed in degrees) is needed to compute the horizontal orientation of the first- and third-person view cameras
         this.playerDirection = 0.0;
 
         // Create two cameras (perspective and orthographic projection)
@@ -144,13 +143,8 @@ export default class Camera {
         // Set the projection parameters (perspective: field-of-view, aspect ratio, near and far clipping planes; orthographic: left, right, top, bottom, near and far clipping planes)
         this.setProjectionParameters();
 
-        // Set the default camera projection: mini-map: orthographic; remaining views: perspective
-        if (this.view != "mini-map") {
-            this.setActiveProjection("perspective");
-        }
-        else {
-            this.setActiveProjection("orthographic");
-        }
+        // Set the default camera projection: orthographic; remaining views: perspective
+        this.setActiveProjection("perspective");
     }
 
     getViewport() { // Converted from % to pixels
@@ -159,7 +153,6 @@ export default class Camera {
         let y;
         let width = this.viewport.width;
         let height = this.viewport.height;
-        if (this.view != "mini-map") {
             x = this.viewport.x * (1.0 - this.viewport.width);
             y = this.viewport.y * (1.0 - this.viewport.height);
             if (this.windowWidth < this.windowHeight) {
@@ -174,23 +167,13 @@ export default class Camera {
                 width *= this.windowWidth;
                 height *= windowMinSize;
             }
-        }
-        else {
-            width *= windowMinSize;
-            height *= windowMinSize;
-            x = this.viewport.x * (this.windowWidth - width);
-            y = this.viewport.y * (this.windowHeight - height);
-        }
         return new THREE.Vector4(x, y, width, height);
     }
 
-    setViewport(multipleViews) {
-        if (multipleViews) {
-            this.viewport = this.multipleViewsViewport.clone();
-        }
-        else {
-            this.viewport = new THREE.Vector4(0.0, 0.0, 1.0, 1.0);
-        }
+    setViewport() {
+
+        this.viewport = new THREE.Vector4(0.0, 0.0, 1.0, 1.0);
+        
         const viewport = this.getViewport();
         this.aspectRatio = viewport.width / viewport.height;
         this.setProjectionParameters();

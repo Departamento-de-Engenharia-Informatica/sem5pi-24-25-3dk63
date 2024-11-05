@@ -2,11 +2,10 @@ import * as THREE from "three";
 import Ground from "./ground.js";
 import Wall from "./wall.js";
 import Door from "./door.js";
-import SurgeryRoomDoor from "./SurgeryRoomDoor.js";
 import Cama from "./cama.js";
 import Adereco from "./adereco.js";
 import Patient from "./patient.js";
-import WallWithDoorFrame from "./WallWithDoorFrame.js";
+import WallWithDoorFrame from "./SurgeryDoor.js";
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 
 /*
@@ -45,12 +44,9 @@ export default class Maze {
             //Create a door
             this.door = new Door({ textureUrl: description.doorTextureUrl, height: 2.0 });
 
-            //Create a surgery room door
-            this.surgeryRoomDoor = new SurgeryRoomDoor({ textureUrl: description.surgeryRoomDoorTextureUrl, height: 2.0 });
-
             this.cama = new Cama({textureUrl: description.camaTextureUrl, scale: 0.1 });
 
-            this.adereco = new Adereco({textureUrl: description.aderecoTextureUrl, scale: 2 });
+            //this.adereco = new Adereco({textureUrl: description.aderecoTextureUrl, scale: 2 });
 
             this.patient = new Patient({patientTextureUrl: description.patientTextureUrl, patientModelOBJUrl: description.patientModelOBJUrl});
 
@@ -59,7 +55,6 @@ export default class Maze {
             // Build the maze
             let wallObject;
             let doorObject;
-            let surgeryRoomDoorObject;
             let wallWithDoorFrameObject;
             let porta1 = true;
 
