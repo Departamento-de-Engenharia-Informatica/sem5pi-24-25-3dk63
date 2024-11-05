@@ -118,7 +118,7 @@ namespace DDDSample1.Controllers
 
             var result = await _service.DeletePatientAsync(medicalRecordNumber, adminEmail);
 
-            
+
             if (result == null)
             {
                 return NotFound("Patient not found.");
@@ -266,7 +266,6 @@ namespace DDDSample1.Controllers
         public async Task<ActionResult<PatientDTO>> GetMedicalHistory()
         {
             var userEmail = User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value;
-            Console.WriteLine("EMAILLLL", userEmail);
             if (string.IsNullOrEmpty(userEmail))
             {
                 return Unauthorized("Patient information not found.");

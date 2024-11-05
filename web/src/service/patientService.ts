@@ -5,6 +5,7 @@ import { IPatientService } from "./IService/IPatientService";
 import { PatientUpdateDTO } from "@/dto/PatientUpdateDTO";
 import { PatientUser } from "@/model/PatientUser";
 import { PatientCreateDTO } from "@/dto/PatientCreateDTO";
+import { Patient } from "@/model/Patient";
 
 @injectable()
 export class PatientService implements IPatientService {
@@ -28,18 +29,31 @@ export class PatientService implements IPatientService {
     console.log("Patient deleted:", id);
   }
 
-async updatePatient(id: string, updatedData: Partial<PatientUpdateDTO>): Promise<void> {
-  const patientUpdateDto: PatientUpdateDTO = {
-    id: { value: id },
-    ...updatedData,
-  };
+  async updatePatient(id: string, updatedData: Partial<PatientUpdateDTO>): Promise<void> {
+    const patientUpdateDto: PatientUpdateDTO = {
+      id: { value: id },
+      ...updatedData,
+    };
 
-  await this.http.patch(`/patients/${id}`, patientUpdateDto);
-}
+    await this.http.patch(`/patients/${id}`, patientUpdateDto);
+  }
 
-async createPatient(patientData: PatientCreateDTO): Promise<PatientUser> {
-  const res = await this.http.post<PatientUser>("/patients", patientData);
-  console.log("Patient created:", res.data);
-  return res.data;
-}
+  async createPatient(patientData: PatientCreateDTO): Promise<PatientUser> {
+    const res = await this.http.post<PatientUser>("/patients", patientData);
+    console.log("Patient created:", res.data);
+    return res.data;
+  }
+
+  async getAppointments(): Promise<PatientUser[]> {
+    const res = await this.http.get<PatientUser[]>(`/patients/appointments`);
+    return res.data;
+
+  }
+
+  async getMedicalRecords(): Promise<PatientUser[]> {
+    const res = await this.http.get<PatientUser[]>(`/patients/medical-records`);
+    return res.data;
+  }
+
+
 }

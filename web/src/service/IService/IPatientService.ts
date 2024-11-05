@@ -8,4 +8,6 @@ export interface IPatientService {
   deletePatient(id: string): Promise<void>;
   updatePatient(id: string, updatedData: Partial<Patient>): Promise<void>;
   createPatient(data: PatientCreateDTO): Promise<PatientUser>;
+  getAppointments(): Promise<PatientUser[]>;
+  getMedicalRecords(): Promise<PatientUser[]>;
 }

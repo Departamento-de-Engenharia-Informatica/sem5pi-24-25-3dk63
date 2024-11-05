@@ -1,16 +1,17 @@
 import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
-import { IAppointmentService } from "../../service/IService/IAppointmentService";
+import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
+import { PatientUser } from "@/model/PatientUser";
 
 export const useAppointmentsListModule = (
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>
 ) => {
   const navigate = useNavigate();
-  const appointmentsService = useInjection<IAppointmentService>(TYPES.appointmentService);
+  const patientService = useInjection<IPatientService>(TYPES.patientService);
 
-  const [Appointments, setAppointments] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
@@ -31,21 +32,23 @@ export const useAppointmentsListModule = (
     setLoading(true);
     setError(null);
     try {
-      const AppointmentsData = await appointmentsService.getAppointments();
-      setTotalAppointments(AppointmentsData.length);
+      const patientsData: PatientUser[] = await patientService.getAppointments();
+      setTotalAppointments(patientsData.length);
 
-      const filteredData = AppointmentsData.filter((appointment) => {
-        // Filter based on active and inactive checkboxes
-        if (showActive && showInactive) return true; // Show all
-        if (showActive) return appointment.active;
-        if (showInactive) return !appointment.active;
-        return false;
-      }).map((appointment) => ({
-        Date: appointment.date,
-        Hour: appointment.hour,
-        Room: appointment.room,
-        Active: appointment.active ? "Yes" : "No",
-      }));
+      const filteredData = patientsData
+        .flatMap((patient) => patient.appointmentHistoryList)
+        .filter((appointment) => {
+          if (showActive && showInactive) return true;
+          if (showActive) return appointment.active;
+          if (showInactive) return !appointment.active;
+          return false;
+        })
+        .map((appointment) => ({
+          Date: appointment.date,
+          Hour: appointment.hour,
+          Room: appointment.room,
+          Active: appointment.active ? "Yes" : "No",
+        }));
 
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedAppointments = filteredData.slice(startIndex, startIndex + itemsPerPage);
@@ -64,7 +67,7 @@ export const useAppointmentsListModule = (
   }, [currentPage, showActive, showInactive]);
 
   return {
-    Appointments,
+    appointments,
     loading,
     error,
     headers,

@@ -1,20 +1,19 @@
-import React, { useState } from "react";
+import React from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
 import Table from "@/components/Table";
 import { useAppointmentsListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
-import Modal from "@/components/Modal";
-import Checkbox from "@/components/CheckBox"; // Importando o novo componente
+import Checkbox from "@/components/CheckBox";
 
-interface OperationTypeListProps {
+interface AppointmentsListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
 }
 
-const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
+const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) => {
   const {
-    Appointments,
+    appointments,
     loading,
     error,
     headers,
@@ -31,14 +30,16 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
 
   const totalPages = Math.ceil(totalAppointments / itemsPerPage);
 
-  const renderActions = (OTypes: any) => (
+  const renderActions = (appointment: any) => (
     <div className="flex flex-wrap gap-2">
+      {/* Aqui você pode adicionar ações específicas para cada compromisso */}
+      {/* Exemplo: <button onClick={() => handleEdit(appointment.id)}>Edit</button> */}
     </div>
   );
 
-  const tableData = Appointments.map((Appointments) => ({
-    ...Appointments,
-    Actions: renderActions(Appointments),
+  const tableData = appointments.map((appointment) => ({
+    ...appointment,
+    Actions: renderActions(appointment),
   }));
 
   return (
@@ -72,4 +73,4 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
   );
 };
 
-export default OpTypesList;
+export default AppointmentsList;

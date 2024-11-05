@@ -2,3 +2,12 @@
 2024-11-05 12:14:49.097 +00:00 [INF] User 1a7afee6-0aad-4d9f-8ac1-b949de6968bb was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:14:49 PM
 2024-11-05 12:15:38.016 +00:00 [INF] Patient 199002000004 was deleted by Admin (helenaferrazmacedo@gmail.com) on 11/5/2024 12:15:38 PM
 2024-11-05 12:15:38.016 +00:00 [INF] User 55d73e71-bbea-4f49-9edc-a0433bce6412 was deleted by Admin (helenaferrazmacedo@gmail.com) on 11/5/2024 12:15:38 PM
+2024-11-05 12:46:54.009 +00:00 [INF] Patient 199002000004 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:46:54 PM
+2024-11-05 12:46:54.025 +00:00 [INF] User 67cd8912-6483-47c6-a867-99bed80e486a was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:46:54 PM
+2024-11-05 12:49:00.245 +00:00 [INF] Login falhou: email não encontrado.
+2024-11-05 12:50:17.660 +00:00 [INF] Patient 199002000004 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:50:17 PM
+2024-11-05 12:50:17.660 +00:00 [INF] User 76a96bcf-f4c9-4b3a-ac60-2de898ae20c6 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:50:17 PM
+2024-11-05 12:50:33.445 +00:00 [INF] Login falhou: email não encontrado.
+2024-11-05 12:52:00.320 +00:00 [INF] Patient 199002000004 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:52:00 PM
+2024-11-05 12:52:00.320 +00:00 [INF] User 6caa8bd7-08bd-4027-9e77-584b92772629 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:52:00 PM
+2024-11-05 12:52:31.037 +00:00 [INF] Login falhou: email não encontrado.
