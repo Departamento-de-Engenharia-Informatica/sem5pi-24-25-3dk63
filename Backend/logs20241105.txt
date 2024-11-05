@@ -11,3 +11,9 @@
 2024-11-05 12:52:00.320 +00:00 [INF] Patient 199002000004 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:52:00 PM
 2024-11-05 12:52:00.320 +00:00 [INF] User 6caa8bd7-08bd-4027-9e77-584b92772629 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:52:00 PM
 2024-11-05 12:52:31.037 +00:00 [INF] Login falhou: email não encontrado.
+2024-11-05 19:56:16.577 +00:00 [INF] Patient 199008000005 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 7:56:16 PM
+2024-11-05 19:56:16.606 +00:00 [INF] User ababfe64-38ab-4208-9fd6-0f85a48818e3 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 7:56:16 PM
+2024-11-05 21:04:55.234 +00:00 [INF] Patient 200001000008 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 9:04:55 PM
+2024-11-05 21:04:55.272 +00:00 [INF] User 0156064a-7f1c-4120-85c5-a80957bed81d was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 9:04:55 PM
+2024-11-05 21:05:01.473 +00:00 [INF] Patient 200001000009 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 9:05:01 PM
+2024-11-05 21:05:01.473 +00:00 [INF] User d2effdbf-77c4-43ff-97fc-adf6c2a7da42 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 9:05:01 PM

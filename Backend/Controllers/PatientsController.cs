@@ -11,6 +11,7 @@ using DDDSample1.Domain;
 using DDDSample1.Users;
 using Backend.Domain.Shared;
 using DDDSample1.Domain.Appointments;
+using Newtonsoft.Json;
 
 namespace DDDSample1.Controllers
 {
@@ -81,8 +82,6 @@ namespace DDDSample1.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<PatientDTO>> RegisterPatient(RegisterPatientDTO dto)
         {
-            Console.WriteLine("PhoneNumber: " + dto.phoneNumber);
-
             var patient = await _service.RegisterPatientAsync(dto);
             if (patient == null)
             {
