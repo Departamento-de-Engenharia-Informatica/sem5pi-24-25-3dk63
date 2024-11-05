@@ -12,7 +12,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
 import React, { useState } from "react";
-import NewPatient from "./pages/AdminPatient/NewPatient";
 
 function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -32,7 +31,6 @@ function App() {
                 <Route path="/admin/patient" element={<AdminPatient setAlertMessage={setAlertMessage} />} />
                 <Route path="/admin/staff" element={<AdminStaff setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient" element={<PatientPage />} />
-                <Route path="/patient/register" element={<NewPatient />} />
                 <Route path="/admin/operation-type" element={<AdminOperationType setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
               </Routes>

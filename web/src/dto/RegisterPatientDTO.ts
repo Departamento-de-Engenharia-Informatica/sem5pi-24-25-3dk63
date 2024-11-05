@@ -1,9 +1,9 @@
-export interface PatientCreateDTO {
+export interface RegisterPatientDTO {
     dateOfBirth: {
       date: string;
     };
     gender: {
-      gender: string;
+      value: string;
     };
     emergencyContact: {
       emergencyContact: string;
@@ -12,15 +12,17 @@ export interface PatientCreateDTO {
       appointmentDate: Date;
       doctorName: string;
     }>;
-    personalEmail: {
+    email: {
       value: string;
     };
-    name: {
-      firstName: string;
-      lastName: string;
+    firstName: {
+        value: string;
+    };
+    lastName: {
+        value: string;
     };
     phoneNumber: {
-      number: string;
+        value: string;
     };
   }
   
