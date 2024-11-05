@@ -1,0 +1,4 @@
+2024-11-05 12:14:49.081 +00:00 [INF] Patient 199002000004 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:14:49 PM
+2024-11-05 12:14:49.097 +00:00 [INF] User 1a7afee6-0aad-4d9f-8ac1-b949de6968bb was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/5/2024 12:14:49 PM
+2024-11-05 12:15:38.016 +00:00 [INF] Patient 199002000004 was deleted by Admin (helenaferrazmacedo@gmail.com) on 11/5/2024 12:15:38 PM
+2024-11-05 12:15:38.016 +00:00 [INF] User 55d73e71-bbea-4f49-9edc-a0433bce6412 was deleted by Admin (helenaferrazmacedo@gmail.com) on 11/5/2024 12:15:38 PM

@@ -118,6 +118,7 @@ namespace DDDSample1.Controllers
 
             var result = await _service.DeletePatientAsync(medicalRecordNumber, adminEmail);
 
+            
             if (result == null)
             {
                 return NotFound("Patient not found.");
