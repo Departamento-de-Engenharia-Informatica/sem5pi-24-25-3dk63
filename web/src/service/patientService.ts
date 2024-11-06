@@ -4,7 +4,7 @@ import type { HttpService } from "./IService/HttpService";
 import { IPatientService } from "./IService/IPatientService";
 import { PatientUpdateDTO } from "@/dto/PatientUpdateDTO";
 import { PatientUser } from "@/model/PatientUser";
-import { PatientCreateDTO } from "@/dto/PatientCreateDTO";
+import { RegisterPatientDTO } from "@/dto/RegisterPatientDTO";
 import { Patient } from "@/model/Patient";
 
 @injectable()
@@ -38,8 +38,8 @@ export class PatientService implements IPatientService {
     await this.http.patch(`/patients/${id}`, patientUpdateDto);
   }
 
-  async createPatient(patientData: PatientCreateDTO): Promise<PatientUser> {
-    const res = await this.http.post<PatientUser>("/patients", patientData);
+  async createPatient(patientData: RegisterPatientDTO): Promise<PatientUser> {
+    const res = await this.http.post<PatientUser>("/patients/register-patient", patientData);
     console.log("Patient created:", res.data);
     return res.data;
   }

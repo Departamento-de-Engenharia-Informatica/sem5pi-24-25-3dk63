@@ -5,6 +5,13 @@ import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
 
 export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
+  
+  const countryOptions = [
+    { code: "+351" },
+    { code: "+1" },
+    { code: "+44" },
+  ];
+
   const navigate = useNavigate();
   const patientService = useInjection<IPatientService>(TYPES.patientService);
 
@@ -15,6 +22,9 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [totalPatients, setTotalPatients] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [creatingPatient, setCreatingPatient] = useState<any | null>(null);
+  const [patientForm, setPatientForm] = useState<any | null>(null);
+  const [countryCode, setCountryCode] = useState(countryOptions[0].code);
+  const [phoneNumberPart, setPhoneNumberPart] = useState("");
 
   const itemsPerPage = 10;
 
@@ -90,19 +100,18 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
   const handleAddPatient = () => {
     console.log("Add new Patient");
-    const newPatientDTO = {
-      dateOfBirth: { date: "" },
-      gender: { value: "" },
-      emergencyContact: { emergencyContact: "" },
-      appointmentHistoryList: [],
-      email: { value: "" },
+    const patientFormDto = {
       firstName: { value: "" },
       lastName: { value: "" },
+      dateOfBirth: { date : "" },
+      gender: { gender: "" },
+      personalEmail: { value: "" },
       phoneNumber: { number: "" },
+      emergencyContact: { emergencyContact: "" },     
     };
-    console.log("New Patient:", newPatientDTO);
+    console.log("New Patient Form:", patientFormDto);
 
-    setCreatingPatient(newPatientDTO);
+    setCreatingPatient(patientFormDto);
     setIsModalVisible(true);
   };
 
@@ -111,8 +120,39 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
       return;
     }
     try {
-      console.log("Saving Patient:", creatingPatient);
-      await patientService.createPatient(creatingPatient);
+
+      // Create a temporary variable to hold the updated patient data
+      const updatedPatient = {
+        ...creatingPatient,
+        phoneNumber: { number: `${countryCode}${phoneNumberPart}` },
+      };
+
+      // Map the form dto to the patientRegister dto
+      const patientDto = {
+        dateOfBirth: {
+          date: updatedPatient.dateOfBirth.date,
+        },
+        gender: {
+          gender: updatedPatient.gender.gender,
+        },
+        emergencyContact: {
+          emergencyContact: updatedPatient.emergencyContact.emergencyContact,
+        },
+        appointmentHistoryList: [],
+        personalEmail: {
+          value: updatedPatient.personalEmail.value,
+        },
+        name: {
+          firstName: updatedPatient.firstName.value,
+          lastName: updatedPatient.lastName.value,
+        },
+        phoneNumber: {
+          number: updatedPatient.phoneNumber.number,
+        },
+      };
+
+      console.log("Saving Patient:", patientDto);
+      await patientService.createPatient(patientDto);
       window.confirm("Patient created successfully.");
       setIsModalVisible(false);
       fetchPatients();
@@ -167,6 +207,12 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     handleDelete,
     isModalVisible,
     setIsModalVisible,
+    countryOptions,
+    countryCode,
+    setCountryCode,
+    phoneNumberPart,
+    setPhoneNumberPart,
+    patientForm,
     handleAddPatient,
     creatingPatient,
     setCreatingPatient,

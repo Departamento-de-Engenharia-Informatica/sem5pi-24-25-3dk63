@@ -46,7 +46,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     try {
       const opsTypedata = await operationTypeService.getOperationTypes();
       setTotalOTypes(opsTypedata.length);
-  
+
       const filteredData = opsTypedata
         .filter((OperationType) => {
           // Filtrar com base nas checkboxes de status
@@ -57,7 +57,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
           } else if (showInactive) {
             return !OperationType.active;
           } else {
-            return false; 
+            return false;
           }
         })
         .map((OperationType) => ({
@@ -71,7 +71,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
           Specialization: OperationType.specialization.value,
           Active: OperationType.active ? "Yes" : "No",
         }));
-  
+
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setOTypes(paginatedOperationTypes);
@@ -82,7 +82,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
       setLoading(false);
     }
   };
-  
+
 
   const handleDeactivate = async (id: string) => {
     if (window.confirm("Are you sure you want to deactivate this operation type?")) {
@@ -172,5 +172,5 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     showInactive,
     setShowInactive,
   };
-  
+
 };

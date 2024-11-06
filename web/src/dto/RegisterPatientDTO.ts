@@ -3,7 +3,7 @@ export interface RegisterPatientDTO {
       date: string;
     };
     gender: {
-      value: string;
+      gender: string;
     };
     emergencyContact: {
       emergencyContact: string;
@@ -12,17 +12,15 @@ export interface RegisterPatientDTO {
       appointmentDate: Date;
       doctorName: string;
     }>;
-    email: {
+    personalEmail: {
       value: string;
     };
-    firstName: {
-        value: string;
-    };
-    lastName: {
-        value: string;
+    name: {
+      firstName: string;
+      lastName: string;
     };
     phoneNumber: {
-        value: string;
+      number: string;
     };
   }
   
