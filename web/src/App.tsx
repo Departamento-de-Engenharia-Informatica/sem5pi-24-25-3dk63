@@ -5,6 +5,7 @@ import AdminPage from './pages/AdminMenu';
 import AdminPatient from './pages/AdminPatient';
 import PatientPage from './pages/PatientMenu/PatientMenu';
 import AdminStaff from './pages/AdminStaff';
+import SelfRegisterMenu from './pages/PatientSelfRegister';
 import AdminOperationType from './pages/AdminOperationType';
 import PatientAppointments from './pages/PatientAppointments';
 import PatientMedicalRecord from './pages/PatientMedicalRecord';
@@ -31,6 +32,7 @@ function App() {
                 <Route path="/admin/patient" element={<AdminPatient setAlertMessage={setAlertMessage} />} />
                 <Route path="/admin/staff" element={<AdminStaff setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient" element={<PatientPage />} />
+                <Route path="/self-register" element={<SelfRegisterMenu />} />
                 <Route path="/admin/operation-type" element={<AdminOperationType setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
                 {<Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />}

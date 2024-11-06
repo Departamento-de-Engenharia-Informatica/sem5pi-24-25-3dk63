@@ -58,7 +58,7 @@ namespace DDDSample1.Patients
                 userId = patient.UserId,
 
                 personalEmail = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Email : null,
-                iamEmail = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Email : null,
+                iamEmail = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Username : null,
                 name = userDictionary.ContainsKey(patient.UserId.Value) ? userDictionary[patient.UserId.Value].Name : null,
                 dateOfBirth = patient.dateOfBirth,
                 gender = patient.gender,
@@ -379,7 +379,7 @@ namespace DDDSample1.Patients
                 id = r.patient.Id,
                 name = r.user.Name,
                 personalEmail = r.user.Email,
-                iamEmail = r.user.Email,
+                iamEmail = r.user.Username,
                 dateOfBirth = r.patient.dateOfBirth,
                 gender = r.patient.gender,
                 phoneNumber = r.user.PhoneNumber,

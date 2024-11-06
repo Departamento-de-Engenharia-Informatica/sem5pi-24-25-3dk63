@@ -8,7 +8,7 @@ namespace DDDSample1.Domain.Patients
     public MedicalRecordNumber id { get; set; }
     public UserId userId { get; set; }
     public Email personalEmail { get; set; }
-    public Email? iamEmail { get; set; }
+    public Username? iamEmail { get; set; }
     public Name? name { get; set; }
     public DateOfBirth dateOfBirth { get; set; }
     public Gender gender { get; set; }
