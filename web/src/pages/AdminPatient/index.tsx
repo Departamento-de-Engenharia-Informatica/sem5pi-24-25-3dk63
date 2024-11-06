@@ -5,7 +5,6 @@ import Table from "@/components/Table";
 import Pagination from "@/components/Pagination";
 import { usePatientListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
-import Button from "@/components/Button";
 import SearchFilter from "@/components/SearchFilter";
 import DropdownMenu from "@/components/DropdownMenu";
 import Modal from "@/components/Modal";
@@ -32,7 +31,6 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     setCountryCode,
     phoneNumberPart,
     setPhoneNumberPart,
-    patientForm,
     handleAddPatient,
     creatingPatient,
     setCreatingPatient,
@@ -80,7 +78,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
       setCountryCode(countryOptions[0].code);
       setPhoneNumberPart("");
     }
-  }, [isModalVisible]); 
+  }, [isModalVisible]);
 
   return (
     <div className="relative">
@@ -213,11 +211,11 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             {/* PHONE NUMBER */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Phone Number</label>
             <div className="flex mt-1">
-              <select 
-                value={countryCode} 
+              <select
+                value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
-                className="w-1/4 border border-gray-300 rounded-l-md p-2 focus:outline-none focus:ring focus:ring-blue-500" 
-              > 
+                className="w-1/4 border border-gray-300 rounded-l-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
+              >
                 {countryOptions.map((option) => (
                   <option key={option.code} value={option.code}>
                     {option.code}
