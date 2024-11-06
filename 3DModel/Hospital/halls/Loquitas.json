@@ -1,16 +1,15 @@
 {
-    "groundTextureUrl": "./textures/ground.jpg",
-    "wallTextureUrl": "./textures/wall.jpg",
-    "doorTextureUrl": "./textures/door.jpg",
-    "surgeryRoomDoorTextureUrl": "./textures/surgeryRoomDoor.png",
-    "camaTextureUrl": "./textures/bed.obj",
-    "aderecoTextureUrl": "./textures/adereco.obj",
-    "patientTextureUrl": "./textures/ManColors.png",
-    "patientModelOBJUrl": "./textures/Man.obj",
+    "groundTextureUrl": "./3DModel/Hospital/textures/ground.jpg",
+    "wallTextureUrl": "./3DModel/Hospital/textures/wall.jpg",
+    "doorTextureUrl": "./3DModel/Hospital/textures/door.jpg",
+    "surgeryRoomDoorTextureUrl": "./3DModel/Hospital/textures/surgeryRoomDoor.png",
+    "camaTextureUrl": "./3DModel/Hospital/textures/bed.obj",
+    "aderecoTextureUrl": "./3DModel/Hospital/textures/adereco.obj",
+    "patientTextureUrl": "./3DModel/Hospital/textures/ManColors.png",
+    "patientModelOBJUrl": "./3DModel/Hospital/textures/Man.obj",
 
     "size": { "width": 11, "height": 12 },
     "map": [ 
-
         [3, 2, 2, 2, 3, 5, 2, 3, 2, 2, 2, 1],
         [1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1],
         [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
@@ -24,7 +23,6 @@
         [1, 0, 9, 0, 6, 0, 0, 8, 0, 4, 0, 1],
         [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
         [2, 2, 2, 2, 2, 5, 2, 2, 2, 2, 2, 0]
-
     ],
     "initialPosition": [4, 5],
     "initialDirection": 0.0,

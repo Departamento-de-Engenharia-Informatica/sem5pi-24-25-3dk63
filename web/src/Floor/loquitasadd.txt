@@ -1,0 +1,112 @@
+1-parede vertical
+2-parede horizontal
+3-canto
+4-cama vazia
+5-entrada
+6-surgery door fechada
+7-SDoor aberta lado esquerdo do mapa
+8-SDoor aberta lado direito do mapa
+9-cama com paciente
+
+ "size": { "width": 11, "height": 12 },
+
+ width =  numero de coluans-1
+ height = numero de linhas-1
+
+***Modulo inicial de 2 salas com paciente***
+
+    [3, 2, 2, 2, 3, 5, 2, 3, 2, 2, 2, 1],
+    [1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1],
+    [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+                                           ->adicionar aqui módulos à escolha 
+    [2, 2, 2, 2, 2, 5, 2, 2, 2, 2, 2, 0]   -> linha final do mapa
+
+***Modulo para adicionar 2 salas FECHADAS***
+
+    [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
+    [1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1],
+    [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+
+***Modulo para adicionar 2 salas, 1 ABERTA 1 FECHADA***
+
+    [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
+    [1, 0, 0, 0, 6, 0, 0, 8, 0, 0, 0, 1],
+    [1, 0, 9, 0, 6, 0, 0, 8, 0, 4, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+
+    ***Modulo para adicionar 2 salas ABERTAS***
+
+    [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
+    [1, 0, 0, 0, 7, 0, 0, 8, 0, 0, 0, 1],
+    [1, 0, 4, 0, 7, 0, 0, 8, 0, 4, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+
+
+
+
+
+
+
+
+
+    const mapConfig = {
+    size: { width: 11, height: 12 },
+    initialPosition: [4, 5],
+    initialDirection: 0.0,
+    exitLocation: [-0.5, 6],
+};
+
+// Função para gerar módulos de acordo com a regra
+function gerarModulo(tipo) {
+    switch (tipo) {
+        case 'sala_com_paciente':
+            return [
+                [3, 2, 2, 2, 3, 5, 2, 3, 2, 2, 2, 1],
+                [1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1],
+                [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+            ];
+        case 'sala_fechada':
+            return [
+                [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
+                [1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1],
+                [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+            ];
+        case 'sala_aberta':
+            return [
+                [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
+                [1, 0, 0, 0, 7, 0, 0, 8, 0, 0, 0, 1],
+                [1, 0, 4, 0, 7, 0, 0, 8, 0, 4, 0, 1],
+                [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+            ];
+        default:
+            return [];
+    }
+}
+
+// Função para criar um mapa simulando a adição de módulos
+function criarMapaComModulos() {
+    const mapaBase = [
+        [3, 2, 2, 2, 3, 5, 2, 3, 2, 2, 2, 1],
+        [1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1],
+        [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
+        [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+    ];
+
+    // Adiciona um módulo conforme necessário
+    mapaBase.push(...gerarModulo('sala_com_paciente'));
+    mapaBase.push(...gerarModulo('sala_aberta'));
+    mapaBase.push(...gerarModulo('sala_fechada'));
+
+    // Linha final do mapa
+    mapaBase.push([2, 2, 2, 2, 2, 5, 2, 2, 2, 2, 2, 0]);
+
+    return mapaBase;
+}
+
+// Gera o mapa simulado
+const map = criarMapaComModulos();
+console.log(map);
