@@ -29,11 +29,18 @@
     [1, 0, 9, 0, 6, 0, 0, 6, 0, 9, 0, 1],
     [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
 
-***Modulo para adicionar 2 salas, 1 ABERTA 1 FECHADA***
+***Modulo para adicionar 2 salas, 1 ABERTA 1 FECHADA à ESQUERDA***
 
     [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
     [1, 0, 0, 0, 6, 0, 0, 8, 0, 0, 0, 1],
     [1, 0, 9, 0, 6, 0, 0, 8, 0, 4, 0, 1],
+    [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
+
+***Modulo para adicionar 2 salas, 1 ABERTA 1 FECHADA à DIREITA***
+
+    [3, 2, 2, 2, 1, 0, 0, 3, 2, 2, 2, 1],
+    [1, 0, 0, 0, 8, 0, 0, 6, 0, 0, 0, 1],
+    [1, 0, 9, 0, 8, 0, 0, 6, 0, 4, 0, 1],
     [1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1],
 
     ***Modulo para adicionar 2 salas ABERTAS***

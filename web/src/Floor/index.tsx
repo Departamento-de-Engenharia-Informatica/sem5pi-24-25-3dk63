@@ -23,7 +23,7 @@ const FloorEditor: React.FC = () => {
       // Configurar os parâmetros do Floor
       floor = new Floor(
         {}, // Parâmetros gerais
-        { scale: new THREE.Vector3(1.0, 0.5, 1.0) }, // Parâmetros do labirinto
+        { scale: new THREE.Vector3(1.0, 0.5, 1.0) }, // Parâmetros do floor
         { // Parâmetros de iluminação
           ambientLight: { intensity: 1.0 },
           pointLight1: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(-3.5, 10.0, 2.5) },

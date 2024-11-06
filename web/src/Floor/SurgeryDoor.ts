@@ -4,23 +4,23 @@
 import * as THREE from "three";
 
 // Define a type or interface for parameters
-interface WallWithDoorFrameParameters {
+interface SurgeryRoomDoorParameters {
     textureUrl: string;  // URL for the texture
     width: number;       // Width of the wall
     height: number;      // Height of the wall
 }
 
 /*
- * WallWithDoorFrame class with a typed constructor parameter
+ * SurgeryRoomDoor class with a typed constructor parameter
  */
-export default class WallWithDoorFrame {
+export default class SurgeryRoomDoor {
     object: THREE.Group;
     textureUrl: string;
     width: number;
     height: number;
 
     // Constructor with a typed parameter
-    constructor(parameters: WallWithDoorFrameParameters) {
+    constructor(parameters:SurgeryRoomDoorParameters) {
         // Destructure the parameters and assign to class properties
         for (const [key, value] of Object.entries(parameters)) {
             this[key] = value;
@@ -46,7 +46,8 @@ export default class WallWithDoorFrame {
             color: 0x9cacb2,
             map: texture,
             side: THREE.DoubleSide,  // Using DoubleSide here
-            transparent: true
+            transparent: true,
+            side: THREE.FrontSide
         });
 
         let face = new THREE.Mesh(geometry, material);

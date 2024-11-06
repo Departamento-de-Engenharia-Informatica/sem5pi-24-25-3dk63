@@ -240,6 +240,7 @@ export default class Floor {
         // Register the event handler to be called on select, input number, or input checkbox change
         this.view.addEventListener("change", event => this.elementChange(event));
         this.projection.addEventListener("change", event => this.elementChange(event));
+        // Register the event handler to be called on input button click
 
         this.activeElement = document.activeElement;
     }
