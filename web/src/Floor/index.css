@@ -1,0 +1,76 @@
+@tailwind base;
+        body {
+            margin: 0;
+        }
+
+        #parent {
+            position: absolute;
+            left: 50.0vw;
+        }
+
+        #views-panel {
+            position: absolute;
+            left: -50.0vmin;
+            top: 1vh;
+            z-index: 1;
+            width: 100.0vmin;
+            text-align: center;
+            font-family: Arial, sans-serif;
+            font-size: 1.5vmin;
+            color: white;
+        }
+
+        table {
+            margin-left: auto;
+            margin-right: auto;
+            border: 1px solid black;
+        }
+
+        table.views {
+            background-color: #70707070;
+            text-align: right;
+        }
+
+        table.help {
+            width: 50vmin;
+            background-color: #70707050;
+        }
+
+        th,
+        td {
+            overflow: hidden;
+            border: 1px solid black;
+        }
+
+        a {
+            color: white;
+        }
+
+        #view,
+        #projection {
+            width: 18ch;
+            font-size: 1.5vmin;
+        }
+
+        #horizontal,
+        #vertical,
+        #distance,
+        #zoom {
+            width: 10ch;
+            font-size: 1.5vmin;
+        }
+
+        #reset,
+        #reset-all {
+            width: 16ch;
+            font-size: 1.5vmin;
+        }
+
+        input:invalid {
+            background-color: pink;
+        }
+
+        canvas {
+            display: block;
+        }
+    

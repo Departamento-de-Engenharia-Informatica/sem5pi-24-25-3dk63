@@ -12,7 +12,7 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
 import React, { useState } from "react";
-
+import FloorEditor from "./Floor"
 function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
@@ -34,6 +34,7 @@ function App() {
                 <Route path="/admin/operation-type" element={<AdminOperationType setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
                 {<Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />}
+                <Route path="/floor" element={<FloorEditor />} />
               </Routes>
             </div>
           </main>

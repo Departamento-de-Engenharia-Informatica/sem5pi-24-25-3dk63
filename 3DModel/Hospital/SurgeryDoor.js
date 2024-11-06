@@ -15,7 +15,7 @@ export default class WallWithDoorFrame {
         }
 
         // Create a texture
-        const texture = new THREE.TextureLoader().load("./textures/surgeryRoomDoor.png");
+        const texture = new THREE.TextureLoader().load(this.textureUrl);
         texture.colorSpace = THREE.SRGBColorSpace;
         texture.magFilter = THREE.LinearFilter;
         texture.minFilter = THREE.LinearMipmapLinearFilter;
