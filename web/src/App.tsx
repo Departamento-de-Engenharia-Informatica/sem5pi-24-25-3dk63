@@ -9,6 +9,7 @@ import SelfRegisterMenu from './pages/PatientSelfRegister';
 import AdminOperationType from './pages/AdminOperationType';
 import PatientAppointments from './pages/PatientAppointments';
 import PatientMedicalRecord from './pages/PatientMedicalRecord';
+import ConfirmAccountDeletion from "./pages/ConfirmAccountDeletion";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
@@ -33,6 +34,7 @@ function App() {
                 <Route path="/admin/staff" element={<AdminStaff setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient" element={<PatientPage />} />
                 <Route path="/self-register" element={<SelfRegisterMenu />} />
+                <Route path="/confirm-account-deletion/:token" element={<ConfirmAccountDeletion />} />
                 <Route path="/admin/operation-type" element={<AdminOperationType setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
                 {<Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />}

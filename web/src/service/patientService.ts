@@ -61,6 +61,14 @@ export class PatientService implements IPatientService {
     }
   }
   
+  async confirmAccountDeletion(token: string): Promise<void> {
+    try {
+      await this.http.get("/patients/confirm-account-deletion", { params: { token }, headers: { withCredentials: "true" } });
+    } catch (error) {
+      throw new Error("Failed to confirm account deletion.");
+    }
+  }
+  
   
   
 }
