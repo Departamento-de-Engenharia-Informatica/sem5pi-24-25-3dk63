@@ -14,7 +14,6 @@ export class PatientService implements IPatientService {
   async getPatients(): Promise<PatientUser[]> {
     const res = await this.http.get<PatientUser[]>("/patients");
     console.log("Dados retornados do getAllPatients:", res.data);
-
     return res.data;
   }
 
@@ -47,13 +46,21 @@ export class PatientService implements IPatientService {
   async getAppointments(): Promise<PatientUser[]> {
     const res = await this.http.get<PatientUser[]>(`/patients/appointments`);
     return res.data;
-
   }
 
   async getMedicalRecords(): Promise<PatientUser[]> {
     const res = await this.http.get<PatientUser[]>(`/patients/medicalhistory`);
     return res.data;
   }
-
-
+  
+  async requestAccountDeletion(): Promise<void> {
+    try {
+      await this.http.post("/patients/request-account-deletion", {}, { headers: { withCredentials: "true" } });
+    } catch (error) {
+      throw new Error("Failed to request account deletion.");
+    }
+  }
+  
+  
+  
 }

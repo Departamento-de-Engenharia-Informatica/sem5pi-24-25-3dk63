@@ -1,13 +1,11 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import * as THREE from "three";
-import Ground from "./ground.ts";
-import Wall from "./wall.ts";
-import Door from "./door.ts";
-import Cama from "./cama.ts";
-import Adereco from "./adereco.ts";
-import Patient from "./patient.ts";
-import SurgeryRoomDoor from "./SurgeryDoor.ts";
+import Ground from "./ground.js";
+import Wall from "./wall.js";
+import Door from "./door.js";
+import Cama from "./cama.js";
+import Adereco from "./adereco.js";
+import Patient from "./patient.js";
+import SurgeryRoomDoor from "./SurgeryDoor.js";
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 /*

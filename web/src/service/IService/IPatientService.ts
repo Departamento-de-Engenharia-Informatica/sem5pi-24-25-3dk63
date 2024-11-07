@@ -10,4 +10,5 @@ export interface IPatientService {
   createPatient(data: RegisterPatientDTO): Promise<PatientUser>;
   getAppointments(): Promise<PatientUser[]>;
   getMedicalRecords(): Promise<PatientUser[]>;
+  requestAccountDeletion(): Promise<void>;
 }

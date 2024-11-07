@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import { Vector2 } from "three";
 
 export default class Orientation extends Vector2 {

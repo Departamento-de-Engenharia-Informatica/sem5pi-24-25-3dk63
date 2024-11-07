@@ -1,5 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-// @ts-nocheck
 import * as THREE from "three";
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'; // Make sure to use the correct import path
 
@@ -11,7 +9,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js'; // Make sure to u
  * }
  */
 
-export default class Cama {
+export default class Adereco {
     constructor(parameters) {
         for (const [key, value] of Object.entries(parameters)) {
             this[key] = value;
@@ -19,22 +17,13 @@ export default class Cama {
         
         this.object = new THREE.Group(); // Create a group for the bed
         this.objLoader = new OBJLoader(); // Instantiate the OBJLoader
-        this.textureLoader = new THREE.TextureLoader();
 
         this.objLoader.load(
             this.textureUrl,
             (object) => {
                 // Adjust the scale of the bed
-                object.scale.set(0.1, 0.1, 0.1); // Apply the scale
+                object.scale.set(1.5, 1.5, 1.5); // Apply the scale
 
-                // Aplica a textura a cada material do modelo
-                object.traverse((child) => {
-                    if (child.isMesh) {
-                        child.material.color = new THREE.Color(0x5F9EA0); // Example brown color
-                        child.material.needsUpdate = true;
-                    }
-                });
-                
                 // Add the bed object to the group
                 this.object.add(object);
             }
