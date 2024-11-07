@@ -56,6 +56,10 @@ jobs:
           # Aguardar alguns segundos para garantir que a VPN esteja conectada
           sleep 10
 
+      - name: Create target directory
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -p ${{ secrets.SSH_PORT }} "mkdir -p ~/deploy-Backend"
+
       - name: Copy Files
         uses: appleboy/scp-action@v0.1.4
         with:
