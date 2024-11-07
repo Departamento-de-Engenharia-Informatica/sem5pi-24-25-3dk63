@@ -96,6 +96,12 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Preparation Time</label>
             <input
               type="number"
+              min="1"
+              onKeyDown={(e) => {
+                if (e.key === "e" || e.key === "E") {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
@@ -108,6 +114,12 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Surgery Time</label>
             <input
               type="number"
+              min="1"
+              onKeyDown={(e) => {
+                if (e.key === "e" || e.key === "E") {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
@@ -120,6 +132,12 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Cleaning Time</label>
             <input
               type="number"
+              min="1"
+              onKeyDown={(e) => {
+                if (e.key === "e" || e.key === "E") {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
@@ -132,6 +150,12 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Required Staff</label>
             <input
               type="number"
+              min="1"
+              onKeyDown={(e) => {
+                if (e.key === "e" || e.key === "E") {
+                  e.preventDefault();
+                }
+              }}
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
