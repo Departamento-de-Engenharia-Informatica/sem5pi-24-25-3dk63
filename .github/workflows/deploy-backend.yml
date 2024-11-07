@@ -41,6 +41,12 @@ jobs:
           name: build
           path: Backend/dist
 
+      - name: Connect to VPN
+        run: |
+          echo "${{ secrets.VPN_CONFIG_FILE }}" > /tmp/vpn_config.ovpn
+          sudo openvpn --config /tmp/vpn_config.ovpn --auth-user-pass <(echo -e "${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}") &
+          sleep 10  # Aguarde um pouco para garantir que a VPN esteja conectada
+
       - name: Copy Files
         uses: appleboy/scp-action@v0.1.4
         with:
