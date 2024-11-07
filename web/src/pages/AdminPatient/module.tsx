@@ -184,9 +184,9 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
       }));
       setPatients(filteredData);
     } catch (error) {
-      setError("Error fetching staff.");
-      console.error("Error fetching staff:", error);
-      setAlertMessage("Error fetching staff.");
+      setError("Error fetching patients.");
+      console.error("Error fetching patients:", error);
+      setAlertMessage("Error fetching patients.");
     } finally {
       setLoading(false);
     }

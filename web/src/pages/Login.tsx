@@ -33,6 +33,7 @@ function LoginPage() {
             } else {
                 setErrorMessage(result.Message);
                 console.error("Login failed:", result.Message);
+                navigate("/self-register");
             }
         } catch (error) {
             setErrorMessage("Error in request to backend.");
@@ -55,9 +56,7 @@ function LoginPage() {
                 if (userRole === "Admin") {
                     navigate("/admin");
                 } else if (userRole === "Patient") {
-                    if (!status) {
-                        navigate("/patient");
-                    }
+                    navigate("/patient");
                 } else {
                     navigate("/");
                 }

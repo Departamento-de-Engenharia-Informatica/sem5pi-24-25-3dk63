@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authentication.Google;
 using Microsoft.AspNetCore.Mvc;
 using DDDSample1.Domain.Users;
 using DDDSample1.Users;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace DDDSample1.Presentation.Controllers
 {
@@ -30,43 +31,74 @@ namespace DDDSample1.Presentation.Controllers
         }
 
         [HttpPost("api/weblogin")]
-        public async Task<IActionResult> WebLogin([FromBody] TokenRequest request)
+public async Task<IActionResult> WebLogin([FromBody] TokenRequest request)
+{
+    try
+    {
+        var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
+        var emailGoogle = payload.Email;
+
+        var userDto = await userService.checkIfAccountExists(emailGoogle);
+
+        if (userDto == null || !userDto.Active)
         {
-            try
+            Console.WriteLine("Login failed: email not found.");
+
+            var dataProtectionProvider = HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
+            var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
+            var encryptedEmail = protector.Protect(emailGoogle);
+
+            // Logging for verification
+            Console.WriteLine("Creating CustomCookie before any SignInAsync calls.");
+
+            // Append CustomCookie before SignInAsync is called
+            HttpContext.Response.Cookies.Append(".AspNetCore.CustomCookies", encryptedEmail, new CookieOptions
             {
-                var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
-                var emailGoogle = payload.Email;
+                HttpOnly = true,
+                Secure = true,
+                Expires = DateTimeOffset.UtcNow.AddMinutes(30),
+                SameSite = SameSiteMode.None,  // Required for cross-origin cookies
+                Path = "/"  // Makes it accessible throughout the domain
+            });
 
-                var userDto = await userService.checkIfAccountExists(emailGoogle);
+            // Logging to indicate cookie has been added
+            Console.WriteLine("CustomCookie has been appended to response.");
 
-                var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Email, emailGoogle)
-                };
-
-                if (userDto != null)
-                { 
-                    claims.Add(new Claim(ClaimTypes.Role, userDto.Role.ToString()));
-                    claims.Add(new Claim("Active", userDto.Active ? "1" : "0"));
-                    claims.Add(new Claim("UserId", userDto.Id.ToString()));
-                }
-                else
-                { 
-                    claims.Add(new Claim(ClaimTypes.Role, "Temporary"));
-                }
-
-                var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
-                
-                return Ok(new { 
-                    Message = "Login bem-sucedido"
-                });
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(new { Message = "Erro na validação do token", Error = ex.Message });
-            }
+            return StatusCode(302, new { 
+                Message = "This email is not registered in the system."
+            });
         }
+
+        // Process login for an authenticated user
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Email, emailGoogle)
+        };
+
+        if (userDto != null)
+        { 
+            claims.Add(new Claim(ClaimTypes.Role, userDto.Role.ToString()));
+            claims.Add(new Claim("Active", userDto.Active ? "1" : "0"));
+            claims.Add(new Claim("UserId", userDto.Id.ToString()));
+        }
+
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+
+        // Logging to track SignInAsync call
+        Console.WriteLine("Calling SignInAsync for authenticated user.");
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));
+        
+        return Ok(new { 
+            Message = "Login successful"
+        });
+    }
+    catch (Exception ex)
+    {
+        return BadRequest(new { Message = "Token validation error", Error = ex.Message });
+    }
+}
+
 
         [HttpGet("api/claims")]
         public IActionResult GetClaims()
