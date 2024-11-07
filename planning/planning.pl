@@ -12,8 +12,9 @@
 :- dynamic availability/3.
 :- dynamic agenda_staff/3.
 :- dynamic agenda_staff1/3.
-:- dynamic agenda_operation_room/3.
-:- dynamic agenda_operation_room1/3.
+:-dynamic agenda_operation_room/3.
+:-dynamic agenda_operation_room1/3.
+:-dynamic better_sol/5.
 
 % Definição das agendas dos médicos e a atribuição de salas de operação para um determinado dia
 % Cada entrada é composta por (médico, data, lista de horários com tipo de cirurgia e sala)
@@ -31,7 +32,9 @@ staff(d001, doctor, orthopaedist, [so2, so3, so4]).
 staff(d002, doctor, orthopaedist, [so2, so3, so4]).
 staff(d003, doctor, orthopaedist, [so2, so3, so4]).
 
-% Definição dos tipos de cirurgia com os tempos necessários para anestesia, cirurgia e limpeza
+
+%surgery(SurgeryType,TAnesthesia,TSurgery,TCleaning).
+
 surgery(so2, 45, 60, 45).
 surgery(so3, 45, 90, 45).
 surgery(so4, 45, 75, 45).
@@ -63,22 +66,15 @@ agenda_operation_room(or1, 20241028, [(520, 579, so100000), (1000, 1059, so09999
 
 schedule_all_surgeries(Room, Day) :-
     % Limpa as agendas e disponibilidades anteriores
-    retractall(agenda_staff1(_, _, _)),
-    retractall(agenda_operation_room1(_, _, _)),
-    retractall(availability(_, _, _)),
+    retractall(agenda_staff1(_,_,_)),
+    retractall(agenda_operation_room1(_,_,_)),
+    retractall(availability(_,_,_)),
 
-    % Registra a agenda dos médicos para o dia e sala específicos
-    findall(_, (agenda_staff(D, Day, Agenda), assertz(agenda_staff1(D, Day, Agenda))), _),
+    findall(_,(agenda_staff(D,Day,Agenda),assertz(agenda_staff1(D,Day,Agenda))),_),
+    agenda_operation_room(Or,Date,Agenda),assert(agenda_operation_room1(Or,Date,Agenda)),
 
-    % Registra a agenda da sala de operação
-    agenda_operation_room(Or, Date, Agenda),
-    assert(agenda_operation_room1(Or, Date, Agenda)),
-
-    % Ajusta as disponibilidades dos médicos de acordo com os horários
-    findall(_, (agenda_staff1(D, Date, L), free_agenda0(L, LFA), adapt_timetable(D, Date, LFA, LFA2), assertz(availability(D, Date, LFA2))), _),
-
-    % Busca todos os códigos das cirurgias
-    findall(OpCode, surgery_id(OpCode, _), LOpCode),
+    findall(_,(agenda_staff1(D,Date,L),free_agenda0(L,LFA),adapt_timetable(D,Date,LFA,LFA2),assertz(availability(D,Date,LFA2))),_),
+    findall(OpCode,surgery_id(OpCode,_),LOpCode),
 
     % Verifica as disponibilidades para as cirurgias em todas as salas e dias
     availability_all_surgeries(LOpCode, Room, Day), !.
@@ -228,7 +224,8 @@ min_max(I, I1, I1, I).  % Caso contrário, o segundo valor é o mínimo e o prim
 availability_all_surgeries([], _, _).  % Caso base: sem cirurgias, nada a fazer.
 availability_all_surgeries([OpCode | LOpCode], Room, Day) :-
     % Para cada cirurgia, obtém o tipo e os horários associados
-    surgery_id(OpCode, OpType), surgery(OpType, _, TSurgery, _),
+    surgery_id(OpCode,OpType),surgery(OpType,_,TSurgery,_),
+
 
     % Verifica a disponibilidade dos médicos e da sala para a cirurgia
     availability_operation(OpCode, Room, Day, LPossibilities, LDoctors),
@@ -267,39 +264,109 @@ availability_operation(OpCode, Room, Day, LPossibilities, LDoctors) :-
     % Remove os intervalos que não são viáveis para a cirurgia
     remove_unf_intervals(TSurgery, LIntAgDoctorsRoom, LPossibilities).
 
-% Remove intervalos que não são compatíveis com a duração da cirurgia
-remove_unf_intervals(_, [], []).  % Caso base: sem intervalos, retorna vazio.
-remove_unf_intervals(TSurgery, [(Tin, Tfin) | LA], [(Tin, Tfin) | LA1]) :-
-    DT is Tfin - Tin + 1, TSurgery =< DT, !,  % Verifica se o intervalo é longo o suficiente para a cirurgia.
-    remove_unf_intervals(TSurgery, LA, LA1).
-remove_unf_intervals(TSurgery, [_ | LA], LA1) :-
-    remove_unf_intervals(TSurgery, LA, LA1).
+    % Remove intervalos que não são compatíveis com a duração da cirurgia
+    remove_unf_intervals(_, [], []).  % Caso base: sem intervalos, retorna vazio.
+    remove_unf_intervals(TSurgery, [(Tin, Tfin) | LA], [(Tin, Tfin) | LA1]) :-
+        DT is Tfin - Tin + 1, TSurgery =< DT, !,  % Verifica se o intervalo é longo o suficiente para a cirurgia.
+        remove_unf_intervals(TSurgery, LA, LA1).
+    remove_unf_intervals(TSurgery, [_ | LA], LA1) :-
+        remove_unf_intervals(TSurgery, LA, LA1).
 
 
-% Calcula o primeiro intervalo possível para a cirurgia, baseado na sua duração
-schedule_first_interval(TSurgery, [(Tin, _) | _], (Tin, TfinS)) :-
-    TfinS is Tin + TSurgery - 1.  % O fim é o início mais a duração da cirurgia.
+    % Calcula o primeiro intervalo possível para a cirurgia, baseado na sua duração
+    schedule_first_interval(TSurgery, [(Tin, _) | _], (Tin, TfinS)) :-
+        TfinS is Tin + TSurgery - 1.  % O fim é o início mais a duração da cirurgia.
 
 
-% Insere um novo intervalo de operação na agenda, mantendo a ordem
-insert_agenda((TinS, TfinS, OpCode), [], [(TinS, TfinS, OpCode)]).  % Caso base: agenda vazia.
-insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(TinS, TfinS, OpCode), (Tin, Tfin, OpCode1) | LA]) :-
-    TfinS < Tin, !.  % Se o novo intervalo é antes do intervalo existente, insere na frente.
-insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(Tin, Tfin, OpCode1) | LA1]) :-
-    insert_agenda((TinS, TfinS, OpCode), LA, LA1).  % Caso contrário, insere recursivamente.
+    % Insere um novo intervalo de operação na agenda, mantendo a ordem
+    insert_agenda((TinS, TfinS, OpCode), [], [(TinS, TfinS, OpCode)]).  % Caso base: agenda vazia.
+    insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(TinS, TfinS, OpCode), (Tin, Tfin, OpCode1) | LA]) :-
+        TfinS < Tin, !.  % Se o novo intervalo é antes do intervalo existente, insere na frente.
+    insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(Tin, Tfin, OpCode1) | LA1]) :-
+        insert_agenda((TinS, TfinS, OpCode), LA, LA1).  % Caso contrário, insere recursivamente.
 
 
-% Insere os intervalos de médicos na agenda de cada um
-insert_agenda_doctors(_, _, []).  % Caso base: sem médicos, nada a fazer.
-insert_agenda_doctors((TinS, TfinS, OpCode), Day, [Doctor | LDoctors]) :-
-    % Atualiza a agenda do médico com o novo intervalo
-    retract(agenda_staff1(Doctor, Day, Agenda)),
-    insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
-    assert(agenda_staff1(Doctor, Day, Agenda1)),
+    % Insere os intervalos de médicos na agenda de cada um
+    insert_agenda_doctors(_, _, []).  % Caso base: sem médicos, nada a fazer.
+    insert_agenda_doctors((TinS, TfinS, OpCode), Day, [Doctor | LDoctors]) :-
+        % Atualiza a agenda do médico com o novo intervalo
+        retract(agenda_staff1(Doctor, Day, Agenda)),
+        insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
+        assert(agenda_staff1(Doctor, Day, Agenda1)),
 
-    % Recursivamente insere o intervalo para os outros médicos
-    insert_agenda_doctors((TinS, TfinS, OpCode), Day, LDoctors).
+        % Recursivamente insere o intervalo para os outros médicos
+        insert_agenda_doctors((TinS, TfinS, OpCode), Day, LDoctors).
 
+%-------------------------------------------------------------------------------------------------------------%
+%Melhor solucao proposta
 
+% Predicado principal: tenta obter a melhor solução de agendamento para as operações.
+obtain_better_sol(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp):-
+    get_time(Ti),  % Obtém o tempo inicial para medir o tempo de execução.
+    (obtain_better_sol1(Room,Day); true),  % Chama a função auxiliar que tenta encontrar uma solução; 'true' garante sucesso mesmo se fail.
+    retract(better_sol(Day,Room,AgOpRoomBetter,LAgDoctorsBetter,TFinOp)),  % Retira a melhor solução encontrada.
+    write('Final Result: AgOpRoomBetter='), write(AgOpRoomBetter), nl,  % Imprime o resultado da agenda das operações.
+    write('LAgDoctorsBetter='), write(LAgDoctorsBetter), nl,  % Imprime a lista de agendas dos médicos.
+    write('TFinOp='), write(TFinOp), nl,  % Imprime o tempo final da última operação.
+    get_time(Tf),  % Obtém o tempo final.
+    T is Tf - Ti,  % Calcula o tempo de execução total.
+    write('Tempo de geracao da solucao:'), write(T), nl.  % Imprime o tempo de geração da solução.
+
+% Função auxiliar que tenta encontrar uma solução para o dia e a sala especificados.
+obtain_better_sol1(Room,Day):-
+    asserta(better_sol(Day,Room,_,_,1441)),  % Inicializa a melhor solução com um tempo alto (1441) para permitir melhorias.
+    findall(OpCode, surgery_id(OpCode,_), LOC), !,  % Obtém todos os códigos de operações.
+    permutation(LOC, LOpCode),  % Gera permutações dos códigos de operação para explorar todas as combinações.
+    retractall(agenda_staff1(_,_,_)),  % Remove qualquer agenda anterior armazenada.
+    retractall(agenda_operation_room1(_,_,_)),  % Remove agendas de salas anteriores.
+    retractall(availability(_,_,_)),  % Remove dados de disponibilidade anteriores.
+
+    % Insere a agenda de cada membro do staff e agenda da sala para o dia especificado.
+    findall(_, (agenda_staff(D, Day, Agenda), assertz(agenda_staff1(D, Day, Agenda))), _),
+    agenda_operation_room(Room, Day, Agenda), assert(agenda_operation_room1(Room, Day, Agenda)),
+
+    % Prepara as agendas disponíveis para o staff para o dia e adapta o horário.
+    findall(_, (agenda_staff1(D, Day, L), free_agenda0(L, LFA), adapt_timetable(D, Day, LFA, LFA2), assertz(availability(D, Day, LFA2))), _),
+
+    availability_all_surgeries(LOpCode, Room, Day),  % Checa disponibilidade para todas as operações na sala e dia.
+
+    agenda_operation_room1(Room, Day, AgendaR),  % Recupera a agenda da sala atualizada.
+    update_better_sol(Day, Room, AgendaR, LOpCode),  % Tenta atualizar a melhor solução se uma combinação melhor for encontrada.
+    fail.  % Força o backtracking para explorar todas as combinações.
+
+% Atualiza a melhor solução se uma nova combinação de operações resultar em um tempo final menor.
+update_better_sol(Day, Room, Agenda, LOpCode):-
+    better_sol(Day, Room, _, _, FinTime),  % Obtém o tempo final da solução atual.
+    reverse(Agenda, AgendaR),  % Inverte a agenda para avaliação do tempo final.
+    evaluate_final_time(AgendaR, LOpCode, FinTime1),  % Avalia o tempo final da nova agenda.
+
+    % Exibe as informações da solução atual sendo analisada.
+    write('Analysing for LOpCode='), write(LOpCode), nl,
+    write('now: FinTime1='), write(FinTime1), write(' Agenda='), write(Agenda), nl,
+
+    FinTime1 < FinTime,  % Atualiza a melhor solução se o tempo final da nova agenda for menor que a solução atual.
+    write('best solution updated'), nl,
+
+    retract(better_sol(_, _, _, _, _)),  % Remove a solução atual.
+    findall(Doctor, assignment_surgery(_, Doctor), LDoctors1),  % Coleta a lista de médicos envolvidos nas operações.
+    remove_equals(LDoctors1, LDoctors),  % Remove duplicatas dos médicos.
+    list_doctors_agenda(Day, LDoctors, LDAgendas),  % Gera a lista de agendas dos médicos.
+    asserta(better_sol(Day, Room, Agenda, LDAgendas, FinTime1)).  % Armazena a nova melhor solução.
+
+% Avalia o tempo final da agenda, parando quando encontra o último código de operação da lista.
+evaluate_final_time([], _, 1441).  % Retorna 1441 se a lista de operações está vazia.
+evaluate_final_time([(_, Tfin, OpCode)|_], LOpCode, Tfin):- member(OpCode, LOpCode), !.  % Retorna o tempo final da última operação.
+evaluate_final_time([_|AgR], LOpCode, Tfin):- evaluate_final_time(AgR, LOpCode, Tfin).  % Continua a busca se o código de operação ainda não foi encontrado.
+
+% Gera a lista de agendas dos médicos para o dia especificado.
+list_doctors_agenda(_, [], []).
+list_doctors_agenda(Day, [D|LD], [(D, AgD)|LAgD]):-
+    agenda_staff1(D, Day, AgD),
+    list_doctors_agenda(Day, LD, LAgD).
+
+% Remove itens duplicados de uma lista.
+remove_equals([], []).
+remove_equals([X|L], L1):- member(X, L), !, remove_equals(L, L1).
+remove_equals([X|L], [X|L1]):- remove_equals(L, L1).
 
 

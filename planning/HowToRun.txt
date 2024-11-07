@@ -1,1 +1,1 @@
-surgery(so2, 45, 60, 45).
+swipl 
