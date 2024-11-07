@@ -41,6 +41,11 @@ jobs:
           name: build
           path: Backend/dist
 
+      - name: Install OpenVPN
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y openvpn
+
       - name: Connect to VPN
         run: |
           echo "${{ secrets.VPN_CONFIG_FILE }}" > /tmp/vpn_config.ovpn
