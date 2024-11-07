@@ -2,7 +2,7 @@ name: Backend CI/CD
 
 on:
   schedule:
-    - cron: "*/1 * * * *"
+    - cron: "0 6 * * *"
   workflow_dispatch:
 
 defaults:
