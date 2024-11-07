@@ -17,7 +17,14 @@ namespace DDDSample1
                 {
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseStartup<Startup>();
+                    webBuilder.ConfigureKestrel(options =>
+                    {
+                        options.ListenAnyIP(5001, listenOptions =>
+                        {
+                            listenOptions.UseHttps("mycert.pfx", "lapr3dkg63");
+                        });
+                    });
                     webBuilder.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001");
                 });
-        }
+    }
 }
