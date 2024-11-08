@@ -43,18 +43,14 @@ jobs:
           sudo apt-get install -y openvpn
 
       - name: Connect to VPN
-        run: |
-          # Salve o arquivo de configuração da VPN
-          echo "${{ secrets.VPN_CONFIG_FILE }}" > /tmp/vpn_config.ovpn
+        uses: "kota65535/github-openvpn-connect-action@v2"
+        with:
+        config_file: .github/workflows/deinet.ovpn
+        username: ${{ secrets.VPN_USERNAME }}
+        password: ${{ secrets.VPN_PASSWORD }}
 
-          # Crie um arquivo temporário para armazenar as credenciais
-          echo -e "${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_credentials.txt
-
-          # Conecte-se à VPN usando o arquivo de configuração e as credenciais
-          sudo openvpn --config /tmp/vpn_config.ovpn --auth-user-pass /tmp/vpn_credentials.txt &
-
-          # Aguardar alguns segundos para garantir que a VPN esteja conectada
-          sleep 10
+        # Aguardar alguns segundos para garantir que a VPN esteja conectada
+        sleep 10
 
       - name: Create target directory
         run: |
