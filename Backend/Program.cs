@@ -17,15 +17,7 @@ namespace DDDSample1
                 {
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:11419");
-                    webBuilder.ConfigureKestrel(options =>
-                    {
-                        options.ListenAnyIP(11419, listenOptions =>
-                        {
-                            listenOptions.UseHttps("/etc/ssl/certs/ca-certificates.crt", "/etc/ssl/private/server.key");
-                        });
-                    });
-
+                    webBuilder.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001");
                 });
     }
 }
