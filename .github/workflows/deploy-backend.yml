@@ -74,7 +74,6 @@ jobs:
           source: "Backend/*"
           target: "~/deploy-Backend"
           rm: true
-        run: echo "Files copied to target server" >> deploy-log.txt
 
       - name: Deploy Server
         uses: appleboy/ssh-action@v1.0.0
