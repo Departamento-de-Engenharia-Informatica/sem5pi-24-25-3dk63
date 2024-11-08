@@ -8,6 +8,7 @@ import HamburgerMenu from "@/components/HamburgerMenu";
 import SearchFilter from "@/components/SearchFilter";
 import DropdownMenu from "@/components/DropdownMenu";
 import Modal from "@/components/Modal";
+import Popup from "@/components/Popup";
 
 interface PatientListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -37,6 +38,8 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     savePatient,
     totalPatients,
     itemsPerPage,
+    popupMessage,
+    setPopupMessage,
   } = usePatientListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalPatients / itemsPerPage);
@@ -261,7 +264,11 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
           </div>
         </Modal>
       )}
-
+      <Popup
+        isVisible={!!popupMessage}
+        setIsVisible={() => setPopupMessage(null)}
+        message={popupMessage}
+      />
     </div>
   );
 };
