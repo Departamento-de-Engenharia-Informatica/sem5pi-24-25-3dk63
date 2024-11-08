@@ -20,6 +20,9 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [specializations, setSpecializations] = useState<any[]>([]);
   const [showActive, setShowActive] = useState<boolean>(true);
   const [showInactive, setShowInactive] = useState<boolean>(true);
+  const [popupMessage, setPopupMessage] = useState<string | null>(null);
+  const [confirmDeactivate, setConfirmDeactivate] = useState<(() => void) | null>(null); 
+
 
   const itemsPerPage = 10;
 
@@ -84,19 +87,23 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   };
 
 
-  const handleDeactivate = async (id: string) => {
-    if (window.confirm("Are you sure you want to deactivate this operation type?")) {
-      console.log("Deactivating Operation Type with id:", id);
+  const handleDeactivate = (id: string) => {
+    // Exibe o modal de confirmação
+    setConfirmDeactivate(() => async () => {
       try {
+        console.log("Deactivating Operation Type with id:", id);
         await operationTypeService.deactivateOperationType(id);
         fetchOperationsTypes();
-        setAlertMessage("Operation Type deactivated successfully.");
-        window.confirm("Operation Type deactivated successfully. Action logged.");
+        setPopupMessage("Operation Type deactivated successfully.");
       } catch (error) {
         console.error("Error deactivating Operation Type:", error);
-        setAlertMessage("Error deactivating Operation Type.");
+        setPopupMessage("Error deactivating Operation Type.");
       }
-    }
+    });
+  };
+  
+  const handleCancelDeactivate = () => {
+    setConfirmDeactivate(null); // Cancela a desativação
   };
 
   useEffect(() => {
@@ -128,12 +135,12 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     try {
       console.log("Saving Operation Type:", creatingOperationType);
       await operationTypeService.addOperationType(creatingOperationType);
-      window.confirm("Operation Type created successfully.");
+      setPopupMessage("Operation Type created successfully.");
       setIsModalVisible(false);
       fetchOperationsTypes();
     } catch (error) {
       console.error("Error creating Operation Type:", error);
-      window.confirm("Error creating Operation Type.");
+      setPopupMessage("Error creating Operation Type.");
     }
   }
   const fetchSpecializations = async () => {
@@ -171,6 +178,11 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setShowActive,
     showInactive,
     setShowInactive,
+    popupMessage,
+    setPopupMessage,
+    confirmDeactivate,
+    setConfirmDeactivate,
+    handleCancelDeactivate,
   };
 
 };

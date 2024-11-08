@@ -8,6 +8,8 @@ import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
 import SearchFilter from "@/components/SearchFilter";
 import DropdownMenu from "@/components/DropdownMenu";
+import Popup from "@/components/Popup";
+import Confirmation from "@/components/Confirmation";
 
 interface StaffListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -33,6 +35,11 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     handleDeactivate,
     saveChanges,
     searchStaffs,
+    popupMessage,
+    setPopupMessage,
+    confirmDeactivate,
+    setConfirmDeactivate,
+    handleCancelDeactivate,
   } = useStaffListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalStaffs / itemsPerPage);
@@ -148,7 +155,23 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
           </div>
         </Modal>
       )}
-    </div>
+      <Popup
+        isVisible={!!popupMessage}
+        setIsVisible={() => setPopupMessage(null)}
+        message={popupMessage}
+      />
+      <Confirmation
+      isVisible={!!confirmDeactivate}
+      onConfirm={() => {
+        if (confirmDeactivate) {
+          confirmDeactivate(); // Chama a função de desativação
+          setConfirmDeactivate(null); // Reseta o estado
+        }
+      }}
+      onCancel={handleCancelDeactivate}
+      message="Are you sure you want to deactivate this operation type?"
+    />
+        </div>
   );
 };
 

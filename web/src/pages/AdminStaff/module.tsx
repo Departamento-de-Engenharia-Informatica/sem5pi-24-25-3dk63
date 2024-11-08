@@ -15,6 +15,9 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [staffToEdit, setStaffToEdit] = useState<any | null>(null);
   const [licenseStaffToEdit, setLicenseToEdit] = useState<any | null>(null);
+  const [popupMessage, setPopupMessage] = useState<string | null>(null);
+  const [confirmDeactivate, setConfirmDeactivate] = useState<(() => void) | null>(null); 
+
 
   const itemsPerPage = 10;
 
@@ -77,7 +80,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         setAlertMessage("Staff deleted successfully.");
       } catch (error) {
         console.error("Error deleting staff:", error);
-        setAlertMessage("Error deleting staff.");
+        setPopupMessage("Error deleting staff.");
       }
     }
   };
@@ -102,18 +105,22 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   };
 
   const handleDeactivate = async (id: string) => {
-    if (window.confirm("Are you sure you want to deactivate this staff?")) {
+    setConfirmDeactivate(() => async () => {
       try {
         await staffService.deactivateStaff(id);
         fetchStaffs(); // Refresh the list after deactivation
-        setAlertMessage("Staff deactivated successfully.");
-        window.confirm("Staff deactivated successfully. Action logged.");
+        setPopupMessage("Staff deactivated successfully.");
       } catch (error) {
         console.error("Error deactivating staff:", error);
-        setAlertMessage("Error deactivating staff.");
+        setPopupMessage("Error deactivating staff.");
       }
-    }
+    });
   };
+
+  const handleCancelDeactivate = () => {
+    setConfirmDeactivate(null); // Cancela a desativação
+  };
+
 
   const saveChanges = async () => {
     if (staffToEdit) {
@@ -183,5 +190,11 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     setStaffToEdit,
     saveChanges,
     searchStaffs,
+    popupMessage,
+    setPopupMessage,
+    confirmDeactivate,
+    setConfirmDeactivate,
+    handleCancelDeactivate,
+    
   };
 };
