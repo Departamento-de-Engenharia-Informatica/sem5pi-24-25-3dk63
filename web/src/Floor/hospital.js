@@ -197,9 +197,13 @@ export default class Floor {
         this.view = document.getElementById("view");
         this.projection = document.getElementById("projection");
         this.horizontal = document.getElementById("horizontal");
+        this.horizontal.step = 1;
         this.vertical = document.getElementById("vertical");
+        this.vertical.step = 1;
         this.distance = document.getElementById("distance");
+        this.distance.step = 0.1;
         this.zoom = document.getElementById("zoom");
+        this.zoom.step = 0.1;
         this.reset = document.getElementById("reset");
         this.resetAll = document.getElementById("reset-all");
         /*this.helpPanel = document.getElementById("help-panel");
@@ -238,12 +242,22 @@ export default class Floor {
         // Register the event handler to be called on select, input number, or input checkbox change
         this.view.addEventListener("change", event => this.elementChange(event));
         this.projection.addEventListener("change", event => this.elementChange(event));
+        this.horizontal.addEventListener("change", event => this.elementChange(event));
+        this.vertical.addEventListener("change", event => this.elementChange(event));
+        this.distance.addEventListener("change", event => this.elementChange(event));
+        this.zoom.addEventListener("change", event => this.elementChange(event));
         // Register the event handler to be called on input button click
+        this.reset.addEventListener("click", event => this.buttonClick(event));
+        this.resetAll.addEventListener("click", event => this.buttonClick(event));
 
         this.activeElement = document.activeElement;
     }
 
     displayPanel() {
+        this.view.options.selectedIndex = ["fixed"].indexOf(this.activeViewCamera.view);
+        this.projection.options.selectedIndex = ["perspective", "orthographic"].indexOf(this.activeViewCamera.projection);
+        this.horizontal.value = this.activeViewCamera.orientation.h.toFixed(0);
+        this.vertical.value = this.activeViewCamera.orientation.v.toFixed(0);
         this.distance.value = this.activeViewCamera.distance.toFixed(1);
         this.zoom.value = this.activeViewCamera.zoom.toFixed(1);
     }
@@ -251,6 +265,15 @@ export default class Floor {
     // Set active view camera
     setActiveViewCamera(camera) {
         this.activeViewCamera = camera;
+        this.horizontal.min = this.activeViewCamera.orientationMin.h.toFixed(0);
+        this.horizontal.max = this.activeViewCamera.orientationMax.h.toFixed(0);
+        this.vertical.min = this.activeViewCamera.orientationMin.v.toFixed(0);
+        this.vertical.max = this.activeViewCamera.orientationMax.v.toFixed(0);
+        this.distance.min = this.activeViewCamera.distanceMin.toFixed(1);
+        this.distance.max = this.activeViewCamera.distanceMax.toFixed(1);
+        this.zoom.min = this.activeViewCamera.zoomMin.toFixed(1);
+        this.zoom.max = this.activeViewCamera.zoomMax.toFixed(1);
+        this.displayPanel();
     }
 
     arrangeViewports() {
