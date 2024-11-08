@@ -48,11 +48,6 @@ jobs:
         config_file: .github/workflows/deinet.ovpn
         username: ${{ secrets.VPN_USERNAME }}
         password: ${{ secrets.VPN_PASSWORD }}
-    
-        
-        # Aguardar alguns segundos para garantir que a VPN esteja conectada
-        run:
-          sleep 10
 
       - name: Create target directory
         run: |
