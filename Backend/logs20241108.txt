@@ -1,0 +1,4 @@
+2024-11-08 12:33:10.880 +00:00 [INF] Patient 200001000002 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/8/2024 12:33:10 PM
+2024-11-08 12:33:10.895 +00:00 [INF] User ea705012-f226-4c3a-bb2a-621b4c768903 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/8/2024 12:33:10 PM
+2024-11-08 12:48:09.286 +00:00 [INF] Patient 199008000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/8/2024 12:48:09 PM
+2024-11-08 12:48:09.286 +00:00 [INF] User 0f759529-254a-41c8-bf9b-7efc98e030bb was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/8/2024 12:48:09 PM

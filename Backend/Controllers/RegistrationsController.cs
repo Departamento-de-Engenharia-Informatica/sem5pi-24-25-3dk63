@@ -29,9 +29,10 @@ namespace DDDSample1.Controllers
         {
             try
             {
-                var token = HttpContext.Request.Cookies[".AspNetCore.Cookies"];
+                var token = HttpContext.Request.Cookies[".AspNetCore.CustomCookies"];
                 if (string.IsNullOrEmpty(token))
                 {
+                    Console.WriteLine("IAM token not found. Please log in again.");
                     return Unauthorized("IAM token not found. Please log in again.");
                 }
 
@@ -45,7 +46,14 @@ namespace DDDSample1.Controllers
 
                 if(user == null)
                 {
+                    Console.WriteLine("Patient is not registered in the system. Please contact the hospital to register.");
                     return BadRequest("Patient is not registered in the system. Please contact the hospital to register.");
+                }
+
+                if(!string.IsNullOrEmpty(user.ConfirmationToken))
+                {
+                    Console.WriteLine("Patient is already registered. Please check your email for confirmation. Confirmation Token: ", user.ConfirmationToken);
+                    return BadRequest("Patient is already registered. Please check your email for confirmation.");
                 }
 
                 if(user.Role.Equals(new Role(RoleType.Patient)))

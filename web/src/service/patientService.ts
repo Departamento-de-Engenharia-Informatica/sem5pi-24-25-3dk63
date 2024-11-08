@@ -6,6 +6,7 @@ import { PatientUpdateDTO } from "@/dto/PatientUpdateDTO";
 import { PatientUser } from "@/model/PatientUser";
 import { RegisterPatientDTO } from "@/dto/RegisterPatientDTO";
 import { Patient } from "@/model/Patient";
+import { SelfRegisterPatientDTO } from "@/dto/SelfRegisterPatientDTO";
 
 @injectable()
 export class PatientService implements IPatientService {
@@ -41,6 +42,17 @@ export class PatientService implements IPatientService {
     const res = await this.http.post<PatientUser>("/patients/register-patient", patientData);
     console.log("Patient created:", res.data);
     return res.data;
+  }
+
+  async selfRegister(patientData: SelfRegisterPatientDTO): Promise<Response> {
+    return await fetch("https://localhost:5001/api/Registrations/self-register", {
+      method: "POST",
+      headers: {
+          "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ personalEmail: patientData.personalEmail }),
+      credentials: "include",
+    });
   }
 
   async getAppointments(): Promise<PatientUser[]> {

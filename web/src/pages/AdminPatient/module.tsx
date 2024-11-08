@@ -5,7 +5,7 @@ import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
 
 export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
-  
+
   const countryOptions = [
     { code: "+351" },
     { code: "+1" },
@@ -25,6 +25,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [patientForm, setPatientForm] = useState<any | null>(null);
   const [countryCode, setCountryCode] = useState(countryOptions[0].code);
   const [phoneNumberPart, setPhoneNumberPart] = useState("");
+  const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
   const itemsPerPage = 10;
 
@@ -47,7 +48,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("en-CA"); 
+    return date.toLocaleDateString("en-CA");
   };
 
   const fetchPatients = async () => {
@@ -91,9 +92,12 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         await patientService.deletePatient(id);
         setPatients((prev) => prev.filter((patient) => patient.id !== id));
         setAlertMessage("Patient deleted successfully.");
+        setPopupMessage("Patient deleted successfully..");
       } catch (error) {
         console.error("Error deleting patient:", error);
         setAlertMessage("Error deleting patient.");
+        setPopupMessage("Error while deleting patient.");
+
       }
     }
   };
@@ -107,7 +111,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
       gender: { gender: "" },
       personalEmail: { value: "" },
       phoneNumber: { number: "" },
-      emergencyContact: { emergencyContact: "" },     
+      emergencyContact: { emergencyContact: "" },
     };
     console.log("New Patient Form:", patientFormDto);
 
@@ -220,5 +224,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     totalPatients,
     itemsPerPage,
     searchPatients,
+    popupMessage,
+    setPopupMessage,
   };
 };

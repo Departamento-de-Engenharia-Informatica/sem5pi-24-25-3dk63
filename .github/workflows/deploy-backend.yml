@@ -37,46 +37,33 @@ jobs:
           name: build
           path: Backend/dist
 
-      - name: Install OpenVPN
+      - name: Setup SSH directory
         run: |
-          sudo apt-get update
-          sudo apt-get install -y openvpn
-
-      - name: Connect to VPN
-        run: |
-          # Salve o arquivo de configuração da VPN
-          echo "${{ secrets.VPN_CONFIG_FILE }}" > /tmp/vpn_config.ovpn
-
-          # Crie um arquivo temporário para armazenar as credenciais
-          echo -e "${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_credentials.txt
-
-          # Conecte-se à VPN usando o arquivo de configuração e as credenciais
-          sudo openvpn --config /tmp/vpn_config.ovpn --auth-user-pass /tmp/vpn_credentials.txt &
-
-          # Aguardar alguns segundos para garantir que a VPN esteja conectada
-          sleep 10
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Create target directory
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -p ${{ secrets.SSH_PORT }} "mkdir -p ~/deploy-Backend"
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p ~/deploy-Backend"
 
       - name: Copy Files
         uses: appleboy/scp-action@v0.1.4
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           source: "Backend/*"
           target: "~/deploy-Backend"
           rm: true
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy Server
         uses: appleboy/ssh-action@v1.0.0
         with:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
-          password: ${{ secrets.SSH_PASSWORD }}
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ~/deploy-Backend/Backend
@@ -85,3 +72,4 @@ jobs:
             dotnet ef database update
             killall -9 DDDNetCore
             nohup ./dist/DDDNetCore > /dev/null 2>&1 &
+          key: ${{ secrets.SSH_PRIVATE_KEY }}

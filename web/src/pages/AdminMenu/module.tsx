@@ -19,7 +19,7 @@ export const useAdminMenuModule = () => {
   const handleManageStaff = () => {
     navigate("/admin/staff");
   };
-  
+
   const handleManageOperationTypes = () => {
     navigate("/admin/operation-type");
   }

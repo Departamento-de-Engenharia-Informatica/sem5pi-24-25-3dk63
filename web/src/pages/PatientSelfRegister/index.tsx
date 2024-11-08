@@ -1,16 +1,20 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { usePatientSelfRegisterModule } from "./module";
 import Button from "@/components/Button/index";
 import Alert from "@/components/Alert/index";
 import HamburgerMenu from "@/components/HamburgerMenu";
-
-import { usePatientSelfRegisterModule } from "./module";
+import Popup from "@/components/Popup";
 
 const PatientSelfRegister: React.FC = () => {
   const {
+    selfRegisteringPatient,
+    setSelfRegisteringPatient,
     handleSelfRegister,
+    saveSelfRegisterPatient,
     menuOptions,
     alertMessage,
+    popupMessage,
+    setPopupMessage,
   } = usePatientSelfRegisterModule();
 
   return (
@@ -20,18 +24,45 @@ const PatientSelfRegister: React.FC = () => {
       </div>
 
       <h1 className="text-3xl font-bold text-center mb-6">Self-Register</h1>
+
       {alertMessage && (
         <div className="mb-4">
           <Alert type="warning" message={alertMessage} />
         </div>
       )}
-      <div className="bg-white shadow-lg rounded-lg p-6">
-        <div className="flex flex-col space-y-4">
-          <Button onClick={handleSelfRegister} name="self-register-patient">
-            Self Register
-          </Button>
-        </div>
+
+      <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
+        <form onSubmit={handleSelfRegister} className="space-y-4">
+          <div>
+            <label htmlFor="email" className="block font-semibold mb-2"> Personal Email </label>
+            <input
+              type="email"
+              value={selfRegisteringPatient?.personalEmail || ""}
+              onChange={(e) =>
+                setSelfRegisteringPatient({
+                  ...selfRegisteringPatient,
+                  personalEmail: e.target.value,
+                })
+              }
+              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+              required
+            />
+          </div>
+
+          <div className="pt-4">
+            <Button onClick={saveSelfRegisterPatient} name="self-register-patient">
+              Self Register
+            </Button>
+          </div>
+        </form>
       </div>
+
+      {/* Added: Popup for displaying messages */}
+      <Popup 
+        isVisible={!!popupMessage} 
+        setIsVisible={() => setPopupMessage(null)} 
+        message={popupMessage}
+      />
     </div>
   );
 };
