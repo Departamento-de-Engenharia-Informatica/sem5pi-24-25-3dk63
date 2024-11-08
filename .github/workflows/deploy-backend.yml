@@ -23,19 +23,13 @@ jobs:
           dotnet-version: "8.0"
 
       - name: Install dependencies
-        run: |
-          dotnet restore DDDNetCore.csproj
-          echo "Dependencies restored" >> deploy-log.txt
+        run: dotnet restore DDDNetCore.csproj
 
       - name: Build
-        run: |
-          dotnet build DDDNetCore.csproj -c Release -o ./dist
-          echo "Build completed" >> deploy-log.txt
+        run: dotnet build DDDNetCore.csproj -c Release -o ./dist
 
       - name: Test
-        run: |
-          dotnet test DDDNetCore.csproj
-          echo "Tests completed" >> deploy-log.txt
+        run: dotnet test DDDNetCore.csproj
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
@@ -49,12 +43,18 @@ jobs:
           sudo apt-get install -y openvpn
 
       - name: Connect to VPN
-        uses: kota65535/github-openvpn-connect-action@v2
-        with:
-          config_file: .github/workflows/deinet.ovpn
-          username: ${{ secrets.VPN_USERNAME }}
-          password: ${{ secrets.VPN_PASSWORD }}
+        run: |
+          # Salve o arquivo de configuração da VPN
+          echo "${{ secrets.VPN_CONFIG_FILE }}" > /tmp/vpn_config.ovpn
 
+          # Crie um arquivo temporário para armazenar as credenciais
+          echo -e "${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_credentials.txt
+
+          # Conecte-se à VPN usando o arquivo de configuração e as credenciais
+          sudo openvpn --config /tmp/vpn_config.ovpn --auth-user-pass /tmp/vpn_credentials.txt &
+
+          # Aguardar alguns segundos para garantir que a VPN esteja conectada
+          sleep 10
 
       - name: Create target directory
         run: |
