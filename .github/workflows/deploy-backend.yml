@@ -55,6 +55,8 @@ jobs:
           config_file: .github/workflows/deinet.ovpn
           username: ${{ secrets.VPN_USERNAME }}
           password: ${{ secrets.VPN_PASSWORD }}
+
+      - name: Check VPN connection
         run: echo "VPN connection established" >> deploy-log.txt
 
       - name: Create target directory
