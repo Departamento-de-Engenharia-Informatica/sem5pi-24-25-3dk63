@@ -43,11 +43,12 @@ jobs:
           sudo apt-get install -y openvpn
 
       - name: Connect to VPN
-        uses: "kota65535/github-openvpn-connect-action@v2"
+        uses: kota65535/github-openvpn-connect-action@v2
         with:
-        config_file: .github/workflows/deinet.ovpn
-        username: ${{ secrets.VPN_USERNAME }}
-        password: ${{ secrets.VPN_PASSWORD }}
+          config_file: .github/workflows/deinet.ovpn
+          username: ${{ secrets.VPN_USERNAME }}
+          password: ${{ secrets.VPN_PASSWORD }}
+
 
       - name: Create target directory
         run: |
