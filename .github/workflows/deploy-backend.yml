@@ -56,13 +56,15 @@ jobs:
       #     # Aguardar alguns segundos para garantir que a VPN esteja conectada
       #     sleep 10
 
-      - name: Add SSH host key
+      - name: Setup SSH directory
         run: |
+          mkdir -p ~/.ssh
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
       - name: Create target directory
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -p ${{ secrets.SSH_PORT }} "mkdir -p ~/deploy-Backend"
+
 
 
       - name: Copy Files
