@@ -118,7 +118,7 @@ namespace DDDSample1
                         var encryptedEmail = protector.Protect(email);
 
                         // Create cookie
-                        context.HttpContext.Response.Cookies.Append(".AspNetCore.Cookies", encryptedEmail, new CookieOptions
+                        context.HttpContext.Response.Cookies.Append(".AspNetCore.CustomCookies", encryptedEmail, new CookieOptions
                         {
                             HttpOnly = true,
                             Secure = true,

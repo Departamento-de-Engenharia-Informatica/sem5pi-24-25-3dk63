@@ -196,7 +196,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             {/* EMAIL */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Personal Email</label>
             <input
-              type="text"
+              type="email"
               value={creatingPatient?.personalEmail?.value || ""}
               onChange={(e) =>
                 setCreatingPatient((prev: any) => ({
