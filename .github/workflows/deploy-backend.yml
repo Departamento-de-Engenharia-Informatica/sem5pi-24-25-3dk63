@@ -49,6 +49,9 @@ jobs:
           username: ${{ secrets.VPN_USERNAME }}
           password: ${{ secrets.VPN_PASSWORD }}
 
+      - name: Display OpenVPN log
+        run: cat openvpn.log
+
 
       - name: Create target directory
         run: |
