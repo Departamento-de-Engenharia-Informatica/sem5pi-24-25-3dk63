@@ -23,13 +23,19 @@ jobs:
           dotnet-version: "8.0"
 
       - name: Install dependencies
-        run: dotnet restore DDDNetCore.csproj
+        run: |
+          dotnet restore DDDNetCore.csproj
+          echo "Dependencies restored" >> deploy-log.txt
 
       - name: Build
-        run: dotnet build DDDNetCore.csproj -c Release -o ./dist
+        run: |
+          dotnet build DDDNetCore.csproj -c Release -o ./dist
+          echo "Build completed" >> deploy-log.txt
 
       - name: Test
-        run: dotnet test DDDNetCore.csproj
+        run: |
+          dotnet test DDDNetCore.csproj
+          echo "Tests completed" >> deploy-log.txt
 
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
@@ -41,6 +47,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y openvpn
+          echo "OpenVPN installed" >> deploy-log.txt
 
       - name: Connect to VPN
         uses: kota65535/github-openvpn-connect-action@v2
@@ -48,14 +55,12 @@ jobs:
           config_file: .github/workflows/deinet.ovpn
           username: ${{ secrets.VPN_USERNAME }}
           password: ${{ secrets.VPN_PASSWORD }}
-
-      - name: Display OpenVPN log
-        run: cat openvpn.log
-
+        run: echo "VPN connection established" >> deploy-log.txt
 
       - name: Create target directory
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} -p ${{ secrets.SSH_PORT }} "mkdir -p ~/deploy-Backend"
+          echo "Target directory created" >> deploy-log.txt
 
       - name: Copy Files
         uses: appleboy/scp-action@v0.1.4
@@ -67,6 +72,7 @@ jobs:
           source: "Backend/*"
           target: "~/deploy-Backend"
           rm: true
+        run: echo "Files copied to target server" >> deploy-log.txt
 
       - name: Deploy Server
         uses: appleboy/ssh-action@v1.0.0
@@ -82,3 +88,10 @@ jobs:
             dotnet ef database update
             killall -9 DDDNetCore
             nohup ./dist/DDDNetCore > /dev/null 2>&1 &
+            echo "Deployment completed" >> deploy-log.txt
+
+      - name: Upload Logs
+        uses: actions/upload-artifact@v3
+        with:
+          name: deploy-logs
+          path: deploy-log.txt
