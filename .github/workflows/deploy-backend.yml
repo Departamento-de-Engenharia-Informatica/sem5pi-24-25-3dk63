@@ -50,11 +50,14 @@ jobs:
           # Crie um arquivo temporário para armazenar as credenciais
           echo -e "${{ secrets.VPN_USERNAME }}\n${{ secrets.VPN_PASSWORD }}" > /tmp/vpn_credentials.txt
 
+          # Ajuste as permissões do arquivo de credenciais
+          chmod 600 /tmp/vpn_credentials.txt
+
           # Inicie o OpenVPN com o arquivo de configuração e as credenciais
-          sudo nohup openvpn --config /tmp/vpn_config.ovpn --auth-user-pass /tmp/vpn_credentials.txt &
+          sudo nohup openvpn --config /tmp/vpn_config.ovpn --auth-user-pass /tmp/vpn_credentials.txt --cipher AES-256-CBC --data-ciphers AES-256-GCM:AES-128-GCM:AES-256-CBC &
 
           # Aguardar alguns segundos para garantir que a VPN esteja conectada
-          sleep 15
+          sleep 30
 
           # Verifique se a conexão VPN está ativa pingando o host SSH
           ping -c 4 ${{ secrets.SSH_HOST }}
