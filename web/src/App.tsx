@@ -9,6 +9,8 @@ import SelfRegisterMenu from './pages/PatientSelfRegister';
 import AdminOperationType from './pages/AdminOperationType';
 import PatientAppointments from './pages/PatientAppointments';
 import PatientMedicalRecord from './pages/PatientMedicalRecord';
+import StaffPage from './pages/StaffMenu';
+import StaffOperationRequest from './pages/StaffOperationRequest';
 import ConfirmAccountDeletion from "./pages/ConfirmAccountDeletion";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
@@ -30,6 +32,8 @@ function App() {
               <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/admin" element={<AdminPage />} />
+                <Route path="/staff" element={<StaffPage />} />
+                <Route path="/staff/operation-requests" element={<StaffOperationRequest setAlertMessage={setAlertMessage} />} />
                 <Route path="/admin/patient" element={<AdminPatient setAlertMessage={setAlertMessage} />} />
                 <Route path="/admin/staff" element={<AdminStaff setAlertMessage={setAlertMessage} />} />
                 <Route path="/floor" element={<Floor />} />

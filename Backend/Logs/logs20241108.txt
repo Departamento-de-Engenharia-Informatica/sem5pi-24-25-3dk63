@@ -2,3 +2,10 @@
 2024-11-08 12:33:10.895 +00:00 [INF] User ea705012-f226-4c3a-bb2a-621b4c768903 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/8/2024 12:33:10 PM
 2024-11-08 12:48:09.286 +00:00 [INF] Patient 199008000001 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/8/2024 12:48:09 PM
 2024-11-08 12:48:09.286 +00:00 [INF] User 0f759529-254a-41c8-bf9b-7efc98e030bb was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/8/2024 12:48:09 PM
+2024-11-08 21:31:34.763 +00:00 [INF] OperationType asas (603240ca-7087-447c-87c8-27be89718f9e) was created by Admin (diogoandre.8269@gmail.com) on 08/11/2024 21:31:34
+2024-11-08 21:31:43.010 +00:00 [INF] OperationType teste2 (3c65f73a-b8bf-4504-8d9b-1f8f27ec8c36) was deactivated by Admin (diogoandre.8269@gmail.com) on 08/11/2024 21:31:43
+2024-11-08 21:35:12.353 +00:00 [INF] OperationType wewe (1e3bffe0-d6b6-4ec1-ae1c-86bb6ad67693) was created by Admin (diogoandre.8269@gmail.com) on 08/11/2024 21:35:12
+2024-11-08 21:35:18.895 +00:00 [INF] OperationType wewe (1e3bffe0-d6b6-4ec1-ae1c-86bb6ad67693) was deactivated by Admin (diogoandre.8269@gmail.com) on 08/11/2024 21:35:18
+2024-11-08 21:43:56.118 +00:00 [INF] Patient 200001000001 was deleted by Admin (diogoandre.8269@gmail.com) on 08/11/2024 21:43:56
+2024-11-08 21:43:56.118 +00:00 [INF] User 472d0d7c-5bfb-4474-b079-9cd139cbd626 was deleted by Admin (diogoandre.8269@gmail.com) on 08/11/2024 21:43:56
+2024-11-08 21:48:55.210 +00:00 [INF] OperationType asdada (1a2230c8-c873-4a47-adab-1af6222700a9) was deactivated by Admin (diogoandre.8269@gmail.com) on 08/11/2024 21:48:55

@@ -6,6 +6,8 @@ import { useOpTypesListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
+import Popup from "@/components/Popup";
+import Confirmation from "@/components/Confirmation";
 
 interface OperationTypeListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -29,21 +31,28 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
-    specializations
+    specializations,
+    popupMessage,
+    setPopupMessage,
+    confirmDeactivate,
+    setConfirmDeactivate,
+    handleCancelDeactivate,
   } = useOpTypesListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalOTypes / itemsPerPage);
 
-  const renderActions = (OTypes: any) => (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => handleDeactivate(OTypes.id)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
-      >
-        Deactivate
-      </button>
-    </div>
-  );
+const renderActions = (OTypes: any) => (
+  <div className="flex flex-wrap gap-2">
+    <button
+      onClick={() => handleDeactivate(OTypes.id)} // Exibe o modal de confirmação
+      className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
+    >
+      Deactivate
+    </button>
+  </div>
+);
+
+
 
   const tableData = OTypes.map((OTypes) => ({
     ...OTypes,
@@ -193,7 +202,23 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
           </div>
         </Modal>
       )}
-    </div>
+      <Popup
+        isVisible={!!popupMessage}
+        setIsVisible={() => setPopupMessage(null)}
+        message={popupMessage}
+      />
+      <Confirmation
+      isVisible={!!confirmDeactivate}
+      onConfirm={() => {
+        if (confirmDeactivate) {
+          confirmDeactivate(); // Chama a função de desativação
+          setConfirmDeactivate(null); // Reseta o estado
+        }
+      }}
+      onCancel={handleCancelDeactivate}
+      message="Are you sure you want to deactivate this operation type?"
+    />
+        </div>
   );
 };
 

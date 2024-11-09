@@ -81,7 +81,6 @@ namespace DDDSample1.Controllers
             }
 
             var staff = await _staffService.GetByLicenseNumberAsync(new LicenseNumber(licenseNumber));
-            Console.WriteLine("RECEBI ESTA MIERDA", staff);
             if (staff == null)
             {
                 return NotFound("Unable to find the staff information.");
@@ -124,7 +123,7 @@ namespace DDDSample1.Controllers
 
                 if (userStaff.Email?.Value != null)
                 {
-                    await _emailService.SendUpdateStaffEmail(userStaff.Email.Value, userStaff.ConfirmationToken);
+                    await _emailService.SendUpdateStaffEmail(userStaff.Email.Value, userStaff.ConfirmationToken, updateDto, staff, userStaff, emailChanged, phoneChanged, specializationChanged);
                 }
                 else
                 {

@@ -5,6 +5,7 @@ using Microsoft.EntityFrameworkCore;
 using DDDSample1.Domain.OperationRequests;
 using DDDSample1.Domain.OperationsType;
 using DDDSample1.Domain.Patients;
+using DDDSample1.Domain.Staff;
 
 namespace DDDSample1.Infrastructure.OperationRequests
 {
@@ -47,7 +48,15 @@ namespace DDDSample1.Infrastructure.OperationRequests
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<OperationRequest>> SearchOperationRequestsAsync(string firstName, string lastName, string operationType, string status, Priority? priority)
+        public async Task<List<OperationRequest>> SearchOperationRequestsAsync(
+            string firstName, 
+            string lastName, 
+            string operationType, 
+            string status, 
+            Priority? priority,
+            DateTime? dateRequested = null,
+            DateTime? dueDate = null,
+            LicenseNumber doctorId = null)
         {
             var query = _context.OperationRequests.AsQueryable();
 
@@ -61,6 +70,10 @@ namespace DDDSample1.Infrastructure.OperationRequests
                             u.Id == p.UserId &&
                             (string.IsNullOrWhiteSpace(firstName) || u.Name.FirstName.ToLower() == firstName.ToLower()) &&
                             (string.IsNullOrWhiteSpace(lastName) || u.Name.LastName.ToLower() == lastName.ToLower()))));
+            }
+            else if (doctorId != null)
+            {
+                query = query.Where(or => or.licenseNumber.Value == doctorId.Value);
             }
 
             if (!string.IsNullOrWhiteSpace(operationType))
@@ -88,16 +101,24 @@ namespace DDDSample1.Infrastructure.OperationRequests
                 {
                     query = query.Where(or => or.Active == false);
                 }
-                else
-                {
-                    Console.WriteLine($"Invalid status value: {status}");
-                }
             }
 
             if (priority != null)
             {
                 query = query.Where(or => or.priority != null && or.priority.Value == priority.Value);
             }
+            if (dateRequested.HasValue)
+            {
+                var requestedDate = dateRequested.Value.Date; 
+                query = query.Where(or => or.createdDate.Date == requestedDate);
+            }
+
+            if (dueDate.HasValue)
+            {
+                var dueDateOnly = dueDate.Value.Date; 
+                query = query.Where(or => or.deadline.Value.Date == dueDateOnly);
+            }
+
 
             return await query.ToListAsync();
         }
