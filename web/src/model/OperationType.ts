@@ -1,23 +1,22 @@
 // src/model/OperationType.ts
 export interface OperationType {
-    id: string;
-    name: {
-      description: string;
-    };
-    specialization: {
-      value: string;
-    };
-    active: boolean;
-    [key: string]: any;
+  id: string;
+  name: {
+    description: string;
+  };
+  specialization: {
+    value: string;
+  };
+  active: boolean;
+  [key: string]: any;
 
-    requiredStaff: {
-      requiredNumber: number;
-    };
-    duration: {
-      preparationPhase: number;
-      surgeryPhase: number;
-      cleaningPhase: number;
-      totalDuration: number;
-    };
-
-  }
+  requiredStaff: {
+    requiredNumber: number;
+  };
+  duration: {
+    preparationPhase: number;
+    surgeryPhase: number;
+    cleaningPhase: number;
+    totalDuration: number;
+  };
+}

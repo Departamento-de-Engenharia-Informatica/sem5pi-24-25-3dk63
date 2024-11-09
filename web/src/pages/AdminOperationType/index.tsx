@@ -8,6 +8,7 @@ import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
+import SearchFilter from "@/components/SearchFilter";
 
 interface OperationTypeListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -37,6 +38,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     confirmDeactivate,
     setConfirmDeactivate,
     handleCancelDeactivate,
+    searchOperationTypes,
   } = useOpTypesListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalOTypes / itemsPerPage);
@@ -63,6 +65,17 @@ const renderActions = (OTypes: any) => (
     <div className="relative">
       <HamburgerMenu options={menuOptions} />
       <div className="container mx-auto p-4">
+        <SearchFilter
+          attributes={['name', 'specialization', 'active']}
+          labels={{
+            name: 'Name',
+            specialization: 'Specialization',
+            active: 'Active',
+          }}
+          onSearch={searchOperationTypes}
+          results={[]}
+          renderResult={() => <></>}
+        />
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
         <div className="mb-4">

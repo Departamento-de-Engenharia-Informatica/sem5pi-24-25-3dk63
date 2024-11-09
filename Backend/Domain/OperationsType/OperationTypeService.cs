@@ -270,12 +270,24 @@ Debug.Assert(operationType != null, "OperationType should not be null");
 
             if (!string.IsNullOrEmpty(active))
             {
-                bool Active = active.Equals("true", StringComparison.OrdinalIgnoreCase);
-                results = results.Where(op => op.operationType.Active == Active).ToList();
+                if (active.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    results = results.Where(op => op.operationType.Active == true).ToList();
+                }
+                else if (active.Equals("no", StringComparison.OrdinalIgnoreCase))
+                {
+                    results = results.Where(op => op.operationType.Active == false).ToList();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid value for 'active'. No filtering applied.");
+                    results.Clear();
+                }
             }
 
             return results.Select(op => new SearchOperationTypeDTO
             {
+                Id = op.operationType.Id.AsGuid(),
                 Name = op.operationType.Name,
                 Specialization = op.specialization.Description,
                 Active = op.operationType.Active,

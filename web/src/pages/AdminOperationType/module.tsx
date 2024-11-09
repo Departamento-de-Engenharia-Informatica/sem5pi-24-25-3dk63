@@ -21,7 +21,8 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [showActive, setShowActive] = useState<boolean>(true);
   const [showInactive, setShowInactive] = useState<boolean>(true);
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
-  const [confirmDeactivate, setConfirmDeactivate] = useState<(() => void) | null>(null); 
+  const [confirmDeactivate, setConfirmDeactivate] = useState<(() => void) | null>(null);
+  const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
 
 
   const itemsPerPage = 10;
@@ -153,8 +154,47 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     } catch (error) {
       console.error("Error fetching specializations:", error);
     }
-  }
-  ;
+  };
+
+  const searchOperationTypes = async (query: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    setNoDataMessage(null);
+    setOTypes([]);
+    try {
+      console.log("Query:", query);
+      const operationTypeData = await operationTypeService.searchOperationTypes(query);
+      console.log("Data returned from searchOperationTypes:", operationTypeData);
+  
+      const filteredData = operationTypeData.map((operationType) => ({
+        id: operationType.id,
+        Name: operationType.name.description,
+        "Required Staff": operationType.requiredStaff.requiredNumber,
+        "Preparation Time": operationType.duration.preparationPhase,
+        "Surgery Time": operationType.duration.surgeryPhase,
+        "Cleaning Time": operationType.duration.cleaningPhase,
+        "Total Time": operationType.duration.totalDuration,
+        Specialization: operationType.specialization.value,
+        Active: operationType.active ? "Yes" : "No",
+      }));
+  
+      if (filteredData.length === 0) {
+        setNoDataMessage("No data found for the requirements.");
+      }
+      setOTypes(filteredData);
+    } catch (error) {
+      setError("No data found for the requirements.");
+      console.error("Error fetching operation types:", error);
+      setAlertMessage("No data found for the requirements.");
+      setOTypes([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOperationsTypes();
+  }, [currentPage, showActive, showInactive]);
 
   return {
     OTypes,
@@ -183,6 +223,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     confirmDeactivate,
     setConfirmDeactivate,
     handleCancelDeactivate,
+    searchOperationTypes,
   };
 
 };

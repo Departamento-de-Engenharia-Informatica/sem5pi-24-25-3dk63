@@ -22,4 +22,10 @@ export class OperationTypeService implements IOperationTypeService {
   async addOperationType(operationType: CreatingOperationTypeDTO): Promise<void> {
     await this.http.post("/OperationType", operationType);
   }
+
+  async searchOperationTypes(query: Record<string, string>): Promise<OperationType[]> {
+    let queryString = new URLSearchParams(query).toString();
+    let res = await this.http.get<OperationType[]>(`/OperationType/search?${queryString}`);
+    return res.data;
+  }
 }
