@@ -189,8 +189,8 @@ namespace DDDSample1.Controllers
         {
             var staffList = await _staffService.SearchStaffAsync(name, email, specialization);
 
-            if (staffList == null) return NotFound();
-            
+            if (staffList == null || staffList.Count == 0) return NotFound("No staffs found."); ;
+
             return Ok(staffList);
         }
 

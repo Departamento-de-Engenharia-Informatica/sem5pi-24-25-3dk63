@@ -9,7 +9,7 @@ export class StaffService implements IStaffService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
 
   async getStaffs(): Promise<StaffUser[]> {
-    const res = await this.http.get<StaffUser[]>("/staff");
+    const res = await this.http.get<StaffUser[]>("/staff/search");
 
     return res.data;
   }

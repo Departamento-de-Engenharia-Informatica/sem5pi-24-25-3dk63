@@ -169,7 +169,7 @@ const searchPatients = async (query: Record<string, string>) => {
   setLoading(true);
   setError(null);
   setNoDataMessage(null);
-  setPatients([]); 
+  setPatients([]);
   try {
     console.log("Query:", query);
     const patientsData = await patientService.searchPatients(query);
@@ -190,7 +190,6 @@ const searchPatients = async (query: Record<string, string>) => {
     if (filteredData.length === 0) {
       setNoDataMessage("No data found for the requirements.");
     }
-
     setPatients(filteredData);
   } catch (error) {
     setError("No data found for the requirements.");

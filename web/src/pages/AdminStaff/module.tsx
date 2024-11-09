@@ -16,7 +16,9 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [staffToEdit, setStaffToEdit] = useState<any | null>(null);
   const [licenseStaffToEdit, setLicenseToEdit] = useState<any | null>(null);
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
-  const [confirmDeactivate, setConfirmDeactivate] = useState<(() => void) | null>(null); 
+  const [confirmDeactivate, setConfirmDeactivate] = useState<(() => void) | null>(null);
+  const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
+
 
 
   const itemsPerPage = 10;
@@ -141,6 +143,8 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const searchStaffs = async (query: Record<string, string>) => {
     setLoading(true);
     setError(null);
+    setNoDataMessage(null);
+    setStaffs([]);
     try {
       console.log("Query:", query);
       const staffsData = await staffService.searchStaffs(query);
@@ -157,11 +161,17 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
         "Availability Slots": staffUser.availabilitySlots,
         Active: staffUser.active ? "Yes" : "No",
       }));
+
+      if (filteredData.length == 0) {
+        setNoDataMessage("No data found for the requirements.");
+        setAlertMessage("No data found for the requirements.");
+      }
       setStaffs(filteredData);
     } catch (error) {
-      setError("Error fetching staff.");
+      setError("No data found for the requirements.");
       console.error("Error fetching staff:", error);
-      setAlertMessage("Error fetching staff.");
+      setAlertMessage("No data found for the requirements.");
+      setStaffs([]);
     } finally {
       setLoading(false);
     }
@@ -195,6 +205,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     confirmDeactivate,
     setConfirmDeactivate,
     handleCancelDeactivate,
-    
+    noDataMessage,
+
   };
 };

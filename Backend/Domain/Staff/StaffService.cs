@@ -268,20 +268,19 @@ namespace DDDSample1.Domain.Staff
             var query = from staff in _staffRepository.GetQueryable()
                         join user in _userRepository.GetQueryable() on staff.UserId equals user.Id
                         select new { staff, user };
-
             if (!string.IsNullOrEmpty(name))
             {
                 var nomes = name.Split(" ");
                 if (nomes.Length < 2)
                 {
-                    query = query.Where(s => s.user.Name.FirstName.Contains(name) || s.user.Name.LastName.Contains(name));
-                }else
+                    query = query.Where(s => s.user.Name.FirstName.StartsWith(name) || s.user.Name.LastName.StartsWith(name));
+                }
+                else
                 {
                     string primeiroNome = nomes[0];
                     string ultimoNome = nomes[nomes.Length - 1];
-                    query = query.Where(s => s.user.Name.FirstName.Contains(primeiroNome) && s.user.Name.LastName.Contains(ultimoNome));
+                    query = query.Where(s => s.user.Name.FirstName.StartsWith(primeiroNome) && s.user.Name.LastName.StartsWith(ultimoNome));
                 }
-               
             }
 
             var results = await query.ToListAsync();
@@ -294,13 +293,27 @@ namespace DDDSample1.Domain.Staff
 
             if (!string.IsNullOrEmpty(specializationDescription))
             {
-                var specialization = await _specializationRepository.GetByDescriptionAsync(new Description(specializationDescription));
+                // Verifique se a especialização corresponde ao início da descrição (prefixo)
+                var specializations = await _specializationRepository.GetAllAsync();
 
-                if (specialization != null)
+                // Filtra as especializações que começam com a descrição fornecida
+                var filteredSpecializations = specializations
+                    .Where(s => s.Description.Value.StartsWith(specializationDescription, StringComparison.OrdinalIgnoreCase))
+                    .ToList();
+
+                if (filteredSpecializations.Any())
                 {
-                    results = results.Where(s => s.staff.SpecializationId == specialization.Id).ToList();
+                    results = results.Where(s => filteredSpecializations
+                        .Any(spec => spec.Id == s.staff.SpecializationId))
+                        .ToList();
+                }
+                else
+                {
+                    // Caso nenhuma especialização correspondente seja encontrada, retorna null
+                    return new List<StaffCompleteDTO>();
                 }
             }
+
 
             var paginatedStaff = results.Select(s => s.staff).ToList();
 
