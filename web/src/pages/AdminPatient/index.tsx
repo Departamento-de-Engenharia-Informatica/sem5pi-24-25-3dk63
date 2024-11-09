@@ -25,6 +25,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     setCurrentPage,
     searchPatients,
     handleDelete,
+    handleEdit,
     isModalVisible,
     setIsModalVisible,
     countryOptions,
@@ -48,7 +49,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     const options = [
       {
         label: "Edit",
-        onClick: () => handleDelete(patient.id),
+        onClick: () => handleEdit(patient.id),
         className: "text-blue-500",
       },
       {
@@ -122,7 +123,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         <Modal
           isVisible={isModalVisible}
           setIsVisible={setIsModalVisible}
-          title="Register Patient"
+          title={creatingPatient?.id ? "Edit Patient" : "Register Patient"}
         >
           <div className="p-4">
 
@@ -167,6 +168,8 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             <input
               type="date"
               value={creatingPatient?.dateOfBirth?.date || ""}
+              readOnly={!!creatingPatient?.id}
+              disabled={!!creatingPatient?.id}
               onChange={(e) =>
                 setCreatingPatient((prev: any) => ({
                   ...prev,
@@ -180,6 +183,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Gender</label>
             <select
               value={creatingPatient?.gender?.gender || ""}
+              disabled={!!creatingPatient?.id}
               onChange={(e) =>
                 setCreatingPatient((prev: any) => ({
                   ...prev,
@@ -215,7 +219,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Phone Number</label>
             <div className="flex mt-1">
               <select
-                value={countryCode}
+                value={countryOptions.find(option => creatingPatient?.phoneNumber?.number.startsWith(option.code))?.code || countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
                 className="w-1/4 border border-gray-300 rounded-l-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
               >
@@ -228,7 +232,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
 
               <input
                 type="tel"
-                value={phoneNumberPart}
+                value={creatingPatient?.phoneNumber?.number.replace(countryCode, '') || phoneNumberPart}
                 onChange={(e) => {
                   const inputValue = e.target.value.trim();
                   if (/^\d*$/.test(inputValue)) {
@@ -252,6 +256,20 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
                 }))
               }
               placeholder="Enter emergency contact"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+            />
+
+            {/* MEDICAL HISTORY */}
+            <label className="block text-sm font-medium text-gray-700 mt-4">Medical History</label>
+            <textarea
+              value={creatingPatient?.medicalHistory || ""}
+              onChange={(e) =>
+                setCreatingPatient((prev: any) => ({
+                  ...prev,
+                  medicalHistory: e.target.value,
+                }))
+              }
+              placeholder="Enter medical history"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
             />
 

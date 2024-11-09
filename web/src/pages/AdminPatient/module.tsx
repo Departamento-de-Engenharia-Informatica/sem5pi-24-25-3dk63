@@ -87,7 +87,29 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     } finally {
       setLoading(false);
     }
+    };
+  const handleEdit = async (id: string) => {
+    const patientToEdit = patients.find(patient => patient.id === id);
+
+    if (patientToEdit) {
+      const fullName = patientToEdit["Full Name"].split(" ");
+      const firstName = fullName[0] || "";
+      const lastName = fullName.length > 1 ? fullName.slice(1).join(" ") : "";
+
+      setCreatingPatient({
+        ...patientToEdit,
+        firstName: { value: firstName },
+        lastName: { value: lastName },
+        dateOfBirth: { date: patientToEdit["Date of Birth"] },
+        gender: { gender: patientToEdit["Gender"] },
+        personalEmail: { value: patientToEdit["Personal Email"] },
+        phoneNumber: { number: patientToEdit["Contact Phone"] },
+        emergencyContact: { emergencyContact: patientToEdit["Emergency Contact"] },
+      });
+      setIsModalVisible(true);
+    }
   };
+
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this patient?")) {
@@ -131,6 +153,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         phoneNumber: { number: `${countryCode}${phoneNumberPart}` },
       };
 
+      // Map the form dto to the patientRegister dto
       const patientDto = {
         dateOfBirth: {
           date: updatedPatient.dateOfBirth.date,
@@ -154,9 +177,11 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         },
       };
 
-      console.log("Saving Patient:", patientDto);
-      await patientService.createPatient(patientDto);
-      window.confirm("Patient created successfully.");
+        console.log("Saving Patient:", patientDto);
+        await patientService.createPatient(patientDto);
+        setPopupMessage("Patient created successfully.");
+      }
+      
       setIsModalVisible(false);
       fetchPatients();
     } catch (error) {
@@ -215,6 +240,7 @@ const searchPatients = async (query: Record<string, string>) => {
     currentPage,
     setCurrentPage,
     handleDelete,
+    handleEdit,
     isModalVisible,
     setIsModalVisible,
     countryOptions,
