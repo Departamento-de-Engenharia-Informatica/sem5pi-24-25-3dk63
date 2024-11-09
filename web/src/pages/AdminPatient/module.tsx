@@ -26,6 +26,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [countryCode, setCountryCode] = useState(countryOptions[0].code);
   const [phoneNumberPart, setPhoneNumberPart] = useState("");
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
+  const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
 
   const itemsPerPage = 10;
 
@@ -54,37 +55,39 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const fetchPatients = async () => {
     setLoading(true);
     setError(null);
+    setNoDataMessage(null);
     try {
-        const patientsData = await patientService.getPatients();
-        console.log("Data returned from getPatients:", patientsData);
-        setTotalPatients(patientsData.length);
+      const patientsData = await patientService.getPatients();
+      console.log("Data returned from getPatients:", patientsData);
+      setTotalPatients(patientsData.length);
 
-        const filteredData = patientsData.map((patientUser) => ({
-            "Medical Record Number": patientUser.id.value,
-            "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
-            "Personal Email": patientUser.personalEmail.value,
-            "IAM Email": patientUser.iamEmail.value,
-            "Date of Birth": formatDate(patientUser.dateOfBirth.date),
-            Gender: patientUser.gender.gender,
-            "Contact Phone": patientUser.phoneNumber.number,
-            Active: patientUser.active ? "Yes" : "No",
-            id: patientUser.id.value,
-        }));
+      const filteredData = patientsData.map((patientUser) => ({
+        "Medical Record Number": patientUser.id.value,
+        "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
+        "Personal Email": patientUser.personalEmail.value,
+        "IAM Email": patientUser.iamEmail.value,
+        "Date of Birth": formatDate(patientUser.dateOfBirth.date),
+        Gender: patientUser.gender.gender,
+        "Contact Phone": patientUser.phoneNumber.number,
+        Active: patientUser.active ? "Yes" : "No",
+        id: patientUser.id.value,
+      }));
 
-        console.log("Filtered data:", filteredData);
+      if (filteredData.length === 0) {
+        setNoDataMessage("No data found for the requirements.");
+      }
 
-        const startIndex = (currentPage - 1) * itemsPerPage;
-        const paginatedPatients = filteredData.slice(startIndex, startIndex + itemsPerPage);
-        setPatients(paginatedPatients);
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedPatients = filteredData.slice(startIndex, startIndex + itemsPerPage);
+      setPatients(paginatedPatients);
     } catch (error: any) {
-        console.error("Error fetching patients:", error); // Log the actual error
-        setError("Error fetching patients.");
-        setAlertMessage("Error fetching patients.");
+      console.error("Error fetching patients:", error);
+      setError("Error fetching patients.");
+      setAlertMessage("Error fetching patients.");
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
-};
-
+  };
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this patient?")) {
@@ -97,7 +100,6 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         console.error("Error deleting patient:", error);
         setAlertMessage("Error deleting patient.");
         setPopupMessage("Error while deleting patient.");
-
       }
     }
   };
@@ -107,7 +109,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     const patientFormDto = {
       firstName: { value: "" },
       lastName: { value: "" },
-      dateOfBirth: { date : "" },
+      dateOfBirth: { date: "" },
       gender: { gender: "" },
       personalEmail: { value: "" },
       phoneNumber: { number: "" },
@@ -124,14 +126,11 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
       return;
     }
     try {
-
-      // Create a temporary variable to hold the updated patient data
       const updatedPatient = {
         ...creatingPatient,
         phoneNumber: { number: `${countryCode}${phoneNumberPart}` },
       };
 
-      // Map the form dto to the patientRegister dto
       const patientDto = {
         dateOfBirth: {
           date: updatedPatient.dateOfBirth.date,
@@ -166,35 +165,43 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     }
   };
 
-  // Search patients
-  const searchPatients = async (query: Record<string, string>) => {
-    setLoading(true);
-    setError(null);
-    try {
-      console.log("Query:", query);
-      const patientsData = await patientService.searchPatients(query);
-      console.log("Data returned from searchPatients:", patientsData);
+const searchPatients = async (query: Record<string, string>) => {
+  setLoading(true);
+  setError(null);
+  setNoDataMessage(null);
+  setPatients([]); 
+  try {
+    console.log("Query:", query);
+    const patientsData = await patientService.searchPatients(query);
+    console.log("Data returned from searchPatients:", patientsData);
 
-      const filteredData = patientsData.map((patientUser) => ({
-        "Medical Record Number": patientUser.id.value,
-        "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
-        "Personal Email": patientUser.personalEmail.value,
-        "IAM Email": patientUser.iamEmail.value,
-        "Date of Birth": formatDate(patientUser.dateOfBirth.date),
-        Gender: patientUser.gender.gender,
-        "Contact Phone": patientUser.phoneNumber.number,
-        Active: patientUser.active ? "Yes" : "No",
-        id: patientUser.id.value,
-      }));
-      setPatients(filteredData);
-    } catch (error) {
-      setError("Error fetching patients.");
-      console.error("Error fetching patients:", error);
-      setAlertMessage("Error fetching patients.");
-    } finally {
-      setLoading(false);
+    const filteredData = patientsData.map((patientUser) => ({
+      "Medical Record Number": patientUser.id.value,
+      "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
+      "Personal Email": patientUser.personalEmail.value,
+      "IAM Email": patientUser.iamEmail.value,
+      "Date of Birth": formatDate(patientUser.dateOfBirth.date),
+      Gender: patientUser.gender.gender,
+      "Contact Phone": patientUser.phoneNumber.number,
+      Active: patientUser.active ? "Yes" : "No",
+      id: patientUser.id.value,
+    }));
+
+    if (filteredData.length === 0) {
+      setNoDataMessage("No data found for the requirements.");
     }
-  };
+
+    setPatients(filteredData);
+  } catch (error) {
+    setError("No data found for the requirements.");
+    console.error("Error fetching patients:", error);
+    setAlertMessage("No data found for the requirements.");
+    setPatients([]);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   useEffect(() => {
     fetchPatients();
@@ -226,5 +233,6 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     searchPatients,
     popupMessage,
     setPopupMessage,
+    noDataMessage,
   };
 };

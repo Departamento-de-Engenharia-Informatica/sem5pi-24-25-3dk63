@@ -344,16 +344,16 @@ namespace DDDSample1.Patients
                 var nomes = name.Split(" ");
                 if (nomes.Length < 2)
                 {
-                    query = query.Where(s => s.user.Name.FirstName.Contains(name) || s.user.Name.LastName.Contains(name));
+                    query = query.Where(s => s.user.Name.FirstName.StartsWith(name) || s.user.Name.LastName.StartsWith(name));
                 }
                 else
                 {
                     string primeiroNome = nomes[0];
                     string ultimoNome = nomes[nomes.Length - 1];
-                    query = query.Where(s => s.user.Name.FirstName.Contains(primeiroNome) && s.user.Name.LastName.Contains(ultimoNome));
+                    query = query.Where(s => s.user.Name.FirstName.StartsWith(primeiroNome) && s.user.Name.LastName.StartsWith(ultimoNome));
                 }
-
             }
+
             var results = await query.ToListAsync();
 
             if (!string.IsNullOrEmpty(email))
