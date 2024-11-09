@@ -78,7 +78,11 @@ namespace DDDSample1.Domain.Staff
             return listDto;
         }
 
-
+        public async Task<StaffDTO?> GetByUserIdAsync(UserId userId)
+        {
+            var staff = await _staffRepository.GetByUserIdAsync(userId);
+            return staff == null ? null : _mapper.Map<StaffDTO>(staff);
+        }
 
         public async Task<StaffDTO?> GetByLicenseNumberAsync(LicenseNumber licenseNumber)
         {

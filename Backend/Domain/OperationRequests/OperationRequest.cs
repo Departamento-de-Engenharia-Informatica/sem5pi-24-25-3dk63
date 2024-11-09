@@ -15,6 +15,7 @@ namespace DDDSample1.Domain
         public LicenseNumber licenseNumber  { get; private set; }
         public OperationTypeId operationTypeId { get; private set; }
         public MedicalRecordNumber medicalRecordNumber { get; private set; }
+        public DateTime createdDate { get; private set; }
         public bool Active { get; private set; }
 
         public OperationRequest()
@@ -42,6 +43,7 @@ namespace DDDSample1.Domain
             if(licenseNumber == null) throw new BusinessRuleValidationException("License number is required");
             this.licenseNumber = licenseNumber;
 
+            this.createdDate = DateTime.Now;
         }
 
         public void ChangeDeadLine(Deadline deadline)

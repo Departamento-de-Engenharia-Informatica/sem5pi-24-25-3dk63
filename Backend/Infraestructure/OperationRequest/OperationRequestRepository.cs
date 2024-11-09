@@ -47,7 +47,15 @@ namespace DDDSample1.Infrastructure.OperationRequests
             await _context.SaveChangesAsync();
         }
 
-        public async Task<List<OperationRequest>> SearchOperationRequestsAsync(string firstName, string lastName, string operationType, string status, Priority? priority)
+        public async Task<List<OperationRequest>> SearchOperationRequestsAsync(
+            string firstName, 
+            string lastName, 
+            string operationType, 
+            string status, 
+            Priority? priority,
+            DateTime? dateRequested = null,
+            DateTime? dueDate = null,
+            string doctorId = null)
         {
             var query = _context.OperationRequests.AsQueryable();
 
@@ -61,6 +69,10 @@ namespace DDDSample1.Infrastructure.OperationRequests
                             u.Id == p.UserId &&
                             (string.IsNullOrWhiteSpace(firstName) || u.Name.FirstName.ToLower() == firstName.ToLower()) &&
                             (string.IsNullOrWhiteSpace(lastName) || u.Name.LastName.ToLower() == lastName.ToLower()))));
+            }
+            else if (!string.IsNullOrEmpty(doctorId))
+            {
+                query = query.Where(or => or.licenseNumber.ToString() == doctorId);
             }
 
             if (!string.IsNullOrWhiteSpace(operationType))
@@ -88,15 +100,21 @@ namespace DDDSample1.Infrastructure.OperationRequests
                 {
                     query = query.Where(or => or.Active == false);
                 }
-                else
-                {
-                    Console.WriteLine($"Invalid status value: {status}");
-                }
             }
 
             if (priority != null)
             {
                 query = query.Where(or => or.priority != null && or.priority.Value == priority.Value);
+            }
+
+            if (dateRequested.HasValue)
+            {
+                query = query.Where(or => or.createdDate.Date == dateRequested.Value.Date);
+            }
+
+            if (dueDate.HasValue)
+            {
+                query = query.Where(or => or.deadline.Value.Date == dueDate.Value.Date);
             }
 
             return await query.ToListAsync();

@@ -14,7 +14,14 @@ namespace DDDSample1.Domain.OperationRequests
 
         Task UpdateOperationRequestAsync(OperationRequest operationRequest);
 
-        Task<List<OperationRequest>> SearchOperationRequestsAsync(string firstName, string lastName, string operationType, string status, Priority priority);
+        Task<List<OperationRequest>> SearchOperationRequestsAsync(string firstName, 
+            string lastName, 
+            string operationType, 
+            string status, 
+            Priority? priority,
+            DateTime? dateRequested = null,
+            DateTime? dueDate = null,
+            string doctorId = null);
 
     }
 }

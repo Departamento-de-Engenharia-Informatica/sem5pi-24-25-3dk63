@@ -7,6 +7,7 @@ using DDDSample1.Domain.OperationRequests;
 using DDDSample1.OperationsType;
 using DDDSample1.Domain.Users;
 using System.Security.Claims;
+using System.Globalization;
 using DDDSample1.Patients;
 using DDDSample1.Users;
 using DDDSample1.Domain.Staff;
@@ -161,10 +162,16 @@ namespace DDDSample1.Controllers
             [FromQuery] string lastName = null,
             [FromQuery] string operationType = null,
             [FromQuery] string status = null,
-            [FromQuery] string priority = null)
+            [FromQuery] string priority = null,
+            [FromQuery] string dateRequested = null,
+            [FromQuery] string dueDate = null)
         {
             status = status?.Trim();
 
+            var user = await _3service.FindByEmailAsync(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value);
+            var doctorProfile = await _4service.GetByUserIdAsync(new UserId(user.Id));
+
+            // Validate status
             if (!string.IsNullOrWhiteSpace(status) && 
                 !status.Equals("active", StringComparison.OrdinalIgnoreCase) && 
                 !status.Equals("inactive", StringComparison.OrdinalIgnoreCase))
@@ -172,6 +179,7 @@ namespace DDDSample1.Controllers
                 return BadRequest("Status must be 'active' or 'inactive'.");
             }
 
+            // Parse priority
             Priority priorityEnum = null;
             if (!string.IsNullOrWhiteSpace(priority))
             {
@@ -181,12 +189,45 @@ namespace DDDSample1.Controllers
                 }
                 else
                 {
-                    return BadRequest("Invalid priority value.\nMust be elective, urgent, or emergency.");
+                    return BadRequest("Invalid priority value. Must be elective, urgent, or emergency.");
                 }
             }
 
-            var requests = await _service.SearchOperationRequests(firstName, lastName, operationType, status, priorityEnum);
+            DateTime? parsedDateRequested = null;
+            if (!string.IsNullOrWhiteSpace(dateRequested))
+            {
+                if (DateTime.TryParseExact(dateRequested, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                {
+                    parsedDateRequested = parsedDate;
+                }
+                else
+                {
+                    return BadRequest("Invalid date format for dateRequested. Expected format: dd-MM-yyyy.");
+                }
+            }
+
+            DateTime? parsedDueDate = null;
+            if (!string.IsNullOrWhiteSpace(dueDate))
+            {
+                if (DateTime.TryParseExact(dueDate, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDue))
+                {
+                    parsedDueDate = parsedDue;
+                }
+                else
+                {
+                    return BadRequest("Invalid date format for dueDate. Expected format: dd-MM-yyyy.");
+                }
+            }
+
+            var doctorId = string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName) 
+                ? doctorProfile.LicenseNumber.ToString() 
+                : null;
+
+            var requests = await _service.SearchOperationRequests(
+                firstName, lastName, operationType, status, priorityEnum, parsedDateRequested, parsedDueDate, doctorId);
+
             return Ok(requests);
         }
+
     }
 }

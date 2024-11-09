@@ -226,9 +226,13 @@ namespace DDDSample1.OperationRequests
             string lastName, 
             string operationType, 
             string status, 
-            Priority? priority)
+            Priority priority,
+            DateTime? dateRequested,
+            DateTime? dueDate,
+            string doctorId)
         {
-            var requests = await _operationRequestRepository.SearchOperationRequestsAsync(firstName, lastName, operationType, status, priority);
+            var requests = await _operationRequestRepository.SearchOperationRequestsAsync(
+                firstName, lastName, operationType, status, priority, dateRequested, dueDate, doctorId);
 
             if (!requests.Any())
             {
@@ -281,6 +285,7 @@ namespace DDDSample1.OperationRequests
 
             return result;
         }
+
 
     }
 }
