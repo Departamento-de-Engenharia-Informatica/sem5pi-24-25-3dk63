@@ -171,7 +171,6 @@ namespace DDDSample1.Controllers
             var user = await _3service.FindByEmailAsync(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value);
             var doctorProfile = await _4service.GetByUserIdAsync(new UserId(user.Id));
 
-            // Validate status
             if (!string.IsNullOrWhiteSpace(status) && 
                 !status.Equals("active", StringComparison.OrdinalIgnoreCase) && 
                 !status.Equals("inactive", StringComparison.OrdinalIgnoreCase))
@@ -179,7 +178,6 @@ namespace DDDSample1.Controllers
                 return BadRequest("Status must be 'active' or 'inactive'.");
             }
 
-            // Parse priority
             Priority priorityEnum = null;
             if (!string.IsNullOrWhiteSpace(priority))
             {
@@ -196,9 +194,12 @@ namespace DDDSample1.Controllers
             DateTime? parsedDateRequested = null;
             if (!string.IsNullOrWhiteSpace(dateRequested))
             {
+                dateRequested = dateRequested.Trim();
+                Console.WriteLine(dateRequested);
                 if (DateTime.TryParseExact(dateRequested, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
                 {
                     parsedDateRequested = parsedDate;
+                    Console.WriteLine(parsedDateRequested);
                 }
                 else
                 {
@@ -209,9 +210,11 @@ namespace DDDSample1.Controllers
             DateTime? parsedDueDate = null;
             if (!string.IsNullOrWhiteSpace(dueDate))
             {
+                dueDate = dueDate.Trim();   
                 if (DateTime.TryParseExact(dueDate, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDue))
                 {
                     parsedDueDate = parsedDue;
+                    Console.WriteLine(parsedDueDate);
                 }
                 else
                 {
@@ -219,9 +222,8 @@ namespace DDDSample1.Controllers
                 }
             }
 
-            var doctorId = string.IsNullOrWhiteSpace(firstName) && string.IsNullOrWhiteSpace(lastName) 
-                ? doctorProfile.LicenseNumber.ToString() 
-                : null;
+            var licenseNumber = doctorProfile.LicenseNumber;
+            var doctorId = new LicenseNumber(licenseNumber);
 
             var requests = await _service.SearchOperationRequests(
                 firstName, lastName, operationType, status, priorityEnum, parsedDateRequested, parsedDueDate, doctorId);

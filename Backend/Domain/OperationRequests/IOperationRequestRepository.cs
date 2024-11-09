@@ -1,7 +1,9 @@
+using System.ComponentModel;
 using Backend.Domain.Users.ValueObjects;
 using DDDSample1.Domain.OperationsType;
 using DDDSample1.Domain.Patients;
 using DDDSample1.Domain.Shared;
+using DDDSample1.Domain.Staff;
 
 
 namespace DDDSample1.Domain.OperationRequests
@@ -21,7 +23,7 @@ namespace DDDSample1.Domain.OperationRequests
             Priority? priority,
             DateTime? dateRequested = null,
             DateTime? dueDate = null,
-            string doctorId = null);
+            LicenseNumber doctorId = null);
 
     }
 }

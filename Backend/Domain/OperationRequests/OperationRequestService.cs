@@ -229,7 +229,7 @@ namespace DDDSample1.OperationRequests
             Priority priority,
             DateTime? dateRequested,
             DateTime? dueDate,
-            string doctorId)
+            LicenseNumber doctorId)
         {
             var requests = await _operationRequestRepository.SearchOperationRequestsAsync(
                 firstName, lastName, operationType, status, priority, dateRequested, dueDate, doctorId);

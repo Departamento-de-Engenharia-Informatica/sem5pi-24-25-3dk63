@@ -29,7 +29,7 @@ namespace DDDSample1.Domain
             this.Active = true;
 
             if(deadline == null) throw new BusinessRuleValidationException("Deadline is required");
-            this.deadline=  deadline;
+            this.deadline = new Deadline(deadline.Value.Date);
 
             if(priority == null) throw new BusinessRuleValidationException("Priority is required");
             this.priority = priority;
@@ -43,7 +43,7 @@ namespace DDDSample1.Domain
             if(licenseNumber == null) throw new BusinessRuleValidationException("License number is required");
             this.licenseNumber = licenseNumber;
 
-            this.createdDate = DateTime.Now;
+            this.createdDate = DateTime.Now.Date;
         }
 
         public void ChangeDeadLine(Deadline deadline)
