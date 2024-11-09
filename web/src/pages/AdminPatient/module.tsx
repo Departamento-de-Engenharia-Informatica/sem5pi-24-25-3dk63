@@ -91,6 +91,29 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     }
   };
 
+  const handleEdit = async (id: string) => {
+    const patientToEdit = patients.find(patient => patient.id === id);
+
+    if (patientToEdit) {
+      const fullName = patientToEdit["Full Name"].split(" ");
+      const firstName = fullName[0] || "";
+      const lastName = fullName.length > 1 ? fullName.slice(1).join(" ") : "";
+
+      setCreatingPatient({
+        ...patientToEdit,
+        firstName: { value: firstName },
+        lastName: { value: lastName },
+        dateOfBirth: { date: patientToEdit["Date of Birth"] },
+        gender: { gender: patientToEdit["Gender"] },
+        personalEmail: { value: patientToEdit["Personal Email"] },
+        phoneNumber: { number: patientToEdit["Contact Phone"] },
+        emergencyContact: { emergencyContact: patientToEdit["Emergency Contact"] },
+      });
+      setIsModalVisible(true);
+    }
+  };
+
+
   const handleDelete = (id: string) => {
     setPatientIdToDelete(id);
     setIsDialogVisible(true);
@@ -146,6 +169,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         phoneNumber: { number: `${countryCode}${phoneNumberPart}` },
       };
 
+      // Map the form dto to the patientRegister dto
       const patientDto = {
         dateOfBirth: {
           date: updatedPatient.dateOfBirth.date,
@@ -230,6 +254,7 @@ const searchPatients = async (query: Record<string, string>) => {
     currentPage,
     setCurrentPage,
     handleDelete,
+    handleEdit,
     isModalVisible,
     setIsModalVisible,
     countryOptions,

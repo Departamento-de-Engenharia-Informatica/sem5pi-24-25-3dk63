@@ -169,7 +169,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
         }
       }}
       onCancel={handleCancelDeactivate}
-      message="Are you sure you want to deactivate this operation type?"
+      message="Are you sure you want to deactivate this staff?"
     />
         </div>
   );
