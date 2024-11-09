@@ -55,9 +55,14 @@ function LoginPage() {
 
                 if (userRole === "Admin") {
                     navigate("/admin");
-                } else if (userRole === "Patient") {
+                } 
+                else if (userRole === "Patient") {
                     navigate("/patient");
-                } else {
+                } 
+                else if (userRole === "Doctor" || userRole === "Nurse" || userRole === "Technician") {
+                    navigate("/staff");
+                }
+                else {
                     navigate("/");
                 }
             } else {

@@ -5,5 +5,6 @@ export const TYPES = {
   staffService: Symbol.for("StaffService"),
   operationTypeService: Symbol.for("OperationTypeService"),
   specializationsService: Symbol.for("SpecializationService"),
+  operationRequestService: Symbol.for("OperationRequestService"),
   api: Symbol.for("Api"),
 };
