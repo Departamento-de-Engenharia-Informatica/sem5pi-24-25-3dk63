@@ -9,6 +9,7 @@ import SearchFilter from "@/components/SearchFilter";
 import DropdownMenu from "@/components/DropdownMenu";
 import Modal from "@/components/Modal";
 import Popup from "@/components/Popup";
+import Confirmation from "@/components/Confirmation";
 
 interface PatientListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -40,6 +41,9 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     itemsPerPage,
     popupMessage,
     setPopupMessage,
+    cancelDelete,
+    confirmDelete,
+    isDialogVisible,
   } = usePatientListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalPatients / itemsPerPage);
@@ -268,6 +272,12 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         isVisible={!!popupMessage}
         setIsVisible={() => setPopupMessage(null)}
         message={popupMessage}
+      />
+      <Confirmation
+        isVisible={isDialogVisible}
+        onConfirm={confirmDelete}
+        onCancel={cancelDelete}
+        message="Are you sure you want to delete this patient?"
       />
     </div>
   );

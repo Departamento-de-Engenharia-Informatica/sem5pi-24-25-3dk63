@@ -27,6 +27,8 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [phoneNumberPart, setPhoneNumberPart] = useState("");
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
   const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [patientIdToDelete, setPatientIdToDelete] = useState<string | null>(null);
 
   const itemsPerPage = 10;
 
@@ -89,19 +91,32 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this patient?")) {
+  const handleDelete = (id: string) => {
+    setPatientIdToDelete(id);
+    setIsDialogVisible(true);
+  };
+
+  const confirmDelete = async () => {
+    if (patientIdToDelete) {
       try {
-        await patientService.deletePatient(id);
-        setPatients((prev) => prev.filter((patient) => patient.id !== id));
+        await patientService.deletePatient(patientIdToDelete);
+        setPatients((prev) => prev.filter((patient) => patient.id !== patientIdToDelete));
         setAlertMessage("Patient deleted successfully.");
-        setPopupMessage("Patient deleted successfully..");
+        setPopupMessage("Patient deleted successfully.");
       } catch (error) {
         console.error("Error deleting patient:", error);
         setAlertMessage("Error deleting patient.");
         setPopupMessage("Error while deleting patient.");
+      } finally {
+        setIsDialogVisible(false);
+        setPatientIdToDelete(null);
       }
     }
+  };
+
+  const cancelDelete = () => {
+    setIsDialogVisible(false);
+    setPatientIdToDelete(null);
   };
 
   const handleAddPatient = () => {
@@ -233,5 +248,9 @@ const searchPatients = async (query: Record<string, string>) => {
     popupMessage,
     setPopupMessage,
     noDataMessage,
+    isDialogVisible,
+    setIsDialogVisible,
+    confirmDelete,
+    cancelDelete,
   };
 };
