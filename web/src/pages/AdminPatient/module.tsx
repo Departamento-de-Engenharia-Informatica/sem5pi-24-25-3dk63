@@ -87,7 +87,8 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     } finally {
       setLoading(false);
     }
-    };
+  };
+
   const handleEdit = async (id: string) => {
     const patientToEdit = patients.find(patient => patient.id === id);
 
@@ -177,10 +178,9 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         },
       };
 
-        console.log("Saving Patient:", patientDto);
-        await patientService.createPatient(patientDto);
-        setPopupMessage("Patient created successfully.");
-      }
+      console.log("Saving Patient:", patientDto);
+      await patientService.createPatient(patientDto);
+      setPopupMessage("Patient created successfully.");
       
       setIsModalVisible(false);
       fetchPatients();
