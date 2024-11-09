@@ -12,5 +12,6 @@ namespace DDDSample1.Domain.Patients
         public Email personalEmail { get; set; }
         public Name name { get; set; }
         public PhoneNumber phoneNumber { get; set; }
+        public MedicalHistory medicalHistory { get; set; }
     }
 }

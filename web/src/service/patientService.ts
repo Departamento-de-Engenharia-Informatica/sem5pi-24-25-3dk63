@@ -30,12 +30,8 @@ export class PatientService implements IPatientService {
   }
 
   async updatePatient(id: string, updatedData: Partial<PatientUpdateDTO>): Promise<void> {
-    const patientUpdateDto: PatientUpdateDTO = {
-      id: { value: id },
-      ...updatedData,
-    };
-
-    await this.http.patch(`/patients/${id}`, patientUpdateDto);
+    await this.http.patch(`/patients/${id}`, updatedData);
+    console.log("Patient updated:", id);
   }
 
   async createPatient(patientData: RegisterPatientDTO): Promise<PatientUser> {

@@ -11,11 +11,7 @@ import Modal from "@/components/Modal";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
 
-interface PatientListProps {
-  setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
-}
-
-const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
+const PatientList: React.FC = () => {
   const {
     patients,
     loading,
@@ -45,7 +41,8 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
     cancelDelete,
     confirmDelete,
     isDialogVisible,
-  } = usePatientListModule(setAlertMessage);
+    alertMessage,
+  } = usePatientListModule();
 
   const totalPages = Math.ceil(totalPatients / itemsPerPage);
 
@@ -223,7 +220,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Phone Number</label>
             <div className="flex mt-1">
               <select
-                value={countryOptions.find(option => creatingPatient?.phoneNumber?.number.startsWith(option.code))?.code || countryCode}
+                value={countryCode}
                 onChange={(e) => setCountryCode(e.target.value)}
                 className="w-1/4 border border-gray-300 rounded-l-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
               >
@@ -236,7 +233,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
 
               <input
                 type="tel"
-                value={creatingPatient?.phoneNumber?.number.replace(countryCode, '') || phoneNumberPart}
+                value={phoneNumberPart}
                 onChange={(e) => {
                   const inputValue = e.target.value.trim();
                   if (/^\d*$/.test(inputValue)) {
@@ -266,11 +263,11 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             {/* MEDICAL HISTORY */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Medical History</label>
             <textarea
-              value={creatingPatient?.medicalHistory || ""}
+              value={creatingPatient?.medicalHistory?.medicalHistory || ""}
               onChange={(e) =>
                 setCreatingPatient((prev: any) => ({
                   ...prev,
-                  medicalHistory: e.target.value,
+                  medicalHistory: { medicalHistory: e.target.value },
                 }))
               }
               placeholder="Enter medical history"
@@ -284,6 +281,12 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
               Save
             </button>
           </div>
+
+          {alertMessage && (
+            <div className="mb-4">
+              <Alert type="warning" message={alertMessage} />
+            </div>
+          )}
         </Modal>
       )}
       <Popup

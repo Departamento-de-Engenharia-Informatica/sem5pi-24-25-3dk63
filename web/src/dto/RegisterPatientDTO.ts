@@ -22,5 +22,8 @@ export interface RegisterPatientDTO {
     phoneNumber: {
       number: string;
     };
+    medicalHistory: {
+      medicalHistory: string;
+    };
   }
   

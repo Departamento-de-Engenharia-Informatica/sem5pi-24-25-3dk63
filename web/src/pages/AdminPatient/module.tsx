@@ -3,8 +3,9 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
+import React from "react";
 
-export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
+export const usePatientListModule = () => {
 
   const countryOptions = [
     { code: "+351" },
@@ -29,6 +30,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [patientIdToDelete, setPatientIdToDelete] = useState<string | null>(null);
+  const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
 
   const itemsPerPage = 10;
 
@@ -65,6 +67,8 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
       const filteredData = patientsData.map((patientUser) => ({
         "Medical Record Number": patientUser.id.value,
+        firstName: patientUser.name.firstName,
+        lastName: patientUser.name.lastName,
         "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
         "Personal Email": patientUser.personalEmail.value,
         "IAM Email": patientUser.iamEmail.value,
@@ -73,6 +77,8 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         "Contact Phone": patientUser.phoneNumber.number,
         Active: patientUser.active ? "Yes" : "No",
         id: patientUser.id.value,
+        "Emergency Contact": patientUser.emergencyContact.emergencyContact,
+        "Medical History": patientUser.medicalHistory.medicalHistory,
       }));
 
       if (filteredData.length === 0) {
@@ -93,14 +99,15 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
   const handleEdit = async (id: string) => {
     const patientToEdit = patients.find(patient => patient.id === id);
-
+  
     if (patientToEdit) {
+      // First, prepare creatingPatient without phone number or country code logic
       const fullName = patientToEdit["Full Name"].split(" ");
       const firstName = fullName[0] || "";
       const lastName = fullName.length > 1 ? fullName.slice(1).join(" ") : "";
-
+  
       setCreatingPatient({
-        ...patientToEdit,
+        id: patientToEdit.id,
         firstName: { value: firstName },
         lastName: { value: lastName },
         dateOfBirth: { date: patientToEdit["Date of Birth"] },
@@ -108,8 +115,22 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
         personalEmail: { value: patientToEdit["Personal Email"] },
         phoneNumber: { number: patientToEdit["Contact Phone"] },
         emergencyContact: { emergencyContact: patientToEdit["Emergency Contact"] },
+        medicalHistory: { medicalHistory: patientToEdit["Medical History"] },
       });
+  
       setIsModalVisible(true);
+  
+      // Show phone number when editing
+      const phoneNumber = patientToEdit["Contact Phone"] || "";
+      const matchedCountry = countryOptions.find((option) =>
+        phoneNumber.startsWith(option.code)
+      );
+      
+      const countryCode = matchedCountry ? matchedCountry.code : countryOptions[0].code;
+      const phoneNumberPart = matchedCountry ? phoneNumber.replace(matchedCountry.code, "") : "";
+  
+      setCountryCode(countryCode);
+      setPhoneNumberPart(phoneNumberPart);
     }
   };
 
@@ -152,6 +173,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
       personalEmail: { value: "" },
       phoneNumber: { number: "" },
       emergencyContact: { emergencyContact: "" },
+      medicalHistory: { medicalHistory: ""},
     };
     console.log("New Patient Form:", patientFormDto);
 
@@ -161,48 +183,104 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
   const savePatient = async () => {
     if (!creatingPatient) {
-      return;
+        return;
     }
+
+    const isEdit = !!creatingPatient.id;
+
     try {
-      const updatedPatient = {
-        ...creatingPatient,
-        phoneNumber: { number: `${countryCode}${phoneNumberPart}` },
-      };
+        const updatedPatient = {
+            ...creatingPatient,
+            phoneNumber: { number: `${countryCode}${phoneNumberPart}` },
+        };
 
-      // Map the form dto to the patientRegister dto
-      const patientDto = {
-        dateOfBirth: {
-          date: updatedPatient.dateOfBirth.date,
-        },
-        gender: {
-          gender: updatedPatient.gender.gender,
-        },
-        emergencyContact: {
-          emergencyContact: updatedPatient.emergencyContact.emergencyContact,
-        },
-        appointmentHistoryList: [],
-        personalEmail: {
-          value: updatedPatient.personalEmail.value,
-        },
-        name: {
-          firstName: updatedPatient.firstName.value,
-          lastName: updatedPatient.lastName.value,
-        },
-        phoneNumber: {
-          number: updatedPatient.phoneNumber.number,
-        },
-      };
+        let dto;
+        const sensitiveDataUpdated = false;
 
-      console.log("Saving Patient:", patientDto);
-      await patientService.createPatient(patientDto);
-      window.confirm("Patient created successfully.");
-      setIsModalVisible(false);
-      fetchPatients();
+        if (isEdit) {
+            const patientToEdit = patients.find(patient => patient.id === creatingPatient.id);
+
+            dto = buildUpdateDto(patientToEdit, updatedPatient, sensitiveDataUpdated);
+
+            if (dto) {
+              console.log("Updating Patient:", dto);
+
+              setAlertMessage("Updating...");
+              await patientService.updatePatient(dto.id.value, dto);
+              setAlertMessage(null);
+
+              sensitiveDataUpdated ? setPopupMessage("Sensitive data was edited. Please check your email for the changes made.") 
+                                   : setPopupMessage("Patient updated successfully.");
+            } else {
+              setPopupMessage("No changes detected.");
+            }
+        } else {
+            dto = buildCreateDto(updatedPatient);
+            console.log("Saving Patient:", dto);
+            await patientService.createPatient(dto);
+            setPopupMessage("Patient created successfully.");
+        }
+
+        setIsModalVisible(false);
+        fetchPatients();
     } catch (error) {
-      console.error("Error creating Patient:", error);
-      window.confirm("Error creating Patient.");
+        console.error(isEdit ? "Error updating patient:" : "Error creating patient:", error);
+        setPopupMessage(isEdit ? "Error updating patient." : "Error creating patient.");
     }
   };
+
+  const buildUpdateDto = (patientToEdit: any, updatedPatient: any, sensitiveDataUpdated: boolean) => {
+    const updateDto: any = { id: { value: patientToEdit.id },
+                             personalEmail: { value: patientToEdit["Personal Email"] } };
+
+    if (updatedPatient.firstName?.value !== patientToEdit.firstName) {
+        updateDto.name = {
+            firstName: updatedPatient.firstName.value,
+            lastName: patientToEdit.lastName,
+        };
+    }
+
+    if (updatedPatient.lastName?.value !== patientToEdit.lastName) {
+        updateDto.name = {
+          firstName: patientToEdit.firstName,
+          lastName: updatedPatient.lastName.value,
+      };
+    }
+
+    if (updatedPatient.personalEmail?.value !== patientToEdit["Personal Email"]) {
+        updateDto.email = { value: updatedPatient.personalEmail.value };
+        sensitiveDataUpdated = true;
+    }
+
+    if (updatedPatient.emergencyContact?.emergencyContact !== patientToEdit["Emergency Contact"]) {
+        updateDto.emergencyContact = { emergencyContact: updatedPatient.emergencyContact.emergencyContact };
+        sensitiveDataUpdated = true;
+    }
+
+    if (updatedPatient.phoneNumber?.number !== patientToEdit["Contact Phone"]) {
+        updateDto.phoneNumber = { number: updatedPatient.phoneNumber.number };
+    }
+
+    if (updatedPatient.medicalHistory?.medicalHistory !== patientToEdit["Medical History"]) {
+        updateDto.medicalHistory = { medicalHistory: updatedPatient.medicalHistory.medicalHistory };
+    }
+
+    return Object.keys(updateDto).length > 2 ? updateDto : null;
+  };
+
+  const buildCreateDto = (updatedPatient: any) => {
+      return {
+          dateOfBirth: { date: updatedPatient.dateOfBirth.date },
+          gender: { gender: updatedPatient.gender.gender },
+          emergencyContact: { emergencyContact: updatedPatient.emergencyContact.emergencyContact },
+          appointmentHistoryList: [],
+          personalEmail: { value: updatedPatient.personalEmail.value },
+          name: { firstName: updatedPatient.firstName.value, lastName: updatedPatient.lastName.value },
+          phoneNumber: { number: updatedPatient.phoneNumber.number },
+          medicalHistory: { medicalHistory: updatedPatient.medicalHistory.medicalHistory },
+      };
+  };
+
 
 const searchPatients = async (query: Record<string, string>) => {
   setLoading(true);
@@ -216,6 +294,8 @@ const searchPatients = async (query: Record<string, string>) => {
 
     const filteredData = patientsData.map((patientUser) => ({
       "Medical Record Number": patientUser.id.value,
+      firstName: patientUser.name.firstName,
+      lastName: patientUser.name.lastName,
       "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
       "Personal Email": patientUser.personalEmail.value,
       "IAM Email": patientUser.iamEmail.value,
@@ -224,6 +304,8 @@ const searchPatients = async (query: Record<string, string>) => {
       "Contact Phone": patientUser.phoneNumber.number,
       Active: patientUser.active ? "Yes" : "No",
       id: patientUser.id.value,
+      "Emergency Contact": patientUser.emergencyContact.emergencyContact,
+      "Medical History": patientUser.medicalHistory.medicalHistory,
     }));
 
     if (filteredData.length === 0) {
@@ -277,5 +359,6 @@ const searchPatients = async (query: Record<string, string>) => {
     setIsDialogVisible,
     confirmDelete,
     cancelDelete,
+    alertMessage,
   };
 };

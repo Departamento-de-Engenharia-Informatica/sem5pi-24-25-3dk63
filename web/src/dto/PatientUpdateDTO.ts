@@ -4,16 +4,23 @@ export interface PatientUpdateDTO {
   id: {
     value: string;
   };
-  dateOfBirth?: {
-    date: string;
+  personalEmail: {
+    value: string;
   };
-  gender?: {
-    gender: string;
+  name?: {
+    firstName: string;
+    lastName: string;
   };
-  medicalHistory?: {
-    medicalHistory: string;
+  email?: {
+    value: string;
   };
   emergencyContact?: {
     emergencyContact: string;
+  };
+  phoneNumber?: {
+    number: string;
+  };
+  medicalHistory?: {
+    medicalHistory: string;
   };
 }

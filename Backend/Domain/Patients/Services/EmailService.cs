@@ -49,7 +49,7 @@ namespace DDDSample1.Domain
             }
             body += "</ul>";
 
-            await SendEmailAsync(dto.Email.ToString(), subject, body);
+            await SendEmailAsync(dto.personalEmail.ToString(), subject, body);
         }
 
 public async Task SendStaffNotificationEmailAsync(List<string> changedProperties, StaffUpdateDTO dto)

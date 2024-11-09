@@ -91,7 +91,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpPatch("{id}")]
-        //[Authorize(Roles="Admin")]
+        [Authorize(Roles="Admin")]
         public async Task<IActionResult> UpdatePatientProfile(PatientUpdateDTO updateDto)
         {
             if (!ModelState.IsValid)
