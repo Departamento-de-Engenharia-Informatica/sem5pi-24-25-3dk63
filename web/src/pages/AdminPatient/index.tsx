@@ -11,7 +11,11 @@ import Modal from "@/components/Modal";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
 
-const PatientList: React.FC = () => {
+interface PatientListProps {
+  setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
+}
+
+const PatientList: React.FC <PatientListProps> = ({ setAlertMessage }) => {
   const {
     patients,
     loading,
@@ -41,8 +45,8 @@ const PatientList: React.FC = () => {
     cancelDelete,
     confirmDelete,
     isDialogVisible,
-    alertMessage,
-  } = usePatientListModule();
+
+  } = usePatientListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalPatients / itemsPerPage);
 
@@ -281,12 +285,6 @@ const PatientList: React.FC = () => {
               Save
             </button>
           </div>
-
-          {alertMessage && (
-            <div className="mb-4">
-              <Alert type="warning" message={alertMessage} />
-            </div>
-          )}
         </Modal>
       )}
       <Popup

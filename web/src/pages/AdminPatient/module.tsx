@@ -5,7 +5,7 @@ import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 
-export const usePatientListModule = () => {
+export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
 
   const countryOptions = [
     { code: "+351" },
@@ -30,7 +30,6 @@ export const usePatientListModule = () => {
   const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [patientIdToDelete, setPatientIdToDelete] = useState<string | null>(null);
-  const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
 
   const itemsPerPage = 10;
 
@@ -99,13 +98,13 @@ export const usePatientListModule = () => {
 
   const handleEdit = async (id: string) => {
     const patientToEdit = patients.find(patient => patient.id === id);
-  
+
     if (patientToEdit) {
       // First, prepare creatingPatient without phone number or country code logic
       const fullName = patientToEdit["Full Name"].split(" ");
       const firstName = fullName[0] || "";
       const lastName = fullName.length > 1 ? fullName.slice(1).join(" ") : "";
-  
+
       setCreatingPatient({
         id: patientToEdit.id,
         firstName: { value: firstName },
@@ -117,18 +116,18 @@ export const usePatientListModule = () => {
         emergencyContact: { emergencyContact: patientToEdit["Emergency Contact"] },
         medicalHistory: { medicalHistory: patientToEdit["Medical History"] },
       });
-  
+
       setIsModalVisible(true);
-  
+
       // Show phone number when editing
       const phoneNumber = patientToEdit["Contact Phone"] || "";
       const matchedCountry = countryOptions.find((option) =>
         phoneNumber.startsWith(option.code)
       );
-      
+
       const countryCode = matchedCountry ? matchedCountry.code : countryOptions[0].code;
       const phoneNumberPart = matchedCountry ? phoneNumber.replace(matchedCountry.code, "") : "";
-  
+
       setCountryCode(countryCode);
       setPhoneNumberPart(phoneNumberPart);
     }
@@ -209,7 +208,7 @@ export const usePatientListModule = () => {
               await patientService.updatePatient(dto.id.value, dto);
               setAlertMessage(null);
 
-              sensitiveDataUpdated ? setPopupMessage("Sensitive data was edited. Please check your email for the changes made.") 
+              sensitiveDataUpdated ? setPopupMessage("Sensitive data was edited. Please check your email for the changes made.")
                                    : setPopupMessage("Patient updated successfully.");
             } else {
               setPopupMessage("No changes detected.");
@@ -359,6 +358,5 @@ const searchPatients = async (query: Record<string, string>) => {
     setIsDialogVisible,
     confirmDelete,
     cancelDelete,
-    alertMessage,
   };
 };
