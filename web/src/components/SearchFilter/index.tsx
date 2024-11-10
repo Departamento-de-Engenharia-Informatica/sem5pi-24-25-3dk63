@@ -7,9 +7,19 @@ interface SearchFilterProps {
   onSearch: (query: Record<string, string>) => void;
   results: any[];
   renderResult: (result: any) => JSX.Element;
+  fieldTypes?: Record<string, 'text' | 'select'>;
+  selectOptions?: Record<string, string[]>;
 }
 
-const SearchFilter: React.FC<SearchFilterProps> = ({ attributes, labels, onSearch, results, renderResult }) => {
+const SearchFilter: React.FC<SearchFilterProps> = ({
+  attributes,
+  labels,
+  onSearch,
+  results,
+  renderResult,
+  fieldTypes = {},
+  selectOptions = {}
+}) => {
   const [query, setQuery] = useState<Record<string, string>>({});
   const [expandedFields, setExpandedFields] = useState<Record<string, boolean>>({});
 
@@ -50,13 +60,29 @@ const SearchFilter: React.FC<SearchFilterProps> = ({ attributes, labels, onSearc
               {expandedFields[attribute] ? <FaChevronUp color="#4a5568" /> : <FaChevronDown color="#4a5568" />}
             </div>
             {expandedFields[attribute] && (
-              <input
-                type="text"
-                value={query[attribute] || ''}
-                className="mt-2 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                style={{ backgroundColor: "#ffffff", border: "1px solid #cbd5e0", color: "#2d3748" }}
-                onChange={e => handleChange(attribute, e.target.value)}
-              />
+              fieldTypes[attribute] === 'select' && selectOptions[attribute] ? (
+                <select
+                  value={query[attribute] || ''}
+                  onChange={e => handleChange(attribute, e.target.value)}
+                  className="mt-2 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  style={{ backgroundColor: "#ffffff", border: "1px solid #cbd5e0", color: "#2d3748" }}
+                >
+                  <option value="" disabled>Select</option>
+                  {selectOptions[attribute].map(option => (
+                    <option key={option} value={option}>
+                      {option}
+                    </option>
+                  ))}
+                </select>
+              ) : (
+                <input
+                  type="text"
+                  value={query[attribute] || ''}
+                  className="mt-2 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                  style={{ backgroundColor: "#ffffff", border: "1px solid #cbd5e0", color: "#2d3748" }}
+                  onChange={e => handleChange(attribute, e.target.value)}
+                />
+              )
             )}
           </div>
         ))}

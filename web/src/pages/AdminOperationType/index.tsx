@@ -65,17 +65,23 @@ const renderActions = (OTypes: any) => (
     <div className="relative">
       <HamburgerMenu options={menuOptions} />
       <div className="container mx-auto p-4">
-        <SearchFilter
-          attributes={['name', 'specialization', 'active']}
-          labels={{
-            name: 'Name',
-            specialization: 'Specialization',
-            active: 'Active',
-          }}
-          onSearch={searchOperationTypes}
-          results={[]}
-          renderResult={() => <></>}
-        />
+      <SearchFilter
+        attributes={['name', 'specialization', 'active']}
+        labels={{
+          name: 'Name',
+          specialization: 'Specialization',
+          active: 'Active',
+        }}
+        fieldTypes={{
+          active: 'select',
+        }}
+        selectOptions={{
+          active: ['Yes', 'No'],
+        }}
+        onSearch={searchOperationTypes}
+        results={[]}
+        renderResult={() => <></>}
+      />
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
         <div className="mb-4">
