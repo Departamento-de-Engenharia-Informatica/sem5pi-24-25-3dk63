@@ -9,7 +9,9 @@ import { OperationTypeService } from "@/service/operationTypeService";
 import {IOperationTypeService} from "@/service/IService/IOperationTypeService";
 import {SpecializationsService} from  "@/service/specializationsService";
 import {ISpecializationService} from "@/service/IService/ISpecializationService";
+import { IOperationRequestService } from "@/service/IService/IOperationRequestService";
 import { api } from "../service/api";
+import { OperationRequestService } from "@/service/operationRequestService";
 
 const container = new Container();
 
@@ -29,6 +31,8 @@ container.bind<IStaffService>(TYPES.staffService).to(StaffService);
 container.bind<IOperationTypeService>(TYPES.operationTypeService).to(OperationTypeService);
 
 container.bind<ISpecializationService>(TYPES.specializationsService).to(SpecializationsService);
+
+container.bind<IOperationRequestService>(TYPES.operationRequestService).to(OperationRequestService);
 
 
 export { container };

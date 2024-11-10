@@ -10,34 +10,53 @@ export class OperationRequestService implements IOperationRequestService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
 
   async getOperationRequests(): Promise<OperationRequest[]> {
-    const res = await this.http.get<OperationRequest[]>("/operationRequest");
-    return res.data;
+    try {
+      const res = await this.http.get<OperationRequest[]>("/OperationRequest/doctor", { 
+        headers: { 
+          withCredentials: "true"
+        }
+      });
+      console.log("Operation requests:", res.data);
+      return res.data;
+    } catch (error) {
+      console.error("Error fetching operation requests:", error);
+      throw new Error("Failed to fetch operation requests.");
+    }
   }
-
+  
   async searchOperationRequests(query: Record<string, string>): Promise<OperationRequest[]> {
     const queryString = new URLSearchParams(query).toString();
-    const res = await this.http.get<OperationRequest[]>(`/operationRequest/search?${queryString}`);
+    console.log("Query string:", queryString);
+  
+    const res = await this.http.get<OperationRequest[]>(`/OperationRequest/search?${queryString}`, { 
+      headers: { 
+        withCredentials: "true" 
+      }
+    });
+
+    console.log("Operation requests:", res.data);
+  
     return res.data;
   }
 
   async createOperationRequest(operationRequest: UpdateOperationRequestDTO): Promise<void> {
-    const res = await this.http.post("/operationRequest", operationRequest);
+    const res = await this.http.post("/OperationRequest", operationRequest);
     console.log("Operation request created:", res.data);
     window.confirm(res.data as string);
   }
 
   async deleteOperationRequest(id: string): Promise<void> {
-    await this.http.delete(`/operationRequest/${id}`);
+    await this.http.delete(`/OperationRequest/${id}`);
     console.log("Operation request deleted:", id);
   }
 
   async editOperationRequest(operationRequestId: string, operationRequest: UpdateOperationRequestDTO): Promise<void> {
-    const res = await this.http.patch(`/operationRequest/${operationRequestId}`, operationRequest);
+    const res = await this.http.patch(`/OperationRequest/${operationRequestId}`, operationRequest);
     console.log("Operation request edited:", res.data);
     window.confirm(res.data as string);
   }
 
   async deactivateOperationRequest(id: string): Promise<void> {
-    await this.http.patch(`/operationRequest/deactivate/${id}`, {});
+    await this.http.patch(`/OperationRequest/deactivate/${id}`, {});
   }
 }

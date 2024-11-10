@@ -4,9 +4,7 @@ import { TYPES } from "@/inversify/types";
 import { IOperationRequestService } from "@/service/IService/IOperationRequestService";
 import { useNavigate } from "react-router-dom";
 
-export const useOperationRequestListModule = (
-  setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>
-) => {
+export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const operationRequestService = useInjection<IOperationRequestService>(TYPES.operationRequestService);
 
@@ -14,122 +12,81 @@ export const useOperationRequestListModule = (
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalOperationRequests, setTotalOperationRequests] = useState<number>(0);
+  const [totalRequests, setTotalRequests] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [creatingOperationRequest, setCreatingOperationRequest] = useState<any | null>(null);
+  const [creatingRequest, setCreatingRequest] = useState<any | null>(null);
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
   const itemsPerPage = 10;
 
-  const headers = [
-    "Medical Record Number",
-    "Priority",
-    "License Number",
-    "Operation Type",
-    "Deadline",
-    "Active",
-    "Actions",
-  ];
+  const headers = ["Patient Name", "Operation Type", "Priority", "Assigned Staff", "Deadline", "Status", "Actions"];
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
-    { label: "Staff Menu", action: () => navigate("/staff") },
+    { label: "Admin Menu", action: () => navigate("/admin") },
   ];
 
-  const fetchOperationRequests = async () => {
+  const fetchRequests = async () => {
     setLoading(true);
     setError(null);
     try {
-      const requestsData = await operationRequestService.getOperationRequests();
-      setTotalOperationRequests(requestsData.length);
-
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const paginatedRequests = requestsData.slice(startIndex, startIndex + itemsPerPage);
+      const requestsData = await operationRequestService.searchOperationRequests({});
+      setTotalRequests(requestsData.length);
+      const paginatedRequests = requestsData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
       setOperationRequests(paginatedRequests);
+      console.log("Operation requests:", paginatedRequests);
     } catch (error: any) {
-      setError("Error fetching operation requests.");
-      setAlertMessage("Error fetching operation requests.");
+      console.error("Error fetching operation requests:", error);
+      setError("Failed to fetch operation requests.");
+      setAlertMessage("Failed to fetch operation requests.");
     } finally {
       setLoading(false);
     }
   };
 
   const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this operation request?")) {
+    if (window.confirm("Are you sure you want to delete this request?")) {
       try {
         await operationRequestService.deleteOperationRequest(id);
-        setOperationRequests((prev) => prev.filter((request) => request.id !== id));
-        setAlertMessage("Operation request deleted successfully.");
+        setOperationRequests((prev) => prev.filter((req) => req.id !== id));
         setPopupMessage("Operation request deleted successfully.");
       } catch (error) {
-        setAlertMessage("Error deleting operation request.");
+        console.error("Error deleting request:", error);
         setPopupMessage("Error deleting operation request.");
       }
     }
   };
 
-  const handleAddOperationRequest = () => {
-    setCreatingOperationRequest({
-      requesterName: "",
-      dateRequested: "",
-      status: "Pending",
-    });
-    setIsModalVisible(true);
-  };
-
-  const saveOperationRequest = async () => {
-    if (!creatingOperationRequest) return;
+  const saveRequest = async () => {
+    if (!creatingRequest) return;
     try {
-      await operationRequestService.createOperationRequest(creatingOperationRequest);
-      setAlertMessage("Operation request created successfully.");
+      await operationRequestService.createOperationRequest(creatingRequest);
       setIsModalVisible(false);
-      fetchOperationRequests();
+      fetchRequests();
     } catch (error) {
-      setAlertMessage("Error creating operation request.");
-      setPopupMessage("Error creating operation request.");
+      console.error("Error saving request:", error);
+      setPopupMessage("Error saving operation request.");
     }
   };
 
-  const searchOperationRequests = async (searchParams: any) => {
+  const searchRequests = async (query: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
     try {
-      const searchResults = await operationRequestService.searchOperationRequests(searchParams);
-      setOperationRequests(searchResults);
+      const requestsData = await operationRequestService.searchOperationRequests(query);
+      setOperationRequests(requestsData);
     } catch (error) {
+      setError("Error searching operation requests.");
+      console.error("Error searching requests:", error);
       setAlertMessage("Error searching operation requests.");
+    } finally {
+      setLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchOperationRequests();
+    fetchRequests();
   }, [currentPage]);
-
-  const renderActions = (request: any) => (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => handleDelete(request.id)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 text-sm"
-      >
-        Delete
-      </button>
-      <button
-        onClick={() => {
-          setCreatingOperationRequest(request);}}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 text-sm"
-      >
-        Edit
-      </button>
-    </div>
-  );
-
-  const tableData = operationRequests.map((request) => ({
-    "Medical Record Number": request.medicalRecordNumber || "N/A",
-    "Priority": request.priority || "N/A",
-    "License Number": request.licenseNumber || "N/A",
-    "Operation Type": request.operationType || "N/A",
-    "Deadline": request.deadline ? new Date(request.deadline).toLocaleDateString() : "N/A",
-    "Active": request.active ? "Yes" : "No",
-    "Actions": renderActions(request),
-  }));
 
   return {
     operationRequests,
@@ -139,18 +96,16 @@ export const useOperationRequestListModule = (
     menuOptions,
     currentPage,
     setCurrentPage,
-    searchOperationRequests,
     handleDelete,
     isModalVisible,
     setIsModalVisible,
-    handleAddOperationRequest,
-    creatingOperationRequest,
-    setCreatingOperationRequest,
-    saveOperationRequest,
-    totalOperationRequests,
+    creatingRequest,
+    setCreatingRequest,
+    saveRequest,
+    totalRequests,
     itemsPerPage,
+    searchRequests,
     popupMessage,
     setPopupMessage,
-    tableData,
   };
 };
