@@ -377,12 +377,16 @@ namespace DDDSample1.Patients
             List<PatientCompleteDTO> listDto = results.ConvertAll(r => new PatientCompleteDTO
             {
                 id = r.patient.Id,
-                name = r.user.Name,
+                userId = r.patient.UserId,
                 personalEmail = r.user.Email,
                 iamEmail = r.user.Username,
+                name = r.user.Name,
                 dateOfBirth = r.patient.dateOfBirth,
                 gender = r.patient.gender,
+                emergencyContact = r.patient.emergencyContact,
                 phoneNumber = r.user.PhoneNumber,
+                medicalHistory = r.patient.medicalHistory,
+                appointmentHistoryList = r.patient.appointmentHistoryList,
                 active = r.patient.Active
             });
             return listDto;
