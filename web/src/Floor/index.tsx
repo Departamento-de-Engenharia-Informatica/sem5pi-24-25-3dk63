@@ -1,19 +1,20 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import * as THREE from 'three';
 import Floor from './hospital';
 import './index.css';
 
 const Floor3D: React.FC = () => {
-    useEffect(() => {
-        let floor: any;
+    const floorRef = useRef<any>(null);
 
-        function initialize() {
-            floor = new Floor(
+    useEffect(() => {
+        if (!floorRef.current) {
+            // Inicialização do Floor
+            floorRef.current = new Floor(
                 {}, // General Parameters
                 { scale: new THREE.Vector3(1.0, 0.5, 1.0) }, // Maze parameters
                 {ambientLight: { intensity: 1.0 }, 
-                pointLight1: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(-3.5, 10.0, 2.5) }, 
-                pointLight2: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(3.5, 10.0, -2.5) } 
+                 pointLight1: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(-3.5, 10.0, 2.5) }, 
+                 pointLight2: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(3.5, 10.0, -2.5) }
                 }, // Lights parameters
                 {}, // Fog parameters
                 { view: 'fixed', multipleViewsViewport: new THREE.Vector4(0.0, 1.0, 0.45, 0.5) }, // Fixed view camera parameters
@@ -22,10 +23,11 @@ const Floor3D: React.FC = () => {
 
         function animate() {
             requestAnimationFrame(animate);
-            floor.update();
+            if (floorRef.current) {
+                floorRef.current.update();
+            }
         }
 
-        initialize();
         animate();
     }, []);
 

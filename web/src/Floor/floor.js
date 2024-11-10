@@ -16,7 +16,7 @@ import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
 * }
 */
 
-export default class Maze {
+export default class Floor {
     constructor(parameters) {
         this.onLoad = function (description) {
             this.objLoader = new OBJLoader();
@@ -187,7 +187,7 @@ export default class Maze {
         // Set the response type: the resource file will be parsed with JSON.parse()
         loader.setResponseType("json");
 
-        // Load a maze description resource file
+        // Load a floor description resource file
         loader.load(
             //Resource URL
             this.url,

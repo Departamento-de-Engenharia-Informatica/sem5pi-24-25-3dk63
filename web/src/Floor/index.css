@@ -3,21 +3,26 @@ body {
 }
 
 #parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -1;
+  }
+  
+  #views-panel {
     position: absolute;
     left: 50vw;
-}
-
-#views-panel {
-    position: absolute;
-    left: -50vmin;
-    top: -44.1vh;
+    top: 5vh; /* Ajuste a posição do painel conforme necessário */
     z-index: 1;
     width: 100vmin;
     text-align: center;
     font-family: Arial, sans-serif;
     font-size: 1.5vmin;
     color: white;
-}
+  }
+  
 
 table {
     margin-left: auto;

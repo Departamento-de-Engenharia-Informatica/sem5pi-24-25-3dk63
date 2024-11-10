@@ -1,12 +1,12 @@
 {
-    "groundTextureUrl": "src/Floor/textures/ground.jpg",
-    "wallTextureUrl": "src/Floor/textures/wall.jpg",
-    "doorTextureUrl": "src/Floor/textures/door.jpg",
-    "surgeryRoomDoorTextureUrl": "src/Floor/textures/surgeryDoor.png",
-    "camaTextureUrl": "src/Floor/textures/bed.obj",
-    "aderecoTextureUrl": "src/Floor/textures/adereco.obj",
-    "patientTextureUrl": "src/Floor/textures/ManColors.png",
-    "patientModelOBJUrl": "src/Floor/textures/Man.obj",
+    "groundTextureUrl": "/../src/Floor/textures/ground.jpg",
+    "wallTextureUrl": "/../src/Floor/textures/wall.jpg",
+    "doorTextureUrl": "/../src/Floor/textures/door.jpg",
+    "surgeryRoomDoorTextureUrl": "/../src/Floor/textures/surgeryDoor.png",
+    "camaTextureUrl": "/../src/Floor/textures/bed.obj",
+    "aderecoTextureUrl": "/../src/Floor/textures/adereco.obj",
+    "patientTextureUrl": "/../src/Floor/textures/ManColors.png",
+    "patientModelOBJUrl": "/../src/Floor/textures/Man.obj",
 
     "size": { "width": 11, "height": 12 },
     "map": [ 

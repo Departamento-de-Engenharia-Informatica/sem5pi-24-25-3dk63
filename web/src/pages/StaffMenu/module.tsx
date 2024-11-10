@@ -13,5 +13,13 @@ export const useStaffMenuModule = () => {
     { label: "Homepage", action: () => navigate("/") },
   ];
 
-  return { setAlertMessage, handleManageOperationRequests, menuOptions, alertMessage };
+  const handle3DFloor = () => {
+    navigate("/staff/floor");
+  };
+
+  return { setAlertMessage, 
+    handleManageOperationRequests,
+    menuOptions,
+     alertMessage,
+     handle3DFloor };
 };
