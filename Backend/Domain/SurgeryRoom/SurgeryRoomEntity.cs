@@ -12,8 +12,8 @@ namespace DDDSample1.Domain.SurgeryRooms
         public List<Equipment> AssignedEquipment { get; private set; }
         public RoomStatus CurrentStatus { get; private set; }
         public List<MaintenanceSlot> MaintenanceSlots { get; private set; }
-
         protected SurgeryRoomEntity() { }
+
 
         public SurgeryRoomEntity(RoomNumber roomNumber, RoomType type, Capacity capacity, List<Equipment> assignedEquipment, RoomStatus status)
         {

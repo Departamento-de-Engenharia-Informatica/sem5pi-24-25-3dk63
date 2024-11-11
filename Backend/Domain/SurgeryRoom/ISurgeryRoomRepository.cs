@@ -10,5 +10,7 @@ namespace Backend.Domain.SurgeryRoom
     {
         Task<List<SurgeryRoomEntity>> GetAvailableRoomsAsync(DateTime startTime, DateTime endTime);
 
+        Task<SurgeryRoomEntity> GetByRoomNumberAsync(string roomNumber);
+
     }
 }

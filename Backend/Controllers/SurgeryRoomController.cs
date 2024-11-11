@@ -19,10 +19,18 @@ namespace Backend.Controllers
 
         // GET: api/SurgeryRoom
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<SurgeryRoomDTO>>> GetAll()
+        public async Task<IActionResult> GetAllSurgeryRooms()
         {
+            try
+            {
+                var surgeryRooms = await _service.GetAllAsync();
 
-            return await _service.GetAllAsync();
+                return Ok(surgeryRooms);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message });
+            }
         }
 
         // GET: api/SurgeryRoom/5
@@ -39,12 +47,54 @@ namespace Backend.Controllers
             return Ok(surgeryRoom);
         }
 
-        // POST: api/SurgeryRoom
-        [HttpPost]
-        public async Task<ActionResult<SurgeryRoomDTO>> Create(CreatingSurgeryRoomDto dto)
+        // GET: api/SurgeryRoom/number/{roomNumber}
+        [HttpGet("number/{roomNumber}")]
+        public async Task<IActionResult> GetByRoomNumber(string roomNumber)
         {
-            var surgeryRoom = await _service.AddAsync(dto);
-            return CreatedAtAction(nameof(GetById), new { id = surgeryRoom.RoomId }, surgeryRoom);
+            try
+            {
+                var surgeryRoom = await _service.GetByRoomNumberAsync(roomNumber);
+
+                if (surgeryRoom == null)
+                {
+                    return NotFound(new { Message = "Surgery room not found." });
+                }
+
+                return Ok(surgeryRoom);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message });
+            }
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult<SurgeryRoomDTOStrings>> Create(CreatingSurgeryRoomDto dto)
+        {
+            try
+            {
+                if (dto == null)
+                {
+                    return BadRequest(new { Message = "Request body cannot be null." });
+                }
+
+                if (string.IsNullOrWhiteSpace(dto.RoomNumber?.Value))
+                {
+                    return BadRequest(new { Message = "RoomNumber is required." });
+                }
+                var surgeryRoom = await _service.AddAsync(dto);
+
+                return CreatedAtAction(nameof(GetById), new { id = surgeryRoom.RoomId }, surgeryRoom);
+            }
+            catch (ArgumentNullException ex)
+            {
+                return BadRequest(new { Message = "Invalid data: " + ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An unexpected error occurred: " + ex.Message });
+            }
         }
 
         // PUT: api/SurgeryRoom/5

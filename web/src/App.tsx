@@ -12,6 +12,7 @@ import PatientMedicalRecord from './pages/PatientMedicalRecord';
 import StaffPage from './pages/StaffMenu';
 import StaffOperationRequest from './pages/StaffOperationRequest';
 import ConfirmAccountDeletion from "./pages/ConfirmAccountDeletion";
+import SurgeryRoom from "./pages/SurgeryRoom";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
@@ -42,7 +43,9 @@ function App() {
                 <Route path="/confirm-account-deletion/:token" element={<ConfirmAccountDeletion />} />
                 <Route path="/admin/operation-type" element={<AdminOperationType setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
+                <Route path="/staff/surgery-rooms" element={<SurgeryRoom setAlertMessage={setAlertMessage} />} />
                 {<Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />}
+
               </Routes>
             </div>
           </main>

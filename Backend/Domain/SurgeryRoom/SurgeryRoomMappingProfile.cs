@@ -1,5 +1,5 @@
 using AutoMapper;
-using DDDSample1.Domain.SurgeryRooms; 
+using DDDSample1.Domain.SurgeryRooms;
 using Backend.Domain.SurgeryRoom;
 using DDDSample1.Domain.SurgeryRooms.ValueObjects;
 
@@ -13,7 +13,8 @@ public class SurgeryRoomMappingProfile : Profile
             .ForMember(dest => dest.Type, opt => opt.MapFrom(src => src.Type))
             .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => src.Capacity))
             .ForMember(dest => dest.AssignedEquipment, opt => opt.MapFrom(src => src.AssignedEquipment))
-            .ForMember(dest => dest.CurrentStatus, opt => opt.MapFrom(src => src.CurrentStatus));
+            .ForMember(dest => dest.CurrentStatus, opt => opt.MapFrom(src => src.CurrentStatus))
+            .ForMember(dest => dest.MaintenanceSlots, opt => opt.MapFrom(src => src.MaintenanceSlots));
 
         CreateMap<CreatingSurgeryRoomDto, SurgeryRoomEntity>()
             .ForMember(dest => dest.Id, opt => opt.MapFrom(src => new RoomId(Guid.NewGuid())))
@@ -22,6 +23,7 @@ public class SurgeryRoomMappingProfile : Profile
             .ForMember(dest => dest.Capacity, opt => opt.MapFrom(src => src.Capacity))
             .ForMember(dest => dest.AssignedEquipment, opt => opt.MapFrom(src => src.AssignedEquipment))
             .ForMember(dest => dest.CurrentStatus, opt => opt.MapFrom(src => src.CurrentStatus))
-            .ForMember(dest => dest.MaintenanceSlots, opt => opt.MapFrom(src => new List<MaintenanceSlot>()));
+            .ForMember(dest => dest.MaintenanceSlots, opt => opt.MapFrom(src => src.MaintenanceSlots)); 
     }
 }
+

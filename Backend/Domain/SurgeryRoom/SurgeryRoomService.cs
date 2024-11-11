@@ -21,11 +21,72 @@ namespace Backend.Domain.SurgeryRoom
             _mapper = mapper;
         }
 
-        public async Task<List<SurgeryRoomDTO>> GetAllAsync()
+        public async Task<IEnumerable<SurgeryRoomDTOStrings>> GetAllAsync()
         {
-            var list = await _surgeryRoomRepository.GetAllAsync();
-            return _mapper.Map<List<SurgeryRoomDTO>>(list);
+            var surgeryRoomEntities = await _surgeryRoomRepository.GetAllAsync();
+
+            var surgeryRoomDtos = surgeryRoomEntities.Select(surgeryRoomEntity => new SurgeryRoomDTOStrings
+            {
+                RoomId = surgeryRoomEntity.Id.AsGuid(),
+                RoomNumber = surgeryRoomEntity.RoomNumber.ToString(),
+                Type = surgeryRoomEntity.Type.ToString(),
+                Capacity = surgeryRoomEntity.Capacity.Value,
+                AssignedEquipment = surgeryRoomEntity.AssignedEquipment,
+                CurrentStatus = surgeryRoomEntity.CurrentStatus.Value.ToString(),
+                MaintenanceSlots = surgeryRoomEntity.MaintenanceSlots
+            });
+
+            return surgeryRoomDtos;
         }
+
+
+        public async Task<SurgeryRoomDTOStrings> GetByRoomNumberAsync(string roomNumber)
+        {
+            var surgeryRoomEntity = await _surgeryRoomRepository.GetByRoomNumberAsync(roomNumber);
+
+            if (surgeryRoomEntity == null)
+            {
+                return null;
+            }
+
+            return new SurgeryRoomDTOStrings
+            {
+                RoomId = surgeryRoomEntity.Id.AsGuid(),
+                RoomNumber = surgeryRoomEntity.RoomNumber.ToString(),
+                Type = surgeryRoomEntity.Type.ToString(),
+                Capacity = surgeryRoomEntity.Capacity.Value,
+                AssignedEquipment = surgeryRoomEntity.AssignedEquipment,
+                CurrentStatus = surgeryRoomEntity.CurrentStatus.Value.ToString(),
+                MaintenanceSlots = surgeryRoomEntity.MaintenanceSlots
+            };
+        }
+
+
+
+
+        public async Task<SurgeryRoomDTOStrings> GetAsync(Guid roomId)
+        {
+            var roomIdObj = new RoomId(roomId);
+
+            var surgeryRoomEntity = await _surgeryRoomRepository.GetByIdAsync(roomIdObj);
+
+            if (surgeryRoomEntity == null)
+            {
+                throw new KeyNotFoundException("Surgery room not found.");
+            }
+
+            return new SurgeryRoomDTOStrings
+            {
+                RoomId = surgeryRoomEntity.Id.AsGuid(),
+                RoomNumber = surgeryRoomEntity.RoomNumber.ToString(),
+                Type = surgeryRoomEntity.Type.Type.ToString(),
+                Capacity = surgeryRoomEntity.Capacity.Value,
+                AssignedEquipment = surgeryRoomEntity.AssignedEquipment,
+                CurrentStatus = surgeryRoomEntity.CurrentStatus.Value.ToString(), 
+                MaintenanceSlots = surgeryRoomEntity.MaintenanceSlots
+            };
+        }
+
 
         public async Task<SurgeryRoomDTO> GetByIdAsync(RoomId roomId)
         {

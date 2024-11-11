@@ -9,6 +9,10 @@ export const useStaffMenuModule = () => {
     navigate("/staff/operation-requests");
   };
 
+  const handleSurgeryRooms = () => {
+    navigate("/staff/surgery-rooms");
+  };
+
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
   ];
@@ -17,9 +21,10 @@ export const useStaffMenuModule = () => {
     navigate("/staff/floor");
   };
 
-  return { setAlertMessage, 
+  return { setAlertMessage,
     handleManageOperationRequests,
     menuOptions,
+    handleSurgeryRooms,
      alertMessage,
      handle3DFloor };
 };

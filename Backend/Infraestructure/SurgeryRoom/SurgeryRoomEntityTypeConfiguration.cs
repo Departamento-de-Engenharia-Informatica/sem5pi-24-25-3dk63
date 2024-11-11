@@ -18,6 +18,9 @@ namespace Backend.Infraestructure.SurgeryRoom
                     roomNumberString => new RoomNumber(roomNumberString))
                 .IsRequired();
 
+            builder.HasIndex(sr => sr.RoomNumber)
+                .IsUnique();
+
             builder.Property(sr => sr.Type)
                 .HasConversion(
                     type => type.Type.ToString(),
@@ -61,5 +64,6 @@ namespace Backend.Infraestructure.SurgeryRoom
                     .IsRequired();
             });
         }
+
     }
 }

@@ -187,7 +187,10 @@ namespace DDDSample1
             // Unit of Work
             services.AddTransient<IUnitOfWork, UnitOfWork>();
 
-
+            // Surgery Room Services
+            services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
+            services.AddTransient<SurgeryRoomService>();
+            
             //Specialization services
             services.AddTransient<ISpecializationRepository, SpecializationRepository>();
             services.AddTransient<SpecializationService>();
@@ -201,9 +204,7 @@ namespace DDDSample1
             services.AddTransient<OperationTypeService>();
 
 
-            // Surgery Room Services
-            services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
-            services.AddTransient<SurgeryRoomService>();
+
 
             services.AddTransient<IOperationRequestRepository, OperationRequestRepository>();
             services.AddTransient<OperationRequestService>();
@@ -234,6 +235,7 @@ namespace DDDSample1
                 var logger = Log.ForContext<AuditService>();
                 return new AuditService(logger);
             });
+
         }
 
 

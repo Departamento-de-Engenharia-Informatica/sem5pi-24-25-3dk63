@@ -11,6 +11,7 @@ const OperationRequestMenu: React.FC = () => {
     menuOptions,
     alertMessage,
     handle3DFloor,
+    handleSurgeryRooms,
   } = useStaffMenuModule();
 
   return (
@@ -32,6 +33,9 @@ const OperationRequestMenu: React.FC = () => {
           </Button>
           <Button onClick={handle3DFloor} name="3d-floor">
             Open 3D floor visualization
+          </Button>
+          <Button onClick={handleSurgeryRooms} name="surgery-rooms">
+            View Surgery Rooms
           </Button>
         </div>
       </div>

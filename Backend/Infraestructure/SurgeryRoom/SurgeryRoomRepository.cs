@@ -20,6 +20,13 @@ namespace Backend.Infraestructure.SurgeryRoom
             _context = context;
         }
 
+        public async Task<SurgeryRoomEntity> GetByRoomNumberAsync(string roomNumber)
+        {
+            return await _context.SurgeryRooms
+                .FirstOrDefaultAsync(sr => sr.RoomNumber.ToString() == roomNumber);
+        }
+
+
 
         public async Task<List<SurgeryRoomEntity>> GetAvailableRoomsAsync(DateTime startTime, DateTime endTime)
         {
