@@ -3,7 +3,7 @@ import "reflect-metadata";
 import LoginPage from './pages/Login';
 import AdminPage from './pages/AdminMenu';
 import AdminPatient from './pages/AdminPatient';
-import PatientPage from './pages/PatientMenu/PatientMenu';
+import PatientPage from './pages/PatientMenu';
 import AdminStaff from './pages/AdminStaff';
 import SelfRegisterMenu from './pages/PatientSelfRegister';
 import AdminOperationType from './pages/AdminOperationType';

@@ -5,20 +5,21 @@ export interface OperationRequest {
     deadline: {
       value: string;
     };
-    priority: {
-      value: "Elective" | "Urgent" | "Emergency";
-    };
-    licenseNumber: {
+    patientName: {
       value: string;
     };
-    operationTypeId: {
+    assignedStaff: {
       id: string;
     };
-    medicalRecordNumber: {
+    status: {
+      active: boolean;
+    };
+    priority: {
       value: string;
     };
-    createdDate: string;
-    active: boolean;
+    operationType: {
+      id: string;
+    };
   
   }
   

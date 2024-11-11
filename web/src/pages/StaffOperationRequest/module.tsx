@@ -3,10 +3,11 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IOperationRequestService } from "@/service/IService/IOperationRequestService";
 import { useNavigate } from "react-router-dom";
+import React from "react";
+import { degToRad } from "three/src/math/MathUtils.js";
+import { format } from "path";
 
-export const useOperationRequestListModule = (
-  setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>
-) => {
+export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const operationRequestService = useInjection<IOperationRequestService>(TYPES.operationRequestService);
 
@@ -14,38 +15,53 @@ export const useOperationRequestListModule = (
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const [totalOperationRequests, setTotalOperationRequests] = useState<number>(0);
+  const [totalRequests, setTotalRequests] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [creatingOperationRequest, setCreatingOperationRequest] = useState<any | null>(null);
+  const [creatingRequest, setCreatingRequest] = useState<any | null>(null);
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
+  const [isDialogVisible, setIsDialogVisible] = useState(false);
+  const [requestIdToDelete, setRequestIdToDelete] = useState<string | null>(null);
+  
 
   const itemsPerPage = 10;
 
-  const headers = [
-    "Medical Record Number",
-    "Priority",
-    "License Number",
-    "Operation Type",
-    "Deadline",
-    "Active",
-    "Actions",
-  ];
+  const headers = ["Patient Name", "Operation Type", "Priority", "Assigned Staff", "Deadline", "Status", "Actions"];
 
   const menuOptions = [
     { label: "Homepage", action: () => navigate("/") },
-    { label: "Staff Menu", action: () => navigate("/staff") },
+    { label: "Admin Menu", action: () => navigate("/admin") },
   ];
+
+  const formatDate = (dateString: string) => {
+    const dateParts = dateString.split('T')[0];
+    console.log("Date parts: ", dateParts);
+  
+    const [year, month, day] = dateParts.split('-');
+  
+    return `${day}-${month}-${year}`;
+  };
+  
 
   const fetchOperationRequests = async () => {
     setLoading(true);
     setError(null);
     try {
-      const requestsData = await operationRequestService.getOperationRequests();
-      setTotalOperationRequests(requestsData.length);
+      const requestsData = await operationRequestService.searchOperationRequests({});
+      setTotalRequests(requestsData.length);
+
+      const filteredData = requestsData.map((request) => ({
+        "Patient Name": `${request.patientName}`,
+        "Operation Type": request.operationType,
+        Status: request.status,
+        Priority: request.priority,
+        Deadline : formatDate(request.deadline.toString()),
+        "Assigned Staff": request.assignedStaff,
+      }));
 
       const startIndex = (currentPage - 1) * itemsPerPage;
-      const paginatedRequests = requestsData.slice(startIndex, startIndex + itemsPerPage);
+      const paginatedRequests = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setOperationRequests(paginatedRequests);
+      console.log("Operation Requests: ", paginatedRequests);
     } catch (error: any) {
       setError("Error fetching operation requests.");
       setAlertMessage("Error fetching operation requests.");
@@ -54,48 +70,101 @@ export const useOperationRequestListModule = (
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (window.confirm("Are you sure you want to delete this operation request?")) {
+  const handleEdit = async (id: string) => {
+    const requestToEdit = operationRequests.find(request => request.id === id);
+    if (requestToEdit) {
+      setCreatingRequest({
+        id: requestToEdit.id,
+        patientName: requestToEdit["Patient Name"],
+        operationType: requestToEdit["Operation Type"],
+        dateRequested: { date: requestToEdit["Date Requested"] },
+        status: requestToEdit["Status"],
+      });
+      setIsModalVisible(true);
+    }
+  };
+
+  const handleDelete = (id: string) => {
+    setRequestIdToDelete(id);
+    setIsDialogVisible(true);
+  };
+
+  const confirmDelete = async () => {
+    if (requestIdToDelete) {
       try {
-        await operationRequestService.deleteOperationRequest(id);
-        setOperationRequests((prev) => prev.filter((request) => request.id !== id));
+        await operationRequestService.deleteOperationRequest(requestIdToDelete);
+        setOperationRequests(prev => prev.filter(request => request.id !== requestIdToDelete));
         setAlertMessage("Operation request deleted successfully.");
         setPopupMessage("Operation request deleted successfully.");
       } catch (error) {
         setAlertMessage("Error deleting operation request.");
-        setPopupMessage("Error deleting operation request.");
+        setPopupMessage("Error while deleting operation request.");
+      } finally {
+        setIsDialogVisible(false);
+        setRequestIdToDelete(null);
       }
     }
   };
 
-  const handleAddOperationRequest = () => {
-    setCreatingOperationRequest({
-      requesterName: "",
-      dateRequested: "",
-      status: "Pending",
+  const cancelDelete = () => {
+    setIsDialogVisible(false);
+    setRequestIdToDelete(null);
+  };
+
+  const handleAddRequest = () => {
+    setCreatingRequest({
+      patientName: "",
+      operationType: "",
+      dateRequested: { date: "" },
+      status: "",
     });
     setIsModalVisible(true);
   };
 
-  const saveOperationRequest = async () => {
-    if (!creatingOperationRequest) return;
-    try {
-      await operationRequestService.createOperationRequest(creatingOperationRequest);
-      setAlertMessage("Operation request created successfully.");
-      setIsModalVisible(false);
-      fetchOperationRequests();
-    } catch (error) {
-      setAlertMessage("Error creating operation request.");
-      setPopupMessage("Error creating operation request.");
+  const buildUpdateDto = (updatedRequest: any) => {
+    const updateDto: any = { id: updatedRequest.id };
+
+    if (updatedRequest.patientName !== updatedRequest.patientName) {
+      updateDto.patientName = updatedRequest.patientName;
     }
+
+    if (updatedRequest.operationType !== updatedRequest.operationType) {
+      updateDto.operationType = updatedRequest.operationType;
+    }
+
+    if (updatedRequest.status !== updatedRequest.status) {
+      updateDto.status = updatedRequest.status;
+    }
+
+    return Object.keys(updateDto).length > 1 ? updateDto : null;
   };
 
-  const searchOperationRequests = async (searchParams: any) => {
+  const buildCreateDto = (updatedRequest: any) => ({
+    patientName: updatedRequest.patientName,
+    operationType: updatedRequest.operationType,
+    dateRequested: { date: updatedRequest.dateRequested.date },
+    status: updatedRequest.status,
+  });
+
+  const searchOperationRequests = async (query: Record<string, string>) => {
+    setLoading(true);
+    setError(null);
+    setOperationRequests([]);
     try {
-      const searchResults = await operationRequestService.searchOperationRequests(searchParams);
-      setOperationRequests(searchResults);
+      const requestsData = await operationRequestService.searchOperationRequests(query);
+      const filteredData = requestsData.map((request) => ({
+        "Patient Name": `${request.patientName}`,
+        "Operation Type": request.operationType,
+        Status: request.status,
+        Priority: request.priority,
+        Deadline : formatDate(request.deadline.toString()),
+        "Assigned Staff": request.assignedStaff,
+      }));
+      setOperationRequests(filteredData);
     } catch (error) {
-      setAlertMessage("Error searching operation requests.");
+      setError("Error fetching operation requests.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -103,54 +172,30 @@ export const useOperationRequestListModule = (
     fetchOperationRequests();
   }, [currentPage]);
 
-  const renderActions = (request: any) => (
-    <div className="flex flex-wrap gap-2">
-      <button
-        onClick={() => handleDelete(request.id)}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition duration-300 text-sm"
-      >
-        Delete
-      </button>
-      <button
-        onClick={() => {
-          setCreatingOperationRequest(request);}}
-        className="flex-1 min-w-[100px] px-2 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition duration-300 text-sm"
-      >
-        Edit
-      </button>
-    </div>
-  );
-
-  const tableData = operationRequests.map((request) => ({
-    "Medical Record Number": request.medicalRecordNumber || "N/A",
-    "Priority": request.priority || "N/A",
-    "License Number": request.licenseNumber || "N/A",
-    "Operation Type": request.operationType || "N/A",
-    "Deadline": request.deadline ? new Date(request.deadline).toLocaleDateString() : "N/A",
-    "Active": request.active ? "Yes" : "No",
-    "Actions": renderActions(request),
-  }));
-
   return {
-    operationRequests,
     loading,
+    operationRequests,
     error,
-    headers,
-    menuOptions,
     currentPage,
-    setCurrentPage,
-    searchOperationRequests,
-    handleDelete,
+    totalRequests,
     isModalVisible,
-    setIsModalVisible,
-    handleAddOperationRequest,
-    creatingOperationRequest,
-    setCreatingOperationRequest,
-    saveOperationRequest,
-    totalOperationRequests,
-    itemsPerPage,
+    creatingRequest,
     popupMessage,
+    isDialogVisible,
+    requestIdToDelete,
+    handleEdit,
+    handleDelete,
+    confirmDelete,
+    cancelDelete,
+    handleAddRequest,
+    searchOperationRequests,
+    menuOptions,
+    headers,
+    setCurrentPage,
+    setIsModalVisible,
+    setCreatingRequest,
+    itemsPerPage,
     setPopupMessage,
-    tableData,
+
   };
 };

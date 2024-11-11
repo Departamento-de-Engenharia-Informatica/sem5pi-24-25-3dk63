@@ -24,6 +24,5 @@ namespace DDDSample1.Domain.OperationRequests
             DateTime? dateRequested = null,
             DateTime? dueDate = null,
             LicenseNumber doctorId = null);
-
     }
 }
