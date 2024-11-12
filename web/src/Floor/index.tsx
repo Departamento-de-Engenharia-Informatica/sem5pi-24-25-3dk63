@@ -12,8 +12,8 @@ const Floor3D: React.FC = () => {
             floorRef.current = new Floor(
                 {}, // General Parameters
                 { scale: new THREE.Vector3(1.0, 0.5, 1.0) }, // Maze parameters
-                {ambientLight: { intensity: 1.0 }, 
-                 pointLight1: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(-3.5, 10.0, 2.5) }, 
+                {ambientLight: { intensity: 1.0 },
+                 pointLight1: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(-3.5, 10.0, 2.5) },
                  pointLight2: { intensity: 50.0, distance: 20.0, position: new THREE.Vector3(3.5, 10.0, -2.5) }
                 }, // Lights parameters
                 {}, // Fog parameters
@@ -31,6 +31,9 @@ const Floor3D: React.FC = () => {
         animate();
     }, []);
 
+
+
+    
     return (
         <div id="parent">
             <div id="views-panel">
