@@ -1,0 +1,2 @@
+2024-11-12 12:31:13.729 +00:00 [INF] Patient 202411000003 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/12/2024 12:31:13 PM
+2024-11-12 12:31:13.750 +00:00 [INF] User 0d729568-1112-4108-a4b2-b9c3ba421d26 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/12/2024 12:31:13 PM

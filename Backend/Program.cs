@@ -17,7 +17,7 @@ namespace DDDSample1
                 {
                     webBuilder.UseContentRoot(Directory.GetCurrentDirectory());
                     webBuilder.UseStartup<Startup>();
-                    webBuilder.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001", "https://0.0.0.0:10409", "https://0.0.0.0:30409", "https://0.0.0.0:10409", "https://0.0.0.0:443");
+                    webBuilder.UseUrls("http://0.0.0.0:5000", "https://0.0.0.0:5001", "https://0.0.0.0:30409");
                 });
     }
 }
