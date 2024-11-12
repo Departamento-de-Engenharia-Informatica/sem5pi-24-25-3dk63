@@ -4,6 +4,7 @@ import type { HttpService } from "./IService/HttpService";
 import { IStaffService } from "./IService/IStaffService";
 import { StaffUser } from "@/model/StaffUser";
 import { PendingStaffChangesDTO } from "@/dto/PendingStaffChangesDTO";
+import { CreatingStaffDTO } from "@/dto/CreatingStaffDTO";
 @injectable()
 export class StaffService implements IStaffService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
@@ -12,6 +13,10 @@ export class StaffService implements IStaffService {
     const res = await this.http.get<StaffUser[]>("/staff/search");
 
     return res.data;
+  }
+
+  async addStaff(staff: CreatingStaffDTO): Promise<void> {
+    await this.http.post("/Staff", staff);
   }
 
   async searchStaffs(query: Record<string, string>): Promise<StaffUser[]> {

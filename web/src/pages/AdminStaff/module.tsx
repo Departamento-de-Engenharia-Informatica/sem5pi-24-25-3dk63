@@ -1,8 +1,16 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, act } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IStaffService } from "@/service/IService/IStaffService";
 import { useNavigate } from "react-router-dom";
+import { spec } from "node:test/reporters";
+import { set } from "node_modules/cypress/types/lodash";
+
+const countryOptions = [
+  { code: "+351" },
+  { code: "+1" },
+  { code: "+44" },
+];
 
 export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
@@ -13,15 +21,16 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalStaffs, setTotalStaffs] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [creatingStaff, setCreatingStaff] = useState<any | null>(null);
+  const [countryCode, setCountryCode] = useState(countryOptions[0].code);
+  const [phoneNumberPart, setPhoneNumberPart] = useState("");
   const [staffToEdit, setStaffToEdit] = useState<any | null>(null);
   const [licenseStaffToEdit, setLicenseToEdit] = useState<any | null>(null);
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
   const [confirmDeactivate, setConfirmDeactivate] = useState<(() => void) | null>(null);
   const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
 
-
-
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   const headers = [
     "License Number",
@@ -73,6 +82,66 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
       setLoading(false);
     }
   };
+
+  const handleAddStaff = () => {
+    console.log("Add new Staff");
+    
+    const staffFormDto = {
+      username: { value: "" },
+      email: { value: "" },
+      phoneNumber: { number: "" },
+      role: { value: "" },
+      firstName: { value: "" },
+      lastName: { value: "" },
+      specialization: { value: "" },
+      availabilitySlots: { value: "" },
+    };
+    
+    console.log("New Staff Form:", staffFormDto);
+  
+    setStaffToEdit(staffFormDto);
+    setIsModalVisible(true);
+  
+    setCreatingStaff(true);
+};
+
+const saveStaff = async () => {
+    if (!creatingStaff) {
+        return;
+    }
+
+    try {
+        const newStaff = {
+            ...creatingStaff,
+            phoneNumber: `${countryCode}${phoneNumberPart}`,
+        };
+
+        const dto = buildCreateStaffDto(newStaff);
+
+        await staffService.addStaff(dto);
+        
+        setPopupMessage("New staff created successfully.");
+
+        setIsModalVisible(false);
+
+        fetchStaffs();
+    } catch (error) {
+        console.error("Error creating new staff:", error);
+        setPopupMessage("Error creating new staff.");
+    }
+};
+
+const buildCreateStaffDto = (newStaff: any) => {
+    return {
+      licenseNumber: newStaff.licenseNumber,
+      specializationDescription: newStaff.specializationDescription,
+      email: newStaff.email,
+      role: newStaff.role,
+      phoneNumber: newStaff.phoneNumber,
+      firstName: newStaff.firstName,
+      lastName: newStaff.lastName,
+};
+}
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this staff?")) {
@@ -193,6 +262,15 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     itemsPerPage,
     isModalVisible,
     setIsModalVisible,
+    countryOptions,
+    countryCode,
+    setCountryCode,
+    phoneNumberPart,
+    setPhoneNumberPart,
+    handleAddStaff,
+    setCreatingStaff,
+    creatingStaff,
+    saveStaff,
     handleDelete,
     handleEdit,
     handleDeactivate,
