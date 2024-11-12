@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IOperationRequestService } from "@/service/IService/IOperationRequestService";
+import { IOperationTypeService } from "@/service/IService/IOperationTypeService";  // NEW: Service for operation types
+import { IPatientService } from "@/service/IService/IPatientService";  // NEW: Service for fetching patients
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { degToRad } from "three/src/math/MathUtils.js";
@@ -10,8 +12,12 @@ import { format } from "path";
 export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const operationRequestService = useInjection<IOperationRequestService>(TYPES.operationRequestService);
+  const operationTypeService = useInjection<IOperationTypeService>(TYPES.operationTypeService); // NEW: Inject operation type service
+  const patientService = useInjection<IPatientService>(TYPES.patientService); // NEW: Inject patient service
 
   const [operationRequests, setOperationRequests] = useState<any[]>([]);
+  const [patients, setPatients] = useState<any[]>([]);; // NEW: State to hold list of patients
+  const [operationTypes, setOperationTypes] = useState<any[]>([]);; // NEW: State for operation types
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -21,7 +27,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [requestIdToDelete, setRequestIdToDelete] = useState<string | null>(null);
-  
+  const [doctorSpecialization, setDoctorSpecialization] = useState<string>(""); // NEW: State for doctor's specialization
 
   const itemsPerPage = 10;
 
@@ -41,6 +47,9 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     return `${day}-${month}-${year}`;
   };
   
+  
+
+
 
   const fetchOperationRequests = async () => {
     setLoading(true);
@@ -54,7 +63,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         "Operation Type": request.operationType,
         Status: request.status,
         Priority: request.priority,
-        Deadline : formatDate(request.deadline.toString()),
+        Deadline: formatDate(request.deadline.toString()),
         "Assigned Staff": request.assignedStaff,
       }));
 
@@ -157,7 +166,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         "Operation Type": request.operationType,
         Status: request.status,
         Priority: request.priority,
-        Deadline : formatDate(request.deadline.toString()),
+        Deadline: formatDate(request.deadline.toString()),
         "Assigned Staff": request.assignedStaff,
       }));
       setOperationRequests(filteredData);
@@ -168,8 +177,59 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     }
   };
 
+  // Fetch operation types and patients
+  const fetchAdditionalData = async () => {
+    try {
+      setLoading(true);
+      const [operationTypesData, patientsData] = await Promise.all([
+        operationTypeService.getOperationTypes(),
+        patientService.getPatients(),
+      ]);
+      setOperationTypes(operationTypesData);
+      setPatients(patientsData);
+      setLoading(false);
+    } catch (error) {
+      setError("Failed to fetch additional data");
+    }
+  };
+
+  // Handle form submission
+  const handleSubmit = async () => {
+    try {
+      if (!creatingRequest.patientName || !creatingRequest.operationType || !creatingRequest.status) {
+        setAlertMessage("All fields are required");
+        return;
+      }
+
+      // Ensure operation type matches doctor's specialization
+      const doctorSpecializationMatch = operationTypes.some(
+        (op: any) => op.id === creatingRequest.operationType && op.specialization === doctorSpecialization
+      );
+      if (!doctorSpecializationMatch) {
+        setAlertMessage("The selected operation type does not match your specialization.");
+        return;
+      }
+
+      const dto = creatingRequest.id ? buildUpdateDto(creatingRequest) : buildCreateDto(creatingRequest);
+      // if (dto) {
+      //   if (creatingRequest.id) {
+      //     await operationRequestService.updateOperationRequest(dto);
+      //     setPopupMessage("Operation request updated successfully");
+      //   } else {
+      //     await operationRequestService.createOperationRequest(dto);
+      //     setPopupMessage("Operation request created successfully");
+      //   }
+      //   setIsModalVisible(false);
+      //   setCreatingRequest(null);
+      // }
+    } catch (error) {
+      setAlertMessage("Failed to submit operation request.");
+    }
+  };
+
   useEffect(() => {
     fetchOperationRequests();
+    fetchAdditionalData(); // Fetch patients and operation types when component mounts
   }, [currentPage]);
 
   return {
@@ -196,6 +256,8 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     setCreatingRequest,
     itemsPerPage,
     setPopupMessage,
-
+    handleSubmit, // NEW: Return the handleSubmit function
+    patients, // NEW: Return patients list
+    operationTypes, // NEW: Return operation types list
   };
 };

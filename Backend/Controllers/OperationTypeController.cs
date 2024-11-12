@@ -11,7 +11,6 @@ namespace DDDSample1.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class OperationTypeController : ControllerBase
     {
         private readonly OperationTypeService _service;
@@ -40,6 +39,7 @@ namespace DDDSample1.Controllers
 
         // GET: api/OperationType/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationTypeDTO>> GetById(Guid id)
         {
             var operation = await _service.GetByIdAsync(new OperationTypeId(id));
@@ -72,6 +72,7 @@ namespace DDDSample1.Controllers
 
         // PUT: api/OperationType/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<OperationTypeDTO>> Update(Guid id, OperationTypeDTO dto)
         {
             if (id != dto.Id)

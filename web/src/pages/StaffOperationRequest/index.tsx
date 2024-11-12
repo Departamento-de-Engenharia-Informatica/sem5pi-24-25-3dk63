@@ -38,11 +38,14 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
     isDialogVisible,
     confirmDelete,
     cancelDelete,
+    handleSubmit, // NEW: Handle form submission
+    patients, // NEW: List of patients to be selected
+    operationTypes, // NEW: List of operation types to validate against doctor's specialization
   } = useOperationRequestModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalRequests / itemsPerPage);
 
-  // Render dropdown actions for each request row
+  // Render actions for each request row
   const renderActions = (request: any) => {
     const options = [
       { 
@@ -56,12 +59,16 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
         className: "text-red-500 hover:text-red-700 transition duration-200" 
       },
     ];
-    return <DropdownMenu options={options} buttonLabel="Actions" />;
+    return (
+      <div className="flex flex-wrap gap-2">
+        <DropdownMenu options={options} buttonLabel="Actions" />
+      </div>
+    );
   };
 
   const tableData = operationRequests.map((request) => ({
     ...request,
-    actions: renderActions(request),
+    Actions: renderActions(request),
   }));
 
   useEffect(() => {
@@ -126,25 +133,29 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
           title={creatingRequest?.id ? "Edit Operation Request" : "Create Operation Request"}
         >
           <div className="p-4">
-            {/* Request ID */}
-            <label className="block text-sm font-medium text-gray-700 mt-4">Request ID</label>
-            <input
-              type="text"
-              value={creatingRequest?.requestID || ""}
+            {/* Patient Selection Dropdown */}
+            <label className="block text-sm font-medium text-gray-700 mt-4">Patient</label>
+            <select
+              value={creatingRequest?.patientId || ""}
               onChange={(e) =>
                 setCreatingRequest((prev: any) => ({
                   ...prev,
-                  requestID: e.target.value,
+                  patientId: e.target.value,
                 }))
               }
-              placeholder="Enter request ID"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
+            >
+              <option value="" disabled>Select Patient</option>
+              {patients.map((patient: any) => (
+                <option key={patient.id} value={patient.id}>
+                  {patient.firstName} {patient.lastName}
+                </option>
+              ))}
+            </select>
 
-            {/* Operation Type */}
+            {/* Operation Type Select */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Operation Type</label>
-            <input
-              type="text"
+            <select
               value={creatingRequest?.operationType || ""}
               onChange={(e) =>
                 setCreatingRequest((prev: any) => ({
@@ -152,9 +163,15 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
                   operationType: e.target.value,
                 }))
               }
-              placeholder="Enter operation type"
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
+            >
+              <option value="" disabled>Select Operation Type</option>
+              {operationTypes.map((operationType: any) => (
+                <option key={operationType.id} value={operationType.id}>
+                  {operationType.name}
+                </option>
+              ))}
+            </select>
 
             {/* Priority */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Priority</label>
@@ -174,21 +191,6 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
               <option value="Low">Low</option>
             </select>
 
-            {/* Assigned Staff */}
-            <label className="block text-sm font-medium text-gray-700 mt-4">Assigned Staff</label>
-            <input
-              type="text"
-              value={creatingRequest?.assignedStaff || ""}
-              onChange={(e) =>
-                setCreatingRequest((prev: any) => ({
-                  ...prev,
-                  assignedStaff: e.target.value,
-                }))
-              }
-              placeholder="Enter assigned staff"
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
-
             {/* Deadline */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Deadline</label>
             <input
@@ -203,27 +205,9 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
             />
 
-            {/* Status */}
-            <label className="block text-sm font-medium text-gray-700 mt-4">Status</label>
-            <select
-              value={creatingRequest?.status || ""}
-              onChange={(e) =>
-                setCreatingRequest((prev: any) => ({
-                  ...prev,
-                  status: e.target.value,
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            >
-              <option value="" disabled>Select Status</option>
-              <option value="Pending">Pending</option>
-              <option value="In Progress">In Progress</option>
-              <option value="Completed">Completed</option>
-            </select>
-
-            {/* Save Button */}
+            {/* Submit Button */}
             <button
-              onClick={() => {}}
+              onClick={handleSubmit} // NEW: Calls the submit handler to create or update the operation request
               className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
             >
               Save
@@ -232,7 +216,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
         </Modal>
       )}
 
-      {/* Popup */}
+      {/* Popup for messages */}
       <Popup
         isVisible={!!popupMessage}
         setIsVisible={() => setPopupMessage(null)}

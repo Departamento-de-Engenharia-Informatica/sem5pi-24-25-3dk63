@@ -22,17 +22,16 @@ namespace DDDSample1.Controllers
         private readonly OperationTypeService _2service;
         private readonly UserService _3service;
         private readonly StaffService _4service;
+        private readonly PatientService _5service;
 
-        public OperationRequestController(OperationRequestService service, OperationTypeService service2, UserService service3, StaffService service4)
+        public OperationRequestController(OperationRequestService service, OperationTypeService service2, UserService service3, StaffService service4, PatientService service5)
         {
             _service = service;
             _2service = service2;
             _3service = service3;
             _4service = service4;
+            _5service = service5;
         }
-
-        // GET: api/OperationRequest
-        [HttpGet("all")]
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<OperationRequestDTO>>> GetAll()
@@ -69,10 +68,12 @@ namespace DDDSample1.Controllers
             }
 
             var staff = await _4service.GetByLicenseNumberAsync(dto.LicenseNumber);
-
             if(staff == null) throw new BusinessRuleValidationException("Doctor not found");
-
             if(!staff.Active) throw new BusinessRuleValidationException("Doctor is inactive");
+
+            var patient = await _5service.GetByIdAsync(dto.MedicalRecordNumber);
+            if(patient == null) throw new BusinessRuleValidationException("Patient not found");
+            if(!patient.Active) throw new BusinessRuleValidationException("Patient is inactive");
 
             var operationRequest = await _service.AddAsync(dto);
 
