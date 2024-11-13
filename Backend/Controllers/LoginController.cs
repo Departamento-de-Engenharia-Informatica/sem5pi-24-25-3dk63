@@ -38,46 +38,57 @@ namespace DDDSample1.Presentation.Controllers
                 var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
                 var emailGoogle = payload.Email;
 
-                var userDto = await userService.checkIfAccountExists(emailGoogle);
+                var userDto = await userService.GetUserByUsernameAsync(emailGoogle);
 
+                // Check if the IAM email was found and the account is active
                 if (userDto == null || !userDto.Active)
                 {
-                    Console.WriteLine("Login failed: email not found.");
+                    Console.WriteLine("IAM email not found or inactive. Checking personal email.");
+                    userDto = await userService.checkIfAccountExists(emailGoogle);
 
-                    var dataProtectionProvider = HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
-                    var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
-                    var encryptedEmail = protector.Protect(emailGoogle);
-
-                    Console.WriteLine("Creating CustomCookie before any SignInAsync calls.");
-
-                    HttpContext.Response.Cookies.Append(".AspNetCore.CustomCookies", encryptedEmail, new CookieOptions
+                    // Return 302 if the patient is active and trying to login through personal email
+                    if (userDto.Role.Value == RoleType.Patient && userDto.Active)
                     {
-                        HttpOnly = true,
-                        Secure = true,
-                        Expires = DateTimeOffset.UtcNow.AddMinutes(60),
-                        SameSite = SameSiteMode.None,
-                        Path = "/"
-                    });
+                        return StatusCode(302, new { Message = "Patient cannot login with personal email." });
+                    }
 
-                    Console.WriteLine("CustomCookie has been appended to response.");
+                    // Check if the personal email was found and the account is active
+                    if (userDto == null || !userDto.Active)
+                    {
+                        Console.WriteLine("Personal email not found or inactive.");
+                        Console.WriteLine("Login failed: email not found.");
 
-                    return StatusCode(302, new { 
-                        Message = "This email is not registered in the system."
-                    });
+                        var dataProtectionProvider = HttpContext.RequestServices.GetRequiredService<IDataProtectionProvider>();
+                        var protector = dataProtectionProvider.CreateProtector("CustomCookieProtector");
+                        var encryptedEmail = protector.Protect(emailGoogle);
+
+                        Console.WriteLine("Creating CustomCookie before any SignInAsync calls.");
+
+                        HttpContext.Response.Cookies.Append(".AspNetCore.CustomCookies", encryptedEmail, new CookieOptions
+                        {
+                            HttpOnly = true,
+                            Secure = true,
+                            Expires = DateTimeOffset.UtcNow.AddMinutes(60),
+                            SameSite = SameSiteMode.None,
+                            Path = "/"
+                        });
+
+                        Console.WriteLine("CustomCookie has been appended to response.");
+
+                        return StatusCode(302, new { 
+                            Message = "This email is not registered in the system."
+                        });
+                    }
                 }
 
                 // Process login for an authenticated user
                 var claims = new List<Claim>
                 {
-                    new Claim(ClaimTypes.Email, emailGoogle)
+                    new Claim(ClaimTypes.Email, emailGoogle),
+                    new Claim(ClaimTypes.Role, userDto.Role.ToString()),
+                    new Claim("Active", userDto.Active ? "1" : "0"),
+                    new Claim("UserId", userDto.Id.ToString())
                 };
-
-                if (userDto != null)
-                { 
-                    claims.Add(new Claim(ClaimTypes.Role, userDto.Role.ToString()));
-                    claims.Add(new Claim("Active", userDto.Active ? "1" : "0"));
-                    claims.Add(new Claim("UserId", userDto.Id.ToString()));
-                }
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
