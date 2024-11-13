@@ -5,6 +5,8 @@
 @tailwind utilities;
 
 @layer base {
+
+  /* Definindo as variáveis CSS corretamente */
   :root {
     --text: #000000;
     --background: #e5fcff;
@@ -15,10 +17,14 @@
     --primary-500: #1a303e;
   }
 
+  /* Aplica a fonte "Archivo" ao corpo do texto */
   body {
     font-family: "Archivo", sans-serif;
+    background-color: var(--background);
+    color: var(--text);
   }
 
+  /* Aplica a fonte "Poppins" aos títulos */
   h1,
   h2,
   h3,
@@ -26,5 +32,15 @@
   h5,
   h6 {
     font-family: "Poppins", sans-serif;
+  }
+
+  /* Caso queira definir outras propriedades de estilo para o layout, como o padrão de margens ou padding */
+  * {
+    box-sizing: border-box;
+  }
+
+  /* Para garantir que links não tenham sublinhado por padrão */
+  a {
+    text-decoration: none;
   }
 }

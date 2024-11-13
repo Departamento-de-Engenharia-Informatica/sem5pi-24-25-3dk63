@@ -1,7 +1,16 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  mode : 'jit',
+  mode: 'jit',
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
+  safelist: [
+    // Aqui você pode adicionar as classes que o Tailwind deve "ignorar" ou que você quer garantir que ele aceite
+    "page:computeTangents",
+    "page:fromGeometry",
+    "page:getAttribute",
+    "page:intersectObject",
+    "page:light",
+    "page:Raycaster.intersectObject",
+  ],
   theme: {
     extend: {
       colors: {

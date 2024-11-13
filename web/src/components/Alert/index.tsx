@@ -1,4 +1,5 @@
 import { ErrorIcon, InfoIcon, SuccessIcon, WarningIcon } from "@/styles/Icons";
+import React from 'react';
 
 interface AlertProps {
   type?: "error" | "warning" | "info" | "success";

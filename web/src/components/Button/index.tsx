@@ -1,3 +1,5 @@
+import React from 'react';
+
 const backgrounds = {
   confirm: "bg-green-500 hover:bg-green-600 disabled:hover:bg-green-500",
   default: "bg-[#284b62] hover:bg-[#3a617d] disabled:hover:bg-[#284b62]",

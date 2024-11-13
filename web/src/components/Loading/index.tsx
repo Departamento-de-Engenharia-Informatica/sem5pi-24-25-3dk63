@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
 import { RepeatIcon } from "@/styles/Icons";
 import "react-loading-skeleton/dist/skeleton.css";
+import React from 'react';
 
 interface LoadingProps {
   loadingText?: boolean;

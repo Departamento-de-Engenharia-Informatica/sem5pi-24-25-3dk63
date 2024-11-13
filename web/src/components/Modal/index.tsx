@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { motion } from "framer-motion";
+import React from 'react';
 
 interface ModalProps {
   isVisible?: boolean;

@@ -2,6 +2,7 @@ import { GoogleLogin, GoogleOAuthProvider, CredentialResponse } from "@react-oau
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import logo from '@/assets/image.png';
+import React from 'react';
 
 function LoginPage() {
     const navigate = useNavigate();
@@ -55,10 +56,10 @@ function LoginPage() {
 
                 if (userRole === "Admin") {
                     navigate("/admin");
-                } 
+                }
                 else if (userRole === "Patient") {
                     navigate("/patient");
-                } 
+                }
                 else if (userRole === "Doctor" || userRole === "Nurse" || userRole === "Technician") {
                     navigate("/staff");
                 }
