@@ -2,18 +2,22 @@ import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
 
+const BACKEND_URL = 'https://localhost:5001';
+
 export default defineConfig({
-  plugins: [react({
-    jsxImportSource: 'react',
-  })],
-  base: './',
+  plugins: [react()],
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src'),
     },
   },
-  build: {
-    outDir: 'dist',
-    assetsDir: '',
+  server: {
+    proxy: {
+      '/api': {
+        target: BACKEND_URL,
+        changeOrigin: true,
+        secure: false,
+      },
+    },
   },
 });
