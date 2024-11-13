@@ -1,6 +1,6 @@
 [build]
   base = "web"
-  publish = "web/dist"
+  publish = "dist"
   command = "pnpm run build"
 
 [[redirects]]
