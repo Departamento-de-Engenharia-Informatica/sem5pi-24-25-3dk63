@@ -34,6 +34,20 @@ namespace DDDSample1.Infrastructure.Users
             return await _context.Users .FirstOrDefaultAsync(u => u.Email.Equals(email));
         }
 
+        public async Task<User> FindByUsernameOrEmailAsync(Email email)
+        {
+            var user = await _context.Users
+                .Where(u => u.Username.Value == email.Value || u.Email == email)
+                .FirstOrDefaultAsync();
+
+            if (user == null)
+            {
+                return null;
+            }
+
+            return user;
+        }
+
         public async Task<User> GetUserByConfirmationTokenAsync(string token)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.ConfirmationToken.Equals(token));
@@ -53,15 +67,8 @@ namespace DDDSample1.Infrastructure.Users
 
         public async Task<User> GetUserByUsernameAsync(Username username)
         {
-            var user = await _context.Users
+            return await _context.Users
                 .SingleOrDefaultAsync(u => u.Username.Equals(username));
-
-            if (user == null)
-            {
-                throw new InvalidOperationException($"User with username '{username}' not found.");
-            }
-
-            return user;
         }
 
         public async Task DeleteUserAsync(User user)
