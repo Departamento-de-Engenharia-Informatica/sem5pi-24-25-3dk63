@@ -1,0 +1,56 @@
+name: Frontend CI/CD
+
+on:
+  schedule:
+    - cron: "0 7 * * *"
+  # push:
+  #   branches: [main]
+  #   paths:
+  #     - "web/**"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: web/
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v2
+        with:
+          version: 8.10.5
+
+      - name: Setup Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+          cache: "pnpm"
+          cache-dependency-path: "**/pnpm-lock.yaml"
+
+      - name: Install packages
+        run: pnpm i --frozen-lockfile
+
+      - name: Build
+        run: |
+          export VITE_API_URL="https://lapr5.sytes.net:5001/api"
+          pnpm build
+
+      # - name: Cypress run tests
+      #   uses: cypress-io/github-action@v6
+      #   with:
+      #     working-directory: web/
+      #     build: pnpm build
+      #     start: pnpm start
+      #     browser: chrome
+
+      - name: Deploy to Netlify
+        env:
+          NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+          NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+        run: pnpm netlify deploy --dir=dist -p
