@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { ISurgeryRoomService } from "@/service/IService/ISurgeryRoomService";
-import { useNavigate } from "react-router-dom";
 
 export const useSurgeryRoomListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const surgeryRoomService = useInjection<ISurgeryRoomService>(TYPES.surgeryRoomService);
@@ -39,7 +38,11 @@ export const useSurgeryRoomListModule = (setAlertMessage: React.Dispatch<React.S
     } finally {
       setLoading(false);
     }
-  };
+  }
+
+  
+  
+  ;
 
   return {
     surgeryRooms,

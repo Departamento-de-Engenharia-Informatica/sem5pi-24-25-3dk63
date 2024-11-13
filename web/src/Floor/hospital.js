@@ -206,12 +206,6 @@ export default class Floor {
         this.zoom.step = 0.1;
         this.reset = document.getElementById("reset");
         this.resetAll = document.getElementById("reset-all");
-        /*this.helpPanel = document.getElementById("help-panel");
-        this.helpPanel.style.visibility = "hidden";*/
-        /*this.subwindowsPanel = document.getElementById("subwindows-panel");
-        this.subwindowsPanel.style.visibility = "hidden";
-        this.multipleViewsCheckBox = document.getElementById("multiple-views");
-        this.multipleViewsCheckBox.checked = false;*/
 
         // Set the active view camera (fixed view)
         this.setActiveViewCamera(this.fixedViewCamera);
@@ -221,7 +215,6 @@ export default class Floor {
 
         // Register the event handler to be called on window resize
         window.addEventListener("resize", event => this.windowResize(event));
-
 
         //RATO FUNCIONALIDADES COM A CAMERA
         // Register the event handler to be called on mouse down

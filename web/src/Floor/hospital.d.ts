@@ -4,7 +4,15 @@ declare class Floor {
     constructor(
         generalParams: object,
         mazeParams: { scale: THREE.Vector3 },
-        lightParams: { ambientLight: { intensity: number }, pointLight1: object, pointLight2: object },
+        lightParams: { 
+            ambientLight: { intensity: number }, 
+            directionalLight: { 
+                color: number, 
+                intensity: number, 
+                position: THREE.Vector3, 
+                target: THREE.Vector3 
+            } 
+        },
         fogParams: object,
         cameraParams: { view: string, multipleViewsViewport: THREE.Vector4 }
     );

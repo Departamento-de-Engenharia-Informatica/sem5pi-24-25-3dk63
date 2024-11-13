@@ -11,7 +11,6 @@
 // User interaction
 
 import * as THREE from "three";
-import Stats from "three/addons/libs/stats.module.js";
 import Orientation from "./orientation.js";
 import { generalData, hallData, lightsData, fogData, cameraData } from "./default_data.js";
 import { merge } from "./merge.js";
@@ -50,77 +49,6 @@ import UserInterface from "./user_interface.js";
  *  view: String,
  *  multipleViewsViewport: Vector4,
  *  target: Vector3,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- *
- * firstPersonViewCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
- *  target: Vector3,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- *
- * thirdPersonViewCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
- *  target: Vector3,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- *
- * topViewCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
- *  target: Vector3,
- *  initialOrientation: Orientation,
- *  orientationMin: Orientation,
- *  orientationMax: Orientation,
- *  initialDistance: Float,
- *  distanceMin: Float,
- *  distanceMax: Float,
- *  initialZoom: Float,
- *  zoomMin: Float,
- *  zoomMax: Float,
- *  initialFov: Float,
- *  near: Float,
- *  far: Float
- * }
- *
- * miniMapCameraParameters = {
- *  view: String,
- *  multipleViewsViewport: Vector4,
  *  initialOrientation: Orientation,
  *  orientationMin: Orientation,
  *  orientationMax: Orientation,
@@ -206,13 +134,6 @@ export default class Floor {
         this.zoom.step = 0.1;
         this.reset = document.getElementById("reset");
         this.resetAll = document.getElementById("reset-all");
-        /*this.helpPanel = document.getElementById("help-panel");
-        this.helpPanel.style.visibility = "hidden";*/
-        /*this.subwindowsPanel = document.getElementById("subwindows-panel");
-        this.subwindowsPanel.style.visibility = "hidden";
-        this.multipleViewsCheckBox = document.getElementById("multiple-views");
-        this.multipleViewsCheckBox.checked = false;*/
-
         // Set the active view camera (fixed view)
         this.setActiveViewCamera(this.fixedViewCamera);
 
