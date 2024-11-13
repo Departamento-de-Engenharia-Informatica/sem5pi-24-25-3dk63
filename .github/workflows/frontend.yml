@@ -53,4 +53,4 @@ jobs:
         env:
           NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
           NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
-        run: pnpm netlify deploy --dir=dist -p
+        run: pnpm netlify deploy --dir=web/dist -p

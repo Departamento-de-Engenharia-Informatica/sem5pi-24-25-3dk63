@@ -1,5 +1,9 @@
+[build]
+  base = "web"
+  publish = "web/dist"
+  command = "pnpm run build"
+
 [[redirects]]
-  from = "/*"
-  to = "/"
+  from = "/images/*"
+  to = "/images/:splat"
   status = 200
-  force = false
