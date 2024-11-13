@@ -5,6 +5,7 @@ import { IStaffService } from "@/service/IService/IStaffService";
 import { useNavigate } from "react-router-dom";
 import { spec } from "node:test/reporters";
 import { set } from "node_modules/cypress/types/lodash";
+import { Specialization } from "@/model/Specialization";
 
 const countryOptions = [
   { code: "+351" },
@@ -29,6 +30,8 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
   const [confirmDeactivate, setConfirmDeactivate] = useState<(() => void) | null>(null);
   const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
+  const [isEditing, setIsEditing] = useState(false);
+  const [specializations, setSpecializations] = useState<string[]>([]);
 
   const itemsPerPage = 5;
 
@@ -83,9 +86,25 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     }
   };
 
+  useEffect(() => {
+    const fetchSpecializations = async () => {
+      try {
+        const specializationsData = await staffService.getSpecializations();
+        setSpecializations(specializationsData);
+      } catch (error) {
+        console.error("Error fetching specializations:", error);
+        setAlertMessage("Error fetching specializations.");
+      }
+    };
+
+    fetchSpecializations();
+  }, [staffService, setAlertMessage]);
+
   const handleAddStaff = () => {
-    console.log("Add new Staff");
-    
+    setIsEditing(false);
+    setStaffToEdit(null);
+    setIsModalVisible(true);
+
     const staffFormDto = {
       username: { value: "" },
       email: { value: "" },
@@ -99,10 +118,6 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     
     console.log("New Staff Form:", staffFormDto);
   
-    setStaffToEdit(staffFormDto);
-    setIsModalVisible(true);
-  
-    setCreatingStaff(true);
 };
 
 const saveStaff = async () => {
@@ -114,9 +129,12 @@ const saveStaff = async () => {
         const newStaff = {
             ...creatingStaff,
             phoneNumber: `${countryCode}${phoneNumberPart}`,
+            specializationDescription: creatingStaff.specialization,
         };
 
         const dto = buildCreateStaffDto(newStaff);
+
+        console.log("Creating new staff:", dto);
 
         await staffService.addStaff(dto);
         
@@ -171,6 +189,7 @@ const buildCreateStaffDto = (newStaff: any) => {
     console.log("New staff to edit:", newStaff);
 
     setStaffToEdit(newStaff);
+    setIsEditing(true);
     setLicenseToEdit(staff.id);
     setIsModalVisible(true);
   };
@@ -278,6 +297,9 @@ const buildCreateStaffDto = (newStaff: any) => {
     setStaffToEdit,
     saveChanges,
     searchStaffs,
+    isEditing,
+    setIsEditing,
+    specializations,
     popupMessage,
     setPopupMessage,
     confirmDeactivate,

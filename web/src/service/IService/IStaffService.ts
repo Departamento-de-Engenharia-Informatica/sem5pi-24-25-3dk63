@@ -8,4 +8,5 @@ export interface IStaffService {
   deleteStaff(id: string): Promise<void>;
   editStaff(licenseNumber: string, staff: PendingStaffChangesDTO): Promise<void>;
   deactivateStaff(id: string): Promise<void>;
+  getSpecializations(): Promise<string[]>;
 }

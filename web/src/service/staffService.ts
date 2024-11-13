@@ -5,6 +5,7 @@ import { IStaffService } from "./IService/IStaffService";
 import { StaffUser } from "@/model/StaffUser";
 import { PendingStaffChangesDTO } from "@/dto/PendingStaffChangesDTO";
 import { CreatingStaffDTO } from "@/dto/CreatingStaffDTO";
+import { Specialization } from "@/model/Specialization";
 @injectable()
 export class StaffService implements IStaffService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
@@ -39,5 +40,12 @@ export class StaffService implements IStaffService {
 
   async deactivateStaff(id: string): Promise<void> {
     await this.http.patch(`/staff/deactivate/${id}`, {});
+  }
+
+  async getSpecializations(): Promise<string[]> {
+    const res = await this.http.get<Specialization[]>("/specialization");
+
+    return res.data.map((specialization) => specialization.description);
+
   }
 }

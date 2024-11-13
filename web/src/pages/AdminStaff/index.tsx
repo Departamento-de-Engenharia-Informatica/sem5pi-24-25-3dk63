@@ -37,6 +37,12 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     setCreatingStaff,
     creatingStaff,
     saveStaff,
+    isEditing,
+    setIsEditing,
+    staffToEdit,
+    setStaffToEdit,
+    saveChanges,
+    specializations,
     handleDelete,
     handleDeactivate,
     handleAddStaff,
@@ -89,56 +95,53 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     }
   }, [isModalVisible]);
 
-
   return (
     <div className="relative">
-  <HamburgerMenu options={menuOptions} />
-  <div className="container mx-auto p-4">
-    
-    <div className="mb-4">
-      <button
-        onClick={handleAddStaff}
-        className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
-      >
-        Add Staff
-      </button>
-    </div>
+      <HamburgerMenu options={menuOptions} />
+      <div className="container mx-auto p-4">
+        <div className="mb-4">
+          <button
+            onClick={handleAddStaff}
+            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
+          >
+            Add Staff
+          </button>
+        </div>
 
-    <div className="relative z-10">
-      <SearchFilter
-        attributes={['firstName', 'lastName', 'Email', 'Specialization']}
-        labels={{
-          firstName: 'First Name',
-          lastName: 'Last Name',
-          Email: 'Email',
-          Specialization: 'Specialization'
-        }}
-        onSearch={searchStaffs}
-        results={[]}
-        renderResult={() => <></>}
-      />
-    </div>
+        <div className="relative z-10">
+          <SearchFilter
+            attributes={['firstName', 'lastName', 'Email', 'Specialization']}
+            labels={{
+              firstName: 'First Name',
+              lastName: 'Last Name',
+              Email: 'Email',
+              Specialization: 'Specialization'
+            }}
+            onSearch={searchStaffs}
+            results={[]}
+            renderResult={() => <></>}
+          />
+        </div>
 
-    {/* Loading and Error States */}
-    {loading && <Loading loadingText />}
-    {error && <Alert type="error" message={error} />}
+        {/* Loading and Error States */}
+        {loading && <Loading loadingText />}
+        {error && <Alert type="error" message={error} />}
 
-    {/* Table Data */}
-    <div className="overflow-x-auto">
-      <Table headers={headers} data={tableData} />
-    </div>
+        {/* Table Data */}
+        <div className="overflow-x-auto">
+          <Table headers={headers} data={tableData} />
+        </div>
 
-    {/* Pagination */}
-    <Pagination
-      totalPages={totalPages}
-      currentPage={currentPage}
-      onPageChange={setCurrentPage}
-    />
-  </div>
+        {/* Pagination */}
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+        />
+      </div>
 
-
-      {/* Modal for adding a staff*/}
-      {isModalVisible && (
+      {/* Modal for adding staff */}
+      {isModalVisible && !isEditing && (
         <Modal
           isVisible={isModalVisible}
           setIsVisible={setIsModalVisible}
@@ -173,7 +176,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
             />
 
-            {/* License number */}
+            {/* License Number */}
             <label className="block text-sm font-medium text-gray-700 mt-4">License Number</label>
             <input
               type="text"
@@ -182,20 +185,6 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
                 setCreatingStaff((prev: any) => ({
                   ...prev,
                   licenseNumber: e.target.value,
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
-            />
-
-            {/* Specialization */}
-            <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
-            <input
-              type="text"
-              value={creatingStaff?.specializationDescription || ""}
-              onChange={(e) =>
-                setCreatingStaff((prev: any) => ({
-                  ...prev,
-                  specializationDescription: e.target.value,
                 }))
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
@@ -215,7 +204,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
             />
 
-               {/* Phone number */}
+            {/* Phone Number */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Phone Number</label>
             <div className="flex mt-1">
               <select
@@ -264,6 +253,26 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               <option value="Nurse">Nurse</option>
               <option value="Technician">Technician</option>
             </select>
+            
+            {/* Specialization */}
+            <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
+            <select
+              value={creatingStaff?.specialization || ""}
+              onChange={(e) =>
+                setCreatingStaff((prev: any) => ({
+                  ...prev,
+                  specialization: e.target.value,
+                }))
+              }
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
+            >
+              <option value="" disabled>Select specialization</option>
+              {specializations.map((description, index) => (
+                <option key={index} value={description}>
+                  {description}
+                </option>
+              ))}
+            </select>
 
             {/* Save Staff Button */}
             <button
@@ -276,6 +285,61 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
         </Modal>
       )}
 
+      {/* Modal for editing staff */}
+      {isModalVisible && isEditing && (
+        <Modal
+          isVisible={isModalVisible}
+          setIsVisible={setIsModalVisible}
+          title="Edit Staff Information"
+        >
+          <div className="p-6">
+            <label className="block text-sm font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              value={staffToEdit?.email?.value || ""}
+              onChange={(e) =>
+                setStaffToEdit((prev: any) => ({
+                  ...prev,
+                  email: { value: e.target.value },
+                }))
+              }
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
+            />
+            <label className="block text-sm font-medium text-gray-700 mt-4">Phone</label>
+            <input
+              type="text"
+              value={staffToEdit?.phoneNumber?.number || ""}
+              onChange={(e) =>
+                setStaffToEdit((prev: any) => ({
+                  ...prev,
+                  phoneNumber: { number: e.target.value },
+                }))
+              }
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
+            />
+            <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
+            <input
+              type="text"
+              value={staffToEdit?.specialization || ""}
+              onChange={(e) =>
+                setStaffToEdit((prev: any) => ({
+                  ...prev,
+                  specialization: e.target.value,
+                }))
+              }
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
+            />
+            <button
+              onClick={saveChanges}
+              className="mt-6 w-full bg-[#284b62] text-white font-semibold py-2 rounded-md hover:bg-opacity-80 transition duration-200"
+            >
+              Save Changes
+            </button>
+          </div>
+        </Modal>
+      )}
+
+      {/* Popup and Confirmation */}
       <Popup
         isVisible={!!popupMessage}
         setIsVisible={() => setPopupMessage(null)}
