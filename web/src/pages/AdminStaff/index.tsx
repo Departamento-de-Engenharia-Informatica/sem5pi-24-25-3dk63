@@ -145,7 +145,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
         <Modal
           isVisible={isModalVisible}
           setIsVisible={setIsModalVisible}
-          title="Add New Staff"
+          title="Add new staff"
         >
           <div className="p-6">
             {/* First name */}

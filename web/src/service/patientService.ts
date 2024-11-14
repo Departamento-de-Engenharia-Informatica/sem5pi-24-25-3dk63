@@ -7,6 +7,7 @@ import { PatientUser } from "@/model/PatientUser";
 import { RegisterPatientDTO } from "@/dto/RegisterPatientDTO";
 import { Patient } from "@/model/Patient";
 import { SelfRegisterPatientDTO } from "@/dto/SelfRegisterPatientDTO";
+import { UpdateProfileDTO } from "@/dto/UpdateProfileDTO";
 
 @injectable()
 export class PatientService implements IPatientService {
@@ -77,6 +78,13 @@ export class PatientService implements IPatientService {
     }
   }
   
-  
+  async updateProfile(data: UpdateProfileDTO): Promise<void> {
+    try {
+      console.log("Data to update profile:", data);
+      await this.http.patch("/patients/update", data, { headers: { withCredentials: "true" } });
+    } catch (error) {
+      throw new Error("Failed to update profile.");
+    }
+  }
   
 }
