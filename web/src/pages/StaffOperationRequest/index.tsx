@@ -249,7 +249,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             >
               <option value="" disabled>
-                Select Priority
+                Select priority
               </option> 
               <option value="Emergency">Emergency</option>
               <option value="Urgent">Urgent</option>
