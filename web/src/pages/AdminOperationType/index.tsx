@@ -30,6 +30,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     setIsModalVisible,
     handleDeactivate,
     handleAddOperationType,
+    handleEdit,
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
@@ -49,7 +50,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     const options = [
       {
         label: "Edit",
-        onClick: () => handleEdit(staff),
+        onClick: () => handleEdit(OTypes.id),
         className: "text-blue-500",
       },
       {
@@ -115,7 +116,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
         <Modal
           isVisible={isModalVisible}
           setIsVisible={setIsModalVisible}
-          title="Create New Operation Type"
+          title={creatingOperationType?.id ? "Edit Operation Type" : "Create New Operation Type"}
         >
           <div className="p-4">
             <label className="block text-sm font-medium text-gray-700">Name</label>
@@ -134,6 +135,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Preparation Time</label>
             <input
               type="number"
+              value={creatingOperationType?.preparationTime || ""}
               min="1"
               onKeyDown={(e) => {
                 if (e.key === "e" || e.key === "E") {
@@ -143,7 +145,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
-                  preparation: parseInt(e.target.value, 10),
+                  preparationTime: parseInt(e.target.value, 10),
                 }))
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
@@ -152,6 +154,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Surgery Time</label>
             <input
               type="number"
+              value={creatingOperationType?.surgeryTime || ""}
               min="1"
               onKeyDown={(e) => {
                 if (e.key === "e" || e.key === "E") {
@@ -161,7 +164,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
-                  surgery: parseInt(e.target.value, 10),
+                  surgeryTime: parseInt(e.target.value, 10),
                 }))
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
@@ -170,6 +173,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Cleaning Time</label>
             <input
               type="number"
+              value={creatingOperationType?.cleaningTime || ""}
               min="1"
               onKeyDown={(e) => {
                 if (e.key === "e" || e.key === "E") {
@@ -179,7 +183,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
-                  cleaning: parseInt(e.target.value, 10),
+                  cleaningTime: parseInt(e.target.value, 10),
                 }))
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
@@ -188,6 +192,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Required Staff</label>
             <input
               type="number"
+              value={creatingOperationType?.requiredStaff || ""}
               min="1"
               onKeyDown={(e) => {
                 if (e.key === "e" || e.key === "E") {
@@ -205,11 +210,11 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
 
           <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
             <select
-              value={creatingOperationType?.speciality || ""}
+              value={creatingOperationType?.specialization || ""}
               onChange={(e) =>
                 setCreatingOperationType((prev: any) => ({
                   ...prev,
-                  speciality: e.target.value,
+                  specialization: e.target.value,
                 }))
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"

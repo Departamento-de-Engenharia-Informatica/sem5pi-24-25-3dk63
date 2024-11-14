@@ -117,7 +117,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         setEditingRequest(null);
       }
     }
-  };  
+  };
 
   const handleDelete = (id: string) => {
     setRequestIdToDelete(id);
