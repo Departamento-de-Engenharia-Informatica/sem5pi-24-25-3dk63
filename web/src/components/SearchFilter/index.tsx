@@ -7,7 +7,7 @@ interface SearchFilterProps {
   onSearch: (query: Record<string, string>) => void;
   results: any[];
   renderResult: (result: any) => JSX.Element;
-  fieldTypes?: Record<string, 'text' | 'select'>;
+  fieldTypes?: Record<string, 'text' | 'select' | 'date'>;
   selectOptions?: Record<string, string[]>;
 }
 
@@ -74,6 +74,13 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                     </option>
                   ))}
                 </select>
+              ) : fieldTypes[attribute] === 'date' ? (
+                <input
+                  type="date"
+                  value={query[attribute] || ''}
+                  onChange={e => handleChange(attribute, e.target.value)}
+                  className="mt-2 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500 sm:text-sm"
+                />
               ) : (
                 <input
                   type="text"

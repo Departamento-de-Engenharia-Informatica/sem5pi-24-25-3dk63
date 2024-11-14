@@ -236,7 +236,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
             {/* Role */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Role</label>
             <select
-              value={creatingStaff?.role?.role || ""}
+              value={creatingStaff?.role || ""}
               disabled={!!creatingStaff?.id}
               onChange={(e) =>
                 setCreatingStaff((prev: any) => ({
@@ -253,6 +253,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               <option value="Nurse">Nurse</option>
               <option value="Technician">Technician</option>
             </select>
+
             
             {/* Specialization */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>

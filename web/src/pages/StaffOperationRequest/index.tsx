@@ -100,8 +100,12 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             operationType: 'Operation Type',
             status: 'Status',
             priority: 'Priority',
-            dateRequested: 'Request date (dd-MM-yyyy)',
-            dueDate: 'Deadline (dd-MM-yyyy)',
+            dateRequested: 'Request date',
+            dueDate: 'Deadline',
+          }}
+          fieldTypes={{
+            dateRequested: 'date',
+            dueDate: 'date'
           }}
           onSearch={searchOperationRequests}
           results={[]}
