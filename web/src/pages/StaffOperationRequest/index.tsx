@@ -113,6 +113,12 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
           fieldTypes={{
             dateRequested: "date",
             dueDate: "date",
+            status: "select",
+            priority: "select",
+          }}
+          selectOptions={{
+            status: ["Active", "Inactive"],
+            priority: ["Emergency", "Urgent", "Elective"],
           }}
           onSearch={searchOperationRequests}
           results={[]}
@@ -242,6 +248,9 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             >
+              <option value="" disabled>
+                Select Priority
+              </option> 
               <option value="Emergency">Emergency</option>
               <option value="Urgent">Urgent</option>
               <option value="Elective">Elective</option>
