@@ -4,6 +4,7 @@ import type { HttpService } from "./IService/HttpService";
 import { IOperationTypeService } from "./IService/IOperationTypeService";
 import { OperationType } from "@/model/OperationType";
 import { CreatingOperationTypeDTO } from "@/dto/CreatingOperationTypeDTO";
+import { UpdateOperationTypeDTO } from "@/dto/UpdateOperationTypeDTO";
 
 @injectable()
 export class OperationTypeService implements IOperationTypeService {
@@ -27,5 +28,9 @@ export class OperationTypeService implements IOperationTypeService {
     let queryString = new URLSearchParams(query).toString();
     let res = await this.http.get<OperationType[]>(`/OperationType/search?${queryString}`);
     return res.data;
+  }
+
+  async updateOperationType(operationType: UpdateOperationTypeDTO): Promise<void> {
+    await this.http.patch(`/OperationType/${operationType.Id}`, operationType);
   }
 }

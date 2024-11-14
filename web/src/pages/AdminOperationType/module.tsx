@@ -4,6 +4,7 @@ import { TYPES } from "@/inversify/types";
 import { IOperationTypeService } from "@/service/IService/IOperationTypeService";
 import { ISpecializationService } from "@/service/IService/ISpecializationService";
 import { useNavigate } from "react-router-dom";
+import { UpdateOperationTypeDTO } from "@/dto/UpdateOperationTypeDTO";
 
 export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
@@ -17,6 +18,8 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [totalOTypes, setTotalOTypes] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [creatingOperationType, setCreatingOperationType] = useState<any | null>(null);
+  const [editingOperationType, setEditingOperationType] = useState<any | null>(null);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [specializations, setSpecializations] = useState<any[]>([]);
   const [showActive, setShowActive] = useState<boolean>(true);
   const [showInactive, setShowInactive] = useState<boolean>(true);
@@ -87,6 +90,39 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     }
   };
 
+const buildOperationUpdateDTO = (originalRequest: any, updatedFields: any) => {
+  const updatedRequestDTO: UpdateOperationTypeDTO = { Id: originalRequest.Id };
+
+  if (updatedFields.name) updatedRequestDTO.Name = updatedFields.name;
+  if (updatedFields.requiredStaff) updatedRequestDTO.RequiredStaff = updatedFields.requiredStaff;
+  if (updatedFields.preparationTime) updatedRequestDTO.PreparationTime = updatedFields.preparationTime;
+  if (updatedFields.surgeryTime) updatedRequestDTO.SurgeryTime = updatedFields.surgeryTime;
+  if (updatedFields.cleaningTime) updatedRequestDTO.CleaningTime = updatedFields.cleaningTime;
+  if (updatedFields.speciality) updatedRequestDTO.Speciality = updatedFields.speciality;
+
+  return updatedRequestDTO;
+};
+
+const handleEdit = async (id: string) => {
+  fetchSpecializations();
+  const opTypeToEdit = OTypes.find((opType) => opType.id === id);
+
+  if (opTypeToEdit) {
+    setCreatingOperationType({
+      id: opTypeToEdit.id,
+      name: opTypeToEdit.Name,
+      requiredStaff: opTypeToEdit["Required Staff"],
+      preparationTime: opTypeToEdit["Preparation Time"],
+      surgeryTime: opTypeToEdit["Surgery Time"],
+      cleaningTime: opTypeToEdit["Cleaning Time"],
+      totalDuration: opTypeToEdit["Total Time"],
+      specialization: opTypeToEdit.Specialization,
+    });
+
+    setIsModalVisible(true);
+  }
+};
+
 
   const handleDeactivate = (id: string) => {
     // Exibe o modal de confirmação
@@ -120,8 +156,9 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
       preparationTime: 0,
       surgeryTime: 0,
       cleaningTime: 0,
+      totalDuration: 0,
       specialization: "",
-      active: true,
+      active: true
     };
     console.log("New Operation Type:", newOperationTypeDTO);
 
@@ -133,17 +170,73 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     if (!creatingOperationType) {
       return;
     }
-    try {
-      console.log("Saving Operation Type:", creatingOperationType);
-      await operationTypeService.addOperationType(creatingOperationType);
-      setPopupMessage("Operation Type created successfully.");
-      setIsModalVisible(false);
-      fetchOperationsTypes();
-    } catch (error) {
-      console.error("Error creating Operation Type:", error);
-      setPopupMessage("Error creating Operation Type.");
+
+    let dto;
+    const isEdit = !!creatingOperationType.id;
+
+    if (isEdit) {
+      const opTypeToEdit = OTypes.find((opType) => opType.id === creatingOperationType.id);
+
+      dto = buildUpdateDto(opTypeToEdit);
+
+      if (dto) {
+        console.log("Updating Operation Type:", dto);
+
+        setAlertMessage("Updating...");
+        await operationTypeService.updateOperationType(dto);
+        setAlertMessage(null);
+      } else {
+        setPopupMessage("No changes detected.");
+      }
     }
+    else
+    {
+      try {
+        console.log("Saving Operation Type:", creatingOperationType);
+        await operationTypeService.addOperationType(creatingOperationType);
+        setPopupMessage("Operation Type created successfully.");
+        setIsModalVisible(false);
+        fetchOperationsTypes();
+      } catch (error) {
+        console.error("Error creating Operation Type:", error);
+        setPopupMessage("Error creating Operation Type.");
+      }
+    } 
   }
+
+  const buildUpdateDto = (opTypeToEdit: any) => {
+    const updateDto: any = { id: opTypeToEdit.id };
+
+    console.log("Editing Operation Type:", updateDto);
+
+
+    if (opTypeToEdit.name !== opTypeToEdit.firstName) {
+      updateDto.name = creatingOperationType;
+    }
+
+    if (creatingOperationType.preparationTime !== opTypeToEdit.preparationTime) {
+      updateDto.preparationTime = creatingOperationType.preparationTime;
+    }
+
+    if (creatingOperationType.surgeryTime !== opTypeToEdit.surgeryTime) {
+      updateDto.surgeryTime = creatingOperationType.surgeryTime;
+    }
+
+    if (creatingOperationType.cleaningTime !== opTypeToEdit.cleaningTime) {
+      updateDto.cleaningTime = creatingOperationType.cleaningTime;
+    }
+
+    if (creatingOperationType.requiredStaff !== opTypeToEdit.requiredStaff) {
+      updateDto.requiredStaff = creatingOperationType.requiredStaff;
+    }
+
+    if (creatingOperationType.specialization !== opTypeToEdit.specialization) {
+      updateDto.specialization = creatingOperationType.specialization;
+    }
+
+    return Object.keys(updateDto).length > 1 ? updateDto : null;
+  };
+
   const fetchSpecializations = async () => {
     try {
       const specializations = await specializationsService.getSpecializations();
@@ -209,6 +302,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     isModalVisible,
     setIsModalVisible,
     handleDeactivate,
+    handleEdit,
     handleAddOperationType,
     creatingOperationType,
     setCreatingOperationType,
