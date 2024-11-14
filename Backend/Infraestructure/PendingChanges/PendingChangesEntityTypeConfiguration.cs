@@ -17,24 +17,21 @@ namespace DDDSample1.Infrastructure.PendingChange
                     userId => userId.AsString(),
                     userIdString => new UserId(userIdString))
                 .IsRequired();
-                
+
             builder.HasIndex(pc => pc.UserId).IsUnique();
 
             builder.Property(u => u.Email)
                 .HasConversion(
                     email => email.ToString(),
-                    emailString => new Email(emailString))
-                .IsRequired();
+                    emailString => new Email(emailString));
 
             builder.OwnsOne(u => u.Name, name =>
             {
                 name.Property(n => n.FirstName)
-                    .HasColumnName("FirstName")
-                    .IsRequired();
+                    .HasColumnName("FirstName");
 
                 name.Property(n => n.LastName)
-                    .HasColumnName("LastName")
-                    .IsRequired();
+                    .HasColumnName("LastName");
 
                 name.Ignore(n => n.FullName);
             });
@@ -43,15 +40,13 @@ namespace DDDSample1.Infrastructure.PendingChange
             {
                 pn.Property(p => p.Number)
                   .HasColumnName("PhoneNumber")
-                  .IsRequired()
                   .IsUnicode();
             });
 
             builder.OwnsOne(p => p.EmergencyContact, contact =>
             {
                 contact.Property(c => c.emergencyContact)
-                       .HasColumnName("EmergencyContactName")
-                       .IsRequired();
+                       .HasColumnName("EmergencyContactName");
             });
 
             builder.OwnsOne(p => p.MedicalHistory, contact =>
