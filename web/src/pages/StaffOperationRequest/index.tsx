@@ -143,12 +143,10 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             >
-              <option value="" disabled>
-                Select Patient
-              </option>
-              {patients.map((patient: any) => (
-                <option key={patient.id} value={patient.id}>
-                  {patient.firstName} {patient.lastName}
+              <option value="" disabled>Select Patient</option>
+              {patients.map((patient) => (
+                <option key={patient.id} value={patient.firstName}>
+                  {patient.firstName}
                 </option>
               ))}
             </select>

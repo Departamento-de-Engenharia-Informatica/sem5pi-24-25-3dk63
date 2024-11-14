@@ -147,39 +147,31 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   };
 
   const handleAddRequest = () => {
-    setCreatingRequest({
-      patientName: "",
+    console.log("Add new Operation Request");
+    fetchAdditionalData();
+    const newOperationRequestDTO = {
+      patientId: "",
       operationType: "",
       dateRequested: { date: "" },
       status: "",
-    });
+    };
+    console.log("New Operation Request:", newOperationRequestDTO);
+
+    setCreatingRequest(newOperationRequestDTO);
     setIsModalVisible(true);
   };
 
-  const buildUpdateDto = (updatedRequest: any) => {
-    const updateDto: any = { id: updatedRequest.id };
-
-    if (updatedRequest.patientName !== updatedRequest.patientName) {
-      updateDto.patientName = updatedRequest.patientName;
+  // Fetch operation types and patients
+  const fetchAdditionalData = async () => {
+    try {
+      const operationTypes = await operationTypeService.getOperationTypes();
+      const patients = await patientService.getPatients();
+      setOperationTypes(operationTypes);
+      setPatients(patients);
+    } catch (error) {
+      console.error("Failed to fetch additional data:", error);
     }
-
-    if (updatedRequest.operationType !== updatedRequest.operationType) {
-      updateDto.operationType = updatedRequest.operationType;
-    }
-
-    if (updatedRequest.status !== updatedRequest.status) {
-      updateDto.status = updatedRequest.status;
-    }
-
-    return Object.keys(updateDto).length > 1 ? updateDto : null;
   };
-
-  const buildCreateDto = (updatedRequest: any) => ({
-    patientName: updatedRequest.patientName,
-    operationType: updatedRequest.operationType,
-    dateRequested: { date: updatedRequest.dateRequested.date },
-    status: updatedRequest.status,
-  });
 
   const searchOperationRequests = async (query: Record<string, string>) => {
     setLoading(true);
@@ -205,22 +197,6 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
       setError("Error fetching operation requests.");
     } finally {
       setLoading(false);
-    }
-  };
-
-  // Fetch operation types and patients
-  const fetchAdditionalData = async () => {
-    try {
-      setLoading(true);
-      const [operationTypesData, patientsData] = await Promise.all([
-        operationTypeService.getOperationTypes(),
-        patientService.getPatients(),
-      ]);
-      setOperationTypes(operationTypesData);
-      setPatients(patientsData);
-      setLoading(false);
-    } catch (error) {
-      setError("Failed to fetch additional data");
     }
   };
 
@@ -258,9 +234,33 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     }
   };
 
+  const buildCreateDto = (updatedRequest: any) => ({
+    patientName: updatedRequest.patientName,
+    operationType: updatedRequest.operationType,
+    dateRequested: { date: updatedRequest.dateRequested.date },
+    status: updatedRequest.status,
+  });
+
+  const buildUpdateDto = (updatedRequest: any) => {
+    const updateDto: any = { id: updatedRequest.id };
+
+    if (updatedRequest.patientName !== updatedRequest.patientName) {
+      updateDto.patientName = updatedRequest.patientName;
+    }
+
+    if (updatedRequest.operationType !== updatedRequest.operationType) {
+      updateDto.operationType = updatedRequest.operationType;
+    }
+
+    if (updatedRequest.status !== updatedRequest.status) {
+      updateDto.status = updatedRequest.status;
+    }
+
+    return Object.keys(updateDto).length > 1 ? updateDto : null;
+  };
+
   useEffect(() => {
     fetchOperationRequests();
-    fetchAdditionalData(); // Fetch patients and operation types when component mounts
   }, [currentPage]);
 
   return {
