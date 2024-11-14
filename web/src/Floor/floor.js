@@ -7,7 +7,8 @@ import Adereco from "./adereco.js";
 import Patient from "./patient.js";
 import WallWithDoorFrame from "./SurgeryDoor.js";
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-
+import RoomLabel from "./adiocionarIdentificacao.js";
+import { Font } from "three/examples/jsm/Addons.js";
 /*
 * parameters = {
 *  url: String,
@@ -47,16 +48,20 @@ export default class Floor {
             this.cama = new Cama({textureUrl: description.camaTextureUrl, scale: 0.1 });
 
             //this.adereco = new Adereco({textureUrl: description.aderecoTextureUrl, scale: 2 });
-
             this.patient = new Patient({patientTextureUrl: description.patientTextureUrl, patientModelOBJUrl: description.patientModelOBJUrl});
 
             this.wallWithDoorFrame = new WallWithDoorFrame({ textureUrl: description.surgeryRoomDoorTextureUrl, width: 1, height: 2.0 });
+
+
+            this.roomlabel = new RoomLabel({ width: 0.5, height: 0.38
+            });
             
             // Build the maze
             let wallObject;
             let doorObject;
             let wallWithDoorFrameObject;
             let porta1 = true;
+            let roomLabelObject;
 
             for (let i = 0; i <= description.size.width; i++) { // In order to represent the eastmost walls, the map width is one column greater than the actual maze width
                 for (let j = 0; j <= description.size.height; j++) { // In order to represent the southmost walls, the map height is one row greater than the actual maze height
@@ -97,6 +102,12 @@ export default class Floor {
                         // Primeira porta
                         wallWithDoorFrameObject.rotateY(Math.PI / 2.0);
                         wallWithDoorFrameObject.position.set(i - description.size.width / 2.0, 0.5, j - description.size.height / 2.0 + 0.5);
+
+                        /*this.roomlabel.createText(5.5, 5.5, 5.5);*/
+                        roomLabelObject = this.roomlabel.object.clone();
+                        roomLabelObject.position.set(i - description.size.width / 2.0 -0.03, 4.34, j - description.size.height / 2.0 + 1);
+                        roomLabelObject.rotateY(Math.PI / 2.0);
+                        this.object.add(roomLabelObject);
                     } else {
                         // Segunda porta espelhada
                         wallWithDoorFrameObject.scale.x = -1; // Espelha a segunda porta no eixo X
@@ -115,6 +126,13 @@ export default class Floor {
                         if (porta1) {
                             // Primeira porta
                             wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 - 0.5, 0.5, j - description.size.height / 2.0 );
+
+
+                            roomLabelObject = this.roomlabel.object.clone();
+                            roomLabelObject.position.set(i - description.size.width / 2.0 +0.03, 4.34, j - description.size.height / 2.0 + 1);
+                            roomLabelObject.rotateY(Math.PI / 2.0);
+                            this.object.add(roomLabelObject);
+
                         } else {
                             // Segunda porta espelhada
                             wallWithDoorFrameObject.scale.x = -1; // Espelha a segunda porta no eixo X
@@ -135,6 +153,13 @@ export default class Floor {
                             // Primeira porta
                             wallWithDoorFrameObject.rotateY(Math.PI);
                             wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 + 0.5, 0.5, j - description.size.height / 2.0 );
+                            
+
+                            roomLabelObject = this.roomlabel.object.clone();
+                            roomLabelObject.position.set(i - description.size.width / 2.0 -0.03, 4.34, j - description.size.height / 2.0 + 1);
+                            roomLabelObject.rotateY(Math.PI / 2.0);
+                            this.object.add(roomLabelObject);
+                            
                         } else {
                             // Segunda porta espelhada
                             wallWithDoorFrameObject.scale.x = -1; // Espelha a segunda porta no eixo X
@@ -144,7 +169,7 @@ export default class Floor {
                         this.object.add(wallWithDoorFrameObject);
                         porta1 = !porta1; // Alterna o valor de porta1
                     }
-                     
+
                     if (description.map[j][i] == 9) {
                         this.clonarCama(i, j, description); // Chama o novo método para clonar a cama
                         this.clonarPatient(i, j, description); // Chama o novo método para clonar o paciente

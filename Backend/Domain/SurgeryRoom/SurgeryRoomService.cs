@@ -179,7 +179,7 @@ namespace Backend.Domain.SurgeryRoom
 
         // Determinar largura e altura do mapa
         var width = map[0].Count - 1;
-        var height = map.Count+1;
+        var height = map.Count-1;
 
         // Estrutura JSON para criar o arquivo
         var newJson = new JObject
@@ -265,6 +265,7 @@ namespace Backend.Domain.SurgeryRoom
             new List<int> { 2, 2, 2, 2, 2, 5, 2, 2, 2, 2, 2, 0 }
         };
 
+        //duas fechadas
         var modulo1 = new List<List<int>>
         {
             new List<int> { 1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1 },
@@ -272,17 +273,18 @@ namespace Backend.Domain.SurgeryRoom
             new List<int> { 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1 }
         };
 
+        //fechada esquerda aberta direita
         var modulo2 = new List<List<int>>
         {
             new List<int> { 1, 0, 0, 0, 6, 0, 0, 8, 0, 0, 0, 1 },
             new List<int> { 1, 0, 9, 0, 6, 0, 0, 8, 0, 4, 0, 1 },
             new List<int> { 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1 }
         };
-
+        //fechada direita aberta esquerda
         var modulo3 = new List<List<int>>
         {
-            new List<int> { 1, 0, 0, 0, 8, 0, 0, 6, 0, 0, 0, 1 },
-            new List<int> { 1, 0, 9, 0, 8, 0, 0, 6, 0, 4, 0, 1 },
+            new List<int> { 1, 0, 0, 0, 7, 0, 0, 6, 0, 0, 0, 1 },
+            new List<int> { 1, 0, 4, 0, 7, 0, 0, 6, 0, 9, 0, 1 },
             new List<int> { 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1 }
         };
 
@@ -299,26 +301,27 @@ namespace Backend.Domain.SurgeryRoom
         Console.WriteLine("Adicionado módulo inicial");
 
         Console.WriteLine("Iterando sobre as salas:", data);
+
         // Iterar sobre as salas em pares
         for (int i = 0; i < data.Count; i += 2)
         {
             var room1 = data[i];
-            var room2 = (i + 1 < data.Count) ? data[i + 1] : room1;
+            var room2 = (i + 1 < data.Count) ? data[i + 1] : null;
 
-            if (room1.CurrentStatus.Value.ToString() =="Occupied" && room2.CurrentStatus.Value.ToString() =="Occupied")
+            if (room1.CurrentStatus.Value.ToString() =="Occupied" && (room2 == null || room2.CurrentStatus.Value.ToString() =="Occupied"))
             {
                 mapa.AddRange(modulo1); // Ambas fechadas
                 Console.WriteLine("Ambas fechadas");
             }
-            else if (room1.CurrentStatus.Value.ToString() == "Available" && room2.CurrentStatus.Value.ToString() =="Occupied")
+            else if (room1.CurrentStatus.Value.ToString() == "Available" && (room2 == null || room2.CurrentStatus.Value.ToString() =="Occupied"))
             {
-                mapa.AddRange(modulo2); // Aberta + Fechada (esquerda)
-                Console.WriteLine("Aberta + Fechada (esquerda)");
+                mapa.AddRange(modulo3); // Aberta + Fechada (direita)
+                Console.WriteLine("Aberta + Fechada (direita)");
             }
             else if (room1.CurrentStatus.Value.ToString() =="Occupied" && room2.CurrentStatus.Value.ToString() == "Available")
             {
-                mapa.AddRange(modulo3); // Fechada + Aberta (direita)
-                Console.WriteLine("Fechada + Aberta (direita)");
+                mapa.AddRange(modulo2); // Fechada + Aberta (esquerda)
+                Console.WriteLine("Aberta + Fechada (esquerda)");
             }
             else if (room1.CurrentStatus.Value.ToString() == "Available" && room2.CurrentStatus.Value.ToString() == "Available")
             {

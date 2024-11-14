@@ -6,7 +6,7 @@ export const generalData = {
 }
 
 export const hallData = {
-    url: "/floor/Loquitas.json",
+    url: "/floor/map.json",
     credits: "Map designed by team 63.",
     scale: new THREE.Vector3(1.0, 1.0, 1.0)
 }

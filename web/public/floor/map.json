@@ -7,9 +7,10 @@
   "aderecoTextureUrl": "/../src/Floor/textures/adereco.obj",
   "patientTextureUrl": "/../src/Floor/textures/ManColors.png",
   "patientModelOBJUrl": "/../src/Floor/textures/Man.obj",
+  "fontUrl": "/../src/Floor/textures/font.json",
   "size": {
     "width": 11,
-    "height": 14
+    "height": 12
   },
   "map": [
     [
@@ -34,7 +35,7 @@
       7,
       0,
       0,
-      8,
+      6,
       0,
       0,
       0,
@@ -48,9 +49,9 @@
       7,
       0,
       0,
-      8,
+      6,
       0,
-      4,
+      9,
       0,
       1
     ],
@@ -90,7 +91,7 @@
       7,
       0,
       0,
-      8,
+      6,
       0,
       0,
       0,
@@ -104,9 +105,9 @@
       7,
       0,
       0,
-      8,
+      6,
       0,
-      4,
+      9,
       0,
       1
     ],
@@ -146,7 +147,7 @@
       7,
       0,
       0,
-      8,
+      6,
       0,
       0,
       0,
@@ -160,9 +161,9 @@
       7,
       0,
       0,
-      8,
+      6,
       0,
-      4,
+      9,
       0,
       1
     ],

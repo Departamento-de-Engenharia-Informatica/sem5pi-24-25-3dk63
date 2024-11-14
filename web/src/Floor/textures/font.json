@@ -1,0 +1,10 @@
+{
+  "glyphs": {
+    "A": { "x": 0, "y": 0, "width": 10, "height": 12, "advance": 11, "path": "..." },
+    "B": { "x": 0, "y": 0, "width": 9, "height": 12, "advance": 10, "path": "..." }
+  },
+  "familyName": "CustomFont",
+  "height": 12,
+  "lineHeight": 14,
+  "size": 12
+}
