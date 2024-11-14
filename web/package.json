@@ -50,6 +50,7 @@
   "devDependencies": {
     "@cypress/vite-dev-server": "^5.2.0",
     "@ianvs/prettier-plugin-sort-imports": "^4.3.1",
+    "@swc/core": "^1.9.2",
     "@testing-library/cypress": "^10.0.2",
     "@types/cypress": "^1.1.6",
     "@types/jest": "^29.5.14",
@@ -76,6 +77,7 @@
     "prettier-plugin-tailwindcss": "^0.5.14",
     "rimraf": "^5.0.10",
     "sinon": "^17.0.1",
+    "tsup": "^8.3.5",
     "typescript": "^5.6.3",
     "vite": "^4.5.5",
     "vitest": "^0.34.6",
