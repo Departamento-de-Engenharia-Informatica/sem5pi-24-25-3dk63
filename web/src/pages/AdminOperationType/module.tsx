@@ -148,9 +148,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     try {
       const specializations = await specializationsService.getSpecializations();
       console.log("Specializations:", specializations);
-      console.log("AQUI OK");
       setSpecializations(specializations);
-      console.log("SAME");
     } catch (error) {
       console.error("Error fetching specializations:", error);
     }

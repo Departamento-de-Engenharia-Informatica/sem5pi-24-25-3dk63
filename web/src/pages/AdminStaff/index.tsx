@@ -44,9 +44,9 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     saveChanges,
     specializations,
     handleDelete,
+    handleEdit,
     handleDeactivate,
     handleAddStaff,
-    handleEdit,
     searchStaffs,
     popupMessage,
     setPopupMessage,
@@ -318,23 +318,29 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
             />
-            <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
-            <input
-              type="text"
-              value={staffToEdit?.specialization || ""}
-              onChange={(e) =>
-                setStaffToEdit((prev: any) => ({
-                  ...prev,
-                  specialization: e.target.value,
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
-            />
+              <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
+              <select
+                value={staffToEdit?.specialization || ""}
+                onChange={(e) =>
+                  setStaffToEdit((prev: any) => ({
+                    ...prev,
+                    specialization: e.target.value,
+                  }))
+                }
+                className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
+              >
+                <option value="" disabled>Select Specialization</option>
+                {specializations.map((spec, index) => (
+                  <option key={index} value={spec}>
+                    {spec}
+                  </option>
+                ))}
+              </select>
             <button
               onClick={saveChanges}
               className="mt-6 w-full bg-[#284b62] text-white font-semibold py-2 rounded-md hover:bg-opacity-80 transition duration-200"
             >
-              Save Changes
+              Save Changes  
             </button>
           </div>
         </Modal>

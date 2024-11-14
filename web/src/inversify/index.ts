@@ -18,12 +18,15 @@ import { OperationRequestService } from "@/service/operationRequestService";
 
 const container = new Container();
 
+const isNode = typeof window === "undefined";
 container.bind(TYPES.localStorage).toConstantValue(
-  import.meta.env.MODE !== "staging"
-    ? window.localStorage
-    : {
+  isNode
+    ? {
         getItem: () => null,
+        setItem: () => {},
+        removeItem: () => {},
       }
+    : window.localStorage
 );
 container.bind(TYPES.api).toConstantValue(api);
 

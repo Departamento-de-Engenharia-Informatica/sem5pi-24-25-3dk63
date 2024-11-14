@@ -215,12 +215,11 @@ const buildCreateStaffDto = (newStaff: any) => {
   const saveChanges = async () => {
     if (staffToEdit) {
       try {
-        await staffService.editStaff(licenseStaffToEdit, staffToEdit);
-        setAlertMessage("Staff information updated successfully.");
+        setPopupMessage( await staffService.editStaff(licenseStaffToEdit, staffToEdit));
         fetchStaffs(); // Refresh the staff list
       } catch (error) {
         console.error("Error updating staff information:", error);
-        setAlertMessage("Error updating staff information.");
+        setPopupMessage("Error updating staff information.");
       } finally {
         setIsModalVisible(false); // Close the modal after saving
       }

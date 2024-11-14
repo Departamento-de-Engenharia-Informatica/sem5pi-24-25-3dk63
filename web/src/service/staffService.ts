@@ -31,11 +31,12 @@ export class StaffService implements IStaffService {
     console.log("Staff deleted:", id);
   }
 
-  async editStaff(licenseNumber: string, staff: PendingStaffChangesDTO): Promise<void>{
+  async editStaff(licenseNumber: string, staff: PendingStaffChangesDTO): Promise<string>{
     let id = licenseNumber;
     const res = await this.http.patch(`/staff/update/${id}`, staff);
     console.log("Staff edited:", res.data);
-    window.confirm(res.data as string);
+
+    return res.data as string;
   }
 
   async deactivateStaff(id: string): Promise<void> {
