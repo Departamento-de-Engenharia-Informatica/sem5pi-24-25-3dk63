@@ -7,6 +7,7 @@ import { ISurgeryRoomService } from "@/service/IService/ISurgeryRoomService";
 
 export const useFloor3D = () => {
     const floorRef = useRef<any>(null);
+    const initializedRef = useRef(false); // Ref para verificar se foi inicializado
     const surgeryRoomService = useInjection<ISurgeryRoomService>(TYPES.surgeryRoomService);
 
     const fetchJSON = async () => {
@@ -15,15 +16,17 @@ export const useFloor3D = () => {
       } catch (error) {
         console.error("Error fetching surgery rooms:", error);
       }
-
-
-    }
+    };
 
     // Initialize the 3D Floor Model
     useEffect(() => {
         const initializeFloor = async () => {
+            if (initializedRef.current) return; // Verifique se já foi inicializado
+            console.log('Initializing floor...');
+            initializedRef.current = true; // Marque como inicializado
+
             if (!floorRef.current) {
-                await fetchJSON(); // Aguarda a conclusão de fetchJSON
+                await fetchJSON();
                 
                 floorRef.current = new Floor(
                     {}, // General Parameters
@@ -59,4 +62,3 @@ export const useFloor3D = () => {
 
     return {};
 };
-    

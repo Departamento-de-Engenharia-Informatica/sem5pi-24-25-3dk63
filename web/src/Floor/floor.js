@@ -7,8 +7,9 @@ import Adereco from "./adereco.js";
 import Patient from "./patient.js";
 import WallWithDoorFrame from "./SurgeryDoor.js";
 import { OBJLoader } from 'three/addons/loaders/OBJLoader.js';
-import RoomLabel from "./adiocionarIdentificacao.js";
-import { Font } from "three/examples/jsm/Addons.js";
+import { FontLoader } from 'three/addons/loaders/FontLoader.js';
+import { TextGeometry } from 'three/examples/jsm/geometries/TextGeometry';
+
 /*
 * parameters = {
 *  url: String,
@@ -51,17 +52,18 @@ export default class Floor {
             this.patient = new Patient({patientTextureUrl: description.patientTextureUrl, patientModelOBJUrl: description.patientModelOBJUrl});
 
             this.wallWithDoorFrame = new WallWithDoorFrame({ textureUrl: description.surgeryRoomDoorTextureUrl, width: 1, height: 2.0 });
-
-
-            this.roomlabel = new RoomLabel({ width: 0.5, height: 0.38
-            });
             
-            // Build the maze
             let wallObject;
             let doorObject;
             let wallWithDoorFrameObject;
             let porta1 = true;
-            let roomLabelObject;
+
+            //list com nomes das salas
+            let salas = description.surgeryRooms;
+            salas.push("fora de serviço");
+            //adicionar sala fora de serviço no fim
+            console.log(salas);
+            let count = 0;
 
             for (let i = 0; i <= description.size.width; i++) { // In order to represent the eastmost walls, the map width is one column greater than the actual maze width
                 for (let j = 0; j <= description.size.height; j++) { // In order to represent the southmost walls, the map height is one row greater than the actual maze height
@@ -77,6 +79,7 @@ export default class Floor {
                         wallObject = this.wall.object.clone();
                         wallObject.position.set(i - description.size.width / 2.0 + 0.5, 0.5, j - description.size.height / 2.0);
                         this.object.add(wallObject);
+
                     }
                     if (description.map[j][i] == 1 || description.map[j][i] == 3) {
                         wallObject = this.wall.object.clone();
@@ -103,11 +106,21 @@ export default class Floor {
                         wallWithDoorFrameObject.rotateY(Math.PI / 2.0);
                         wallWithDoorFrameObject.position.set(i - description.size.width / 2.0, 0.5, j - description.size.height / 2.0 + 0.5);
 
-                        /*this.roomlabel.createText(5.5, 5.5, 5.5);*/
-                        roomLabelObject = this.roomlabel.object.clone();
-                        roomLabelObject.position.set(i - description.size.width / 2.0 -0.03, 4.34, j - description.size.height / 2.0 + 1);
-                        roomLabelObject.rotateY(Math.PI / 2.0);
-                        this.object.add(roomLabelObject);
+                        if (i<6){
+                        this.adicionarTexto(salas[count], new THREE.Vector3(i - description.size.width / 2.0 + 0.03, 4.32, j - description.size.height / 2.0 +1.15), 0.1, 0xffffff, false);
+                        count++;
+                        }
+                        else{
+                            if(salas[count] == "fora de serviço"){
+                                this.adicionarTexto(salas[count], new THREE.Vector3(i - description.size.width / 2.0 -0.03, 4.32, j - description.size.height / 2.0 +0.5), 0.1, 0xffffff, true);
+
+                            }
+                            else{
+                            this.adicionarTexto(salas[count], new THREE.Vector3(i - description.size.width / 2.0 -0.03, 4.32, j - description.size.height / 2.0 +0.85), 0.1, 0xffffff, true);
+                            count++;
+                            }
+                        }
+                        console.log("meti a sala" + salas[count-1]);
                     } else {
                         // Segunda porta espelhada
                         wallWithDoorFrameObject.scale.x = -1; // Espelha a segunda porta no eixo X
@@ -126,12 +139,8 @@ export default class Floor {
                         if (porta1) {
                             // Primeira porta
                             wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 - 0.5, 0.5, j - description.size.height / 2.0 );
-
-
-                            roomLabelObject = this.roomlabel.object.clone();
-                            roomLabelObject.position.set(i - description.size.width / 2.0 +0.03, 4.34, j - description.size.height / 2.0 + 1);
-                            roomLabelObject.rotateY(Math.PI / 2.0);
-                            this.object.add(roomLabelObject);
+                            this.adicionarTexto(salas[count], new THREE.Vector3(i - description.size.width / 2.0 + 0.03, 4.32, j - description.size.height / 2.0 +1.15), 0.1, 0xffffff, false);
+                            count++;
 
                         } else {
                             // Segunda porta espelhada
@@ -142,6 +151,7 @@ export default class Floor {
 
                         this.object.add(wallWithDoorFrameObject);
                         porta1 = !porta1; // Alterna o valor de porta1
+                        console.log("meti a sala" + salas[count-1]);
                     }
                     if(description.map[j][i] == 8) {
 
@@ -153,18 +163,16 @@ export default class Floor {
                             // Primeira porta
                             wallWithDoorFrameObject.rotateY(Math.PI);
                             wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 + 0.5, 0.5, j - description.size.height / 2.0 );
-                            
 
-                            roomLabelObject = this.roomlabel.object.clone();
-                            roomLabelObject.position.set(i - description.size.width / 2.0 -0.03, 4.34, j - description.size.height / 2.0 + 1);
-                            roomLabelObject.rotateY(Math.PI / 2.0);
-                            this.object.add(roomLabelObject);
+                            this.adicionarTexto(salas[count], new THREE.Vector3(i - description.size.width / 2.0 -0.03, 4.32, j - description.size.height / 2.0 +0.8), 0.1, 0xffffff, true);
+                            count++;
                             
                         } else {
                             // Segunda porta espelhada
                             wallWithDoorFrameObject.scale.x = -1; // Espelha a segunda porta no eixo X
                             wallWithDoorFrameObject.position.set(i - description.size.width / 2.0 + 0.5, 0.5, j - description.size.height / 2.0 + 1);
                         }
+                        console.log("meti a sala" + salas[count-1]);
 
                         this.object.add(wallWithDoorFrameObject);
                         porta1 = !porta1; // Alterna o valor de porta1
@@ -350,4 +358,36 @@ export default class Floor {
         }
         return Infinity;
     }
+
+    adicionarTexto(text, position = new THREE.Vector3(0, 0, 0), size = 1, color = 0xffffff, flipText) {
+        // Load the font
+        const loader = new FontLoader();
+        loader.load('https://threejs.org/examples/fonts/helvetiker_regular.typeface.json', (font) => {
+            // Create the text geometry
+            const textGeometry = new TextGeometry(text, {
+                font: font,
+                size: size,
+                depth: 0.01, // You can adjust the thickness of the text
+            });
+    
+            // Create a material for the text
+            const textMaterial = new THREE.MeshBasicMaterial({ color: color });
+    
+            // Create the mesh with text geometry and material
+            const textMesh = new THREE.Mesh(textGeometry, textMaterial);
+    
+            // Set the position of the text
+            textMesh.position.set(position.x, position.y, position.z);
+
+            textMesh.rotateY(Math.PI/2);
+            // Rotate the text based on whether it needs to be flipped
+            if (flipText) {
+                textMesh.rotateY(Math.PI); // Flip the text 180 degrees
+            } 
+    
+            // Add the text to the scene
+            this.object.add(textMesh);
+        });
+    }
+    
 }

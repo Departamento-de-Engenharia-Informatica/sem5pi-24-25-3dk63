@@ -7,7 +7,6 @@
   "aderecoTextureUrl": "/../src/Floor/textures/adereco.obj",
   "patientTextureUrl": "/../src/Floor/textures/ManColors.png",
   "patientModelOBJUrl": "/../src/Floor/textures/Man.obj",
-  "fontUrl": "/../src/Floor/textures/font.json",
   "size": {
     "width": 11,
     "height": 12
@@ -210,6 +209,6 @@
     "105",
     "107",
     "108",
-    "110"
+    "120"
   ]
 }
