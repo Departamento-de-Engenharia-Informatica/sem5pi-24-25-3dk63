@@ -18,6 +18,8 @@ import { Provider } from "inversify-react";
 import { container } from "./inversify";
 import React, { useState } from "react";
 import Floor3D from "./Floor"
+import Floor3D2 from './pages/3DModel';
+
 function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
 
@@ -38,6 +40,7 @@ function App() {
                 <Route path="/admin/patient" element={<AdminPatient setAlertMessage={setAlertMessage} />} />
                 <Route path="/admin/staff" element={<AdminStaff setAlertMessage={setAlertMessage} />} />
                 <Route path="/staff/floor" element={<Floor3D />} />
+                <Route path="/staff/floor2" element={<Floor3D2 />} />
                 <Route path="/patient" element={<PatientPage />} />
                 <Route path="/self-register" element={<SelfRegisterMenu />} />
                 <Route path="/confirm-account-deletion/:token" element={<ConfirmAccountDeletion />} />

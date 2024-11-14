@@ -131,5 +131,13 @@ namespace Backend.Controllers
                 return BadRequest(new { Message = ex.Message });
             }
         }
+
+        [HttpGet("createJson")]
+         public async Task<ActionResult> CreateJson()
+        {
+                await _service.CreateJsonAsync();
+
+                return Ok();
+        }
     }
 }

@@ -35,5 +35,6 @@ namespace Backend.Infraestructure.SurgeryRoom
                             !r.MaintenanceSlots.Any(m => m.ConflictsWith(startTime, endTime)))
                 .ToListAsync();
         }
+
     }
 }

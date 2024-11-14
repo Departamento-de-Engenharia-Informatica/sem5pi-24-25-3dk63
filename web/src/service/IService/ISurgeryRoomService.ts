@@ -8,4 +8,5 @@ export interface ISurgeryRoomService {
   update(id: string, updatedData: Partial<SurgeryRoom>): Promise<SurgeryRoom>;
   delete(id: string): Promise<void>;
   getByNumber(roomNumber: string): Promise<SurgeryRoom | null>;
+  createJson(): Promise<void>;
 }

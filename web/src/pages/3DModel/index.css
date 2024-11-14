@@ -1,0 +1,80 @@
+body {
+    margin: 0;
+    overflow: hidden;
+    /* Impede rolagem */
+    background-color: black;
+    /* Cor de fundo */
+}
+
+#parent {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 0;
+    /* Garantir que o canvas fique visível acima de qualquer fundo */
+}
+
+#views-panel {
+    display: none;
+    /* Oculta o painel de views */
+}
+
+table {
+    display: none;
+    /* Oculta qualquer tabela, se houver */
+}
+table.views {
+    background-color: rgba(112, 112, 112, 0.44);
+    text-align: right;
+}
+
+table.help {
+    width: 50vmin;
+    background-color: rgba(112, 112, 112, 0.31);
+}
+
+th,
+td {
+    overflow: hidden;
+    border: 1px solid black;
+}
+
+a {
+    color: white;
+}
+
+#view,
+#projection {
+    width: 18ch;
+    font-size: 1.5vmin;
+}
+
+#horizontal,
+#vertical,
+#distance,
+#zoom {
+    width: 10ch;
+    font-size: 1.5vmin;
+}
+
+#reset,
+#reset-all {
+    width: 16ch;
+    font-size: 1.5vmin;
+}
+canvas {
+    display: block;
+    width: 100vw;
+    height: 100vh;
+    margin: 0;
+    position: absolute;
+    /* Garante que o canvas ocupe toda a tela */
+    top: 0;
+    left: 0;
+}
+
+input:invalid {
+    background-color: pink;
+}

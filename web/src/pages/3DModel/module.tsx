@@ -1,53 +1,56 @@
-import { useState, useEffect } from "react";
+import { useEffect, useRef } from 'react';
+import * as THREE from 'three';
+import Floor from '../../Floor/hospital';
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { ISurgeryRoomService } from "@/service/IService/ISurgeryRoomService";
 
-export const useSurgeryRoomListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
-  const surgeryRoomService = useInjection<ISurgeryRoomService>(TYPES.surgeryRoomService);
-  const [surgeryRooms, setSurgeryRooms] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [totalSurgeryRooms, setTotalSurgeryRooms] = useState<number>(0);
+export const useFloor3D = () => {
+    const floorRef = useRef<any>(null);
+    const surgeryRoomService = useInjection<ISurgeryRoomService>(TYPES.surgeryRoomService);
 
-  const fetchSurgeryRooms = async () => {
-    console.log("Fetching surgery rooms...");
-    setLoading(true);
-    setError(null);
-    try {
-      const surgeryRoomsData = await surgeryRoomService.getAll();
-      console.log("Fetched surgery rooms:", surgeryRoomsData);
-      setTotalSurgeryRooms(surgeryRoomsData.length);
+    const fetchJSON = async () => {
+      try {
+        await surgeryRoomService.createJson();
+      } catch (error) {
+        console.error("Error fetching surgery rooms:", error);
+      }
 
-      const filteredData = surgeryRoomsData.map((room) => ({
-        "Room Number": room.roomNumber,
-        "Type": room.type.toString(),
-        "Capacity": room.capacity,
-        "Assigned Equipment": room.assignedEquipment.map((equipment) => equipment.name).join(", "),
-        "Current Status": room.currentStatus,
-        "Maintenance Slots": room.maintenanceSlots.map((slot) => `${slot.startTime} - ${slot.endTime}`).join(", "),
-      }));
 
-      console.log("Mapped surgery rooms:", filteredData);
-
-      setSurgeryRooms(filteredData);
-    } catch (error) {
-      console.error("Error fetching surgery rooms:", error);
-      setError("Error fetching surgery rooms.");
-      setAlertMessage("Error fetching surgery rooms.");
-    } finally {
-      setLoading(false);
     }
-  }
 
-  
-  
-  ;
+    // Initialize the 3D Floor Model
+    useEffect(() => {
+        if (!floorRef.current) {
+            fetchJSON();
+            floorRef.current = new Floor(
+                {}, // General Parameters
+                { scale: new THREE.Vector3(1.0, 0.5, 1.0) }, // Maze parameters
+                {
+                    ambientLight: { intensity: 1.0 },
+                    directionalLight: { 
+                        color: 0xffffff,
+                        intensity: 2.0,
+                        position: new THREE.Vector3(5.0, 10.0, 5.0),
+                        target: new THREE.Vector3(0.0, 0.0, 0.0),
+                    }
+                }, // Lights parameters
+                {}, // Fog parameters
+                { view: 'fixed', multipleViewsViewport: new THREE.Vector4(0.0, 1.0, 0.45, 0.5) } // Fixed view camera parameters
+            );
+        }
 
-  return {
-    surgeryRooms,
-    loading,
-    error,
-    totalSurgeryRooms,
-  };
+        // Function to animate the floor
+        const animate = () => {
+            requestAnimationFrame(animate);
+            if (floorRef.current) {
+                floorRef.current.update();
+            }
+        };
+
+        animate();
+    }, []); // Empty dependency array, so it runs only once
+
+    return {};
 };
+    
