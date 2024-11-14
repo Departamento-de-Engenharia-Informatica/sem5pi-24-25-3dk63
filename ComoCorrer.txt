@@ -8,3 +8,7 @@ npm run dev
 npm install -g pnpm
 
 pnpm install
+
+
+correr testes
+npx vitest
