@@ -9,6 +9,7 @@ import Modal from "@/components/Modal";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
 import SearchFilter from "@/components/SearchFilter";
+import DropdownMenu from "@/components/DropdownMenu";
 
 interface OperationTypeListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -43,18 +44,27 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
 
   const totalPages = Math.ceil(totalOTypes / itemsPerPage);
 
-const renderActions = (OTypes: any) => (
-  <div className="flex flex-wrap gap-2">
-    <button
-      onClick={() => handleDeactivate(OTypes.id)} // Exibe o modal de confirmação
-      className="flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm"
-    >
-      Deactivate
-    </button>
-  </div>
-);
 
+  const renderActions = (OTypes: any) => {
+    const options = [
+      {
+        label: "Edit",
+        onClick: () => handleEdit(staff),
+        className: "text-blue-500",
+      },
+      {
+        label: "Deactivate",
+        onClick: () => handleDeactivate(OTypes.id),
+        className: "flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm",
+      },
+    ];
 
+  return (
+    <div className="flex flex-wrap gap-2">
+      <DropdownMenu options={options} buttonLabel="Actions" />
+    </div>
+  );
+};
 
   const tableData = OTypes.map((OTypes) => ({
     ...OTypes,
