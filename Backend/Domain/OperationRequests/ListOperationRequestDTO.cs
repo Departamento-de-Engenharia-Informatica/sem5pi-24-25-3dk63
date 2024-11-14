@@ -2,7 +2,8 @@
 namespace Backend.Domain.OperationRequests
 {
     public class ListOperationRequestDTO
-    {
+    {   
+        public string Id { get; set; }
         public string PatientName { get; set; }
         public string OperationType { get; set; }
         public string Status { get; set; }

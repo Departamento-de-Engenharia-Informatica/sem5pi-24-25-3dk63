@@ -169,7 +169,7 @@ namespace DDDSample1.OperationRequests
             });
             return listDto;
         }
-        public async Task<string> UpdateRequisitionAsync(string id,string userEmail, UpdateOperationRequisitionDto updateDto )
+        public async Task<string> UpdateRequisitionAsync(string id, string userEmail, UpdateOperationRequisitionDto updateDto)
         {
             var requisition = await _operationRequestRepository.GetByIdAsync(new OperationRequestId(id));
 
@@ -191,27 +191,29 @@ namespace DDDSample1.OperationRequests
                 throw new UnauthorizedAccessException("You are not authorized to update this requisition.");
             }
 
-            var logDescription = $"Updated Deadline from {requisition.deadline} to {updateDto.Deadline} " +
-                                $"and Priority from {requisition.priority} to {updateDto.Priority}";
-
-            requisition.ChangeDeadLine(new Deadline(updateDto.Deadline.Value));
-
-            if (updateDto.Priority == null)
+            var logDescription = "Updated requisition:";
+            
+            if (updateDto.Deadline.HasValue)
             {
-                throw new ArgumentNullException(nameof(updateDto.Priority), "Priority cannot be null.");
+                logDescription += $" Deadline from {requisition.deadline} to {updateDto.Deadline}.";
+                requisition.ChangeDeadLine(new Deadline(updateDto.Deadline.Value));
             }
 
-            PriorityType priorityType;
-            try
+            if (!string.IsNullOrEmpty(updateDto.Priority))
             {
-                priorityType = Enum.Parse<PriorityType>(updateDto.Priority);
-            }
-            catch (ArgumentException)
-            {
-                throw new ArgumentException($"Invalid priority type '{updateDto.Priority}'. Allowed values are: {string.Join(", ", Enum.GetNames(typeof(PriorityType)))}.");
-            }
+                PriorityType priorityType;
+                try
+                {
+                    priorityType = Enum.Parse<PriorityType>(updateDto.Priority);
+                }
+                catch (ArgumentException)
+                {
+                    throw new ArgumentException($"Invalid priority type '{updateDto.Priority}'. Allowed values are: {string.Join(", ", Enum.GetNames(typeof(PriorityType)))}.");
+                }
 
-            requisition.ChangePriority(new Priority(priorityType));
+                logDescription += $" Priority from {requisition.priority} to {updateDto.Priority}.";
+                requisition.ChangePriority(new Priority(priorityType));
+            }
 
             await _operationRequestRepository.UpdateOperationRequestAsync(requisition);
             await _unitOfWork.CommitAsync();
@@ -220,6 +222,7 @@ namespace DDDSample1.OperationRequests
 
             return "Operation requisition updated successfully.";
         }
+
 
         public async Task<List<ListOperationRequestDTO>> SearchOperationRequests(
             string firstName, 
@@ -273,6 +276,7 @@ namespace DDDSample1.OperationRequests
 
                 result.Add(new ListOperationRequestDTO
                 {
+                    Id = or.Id.AsString(),
                     PatientName = $"{patientUser.Name.FirstName} {patientUser.Name.LastName}",
                     OperationType = operationTypeEntity.Name.ToString(),
                     Status = or.Active ? "Active" : "Inactive",
