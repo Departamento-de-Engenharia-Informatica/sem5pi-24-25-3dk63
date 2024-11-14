@@ -52,7 +52,7 @@ export default class Floor {
             this.patient = new Patient({patientTextureUrl: description.patientTextureUrl, patientModelOBJUrl: description.patientModelOBJUrl});
 
             this.wallWithDoorFrame = new WallWithDoorFrame({ textureUrl: description.surgeryRoomDoorTextureUrl, width: 1, height: 2.0 });
-            
+
             let wallObject;
             let doorObject;
             let wallWithDoorFrameObject;
@@ -61,7 +61,16 @@ export default class Floor {
             //list com nomes das salas
             let salas = description.surgeryRooms;
             salas.push("fora de serviço");
-            //adicionar sala fora de serviço no fim
+
+            // Separe os elementos das posições ímpares e pares
+            let impares = salas.filter((_, index) => index % 2 !== 0);
+            let pares = salas.filter((_, index) => index % 2 === 0);
+
+            // Junte as duas listas com ímpares primeiro e pares depois
+            salas = [...pares, ...impares];
+
+            console.log(salas);
+
             console.log(salas);
             let count = 0;
 
