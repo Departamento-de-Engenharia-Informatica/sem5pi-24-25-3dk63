@@ -1,0 +1,195 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+  <head>
+    <meta content="text/html; charset=ISO-8859-1"
+      http-equiv="Content-Type">
+    <title>SWI-Prolog HTTP Interface</title>
+  </head>
+  <body>
+    <h1>Comunica&ccedil;&atilde;o com SWI-Prolog via protocolo HTTP</h1>
+    <hr style="width: 100%; height: 2px;">O <a
+      href="http://www.swi-prolog.org/">SWI-Prolog</a> inclui na sua
+    distribui&ccedil;&atilde;o base um servidor <a
+      href="http://www.w3.org/Protocols/">HTTP</a> que pode ser
+    utilizado para comunica&ccedil;&atilde;o com outras linguagens desde
+    que estas sejam capazes de comunicar via m&eacute;todos <a
+      href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">GET</a>
+    e <a href="http://www.w3.org/Protocols/rfc2616/rfc2616-sec9.html">POST</a>
+    do protocolo HTTP. De seguida apresentam-se alguns pequenos exemplos
+    de como colocar o SWI-Prolog a comunicar via HTTP.<br>
+    <h3>Bibliotecas necess&aacute;rias</h3>
+    As bibliotecas necess&aacute;rias para o correcto funcionamento dos
+    exemplos que se seguem s&atilde;o 3 (est&atilde;o inclu&iacute;das
+    na distribui&ccedil;&atilde;o de base do SWI-Prolog):<br>
+    <ul>
+      <li><a
+href="http://www.swi-prolog.org/pldoc/doc/swi/library/http/thread_httpd.pl">thread_httpd</a>:
+        o servidor http.<br>
+      </li>
+      <li><a
+href="http://www.swi-prolog.org/pldoc/doc/swi/library/http/http_dispatch.pl">http_dispatch</a>:
+        execu&ccedil;&atilde;o de pedidos ao servidor.<br>
+      </li>
+      <li><a
+href="http://www.swi-prolog.org/pldoc/doc/swi/library/http/http_parameters.pl">http_parameters</a>:
+        processamento de par&acirc;metros enviados via m&eacute;todos
+        GET e POST.<br>
+      </li>
+    </ul>
+    <h3>Inicializa&ccedil;&atilde;o do servidor</h3>
+    A inicializa&ccedil;&atilde;o do servidor d&aacute;-se executando o
+    predicado <a
+      href="http://www.swi-prolog.org/pldoc/doc_for?object=http_server/3">http_server</a>
+    e escolhendo o porto em que ficar&aacute; &agrave; espera de
+    pedidos:<br>
+    &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <br>
+    <div style="text-align: center;">http_server(http_dispatch,
+      [port(Port)]).<br>
+    </div>
+    <br>
+    O servidor pode ser inicializado no porto 5000 se se executar:<br>
+    <br>
+    <div style="text-align: center;">?- http_server(http_dispatch,
+      [port(5000)]).<br>
+    </div>
+    <br>
+    Existe um grande n&uacute;mero de op&ccedil;&otilde;es que podem ser
+    utilizadas e que se podem consultar <a
+      href="http://www.swi-prolog.org/pldoc/doc_for?object=http_server/3">aqui</a>.<br>
+    <h3>Associar um URL no servidor a um predicado Prolog</h3>
+    Associar um URL a um determinado predicado &eacute; feito pela
+    instruc&ccedil;&atilde;o <a
+      href="http://www.swi-prolog.org/pldoc/doc_for?object=http_handler/3">http_handler</a>,
+    por exemplo:<br>
+    <br>
+    <div style="text-align: center;">:- http_handler('/lapr5',
+      responde_ola, []).&nbsp; <br>
+    </div>
+    <br>
+    Aqui definimos que o pedido ao URL: <span style="font-style:
+      italic;">http://localhost:5000/lapr5/</span> &eacute; feito pelo
+    predicado <span style="font-style: italic;">responde_ola</span>.
+    Uma poss&iacute;vel implementa&ccedil;&atilde;o deste predicado
+    &eacute; apresentada de seguida:<br>
+    <br>
+    responde_ola(_Request) :-&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; format('Content-type:
+    text/plain~n~n'),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; format('Ol&aacute;
+    LAPR5!~n').<br>
+    <br>
+    Neste caso o pedido do URL <span style="font-style: italic;">http://localhost:5000/lapr5/</span>
+    feito por interm&eacute;dio de um browser resultar&aacute; na
+    visualiza&ccedil;&atilde;o da p&aacute;gina:<br>
+    <br>
+    <img style=" width: 384px; height: 126px;" alt=""
+      src="prolog-reply.png"><br>
+    <h3>Receber dados via m&eacute;todo GET ou POST e utiliz&aacute;-los
+      na execu&ccedil;&atilde;o de um predicado</h3>
+    Come&ccedil;amos por associar um predicado para o tratamento do
+    pedido, por exemplo:<br>
+    <br>
+    <div style="text-align: center;">:- http_handler('/register_user',
+      register_user, []).<br>
+    </div>
+    <br>
+    Neste caso estaremos a processar o endere&ccedil;o <span
+      style="font-style: italic;">http://localhost:5000/register_user</span>.
+    A ideia aqui ser&aacute; submeter informa&ccedil;&atilde;o a ser
+    processada pelo predicado utilizando os m&eacute;todos GET e POST.<br>
+    <h4>M&eacute;todo GET</h4>
+    Supondo que o predicado processa dados de um utilizador, o URL
+    completo poder&aacute; ser: <span style="font-style: italic;">http://localhost:5000/register_user?name='Jos&eacute;'&amp;sex=male&amp;birth_year=1975</span>.
+    O predicado respons&aacute;vel por processar esta
+    informa&ccedil;&atilde;o poder&aacute; ser o seguinte:<br>
+    <br>
+    register_user(Request) :-<br>
+    &nbsp;&nbsp;&nbsp; http_parameters(Request,<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+    [ name(Name, []),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+    sex(Sex, [oneof([male,female])]),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+    birth_year(BY, [between(1850,10000)])<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+
+
+    ]),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;register_user(Name, Sex, BY),<br>
+    &nbsp;&nbsp;&nbsp; format('Content-type: text/plain~n~n'),<br>
+    &nbsp;&nbsp;&nbsp; format('User registered!~n'),<br>
+    &nbsp;&nbsp;&nbsp; format('Name: ~w~nSex: ~w~nBirth Year:
+    ~w~n',[Name,Sex,BY]<br>
+    <br>
+    O pedido est&aacute; na vari&aacute;vel <span style="font-style:
+      italic;">Request</span> e o processamento do mesmo &eacute; feito
+    pelo predicado <a
+href="http://www.swi-prolog.org/pldoc/doc/swi/library/http/http_parameters.pl">http_parameters</a>.
+    Para cada par <span style="font-style: italic;">Key=Value</span>
+    existe um elemento na lista do segundo argumento de <span
+      style="font-style: italic;">http_parameters</span> com a estrutura<span
+      style="font-style: italic;"> key(Value,Options) </span>aonde a
+    chave &eacute; o functor, o valor associado &eacute; o primeiro
+    argumento e a lista de op&ccedil;&otilde;es que pode ser vazia tem
+    restri&ccedil;&otilde;es no conte&uacute;do de valor. O predicado
+    register_user/3 far&aacute; o registo do utilizador por exemplo,
+    numa base de dados. Os <a
+      href="http://www.swi-prolog.org/pldoc/doc_for?object=format/2">format/2</a>
+    fazem o output para o cliente que pode ser XML, texto, etc.<br>
+    <br>
+    <span style="font-weight: bold;">Nota</span>: Pode testar este
+    c&oacute;digo directamente no SWI-Prolog com a
+    instruc&ccedil;&atilde;o: <span style="font-style: italic;">http_client:http_get('http://localhost:5000/register_user?name=\'Jo</span><span
+      style="font-style: italic;">s&eacute;</span><span
+      style="font-style: italic;">\'&amp;sex=male&amp;birth_year=1975',X,[])</span>.<br>
+    <h4>M&eacute;todo POST</h4>
+    O http_parameters consegue processar dados enviados pelo
+    m&eacute;todo POST sem altera&ccedil;&otilde;es do lado do servidor.
+    Para o caso de existir um formul&aacute;rio com os campos name, sex
+    e birth_year, o c&oacute;digo n&atilde;o precisa de ser alterado.<br>
+    <br>
+    <span style="font-weight: bold;">Nota</span>: Pode testar este
+    c&oacute;digo directamente no SWI-Prolog com a
+    instruc&ccedil;&atilde;o: <span style="font-style: italic;">http_client:http_post('http://localhost:5000/register_user',
+
+
+      form_data([name='Jo</span><span style="font-style: italic;">s&eacute;</span><span
+      style="font-style: italic;">', sex=male, birth_year=1975]), Reply,
+      []).</span><br>
+    <h3>Envio de ficheiro de texto via m&eacute;todo POST</h3>
+    O envio de um ficheiro texto via m&eacute;todo POST pode ser feito
+    pelo envio da informa&ccedil;&atilde;o num formul&aacute;rio. O
+    ficheiro &eacute; armazenado numa vari&aacute;vel Prolog, por
+    exemplo:<br>
+    <br>
+    send_file_post(Request) :-<br>
+    &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; http_parameters(Request,[
+    file(X,[])]),<br>
+    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; format('Content-type:
+    text/plain~n~n'),<br>
+    &nbsp; &nbsp;&nbsp; &nbsp;&nbsp; format('Received file: ~w~n',[X]).<br>
+    <br>
+    Pode testar o envio do ficheiro em prolog com: <span
+      style="font-style: italic;">http_client:http_post('http://localhost:5000/send_file_post',
+
+      form_data([file=file('C:/teste.txt')]), Reply, [])</span>. A
+    vari&aacute;vel <span style="font-style: italic;">Reply </span>armazena
+    a resposta do servidor.<br>
+    <h3>Conclus&atilde;o</h3>
+    Poder&aacute; interagir com uma aplica&ccedil;&atilde;o SWI-Prolog
+    utilizando o servidor HTTP de forma simples. Linguagens como C# ou
+    Java possuem extenso suporte para comunica&ccedil;&atilde;o via
+    HTTP. Poder&aacute; descarregar os exemplos apresentados para teste
+    <a href="teste_web.pl">aqui</a>.<br>
+    <hr style="width: 100%; height: 2px;"><br>
+    <br>
+  </body>
+</html>
