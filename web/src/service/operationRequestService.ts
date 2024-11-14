@@ -33,8 +33,6 @@ export class OperationRequestService implements IOperationRequestService {
         withCredentials: "true" 
       }
     });
-
-    console.log("Operation requests:", res.data);
   
     return res.data;
   }
@@ -50,10 +48,9 @@ export class OperationRequestService implements IOperationRequestService {
     console.log("Operation request deleted:", id);
   }
 
-  async editOperationRequest(operationRequestId: string, operationRequest: UpdateOperationRequestDTO): Promise<void> {
-    const res = await this.http.patch(`/OperationRequest/${operationRequestId}`, operationRequest);
-    console.log("Operation request edited:", res.data);
-    window.confirm(res.data as string);
+  async editOperationRequest(operationRequest: UpdateOperationRequestDTO): Promise<void> {~
+    await this.http.patch(`/OperationRequest/${operationRequest.Id}`, operationRequest);
+    console.log("Operation request updated:", operationRequest.Id);
   }
 
   async deactivateOperationRequest(id: string): Promise<void> {

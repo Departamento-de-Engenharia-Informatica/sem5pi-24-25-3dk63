@@ -2,22 +2,22 @@ import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IOperationRequestService } from "@/service/IService/IOperationRequestService";
-import { IOperationTypeService } from "@/service/IService/IOperationTypeService";  // NEW: Service for operation types
-import { IPatientService } from "@/service/IService/IPatientService";  // NEW: Service for fetching patients
+import { IOperationTypeService } from "@/service/IService/IOperationTypeService";  // Service for operation types
+import { IPatientService } from "@/service/IService/IPatientService";  // Service for fetching patients
 import { useNavigate } from "react-router-dom";
 import React from "react";
-import { degToRad } from "three/src/math/MathUtils.js";
-import { format } from "path";
+import { UpdateOperationRequestDTO } from "@/dto/UpdateOperationRequestDTO";
+import { set } from "node_modules/cypress/types/lodash";
 
 export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const operationRequestService = useInjection<IOperationRequestService>(TYPES.operationRequestService);
-  const operationTypeService = useInjection<IOperationTypeService>(TYPES.operationTypeService); // NEW: Inject operation type service
-  const patientService = useInjection<IPatientService>(TYPES.patientService); // NEW: Inject patient service
+  const operationTypeService = useInjection<IOperationTypeService>(TYPES.operationTypeService); // Inject operation type service
+  const patientService = useInjection<IPatientService>(TYPES.patientService); // Inject patient service
 
   const [operationRequests, setOperationRequests] = useState<any[]>([]);
-  const [patients, setPatients] = useState<any[]>([]);; // NEW: State to hold list of patients
-  const [operationTypes, setOperationTypes] = useState<any[]>([]);; // NEW: State for operation types
+  const [patients, setPatients] = useState<any[]>([]); // State to hold list of patients
+  const [operationTypes, setOperationTypes] = useState<any[]>([]); // State for operation types
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,8 +27,11 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [requestIdToDelete, setRequestIdToDelete] = useState<string | null>(null);
-  const [doctorSpecialization, setDoctorSpecialization] = useState<string>(""); // NEW: State for doctor's specialization
-
+  const [doctorSpecialization, setDoctorSpecialization] = useState<string>(""); // State for doctor's specialization
+  const [isAddModalVisible, setIsAddModalVisible] = useState(false);
+  const [isEditModalVisible, setIsEditModalVisible] = useState(false);
+  const [newRequest, setNewRequest] = useState<any>(null);
+  const [editingRequest, setEditingRequest] = useState<any | null>(null);
   const itemsPerPage = 10;
 
   const headers = ["Patient Name", "Operation Type", "Priority", "Assigned Staff", "Deadline", "Status", "Actions"];
@@ -40,17 +43,10 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
 
   const formatDate = (dateString: string) => {
     const dateParts = dateString.split('T')[0];
-    console.log("Date parts: ", dateParts);
-  
     const [year, month, day] = dateParts.split('-');
-  
     return `${day}-${month}-${year}`;
   };
   
-  
-
-
-
   const fetchOperationRequests = async () => {
     setLoading(true);
     setError(null);
@@ -65,12 +61,12 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         Priority: request.priority,
         Deadline: formatDate(request.deadline.toString()),
         "Assigned Staff": request.assignedStaff,
+        "Id": request.id,
       }));
 
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedRequests = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setOperationRequests(paginatedRequests);
-      console.log("Operation Requests: ", paginatedRequests);
     } catch (error: any) {
       setError("Error fetching operation requests.");
       setAlertMessage("Error fetching operation requests.");
@@ -79,19 +75,49 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     }
   };
 
-  const handleEdit = async (id: string) => {
-    const requestToEdit = operationRequests.find(request => request.id === id);
-    if (requestToEdit) {
-      setCreatingRequest({
-        id: requestToEdit.id,
-        patientName: requestToEdit["Patient Name"],
-        operationType: requestToEdit["Operation Type"],
-        dateRequested: { date: requestToEdit["Date Requested"] },
-        status: requestToEdit["Status"],
-      });
-      setIsModalVisible(true);
-    }
+  const buildOperationUpdateDTO = (originalRequest: any, updatedFields: any) => {
+    const updatedRequestDTO: UpdateOperationRequestDTO = { Id: originalRequest.Id };
+  
+    if (updatedFields.deadline) updatedRequestDTO.Deadline = updatedFields.deadline;
+    if (updatedFields.priority) updatedRequestDTO.Priority = updatedFields.priority;
+  
+    return updatedRequestDTO;
   };
+  
+  const handleEdit = async (request: any) => {
+    const updatedFields = {
+      deadline: request.deadline,
+      priority: request.priority,
+    };
+  
+    const updatedRequestDTO = buildOperationUpdateDTO(request, updatedFields);
+  
+    if (!updatedRequestDTO.Id) {
+      setAlertMessage("Request ID is missing.");
+      return;
+    }
+  
+    setEditingRequest(updatedRequestDTO);
+    setIsEditModalVisible(true);
+  };
+  
+  const handleEditSubmit = async () => {
+    if (editingRequest) {
+      try {
+        await operationRequestService.editOperationRequest(editingRequest);
+        setPopupMessage("Operation request updated successfully.");
+        setIsEditModalVisible(false);
+        setIsModalVisible(false);
+        fetchOperationRequests();
+      } catch (error) {
+        setIsEditModalVisible(false);
+        setIsModalVisible(false);
+        setPopupMessage("Error updating operation request.");
+      } finally {
+        setEditingRequest(null);
+      }
+    }
+  };  
 
   const handleDelete = (id: string) => {
     setRequestIdToDelete(id);
@@ -102,7 +128,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     if (requestIdToDelete) {
       try {
         await operationRequestService.deleteOperationRequest(requestIdToDelete);
-        setOperationRequests(prev => prev.filter(request => request.id !== requestIdToDelete));
+        setOperationRequests((prev) => prev.filter((request) => request.id !== requestIdToDelete));
         setAlertMessage("Operation request deleted successfully.");
         setPopupMessage("Operation request deleted successfully.");
       } catch (error) {
@@ -168,8 +194,13 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         Priority: request.priority,
         Deadline: formatDate(request.deadline.toString()),
         "Assigned Staff": request.assignedStaff,
+        "Id": request.id,
       }));
       setOperationRequests(filteredData);
+      if (filteredData.length === 0) {
+        setAlertMessage("No operation requests found.");
+      }
+
     } catch (error) {
       setError("Error fetching operation requests.");
     } finally {
@@ -254,10 +285,21 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     setCurrentPage,
     setIsModalVisible,
     setCreatingRequest,
+    doctorSpecialization,
+    setDoctorSpecialization,
+    isAddModalVisible,
+    setIsAddModalVisible,
+    isEditModalVisible,
+    setIsEditModalVisible,
+    newRequest,
+    setNewRequest,
+    editingRequest,
+    setEditingRequest,
+    handleEditSubmit,
     itemsPerPage,
     setPopupMessage,
-    handleSubmit, // NEW: Return the handleSubmit function
-    patients, // NEW: Return patients list
-    operationTypes, // NEW: Return operation types list
+    handleSubmit, // Returning handleSubmit
+    patients, // Return patients list
+    operationTypes, // Return operation types list
   };
 };
