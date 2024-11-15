@@ -3,7 +3,9 @@ import React from "react";
 
 interface HamburgerMenuProps {
   options: { label: string; action: () => void }[];
+  onClick: () => void;
 }
+
 
 const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ options }) => {
   const [isOpen, setIsOpen] = React.useState(false);

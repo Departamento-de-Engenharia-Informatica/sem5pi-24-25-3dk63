@@ -11,6 +11,7 @@ import DropdownMenu from "@/components/DropdownMenu";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
 import { StaffUser } from "@/model/StaffUser";
+import SidebarMenu from "@/components/SidebarMenu";
 
 interface StaffListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -55,6 +56,8 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     handleCancelDeactivate,
   } = useStaffListModule(setAlertMessage);
 
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false); // Controla a visibilidade da sidebar em telas pequenas
+
   const totalPages = Math.ceil(totalStaffs / itemsPerPage);
 
   const renderActions = (staff: any) => {
@@ -96,9 +99,10 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
   }, [isModalVisible]);
 
   return (
-    <div className="relative">
-      <HamburgerMenu options={menuOptions} />
-      <div className="container mx-auto p-4">
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
+      <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
+        <SidebarMenu options={menuOptions} />
+      </div>      <div className="container mx-auto p-4">
         <div className="mb-4">
           <button
             onClick={handleAddStaff}

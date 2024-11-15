@@ -105,9 +105,14 @@ function LoginPage() {
                             />
                         </div>
                     </div>
+
                 </main>
-            </div>
+                
+
+        </div>
+
         </GoogleOAuthProvider>
+
     );
 }
 

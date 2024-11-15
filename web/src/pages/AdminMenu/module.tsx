@@ -1,33 +1,27 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import Button from "@/components/Button/index";
-import Alert from "@/components/Alert/index";
-import HamburgerMenu from "@/components/HamburgerMenu";
-
-
 export const useAdminMenuModule = () => {
 
+const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
   const navigate = useNavigate();
 
-  const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
+const menuOptions = [
+  {
+    label: "Manage Patients",
+    action: () => navigate("/admin/patient")
+  },
+  {
+    label: "Manage Staff",
+    action: () => navigate("/admin/staff")
+  },
 
-
-  const handleManagePatients = () => {
-    navigate("/admin/patient");
-  };
-
-  const handleManageStaff = () => {
-    navigate("/admin/staff");
-  };
-
-  const handleManageOperationTypes = () => {
-    navigate("/admin/operation-type");
+  {
+    label: "Manage Operation Types",
+    action: () => navigate("/admin/operation-type")
   }
+];
 
-  const menuOptions = [
-    { label: "Homepage", action: () => navigate("/") },
-  ];
 
-  return {  setAlertMessage, handleManagePatients, handleManageStaff,handleManageOperationTypes, menuOptions, alertMessage, };
+  return {  setAlertMessage, menuOptions, alertMessage, };
 
 }

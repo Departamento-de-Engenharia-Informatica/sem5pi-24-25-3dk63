@@ -22,6 +22,12 @@
     font-family: "Archivo", sans-serif;
     background-color: var(--background);
     color: var(--text);
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    /* Garante que o body ocupe 100% da altura */
+    display: flex;
+    flex-direction: column;
   }
 
   /* Aplica a fonte "Poppins" aos títulos */
@@ -42,5 +48,15 @@
   /* Para garantir que links não tenham sublinhado por padrão */
   a {
     text-decoration: none;
+  }
+
+  /* Garante que html ocupe 100% da altura da tela */
+  html {
+    height: 100%;
+  }
+
+  /* Evita que o conteúdo ultrapasse os limites da tela e crie rolagem */
+  .overflow-hidden {
+    overflow: hidden;
   }
 }

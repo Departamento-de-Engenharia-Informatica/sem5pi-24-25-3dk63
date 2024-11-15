@@ -3,9 +3,6 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IStaffService } from "@/service/IService/IStaffService";
 import { useNavigate } from "react-router-dom";
-import { spec } from "node:test/reporters";
-import { set } from "node_modules/cypress/types/lodash";
-import { Specialization } from "@/model/Specialization";
 
 const countryOptions = [
   { code: "+351" },
@@ -48,10 +45,26 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
     " ",
   ];
 
-  const menuOptions = [
-    { label: "Homepage", action: () => navigate("/") },
-    { label: "Admin Menu", action: () => navigate("/admin") },
-  ];
+const menuOptions = [
+  {
+    label: "Dashboard",
+    action: () => navigate("/admin")
+  },
+  {
+    label: "Manage Patients",
+    action: () => navigate("/patient")
+  },
+
+  {
+    label: "Manage Operation Types",
+    action: () => navigate("/admin/operation-type")
+  }
+
+
+
+
+];
+
 
   const fetchStaffs = async () => {
     setLoading(true);

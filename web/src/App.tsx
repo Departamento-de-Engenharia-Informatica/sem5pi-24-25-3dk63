@@ -1,4 +1,3 @@
-// src/App.tsx
 import "reflect-metadata";
 import LoginPage from './pages/Login';
 import AdminPage from './pages/AdminMenu';
@@ -30,8 +29,9 @@ function App() {
           <header className="bg-[#284b62] text-white p-4 text-center flex-shrink-0 shadow-md">
             <h1 className="text-lg font-semibold tracking-wide">CliniTech Portal</h1>
           </header>
-          <main className="flex-grow flex justify-center items-center overflow-y-auto bg-white">
-            <div className="w-full p-8">
+          <main className="flex flex-1 overflow-hidden bg-white">
+            <div className="flex-1 p-8 overflow-hidden">
+              {/* Conteúdo principal */}
               <Routes>
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/admin" element={<AdminPage />} />
@@ -48,13 +48,9 @@ function App() {
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
                 <Route path="/staff/surgery-rooms" element={<SurgeryRoom setAlertMessage={setAlertMessage} />} />
                 {<Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />}
-
               </Routes>
             </div>
           </main>
-          <footer className="bg-[#284b62] text-white text-center p-4 flex-shrink-0 shadow-md">
-            <p className="text-sm">© 2024 CliniTech. All rights reserved.</p>
-          </footer>
         </div>
       </Router>
     </Provider>
