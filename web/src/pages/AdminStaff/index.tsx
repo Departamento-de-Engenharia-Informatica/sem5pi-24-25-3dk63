@@ -110,10 +110,9 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
 
         <div className="relative z-10">
           <SearchFilter
-            attributes={['firstName', 'lastName', 'Email', 'Specialization']}
+            attributes={['Name', 'Email', 'Specialization']}
             labels={{
-              firstName: 'First Name',
-              lastName: 'Last Name',
+              Name: 'Name',
               Email: 'Email',
               Specialization: 'Specialization'
             }}
@@ -254,7 +253,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               <option value="Technician">Technician</option>
             </select>
 
-            
+
             {/* Specialization */}
             <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
             <select
@@ -340,7 +339,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               onClick={saveChanges}
               className="mt-6 w-full bg-[#284b62] text-white font-semibold py-2 rounded-md hover:bg-opacity-80 transition duration-200"
             >
-              Save Changes  
+              Save Changes
             </button>
           </div>
         </Modal>

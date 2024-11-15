@@ -33,7 +33,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [isEditing, setIsEditing] = useState(false);
   const [specializations, setSpecializations] = useState<string[]>([]);
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 8;
 
   const headers = [
     "License Number",
@@ -115,9 +115,9 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
       specialization: { value: "" },
       availabilitySlots: { value: "" },
     };
-    
+
     console.log("New Staff Form:", staffFormDto);
-  
+
 };
 
 const saveStaff = async () => {
@@ -137,7 +137,7 @@ const saveStaff = async () => {
         console.log("Creating new staff:", dto);
 
         await staffService.addStaff(dto);
-        
+
         setPopupMessage("New staff created successfully.");
 
         setIsModalVisible(false);

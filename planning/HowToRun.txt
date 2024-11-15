@@ -1,1 +1,7 @@
-swipl 
+swipl
+
+planning:obtain_better_sol(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp).
+
+cd .\planning\
+
+swipl -s .\planning.pl
