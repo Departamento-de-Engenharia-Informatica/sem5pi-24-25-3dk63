@@ -7,5 +7,5 @@ export interface IOperationTypeService {
   deactivateOperationType(id: string): Promise<void>;
   addOperationType(operationType: CreatingOperationTypeDTO): Promise<void>;
   searchOperationTypes(query: Record<string, string>): Promise<OperationType[]>;
-  updateOperationType(operationType: UpdateOperationTypeDTO): Promise<void>;
+  updateOperationType(id: string, operationType: Partial<UpdateOperationTypeDTO>): Promise<OperationType>;
 }

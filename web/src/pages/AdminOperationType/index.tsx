@@ -46,16 +46,16 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
   const totalPages = Math.ceil(totalOTypes / itemsPerPage);
 
 
-  const renderActions = (OTypes: any) => {
+  const renderActions = (opType: any) => {
     const options = [
       {
         label: "Edit",
-        onClick: () => handleEdit(OTypes.id),
+        onClick: () => handleEdit(opType.id),
         className: "text-blue-500",
       },
       {
         label: "Deactivate",
-        onClick: () => handleDeactivate(OTypes.id),
+        onClick: () => handleDeactivate(opType.id),
         className: "flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm",
       },
     ];
@@ -67,9 +67,9 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
   );
 };
 
-  const tableData = OTypes.map((OTypes) => ({
-    ...OTypes,
-    Actions: renderActions(OTypes),
+  const tableData = OTypes.map((opType) => ({
+    ...opType,
+    Actions: renderActions(opType),
   }));
 
   return (
@@ -221,7 +221,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             >
               <option value="" disabled>Select Specialization</option>
               {specializations.map((spec) => (
-                <option key={spec.id} value={spec.description}>
+                <option key={`${spec.id}-${spec.description}`} value={spec.description}>
                   {spec.description}
                 </option>
               ))}

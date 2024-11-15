@@ -30,7 +30,9 @@ export class OperationTypeService implements IOperationTypeService {
     return res.data;
   }
 
-  async updateOperationType(operationType: UpdateOperationTypeDTO): Promise<void> {
-    await this.http.patch(`/OperationType/${operationType.Id}`, operationType);
+  async updateOperationType(id: string, operationType: Partial<UpdateOperationTypeDTO>): Promise<OperationType> {
+    const res = await this.http.patch<OperationType>(`/OperationType/${id}`, operationType);
+    console.log("Operation Type updated:", id);
+    return res.data;
   }
 }

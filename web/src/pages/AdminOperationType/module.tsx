@@ -90,22 +90,15 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     }
   };
 
-const buildOperationUpdateDTO = (originalRequest: any, updatedFields: any) => {
-  const updatedRequestDTO: UpdateOperationTypeDTO = { Id: originalRequest.Id };
-
-  if (updatedFields.name) updatedRequestDTO.Name = updatedFields.name;
-  if (updatedFields.requiredStaff) updatedRequestDTO.RequiredStaff = updatedFields.requiredStaff;
-  if (updatedFields.preparationTime) updatedRequestDTO.PreparationTime = updatedFields.preparationTime;
-  if (updatedFields.surgeryTime) updatedRequestDTO.SurgeryTime = updatedFields.surgeryTime;
-  if (updatedFields.cleaningTime) updatedRequestDTO.CleaningTime = updatedFields.cleaningTime;
-  if (updatedFields.speciality) updatedRequestDTO.Speciality = updatedFields.speciality;
-
-  return updatedRequestDTO;
-};
-
 const handleEdit = async (id: string) => {
   fetchSpecializations();
   const opTypeToEdit = OTypes.find((opType) => opType.id === id);
+
+  if (opTypeToEdit.Active === 'No')
+  {
+    setPopupMessage("Operation type needs to be active to be edited!");
+    return;
+  }
 
   if (opTypeToEdit) {
     setCreatingOperationType({
@@ -118,6 +111,8 @@ const handleEdit = async (id: string) => {
       totalDuration: opTypeToEdit["Total Time"],
       specialization: opTypeToEdit.Specialization,
     });
+
+    console.log("olaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     setIsModalVisible(true);
   }
@@ -174,34 +169,37 @@ const handleEdit = async (id: string) => {
     let dto;
     const isEdit = !!creatingOperationType.id;
 
-    if (isEdit) {
-      const opTypeToEdit = OTypes.find((opType) => opType.id === creatingOperationType.id);
+    try {
+      if (isEdit) {
+        const opTypeToEdit = OTypes.find((opType) => opType.id === creatingOperationType.id);
 
-      dto = buildUpdateDto(opTypeToEdit);
+        dto = buildUpdateDto(opTypeToEdit);
 
-      if (dto) {
-        console.log("Updating Operation Type:", dto);
+        if (dto) {
+          console.log("Updating Operation Type:", dto);
 
-        setAlertMessage("Updating...");
-        await operationTypeService.updateOperationType(dto);
-        setAlertMessage(null);
-      } else {
-        setPopupMessage("No changes detected.");
+          setAlertMessage("Updating...");
+          await operationTypeService.updateOperationType(opTypeToEdit.id, dto);
+          setAlertMessage(null);
+          setIsModalVisible(false);
+          fetchOperationsTypes();
+        } else {
+          setPopupMessage("No changes detected.");
+        }
       }
-    }
-    else
-    {
-      try {
+      else
+      {
         console.log("Saving Operation Type:", creatingOperationType);
         await operationTypeService.addOperationType(creatingOperationType);
         setPopupMessage("Operation Type created successfully.");
         setIsModalVisible(false);
         fetchOperationsTypes();
-      } catch (error) {
-        console.error("Error creating Operation Type:", error);
-        setPopupMessage("Error creating Operation Type.");
       }
-    } 
+
+    } catch (error) {
+      console.error(isEdit ? "Error updating operation type:" : "Error creating Operation Type:", error);
+      setPopupMessage(isEdit ? "Error updating operation type." : "Error creating Operation Type.");
+    }
   }
 
   const buildUpdateDto = (opTypeToEdit: any) => {
@@ -209,33 +207,37 @@ const handleEdit = async (id: string) => {
 
     console.log("Editing Operation Type:", updateDto);
 
+    const isEqual = (val1: any, val2: any) => {
+        return String(val1).trim().toLowerCase() === String(val2).trim().toLowerCase();
+    };
 
-    if (opTypeToEdit.name !== opTypeToEdit.firstName) {
-      updateDto.name = creatingOperationType;
+    if (!isEqual(creatingOperationType.name, opTypeToEdit.Name)) {
+        updateDto.name = creatingOperationType.name;
     }
 
-    if (creatingOperationType.preparationTime !== opTypeToEdit.preparationTime) {
-      updateDto.preparationTime = creatingOperationType.preparationTime;
+    if (!isEqual(creatingOperationType.preparationTime, opTypeToEdit["Preparation Time"])) {
+        updateDto.preparationTime = creatingOperationType.preparationTime;
     }
 
-    if (creatingOperationType.surgeryTime !== opTypeToEdit.surgeryTime) {
-      updateDto.surgeryTime = creatingOperationType.surgeryTime;
+    if (!isEqual(creatingOperationType.surgeryTime, opTypeToEdit["Surgery Time"])) {
+        updateDto.surgeryTime = creatingOperationType.surgeryTime;
     }
 
-    if (creatingOperationType.cleaningTime !== opTypeToEdit.cleaningTime) {
-      updateDto.cleaningTime = creatingOperationType.cleaningTime;
+    if (!isEqual(creatingOperationType.cleaningTime, opTypeToEdit["Cleaning Time"])) {
+        updateDto.cleaningTime = creatingOperationType.cleaningTime;
     }
 
-    if (creatingOperationType.requiredStaff !== opTypeToEdit.requiredStaff) {
-      updateDto.requiredStaff = creatingOperationType.requiredStaff;
+    if (!isEqual(creatingOperationType.requiredStaff, opTypeToEdit["Required Staff"])) {
+        updateDto.requiredStaff = creatingOperationType.requiredStaff;
     }
 
-    if (creatingOperationType.specialization !== opTypeToEdit.specialization) {
-      updateDto.specialization = creatingOperationType.specialization;
+    if (!isEqual(creatingOperationType.specialization, opTypeToEdit.Specialization)) {
+        updateDto.specialization = creatingOperationType.specialization;
     }
 
     return Object.keys(updateDto).length > 1 ? updateDto : null;
-  };
+};
+
 
   const fetchSpecializations = async () => {
     try {
