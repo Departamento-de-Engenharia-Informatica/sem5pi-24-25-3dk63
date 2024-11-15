@@ -60,8 +60,10 @@ export default class Floor {
 
             //list com nomes das salas
             let salas = description.surgeryRooms;
-            salas.push("fora de serviço");
 
+            if(salas.length % 2 != 0){
+            salas.push("fora de serviço");
+             }
             // Separe os elementos das posições ímpares e pares
             let impares = salas.filter((_, index) => index % 2 !== 0);
             let pares = salas.filter((_, index) => index % 2 === 0);

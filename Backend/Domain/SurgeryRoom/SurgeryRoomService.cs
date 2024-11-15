@@ -295,6 +295,20 @@ namespace Backend.Domain.SurgeryRoom
             new List<int> { 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1 }
         };
 
+        var modulo5 = new List<List<int>>
+         {
+            new List<int> { 1, 0, 0, 0, 6, 0, 0, 6, 0, 0, 0, 1 },
+            new List<int> { 1, 0, 9, 0, 6, 0, 0, 6, 0, 0, 0, 1 },
+            new List<int> { 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1 }
+        };
+
+        var modulo6 = new List<List<int>>
+        {
+            new List<int> { 1, 0, 0, 0, 7, 0, 0, 6, 0, 0, 0, 1 },
+            new List<int> { 1, 0, 4, 0, 7, 0, 0, 6, 0, 0, 0, 1 },
+            new List<int> { 1, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1 }
+        };
+
         // Inicializar o mapa com o modulo0 (inicial)
         var mapa = new List<List<int>>();
         mapa.AddRange(modulo0);
@@ -308,12 +322,21 @@ namespace Backend.Domain.SurgeryRoom
             var room1 = data[i];
             var room2 = (i + 1 < data.Count) ? data[i + 1] : null;
 
-            if (room1.CurrentStatus.Value.ToString() =="Occupied" && (room2 == null || room2.CurrentStatus.Value.ToString() =="Occupied"))
+            if(room2 ==null){
+                if(room1.CurrentStatus.Value.ToString() == "Occupied"){
+                    mapa.AddRange(modulo5);
+            }
+            else{
+                    mapa.AddRange(modulo6);
+            }
+            }
+            else
+            if (room1.CurrentStatus.Value.ToString() =="Occupied" && room2.CurrentStatus.Value.ToString() =="Occupied")
             {
                 mapa.AddRange(modulo1); // Ambas fechadas
                 Console.WriteLine("Ambas fechadas");
             }
-            else if (room1.CurrentStatus.Value.ToString() == "Available" && (room2 == null || room2.CurrentStatus.Value.ToString() =="Occupied"))
+            else if (room1.CurrentStatus.Value.ToString() == "Available" && room2.CurrentStatus.Value.ToString() =="Occupied")
             {
                 mapa.AddRange(modulo3); // Aberta + Fechada (direita)
                 Console.WriteLine("Aberta + Fechada (direita)");
