@@ -62,7 +62,7 @@ export default class Floor {
             let salas = description.surgeryRooms;
 
             if(salas.length % 2 != 0){
-            salas.push("fora de serviço");
+            salas.push("out of service");
              }
             // Separe os elementos das posições ímpares e pares
             let impares = salas.filter((_, index) => index % 2 !== 0);
@@ -122,7 +122,7 @@ export default class Floor {
                         count++;
                         }
                         else{
-                            if(salas[count] == "fora de serviço"){
+                            if(salas[count] == "out of service"){
                                 this.adicionarTexto(salas[count], new THREE.Vector3(i - description.size.width / 2.0 -0.03, 4.32, j - description.size.height / 2.0 +0.5), 0.1, 0xffffff, true);
 
                             }
