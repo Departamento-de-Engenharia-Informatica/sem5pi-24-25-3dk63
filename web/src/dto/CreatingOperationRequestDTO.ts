@@ -1,7 +1,7 @@
 export interface CreatingOperationRequestDTO {
-    deadline: string;
-    priority: string;
-    licenseNumber: string;
-    medicalRecordNumber: string;
-    operationTypeId: string;
-}
+    deadline: { value: string };
+    priority: { value: string };
+    licenseNumber: { value: string };
+    medicalRecordNumber: { value: string };
+    operationTypeId: { value: string };
+  }  

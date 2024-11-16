@@ -9,4 +9,5 @@ export interface IStaffService {
   editStaff(licenseNumber: string, staff: PendingStaffChangesDTO): Promise<string>;
   deactivateStaff(id: string): Promise<void>;
   getSpecializations(): Promise<string[]>;
+  getDoctorLicenseNumber(id: string): Promise<string>;
 }

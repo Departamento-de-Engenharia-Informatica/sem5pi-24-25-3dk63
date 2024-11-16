@@ -4,6 +4,7 @@ import type { HttpService } from "./IService/HttpService";
 import { IOperationRequestService } from "./IService/IOperationRequestService";
 import { OperationRequest } from "@/model/OperationRequest";
 import { UpdateOperationRequestDTO } from "@/dto/UpdateOperationRequestDTO";
+import { CreatingOperationRequestDTO } from "@/dto/CreatingOperationRequestDTO";
 
 @injectable()
 export class OperationRequestService implements IOperationRequestService {
@@ -37,7 +38,8 @@ export class OperationRequestService implements IOperationRequestService {
     return res.data;
   }
 
-  async createOperationRequest(operationRequest: UpdateOperationRequestDTO): Promise<void> {
+  async createOperationRequest(operationRequest: CreatingOperationRequestDTO): Promise<void> {
+    console.log("Operation request before:", operationRequest);
     const res = await this.http.post("/OperationRequest", operationRequest);
     console.log("Operation request created:", res.data);
     window.confirm(res.data as string);

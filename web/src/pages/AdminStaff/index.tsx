@@ -39,7 +39,6 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     creatingStaff,
     saveStaff,
     isEditing,
-    setIsEditing,
     staffToEdit,
     setStaffToEdit,
     saveChanges,

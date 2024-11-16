@@ -46,6 +46,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
     editingRequest,
     setEditingRequest,
     handleEditSubmit,
+    handleSubmit,
     handleEdit,
   } = useOperationRequestModule(setAlertMessage);
 
@@ -82,9 +83,6 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
     if (!isEditModalVisible) setEditingRequest(null);
   }, [isAddModalVisible, isEditModalVisible]);
 
-  const handleAddSubmit = () => {
-    setIsAddModalVisible(false);
-  };
 
   return (
     <div className="relative">
@@ -151,8 +149,8 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             >
               <option value="" disabled>Select Patient</option>
               {patients.map((patient) => (
-                <option key={patient.id} value={patient.firstName}>
-                  {patient.firstName}
+                <option key={patient.id.value} value={patient.id.value}>
+                  {`${patient.name.firstName} ${patient.name.lastName}`}
                 </option>
               ))}
             </select>
@@ -173,7 +171,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
               </option>
               {operationTypes.map((operationType: any) => (
                 <option key={operationType.id} value={operationType.id}>
-                  {operationType.name}
+                  {operationType.name.description}
                 </option>
               ))}
             </select>
@@ -188,6 +186,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
                   deadline: e.target.value,
                 }))
               }
+              min={today}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             />
 
@@ -211,7 +210,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             </select>
 
             <button
-              onClick={handleAddSubmit}
+              onClick={handleSubmit}
               className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md"
             >
               Save

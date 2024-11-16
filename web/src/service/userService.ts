@@ -90,4 +90,21 @@ export class UserService implements IUserService {
   async rejectRequest(id: string): Promise<void> {
     await this.http.patch(`/users/${id}/reject`, {});
   }
+
+  async getUserId(): Promise<string>{
+    const response = await fetch('https://localhost:5001/api/claims', {
+      method: 'GET',
+      credentials: 'include',
+    });
+
+    const claims = await response.json();
+
+    const userClaim = claims.find(
+      (claim: { type: string; value: string }) =>
+        claim.type === 'UserId'
+    );
+
+    return userClaim ? userClaim.value : null;
+  }
+
 }

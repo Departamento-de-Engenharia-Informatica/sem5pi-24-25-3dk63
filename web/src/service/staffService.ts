@@ -49,4 +49,10 @@ export class StaffService implements IStaffService {
     return res.data.map((specialization) => specialization.description);
 
   }
+
+  async getDoctorLicenseNumber(id: string): Promise<string>{
+    const res = await this.http.get<StaffUser>(`/staff/doctor/${id}`);
+    console.log("Data", res.data);
+    return res.data.licenseNumber;
+  }
 }

@@ -260,11 +260,6 @@ namespace DDDSample1.OperationRequests
                 var operationTypeEntity = await _operationTypeRepository.GetByIdAsync(or.operationTypeId)
                     ?? throw new InvalidOperationException("Operation type information is required but was not found.");
 
-                if (!operationTypeEntity.Active)
-                {
-                    throw new InvalidOperationException("Operation type must be active.");
-                }
-
                 if (or.priority == null)
                 {
                     throw new InvalidOperationException("Priority is required for OperationRequest but was not provided.");
