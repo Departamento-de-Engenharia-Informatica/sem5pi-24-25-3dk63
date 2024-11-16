@@ -86,3 +86,4 @@ jobs:
               echo "Deployment failed: $(date)" | tee -a ~/deploy-Backend/deploy.log
               exit 1
             fi
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
