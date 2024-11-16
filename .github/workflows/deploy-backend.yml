@@ -66,10 +66,23 @@ jobs:
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
           script: |
+            echo "Starting deployment on $(date)" | tee ~/deploy-Backend/deploy.log
             cd ~/deploy-Backend/Backend
+            echo "Restoring tools..." | tee -a ~/deploy-Backend/deploy.log
             dotnet tool restore
-            export ASPNETCORE_ENVIRONMENT="Production" ASPNETCORE_URLS="https://localhost:5001"
+            echo "Setting environment variables..." | tee -a ~/deploy-Backend/deploy.log
+            export ASPNETCORE_ENVIRONMENT="Production"
+            export ASPNETCORE_URLS="https://localhost:5001"
+            echo "Updating database..." | tee -a ~/deploy-Backend/deploy.log
             dotnet ef database update
-            killall -9 DDDNetCore
-            nohup ./dist/DDDNetCore > /dev/null 2>&1 &
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+            echo "Stopping previous instance..." | tee -a ~/deploy-Backend/deploy.log
+            killall -9 DDDNetCore || echo "No previous instance running." | tee -a ~/deploy-Backend/deploy.log
+            echo "Starting new instance..." | tee -a ~/deploy-Backend/deploy.log
+            nohup ./dist/DDDNetCore > ~/deploy-Backend/app.log 2>&1 &
+            sleep 5
+            if pgrep -f DDDNetCore > /dev/null; then
+              echo "Deployment successful: $(date)" | tee -a ~/deploy-Backend/deploy.log
+            else
+              echo "Deployment failed: $(date)" | tee -a ~/deploy-Backend/deploy.log
+              exit 1
+            fi
