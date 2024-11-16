@@ -252,9 +252,9 @@ const menuOptions = [
     }
 
     if (updatedPatient.lastName?.value !== patientToEdit.lastName) {
-        updateDto.name = {
-          firstName: patientToEdit.firstName,
-          lastName: updatedPatient.lastName.value,
+      updateDto.name = {
+        firstName: updateDto.name?.firstName ?? patientToEdit.firstName,
+        lastName: updatedPatient.lastName.value,
       };
     }
 
