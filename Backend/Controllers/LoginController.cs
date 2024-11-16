@@ -35,22 +35,16 @@ namespace DDDSample1.Presentation.Controllers
         {
             try
             {
-                var payload = await GoogleJsonWebSignature.ValidateAsync(request.Token);
+                var payload = await GoogleJsonWebSignature.ValidateAsync(request.token);
                 var emailGoogle = payload.Email;
 
                 var userDto = await userService.GetUserByUsernameAsync(emailGoogle);
-
+                                
                 // Check if the IAM email was found and the account is active
                 if (userDto == null || !userDto.Active)
                 {
                     Console.WriteLine("IAM email not found or inactive. Checking personal email.");
                     userDto = await userService.checkIfAccountExists(emailGoogle);
-
-                    // Return 302 if the patient is active and trying to login through personal email
-                    if (userDto.Role.Value == RoleType.Patient && userDto.Active && userDto.Username.Value == userDto.Email.Value)
-                    {
-                        return StatusCode(302, new { Message = "Patient cannot login with personal email." });
-                    }
 
                     // Check if the personal email was found and the account is active
                     if (userDto == null || !userDto.Active)
@@ -78,6 +72,13 @@ namespace DDDSample1.Presentation.Controllers
                         return StatusCode(302, new { 
                             Message = "This email is not registered in the system."
                         });
+                    }
+
+                    // Return 302 if the patient is active and trying to login through personal email
+                    if (userDto.Role.Value == RoleType.Patient && 
+                    userDto.Active)
+                    {
+                        return StatusCode(302, new { Message = "Patient cannot login with personal email." });
                     }
                 }
 
@@ -137,5 +138,5 @@ namespace DDDSample1.Presentation.Controllers
 
 public class TokenRequest
 {
-    public string Token { get; set; }
+    public string token { get; set; }
 }
