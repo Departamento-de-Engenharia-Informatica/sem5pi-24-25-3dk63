@@ -121,25 +121,35 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
 
   const handleDelete = (id: string) => {
     setRequestIdToDelete(id);
+    console.log("Deleting operation request:", requestIdToDelete);
     setIsDialogVisible(true);
   };
 
   const confirmDelete = async () => {
-    if (requestIdToDelete) {
-      try {
+    if (!requestIdToDelete) {
+        console.error("No requestIdToDelete set. Aborting delete.");
+        return;
+    }
+
+    try {
+        console.log("Deleting request with ID:", requestIdToDelete);
         await operationRequestService.deleteOperationRequest(requestIdToDelete);
-        setOperationRequests((prev) => prev.filter((request) => request.id !== requestIdToDelete));
+        console.log("Request deleted successfully:", requestIdToDelete);
+        setOperationRequests((prev) =>
+            prev.filter((request) => request.id !== requestIdToDelete)
+        );
         setAlertMessage("Operation request deleted successfully.");
         setPopupMessage("Operation request deleted successfully.");
-      } catch (error) {
+    } catch (error) {
+        console.error("Error deleting operation request:", error);
         setAlertMessage("Error deleting operation request.");
         setPopupMessage("Error while deleting operation request.");
-      } finally {
+    } finally {
         setIsDialogVisible(false);
         setRequestIdToDelete(null);
-      }
     }
-  };
+};
+
 
   const cancelDelete = () => {
     setIsDialogVisible(false);
@@ -273,7 +283,6 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     creatingRequest,
     popupMessage,
     isDialogVisible,
-    requestIdToDelete,
     handleEdit,
     handleDelete,
     confirmDelete,

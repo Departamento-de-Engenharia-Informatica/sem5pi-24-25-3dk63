@@ -45,16 +45,23 @@ export const usePatientSelfRegisterModule = () => {
       setAlertMessage(null);
 
       const BAD_REQUEST = 400;
+      const UNAUTHORIZED = 401;
       if(res.status == BAD_REQUEST)
       {
         console.error("Error while self registering:");
         setPopupMessage("Error while self-registering.");
       }
-      else{
+      else if (res.status == UNAUTHORIZED)
+      {
+        console.error("Error while self registering:");
+        setPopupMessage("Error while self-registering.");
+      }
+      else
+      {
         console.log("Registration initiated. Please check your personal email for confirmation.")
         setPopupMessage("Registration initiated. Please check your personal email for confirmation.");
+        navigate("/");
       }
-      navigate("/");
     }
     catch (error)
     {

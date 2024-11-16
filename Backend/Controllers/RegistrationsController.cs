@@ -42,6 +42,8 @@ namespace DDDSample1.Controllers
 
                 var iamEmail = protector.Unprotect(token);
 
+                Console.WriteLine("IAM email: ", iamEmail);
+
                 var user = await _registrationService.FindByEmailAsync(new Email(dto.PersonalEmail));
 
                 if(user == null)

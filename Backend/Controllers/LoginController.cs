@@ -47,7 +47,7 @@ namespace DDDSample1.Presentation.Controllers
                     userDto = await userService.checkIfAccountExists(emailGoogle);
 
                     // Return 302 if the patient is active and trying to login through personal email
-                    if (userDto.Role.Value == RoleType.Patient && userDto.Active)
+                    if (userDto.Role.Value == RoleType.Patient && userDto.Active && userDto.Username.Value == userDto.Email.Value)
                     {
                         return StatusCode(302, new { Message = "Patient cannot login with personal email." });
                     }
