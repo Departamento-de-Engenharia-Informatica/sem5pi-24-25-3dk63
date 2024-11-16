@@ -121,7 +121,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
 
   const handleDelete = (id: string) => {
     setRequestIdToDelete(id);
-    console.log("Deleting operation request:", requestIdToDelete);
+    console.log("Deleting operation request:", id);
     setIsDialogVisible(true);
   };
 
@@ -132,7 +132,6 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     }
 
     try {
-        console.log("Deleting request with ID:", requestIdToDelete);
         await operationRequestService.deleteOperationRequest(requestIdToDelete);
         console.log("Request deleted successfully:", requestIdToDelete);
         setOperationRequests((prev) =>
@@ -147,6 +146,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     } finally {
         setIsDialogVisible(false);
         setRequestIdToDelete(null);
+        fetchOperationRequests();
     }
 };
 

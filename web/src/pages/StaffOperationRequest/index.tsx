@@ -60,7 +60,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
       },
       {
         label: "Delete",
-        onClick: () => handleDelete(request.id),
+        onClick: () => handleDelete(request["Id"]),
         className: "text-red-500 hover:text-red-700 transition duration-200",
       },
     ];
