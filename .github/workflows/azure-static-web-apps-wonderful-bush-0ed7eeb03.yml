@@ -19,6 +19,13 @@ jobs:
         with:
           submodules: true
           lfs: false
+      - name: Cache Node modules
+        uses: actions/cache@v3
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-modules-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-modules-
       - name: Install pnpm
         run: |
           npm install -g pnpm
@@ -29,10 +36,9 @@ jobs:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_WONDERFUL_BUSH_0ED7EEB03 }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
-          app_location: "/web" # App source code path
-          api_location: "api" # Api source code path - optional
-          output_location: "dist" # Built app content directory - optional
-
+          app_location: "/web"
+          api_location: "api"
+          output_location: "dist"  
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
