@@ -212,9 +212,6 @@ namespace Backend.Domain.SurgeryRoom
         // Serializar o JSON em uma string
         var jsonString = JsonConvert.SerializeObject(newJson, Formatting.Indented);
         
-        Console.WriteLine("Criando o JSON: ");
-        Console.WriteLine(jsonString);
-
         // Caminho absoluto para o diretório public dentro de web
     string publicDir = Path.Combine(Directory.GetCurrentDirectory(), "..", "web", "public","floor");
 
@@ -246,9 +243,6 @@ namespace Backend.Domain.SurgeryRoom
         
     public static List<List<int>> CreateMap(List<SurgeryRoomEntity> data)
     {
-        Console.WriteLine("Creating map with data:");
-        data.ForEach(room => Console.WriteLine($"Room status: {room.CurrentStatus}"));
-
         // Definir os módulos (os arrays de salas)
         var modulo0 = new List<List<int>>
         {
@@ -312,9 +306,6 @@ namespace Backend.Domain.SurgeryRoom
         // Inicializar o mapa com o modulo0 (inicial)
         var mapa = new List<List<int>>();
         mapa.AddRange(modulo0);
-        Console.WriteLine("Adicionado módulo inicial");
-
-        Console.WriteLine("Iterando sobre as salas:", data);
 
         // Iterar sobre as salas em pares
         for (int i = 0; i < data.Count; i += 2)
@@ -334,22 +325,18 @@ namespace Backend.Domain.SurgeryRoom
             if (room1.CurrentStatus.Value.ToString() =="Occupied" && room2.CurrentStatus.Value.ToString() =="Occupied")
             {
                 mapa.AddRange(modulo1); // Ambas fechadas
-                Console.WriteLine("Ambas fechadas");
             }
             else if (room1.CurrentStatus.Value.ToString() == "Available" && room2.CurrentStatus.Value.ToString() =="Occupied")
             {
                 mapa.AddRange(modulo3); // Aberta + Fechada (direita)
-                Console.WriteLine("Aberta + Fechada (direita)");
             }
             else if (room1.CurrentStatus.Value.ToString() =="Occupied" && room2.CurrentStatus.Value.ToString() == "Available")
             {
                 mapa.AddRange(modulo2); // Fechada + Aberta (esquerda)
-                Console.WriteLine("Aberta + Fechada (esquerda)");
             }
             else if (room1.CurrentStatus.Value.ToString() == "Available" && room2.CurrentStatus.Value.ToString() == "Available")
             {
                 mapa.AddRange(modulo4); // Ambas abertas
-                Console.WriteLine("Ambas abertas");
             }
 
             // Adiciona o módulo intermediário após cada par de salas, exceto o último par
@@ -361,7 +348,6 @@ namespace Backend.Domain.SurgeryRoom
 
         // Adiciona o módulo final
         mapa.AddRange(moduloFim);
-        Console.WriteLine("Adicionado módulo final");
         return mapa;
     }
 

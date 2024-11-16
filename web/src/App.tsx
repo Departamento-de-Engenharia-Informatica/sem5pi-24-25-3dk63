@@ -16,7 +16,6 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
 import React, { useEffect, useState } from "react";
-import Floor3D from "./Floor";
 import Floor3D2 from './pages/3DModel';
 import ThemeToggleButton from "./components/TheToggleButton"; // Importe o botão de alternância de tema
 
@@ -61,8 +60,7 @@ function App() {
                 <Route path="/staff/operation-requests" element={<StaffOperationRequest setAlertMessage={setAlertMessage} />} />
                 <Route path="/admin/patient" element={<AdminPatient setAlertMessage={setAlertMessage} />} />
                 <Route path="/admin/staff" element={<AdminStaff setAlertMessage={setAlertMessage} />} />
-                <Route path="/staff/floor" element={<Floor3D />} />
-                <Route path="/staff/floor2" element={<Floor3D2 />} />
+                <Route path="/staff/floor" element={<Floor3D2 />} />
                 <Route path="/patient" element={<PatientPage />} />
                 <Route path="/self-register" element={<SelfRegisterMenu />} />
                 <Route path="/confirm-account-deletion/:token" element={<ConfirmAccountDeletion />} />
