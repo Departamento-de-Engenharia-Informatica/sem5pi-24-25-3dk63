@@ -1,1 +1,2 @@
 2024-11-16 13:10:05.609 +00:00 [INF] Patient 200001000001 profile was edited on 11/16/2024 1:10:05 PM
+2024-11-16 13:30:54.700 +00:00 [INF] Staff D200044442 was deactivated by Admin (diogoandre.8269@gmail.com) on 16/11/2024 13:30:54

@@ -378,7 +378,7 @@ export default class Floor {
             const textGeometry = new TextGeometry(text, {
                 font: font,
                 size: size,
-                depth: 0.01, // You can adjust the thickness of the text
+                height: 0.01, // You can adjust the thickness of the text
             });
     
             // Create a material for the text
