@@ -17,7 +17,7 @@ import { Provider } from "inversify-react";
 import { container } from "./inversify";
 import React, { useEffect, useState } from "react";
 import Floor3D2 from './pages/3DModel';
-import ThemeToggleButton from "./components/TheToggleButton"; // Importe o botão de alternância de tema
+import ThemeToggleButton from "./components/TheToggleButton";
 
 function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -44,14 +44,12 @@ function App() {
     <Provider container={container} standalone>
       <Router>
         <div className="flex flex-col h-screen">
-          <header className="p-4 text-center flex-shrink-0 shadow-md bg-header text-header-text">
-            <h1 className="text-lg font-semibold tracking-wide">CliniTech Portal</h1>
-          </header>
+     <header className="relative p-4 text-center flex-shrink-0 shadow-md bg-primary text-text">
+        <h1 className="text-lg font-semibold tracking-wide text-white">CliniTech Portal</h1>
+        <ThemeToggleButton theme={theme} toggleTheme={toggleTheme} />
+      </header>
           <main className="flex flex-1 overflow-hidden bg-main-background text-main-text">
             <div className="flex-1 p-8 overflow-hidden">
-              {/* Botão de alternância de tema no canto superior direito */}
-              <ThemeToggleButton theme={theme} toggleTheme={toggleTheme} />
-
               {/* Conteúdo principal */}
               <Routes>
                 <Route path="/" element={<LoginPage />} />
