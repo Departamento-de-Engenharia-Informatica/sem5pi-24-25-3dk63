@@ -6,10 +6,11 @@ import path from 'path';
 const BACKEND_URL = 'https://localhost:5001';
 
 export default defineConfig({
+  base: './',
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'), 
+      '@': path.resolve(__dirname, 'src'),
     },
   },
   server: {
@@ -30,3 +31,5 @@ export default defineConfig({
     },
   },
 });
+
+
