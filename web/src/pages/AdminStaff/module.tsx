@@ -52,7 +52,7 @@ const menuOptions = [
   },
   {
     label: "Manage Patients",
-    action: () => navigate("/patient")
+    action: () => navigate("/admin/patient")
   },
 
   {

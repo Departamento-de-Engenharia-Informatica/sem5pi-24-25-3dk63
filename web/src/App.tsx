@@ -15,22 +15,44 @@ import SurgeryRoom from "./pages/SurgeryRoom";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Provider } from "inversify-react";
 import { container } from "./inversify";
-import React, { useState } from "react";
-import Floor3D from "./Floor"
+import React, { useEffect, useState } from "react";
+import Floor3D from "./Floor";
 import Floor3D2 from './pages/3DModel';
+import ThemeToggleButton from "./components/TheToggleButton"; // Importe o botão de alternância de tema
 
 function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
+  const [theme, setTheme] = useState<string>(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme) return savedTheme;
+    return "light";
+  });
+
+  // Função para alternar o tema
+  const toggleTheme = () => {
+    const newTheme = theme === "light" ? "dark" : "light";
+    setTheme(newTheme);
+    localStorage.setItem("theme", newTheme);
+  };
+
+  // Alterar a classe do body com base no tema
+  useEffect(() => {
+    document.body.classList.remove("light", "dark");
+    document.body.classList.add(theme);
+  }, [theme]);
 
   return (
     <Provider container={container} standalone>
       <Router>
-        <div className="flex flex-col h-screen bg-gray-100 text-gray-900">
-          <header className="bg-[#284b62] text-white p-4 text-center flex-shrink-0 shadow-md">
+        <div className="flex flex-col h-screen">
+          <header className="p-4 text-center flex-shrink-0 shadow-md bg-header text-header-text">
             <h1 className="text-lg font-semibold tracking-wide">CliniTech Portal</h1>
           </header>
-          <main className="flex flex-1 overflow-hidden bg-white">
+          <main className="flex flex-1 overflow-hidden bg-main-background text-main-text">
             <div className="flex-1 p-8 overflow-hidden">
+              {/* Botão de alternância de tema no canto superior direito */}
+              <ThemeToggleButton theme={theme} toggleTheme={toggleTheme} />
+
               {/* Conteúdo principal */}
               <Routes>
                 <Route path="/" element={<LoginPage />} />
@@ -47,7 +69,7 @@ function App() {
                 <Route path="/admin/operation-type" element={<AdminOperationType setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
                 <Route path="/staff/surgery-rooms" element={<SurgeryRoom setAlertMessage={setAlertMessage} />} />
-                {<Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />}
+                <Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />
               </Routes>
             </div>
           </main>

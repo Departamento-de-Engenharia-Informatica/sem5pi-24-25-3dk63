@@ -5,19 +5,39 @@
 @tailwind utilities;
 
 @layer base {
-
-  /* Definindo as variáveis CSS corretamente */
+  /* Variáveis globais para os temas */
   :root {
-    --text: #000000;
-    --background: #e5fcff;
-    --primary: #284b62;
-    --secondary: #d0e7f6;
-    --accent: #278ed3;
-    --primary-700: #0a1e2c;
-    --primary-500: #1a303e;
+    --text-light: #000000;
+    --background-light: #e5fcff;
+    --primary-light: #284b62;
+    --secondary-light: #d0e7f6;
+    --accent-light: #278ed3;
+    --text-dark: #ffffff;
+    --background-dark: #121212;
+    --primary-dark: #1e90ff;
+    --secondary-dark: #434343;
+    --accent-dark: #278ed3;
   }
 
-  /* Aplica a fonte "Archivo" ao corpo do texto */
+  /* Tema claro */
+  .light {
+    --text: var(--text-light);
+    --background: var(--background-light);
+    --primary: var(--primary-light);
+    --secondary: var(--secondary-light);
+    --accent: var(--accent-light);
+  }
+
+  /* Tema escuro */
+  .dark {
+    --text: var(--text-dark);
+    --background: var(--background-dark);
+    --primary: var(--primary-dark);
+    --secondary: var(--secondary-dark);
+    --accent: var(--accent-dark);
+  }
+
+  /* Corpo da página */
   body {
     font-family: "Archivo", sans-serif;
     background-color: var(--background);
@@ -25,37 +45,42 @@
     margin: 0;
     padding: 0;
     height: 100%;
-    /* Garante que o body ocupe 100% da altura */
     display: flex;
     flex-direction: column;
   }
 
-  /* Aplica a fonte "Poppins" aos títulos */
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
+  /* Cabeçalho */
+  header {
+    background-color: var(--primary);
+    color: var(--text);
+  }
+
+  /* Definindo cores principais para texto e fundo */
+  .bg-main-background {
+    background-color: var(--background);
+  }
+
+  .text-main-text {
+    color: var(--text);
+  }
+
+  /* Fonte dos títulos */
+  h1, h2, h3, h4, h5, h6 {
     font-family: "Poppins", sans-serif;
   }
 
-  /* Caso queira definir outras propriedades de estilo para o layout, como o padrão de margens ou padding */
   * {
     box-sizing: border-box;
   }
 
-  /* Para garantir que links não tenham sublinhado por padrão */
   a {
     text-decoration: none;
   }
 
-  /* Garante que html ocupe 100% da altura da tela */
   html {
     height: 100%;
   }
 
-  /* Evita que o conteúdo ultrapasse os limites da tela e crie rolagem */
   .overflow-hidden {
     overflow: hidden;
   }

@@ -48,7 +48,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, buttonLabel }) => 
       <Button
         onClick={toggleDropdown}
         name="actions"
-        className="px-4 py-2 text-white bg-[#284b62] hover:bg-[#3a617d] rounded-md"
+        className="px-4 py-2 text-white bg-[#284b62] hover:bg-[#3a617d] dark:bg-[#2d3b47] dark:hover:bg-[#3a4a58] rounded-md"
       >
         {buttonLabel}
       </Button>
@@ -56,7 +56,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, buttonLabel }) => 
         ReactDOM.createPortal(
           <div
             id="dropdown-menu"
-            className="absolute z-50 mt-2 w-48 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none transform transition ease-out duration-200"
+            className="absolute z-50 mt-2 w-48 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black ring-opacity-5 dark:ring-opacity-10 focus:outline-none transform transition ease-out duration-200"
             style={{
               top: dropdownPosition.top,
               left: dropdownPosition.left,
@@ -71,7 +71,7 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, buttonLabel }) => 
                     setIsOpen(false);
                     setDropdownPosition(null);
                   }}
-                  className={`w-full px-4 py-2 text-left text-gray-700 hover:bg-[#f1f5f9] hover:text-[#284b62] ${option.className}`}
+                  className={`w-full px-4 py-2 text-left text-gray-700 dark:text-gray-200 hover:bg-[#f1f5f9] dark:hover:bg-[#3a4a58] hover:text-[#284b62] dark:hover:text-white ${option.className}`}
                 >
                   {option.label}
                 </button>
