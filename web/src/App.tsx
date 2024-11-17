@@ -59,7 +59,6 @@ function App() {
                 {/* Public Routes */}
                 <Route path="/" element={<LoginPage />} />
                 <Route path="/self-register" element={<SelfRegisterMenu />} />
-                <Route path="/confirm-account-deletion/:token" element={<ConfirmAccountDeletion />} />
                 <Route path="/admin/operation-type" element={<AdminOperationType setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
                 <Route path="/staff/surgery-rooms" element={<SurgeryRoom setAlertMessage={setAlertMessage} />} />
