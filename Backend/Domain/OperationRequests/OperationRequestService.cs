@@ -246,50 +246,52 @@ namespace DDDSample1.OperationRequests
 
             foreach (var or in requests)
             {
-                if (or.medicalRecordNumber == null)
+                try
                 {
-                    throw new InvalidOperationException("OperationRequest is missing a valid medical record number.");
+                    if (or.medicalRecordNumber == null)
+                    {
+                        throw new InvalidOperationException("OperationRequest is missing a valid medical record number.");
+                    }
+
+                    var patient = await _patientRepository.FindByMedicalRecordNumberAsync(or.medicalRecordNumber)
+                        ?? throw new InvalidOperationException("Patient information is required but was not found.");
+
+                    var patientUser = await _userRepository.GetByIdAsync(patient.UserId)
+                        ?? throw new InvalidOperationException("Patient's user information is required but was not found.");
+
+                    var operationTypeEntity = await _operationTypeRepository.GetByIdAsync(or.operationTypeId)
+                        ?? throw new InvalidOperationException("Operation type information is required but was not found.");
+
+                    if (or.priority == null)
+                    {
+                        throw new InvalidOperationException("Priority is required for OperationRequest but was not provided.");
+                    }
+                    if (or.deadline == null)
+                    {
+                        throw new InvalidOperationException("Deadline is required for OperationRequest but was not provided.");
+                    }
+
+                    Console.Write(or.deadline.Value);
+
+                    result.Add(new ListOperationRequestDTO
+                    {
+                        Id = or.Id.AsString(),
+                        PatientName = $"{patientUser.Name.FirstName} {patientUser.Name.LastName}",
+                        OperationType = operationTypeEntity.Name.ToString(),
+                        Status = or.Active ? "Active" : "Inactive",
+                        Priority = or.priority.Value.ToString(),
+                        Deadline = or.deadline.Value,
+                        AssignedStaff = operationTypeEntity.RequiredStaff?.RequiredNumber.ToString()
+                            ?? throw new InvalidOperationException("Required staff information is missing.")
+                    });
                 }
-
-                var patient = await _patientRepository.FindByMedicalRecordNumberAsync(or.medicalRecordNumber)
-                    ?? throw new InvalidOperationException("Patient information is required but was not found.");
-
-                var patientUser = await _userRepository.GetByIdAsync(patient.UserId)
-                    ?? throw new InvalidOperationException("Patient's user information is required but was not found.");
-
-                var operationTypeEntity = await _operationTypeRepository.GetByIdAsync(or.operationTypeId)
-                    ?? throw new InvalidOperationException("Operation type information is required but was not found.");
-
-                if (!operationTypeEntity.Active)
+                catch (BusinessRuleValidationException ex)
                 {
-                    throw new InvalidOperationException("Operation type must be active.");
+                    Console.WriteLine($"Error processing request {or.Id}: {ex.Message}");
                 }
-
-                if (or.priority == null)
-                {
-                    throw new InvalidOperationException("Priority is required for OperationRequest but was not provided.");
-                }
-                if (or.deadline == null)
-                {
-                    throw new InvalidOperationException("Deadline is required for OperationRequest but was not provided.");
-                }
-
-                result.Add(new ListOperationRequestDTO
-                {
-                    Id = or.Id.AsString(),
-                    PatientName = $"{patientUser.Name.FirstName} {patientUser.Name.LastName}",
-                    OperationType = operationTypeEntity.Name.ToString(),
-                    Status = or.Active ? "Active" : "Inactive",
-                    Priority = or.priority.Value.ToString(),
-                    Deadline = or.deadline.Value,
-                    AssignedStaff = operationTypeEntity.RequiredStaff?.RequiredNumber.ToString() 
-                        ?? throw new InvalidOperationException("Required staff information is missing.")
-                });
             }
 
             return result;
         }
-
-
     }
 }

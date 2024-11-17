@@ -7,8 +7,8 @@ import { StaffService, } from "@/service/staffService";
 import { IStaffService } from "@/service/IService/IStaffService";
 import { OperationTypeService } from "@/service/operationTypeService";
 import {IOperationTypeService} from "@/service/IService/IOperationTypeService";
-import {SpecializationsService} from  "@/service/specializationsService";
-import {ISpecializationService} from "@/service/IService/ISpecializationService";
+import { ISpecializationService } from "@/service/IService/ISpecializationService";
+import { SpecializationsService } from "@/service/SpecializationService";
 import { SurgeryRoomService } from "@/service/surgeryRoomService";
 import { ISurgeryRoomService } from "@/service/IService/ISurgeryRoomService";
 

@@ -13,8 +13,7 @@
     "cypress:open": "cypress open",
     "test": "vitest run --mode staging",
     "test:watch": "vitest watch",
-    "coverage": "vitest run --coverage",
-    "preinstall": "npx only-allow pnpm"
+    "coverage": "vitest run --coverage"
   },
   "dependencies": {
     "@fontsource/inter": "^5.1.0",

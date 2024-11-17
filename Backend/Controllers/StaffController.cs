@@ -45,6 +45,18 @@ namespace DDDSample1.Controllers
             return Ok(staffList);
         }
 
+        [HttpGet("doctor/{id}")]
+        [Authorize(Roles = "Doctor")]
+        public async Task<ActionResult<StaffDTO>> GetStaffById(string id){
+            var staff = await _staffService.GetByUserIdAsync(new UserId(id));
+            if (staff == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(staff);
+        }
+
         [HttpGet("{licenseNumber}")]
         public async Task<ActionResult<StaffDTO>> GetStaffByLicenseNumber(string licenseNumber)
         {

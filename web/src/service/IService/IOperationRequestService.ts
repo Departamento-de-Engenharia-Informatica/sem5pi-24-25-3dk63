@@ -1,6 +1,7 @@
 import { OperationRequest } from "@/model/OperationRequest";
 import { UpdateOperationRequestDTO } from "@/dto/UpdateOperationRequestDTO";
 import { CreatingOperationRequestDTO } from "@/dto/CreatingOperationRequestDTO";
+import { Patient } from "@/model/Patient";
 
 export interface IOperationRequestService {
     getOperationRequests(): Promise<OperationRequest[]>;

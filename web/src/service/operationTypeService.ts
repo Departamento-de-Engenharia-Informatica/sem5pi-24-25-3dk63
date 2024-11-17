@@ -12,7 +12,6 @@ export class OperationTypeService implements IOperationTypeService {
 
   async getOperationTypes(): Promise<OperationType[]> {
     const res = await this.http.get<OperationType[]>("/OperationType/all");
-
     return res.data;
   }
 

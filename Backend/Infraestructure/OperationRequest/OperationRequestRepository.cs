@@ -107,18 +107,21 @@ namespace DDDSample1.Infrastructure.OperationRequests
             {
                 query = query.Where(or => or.priority != null && or.priority.Value == priority.Value);
             }
+
             if (dateRequested.HasValue)
             {
                 var requestedDate = dateRequested.Value.Date; 
                 query = query.Where(or => or.createdDate.Date == requestedDate);
             }
 
+            // Filter by due date
             if (dueDate.HasValue)
             {
                 var dueDateOnly = dueDate.Value.Date; 
                 query = query.Where(or => or.deadline.Value.Date == dueDateOnly);
             }
 
+            query = query.Where(or => (or.deadline != null) && or.deadline.Value >= DateTime.Now);
 
             return await query.ToListAsync();
         }

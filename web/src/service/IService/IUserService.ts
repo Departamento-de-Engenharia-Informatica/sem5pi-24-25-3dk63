@@ -19,4 +19,5 @@ export interface IUserService {
   rejectRequest(id: string): Promise<void>;
   checkIfUserExistsByGoogleCredential(credential: string): Promise<boolean>;
   getGoogleUserInfo(credential: string): Promise<GoogleUserInfo>;
+  getUserId(): Promise<string>;
 }
