@@ -10,6 +10,7 @@ using DDDSample1.Domain.Users;
 using Backend.Domain.Shared;
 using DDDSample1.Domain.Specialization;
 using Backend.Domain.Staff;
+using AutoMapper;
 
 namespace DDDSample1.Controllers
 {
@@ -22,15 +23,16 @@ namespace DDDSample1.Controllers
         private readonly EmailService _emailService;
         private readonly AuditService _auditService;
         private readonly SpecializationService _specializationService;
+        private readonly IMapper _mapper;
 
-        public StaffController(StaffService staffService, UserService userService, EmailService emailService, AuditService auditService, SpecializationService specializationService)
+        public StaffController(StaffService staffService, UserService userService, EmailService emailService, AuditService auditService, SpecializationService specializationService, IMapper mapper)
         {
             _staffService = staffService;
             _userService = userService;
             _emailService = emailService;
             _auditService = auditService;
             _specializationService = specializationService;
-
+            _mapper = mapper;
         }
 
 
@@ -108,7 +110,8 @@ namespace DDDSample1.Controllers
                 return Ok("Invalid specialization, please insert a valid one.");
             }
 
-            specializationChanged = (await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;
+             if (updateDto.Specialization != null){
+            specializationChanged = (await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;}
 
 
             await _staffService.RemovePendingChangesAsync(new UserId(userStaff.Id));
@@ -140,9 +143,11 @@ namespace DDDSample1.Controllers
 
             await _staffService.AddPendingChangesAsync(updateDto, new UserId(userStaff.Id));
 
-            _auditService.LogProfileStaffUpdate(staff, userStaff, updateDto);
+            await _auditService.LogProfileStaffUpdate(staff, userStaff, updateDto);
 
-            await _staffService.ApplyPendingChangesAsync(new UserId(userStaff.Id));
+            var user = _mapper.Map<UserDTO, User>(userStaff);
+
+            await _staffService.ApplyPendingChangesAsync(user);
 
             return Ok("Your changes have been submitted.");
         }
@@ -158,6 +163,7 @@ namespace DDDSample1.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Update confirmation failed:",ex.Message);
                 return BadRequest($"Update confirmation failed: {ex.Message}");
             }
 

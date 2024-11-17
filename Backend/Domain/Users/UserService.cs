@@ -134,7 +134,7 @@ namespace DDDSample1.Users
             user.ChangeConfirmationToken(dto.ConfirmationToken);
 
             await this._unitOfWork.CommitAsync();
-
+            Console.WriteLine("User updated");
             return _mapper.Map<UserDTO>(user);
         }
 

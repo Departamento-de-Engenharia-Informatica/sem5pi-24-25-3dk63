@@ -7,12 +7,14 @@ using DDDSample1.Domain.Users;
 using Serilog;
 using DDDSample1.Domain.PendingChangeStaff;
 using Microsoft.EntityFrameworkCore;
+using DDDSample1.Infrastructure.Specializations;
+using DDDSample1.Domain.Specialization;
+using Backend.Domain.Specialization.ValueObjects;
 namespace Backend.Domain.Shared
 {
     public class AuditService
     {
         private readonly Serilog.ILogger _logger;
-
 
         public AuditService(Serilog.ILogger logger)
         {
@@ -78,18 +80,20 @@ namespace Backend.Domain.Shared
             _logger.Information(logMessage);
         }
 
-         public void LogProfileStaffUpdate(StaffDTO staff, UserDTO user, PendingChangesStaffDTO changes)
+         public async Task LogProfileStaffUpdate(StaffDTO staff, UserDTO user, PendingChangesStaffDTO changes)
             {
                 var updatedFields = new List<string>();
+
                 if (changes.Email != null && !changes.Email.Equals(user.Email))
                     updatedFields.Add($"Email changed to: {changes.Email.Value}");
+
                 if (changes.PhoneNumber != null && !changes.PhoneNumber.Equals(user.phoneNumber))
                     updatedFields.Add($"Phone Number changed to: {changes.PhoneNumber.Number}");
 
-                if (changes.Specialization != null && !changes.Specialization.Equals(staff.SpecializationId))
+                if (changes.Specialization != null)
                     updatedFields.Add($"Specialization changed to: {changes.Specialization}");
 
-                    string logMessage = $"Staff {staff.LicenseNumber}'s profile updated was confirmed by {user.Email.Value} on {DateTime.UtcNow}. Changes: {string.Join(", ", updatedFields)}";
+                string logMessage = $"Staff {staff.LicenseNumber}'s profile was updated by {user.Email.Value} on {DateTime.UtcNow}. Changes: {string.Join(", ", updatedFields)}";
                 _logger.Information(logMessage);
             }
 

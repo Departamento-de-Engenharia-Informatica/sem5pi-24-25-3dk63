@@ -49,4 +49,13 @@ export class StaffService implements IStaffService {
     return res.data.map((specialization) => specialization.description);
 
   }
+
+  async confirmProfileUpdate(token: string): Promise<void> {
+    try {
+      await this.http.get("/staff/confirm-update", { params: { token }, headers: { withCredentials: "true" } });
+    } catch (error) {
+      throw new Error("Failed to confirm account update.");
+    }
+  }
+  
 }

@@ -84,7 +84,7 @@ public async Task SendStaffNotificationEmailAsync(List<string> changedProperties
 
         public async Task SendUpdateStaffEmail(string email, string token, PendingChangesStaffDTO updateDto, StaffDTO staff, UserDTO userStaff, bool emailChanged, bool phoneChanged, bool specializationChanged)
         {
-            var confirmationLink = $"https://localhost:5001/api/Staff/confirm-update?token={token}";
+            var confirmationLink = $"http://localhost:5173/confirm-update/{token}";
             var subject = "Confirm Your Profile Update | Clinitech";
             var logo = "../Backend/assets/image.png";
             var body = $@"

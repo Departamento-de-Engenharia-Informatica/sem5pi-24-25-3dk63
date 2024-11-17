@@ -16,9 +16,21 @@ namespace DDDSample1.Infrastructure.PendingChangeStaff
 
         public async Task<PendingChangesStaff?> GetPendingChangesByUserIdAsync(UserId userId)
         {
-            return await _context.PendingChangesStaff
-                .FirstOrDefaultAsync(pc => pc.UserId == userId);
-        }
+            try
+            {
+                return await _context.PendingChangesStaff
+                    .FirstOrDefaultAsync(pc => pc.UserId == userId);
+            }
+            catch (Exception ex)
+            {
+                // Logando a exceção
+                Console.WriteLine($"An error occurred while retrieving pending changes for UserId: {userId}. Error: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+
+                // Re-throwing the exception to be handled by higher layers (optional, depending on your logic)
+                throw new Exception("An error occurred while retrieving pending changes.", ex);
+            }
+}
 
         public async Task AddPendingChangesStaffAsync(PendingChangesStaff pendingChanges)
         {

@@ -18,6 +18,7 @@ import { container } from "./inversify";
 import React, { useEffect, useState } from "react";
 import Floor3D2 from './pages/3DModel';
 import ThemeToggleButton from "./components/TheToggleButton";
+import ConfirmUpdate from "./pages/ConfirmUpdateStaff";
 
 function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -66,6 +67,7 @@ function App() {
                 <Route path="/patient/appointments" element={<PatientAppointments setAlertMessage={setAlertMessage} />} />
                 <Route path="/staff/surgery-rooms" element={<SurgeryRoom setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />
+                <Route path="/confirm-update/:token" element={<ConfirmUpdate />} />
               </Routes>
             </div>
           </main>

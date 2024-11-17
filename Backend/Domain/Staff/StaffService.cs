@@ -452,24 +452,26 @@ namespace DDDSample1.Domain.Staff
 
             await _unitOfWork.CommitAsync();
         }
-        public async Task ApplyPendingChangesAsync(UserId userId)
+        public async Task ApplyPendingChangesAsync(User user)
         {
-            var pendingChanges = await _pendingChangesStaffRepository.GetPendingChangesByUserIdAsync(userId);
+            try{
+            var pendingChanges = await _pendingChangesStaffRepository.GetPendingChangesByUserIdAsync(user.Id);
             if (pendingChanges == null)
             {
+                Console.WriteLine("No pending changes found for this user.");
                 throw new Exception("No pending changes found for this user.");
             }
-            var staff = await _staffRepository.GetByUserIdAsync(userId);
-            var user = await _userRepository.GetByIdAsync(userId);
+            var staff = await _staffRepository.GetByUserIdAsync(user.Id);
 
             if (pendingChanges.Email != null)
             {
                 user.ChangeEmail(pendingChanges.Email);
             }
             if (pendingChanges.PhoneNumber != null)
-            {
-                user.ChangephoneNumber(pendingChanges.PhoneNumber);
-            }
+                {
+                    var newPhoneNumber = new PhoneNumber(pendingChanges.PhoneNumber.Number);
+                    user.ChangephoneNumber(newPhoneNumber);
+                }
             if (pendingChanges.Specialization != null)
             {
                 var specialization = await _specializationRepository.GetByDescriptionAsync(new Description(pendingChanges.Specialization));
@@ -479,8 +481,14 @@ namespace DDDSample1.Domain.Staff
             }
             await _userRepository.UpdateUserAsync(user);
             await _staffRepository.UpdateStaffAsync(staff);
-            await _pendingChangesStaffRepository.RemovePendingChangesStaffAsync(userId);
+            await _pendingChangesStaffRepository.RemovePendingChangesStaffAsync(user.Id);
             await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("SORRY GANG", ex.Message);
+                throw new Exception($"Apply pending changes failed: {ex.Message}");
+            }
         }
 
         //await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;
@@ -521,27 +529,30 @@ namespace DDDSample1.Domain.Staff
             var user = await _userRepository.GetUserByConfirmationTokenAsync(token);
             if (user == null)
             {
+                Console.WriteLine("User not found.");
                 throw new Exception("Invalid or expired confirmation token.");
             }
 
             var staff = await _staffRepository.GetByUserIdAsync(user.Id);
             if (staff == null)
             {
+                Console.WriteLine("Staff not found.");
                 throw new Exception("Staff not found.");
             }
 
             try
             {
                 var pendingChange = await _pendingChangesStaffRepository.GetPendingChangesByUserIdAsync(user.Id);
-                var pendingChangeDto = _mapper.Map<PendingChangesStaffDTO>(pendingChange);
+                var pendingdto = _mapper.Map<PendingChangesStaffDTO>(pendingChange);
                 var staffdto = _mapper.Map<StaffDTO>(staff);
                 var userDto = _mapper.Map<UserDTO>(user);
-                _auditService.LogProfileStaffUpdate(staffdto, userDto, pendingChangeDto);
-                await ApplyPendingChangesAsync(new UserId(user.Id.Value));
+                await _auditService.LogProfileStaffUpdate(staffdto, userDto, pendingdto);
+                await ApplyPendingChangesAsync(user);
 
             }
             catch (Exception ex)
             {
+                Console.WriteLine("Update confirmation failed2222:", ex.Message);
                 throw new Exception($"Update confirmation failed: {ex.Message}");
             }
         }
