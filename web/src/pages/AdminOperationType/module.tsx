@@ -28,7 +28,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
 
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 5;
 
   const headers = [
     "Name",

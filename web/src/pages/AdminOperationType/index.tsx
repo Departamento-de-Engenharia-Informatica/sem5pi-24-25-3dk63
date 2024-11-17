@@ -81,7 +81,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
         <SidebarMenu options={menuOptions} />
       </div>
       {/* Conteúdo principal */}
-      <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto h-full">
+    <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto flex flex-col">
       {/* Hamburger Menu: Só visível em telas pequenas */}
       <div className="lg:hidden mb-4">
         <HamburgerMenu
@@ -117,14 +117,22 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
         />
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
-        <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} />
-        </div>
-        <Pagination
+        <div className="overflow-x-auto overflow-y-auto">
+          <Table
+            headers={headers}
+            data={tableData}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+
+          <Pagination
           totalPages={totalPages}
           currentPage={currentPage}
           onPageChange={setCurrentPage}
-        />
+          />
+        </div>
+
       </div>
       {/* Modal de Cadastro/edição */}
 

@@ -128,7 +128,9 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
        <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} />
+          <Table headers={headers} data={tableData}   totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}/>
         </div>
         <Pagination
           totalPages={totalPages}

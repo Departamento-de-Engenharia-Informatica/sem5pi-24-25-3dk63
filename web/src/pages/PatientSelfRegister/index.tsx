@@ -20,7 +20,7 @@ const PatientSelfRegister: React.FC = () => {
   return (
     <div className="relative pt-20 p-8 bg-gray-50 min-h-screen">
       <div className="fixed top-1 left-4 z-10">
-        <HamburgerMenu options={menuOptions} />
+        <HamburgerMenu options={menuOptions} onClick={() => { /* handle click */ }} />
       </div>
 
       <h1 className="text-3xl font-bold text-center mb-6">Self-Register</h1>
@@ -61,9 +61,9 @@ const PatientSelfRegister: React.FC = () => {
       </div>
 
       {/* Added: Popup for displaying messages */}
-      <Popup 
-        isVisible={!!popupMessage} 
-        setIsVisible={() => setPopupMessage(null)} 
+      <Popup
+        isVisible={!!popupMessage}
+        setIsVisible={() => setPopupMessage(null)}
         message={popupMessage}
       />
     </div>

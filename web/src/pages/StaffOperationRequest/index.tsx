@@ -91,7 +91,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
 
   return (
     <div className="relative">
-      <HamburgerMenu options={menuOptions} />
+      <HamburgerMenu options={menuOptions} onClick={() => {}} />
       <div className="container mx-auto p-4">
         <div className="mb-4">
           <button
@@ -132,7 +132,9 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
         {error && <Alert type="error" message={error} />}
 
         <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} />
+          <Table headers={headers} data={tableData} totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}/>
         </div>
 
         <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />

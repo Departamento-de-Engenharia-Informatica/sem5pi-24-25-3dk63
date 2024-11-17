@@ -38,7 +38,7 @@ const MedicalRecordsList: React.FC<MedicalRecordsListProps> = ({ setAlertMessage
 
   return (
     <div className="relative">
-      <HamburgerMenu options={menuOptions} />
+      <HamburgerMenu options={menuOptions} onClick={() => {}} />
       <div className="container mx-auto p-4">
         {loading && <Loading loadingText = {true} />}
         {error && <Alert type="error" message={error} />}
@@ -46,7 +46,9 @@ const MedicalRecordsList: React.FC<MedicalRecordsListProps> = ({ setAlertMessage
           <Alert type="info" message="You don't have any medical records." />
         )}
         <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} />
+          <Table headers={headers} data={tableData} totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}/>
         </div>
         <Pagination
           totalPages={totalPages}

@@ -17,7 +17,7 @@ const OperationRequestMenu: React.FC = () => {
   return (
     <div className="relative pt-20 p-8 bg-gray-50 min-h-screen">
       <div className="fixed top-1 left-4 z-10">
-        <HamburgerMenu options={menuOptions} />
+        <HamburgerMenu options={menuOptions} onClick={() => {}} />
       </div>
 
       <h1 className="text-3xl font-bold text-center mb-6">Manage operation requests</h1>

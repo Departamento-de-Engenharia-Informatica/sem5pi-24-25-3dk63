@@ -43,7 +43,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
 
   return (
     <div className="relative">
-      <HamburgerMenu options={menuOptions} />
+      <HamburgerMenu options={menuOptions} onClick={() => {}} />
       <div className="container mx-auto p-4">
         {loading && <Loading loadingText={true} />}
         {error && <Alert type="error" message={error} />}
@@ -63,7 +63,9 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
           />
         </div>
         <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} />
+          <Table headers={headers} data={tableData} totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}/>
         </div>
         <Pagination
           totalPages={totalPages}

@@ -136,7 +136,9 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
 
       {/* Table Data */}
       <div className="overflow-x-auto">
-        <Table headers={headers} data={tableData} />
+        <Table headers={headers} data={tableData}   totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}/>
       </div>
 
       {/* Pagination */}

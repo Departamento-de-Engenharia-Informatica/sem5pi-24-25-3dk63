@@ -53,12 +53,14 @@ const SurgeryRoomList: React.FC<SurgeryRoomListProps> = ({ setAlertMessage }) =>
 
   return (
     <div className="relative">
-      <HamburgerMenu options={menuOptions} />
+      <HamburgerMenu options={menuOptions} onClick={() => {}} />
       <div className="container mx-auto p-4">
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
         <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} />
+          <Table headers={headers} data={tableData} totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}/>
         </div>
         <Pagination
           totalPages={totalPages}
