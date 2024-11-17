@@ -21,7 +21,10 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, buttonLabel }) => 
     setIsOpen((prev) => !prev);
     if (!isOpen) {
       const rect = event.currentTarget.getBoundingClientRect();
-      setDropdownPosition({ top: rect.bottom + window.scrollY, left: rect.left + window.scrollX });
+      setDropdownPosition({
+        top: rect.bottom + window.scrollY,
+        left: rect.left + window.scrollX,
+      });
     } else {
       setDropdownPosition(null);
     }
@@ -30,17 +33,30 @@ const DropdownMenu: React.FC<DropdownMenuProps> = ({ options, buttonLabel }) => 
   // Close dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownPosition && dropdownPosition.top !== null && dropdownPosition.left !== null) {
-        const dropdownElement = document.getElementById('dropdown-menu');
-        if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
-          setIsOpen(false);
-          setDropdownPosition(null);
-        }
+      const dropdownElement = document.getElementById('dropdown-menu');
+      if (dropdownElement && !dropdownElement.contains(event.target as Node)) {
+        setIsOpen(false);
+        setDropdownPosition(null);
       }
     };
 
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  useEffect(() => {
+    if (dropdownPosition) {
+      const { top } = dropdownPosition;
+      const windowHeight = window.innerHeight;
+
+      // Ajusta a posição do dropdown se ele ultrapassar a altura da tela
+      if (top + 200 > windowHeight) {
+        setDropdownPosition(prevPosition => ({
+          ...prevPosition!,
+          top: prevPosition!.top - 200,  // Move o dropdown para cima
+        }));
+      }
+    }
   }, [dropdownPosition]);
 
   return (

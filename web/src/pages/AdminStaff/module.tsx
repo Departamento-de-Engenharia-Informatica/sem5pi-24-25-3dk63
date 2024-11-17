@@ -30,19 +30,16 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [isEditing, setIsEditing] = useState(false);
   const [specializations, setSpecializations] = useState<string[]>([]);
 
-  const itemsPerPage = 8;
+  const itemsPerPage = 4;
 
   const headers = [
-    "License Number",
-    "Username",
+    "Full Name",
     "Role",
     "Email",
     "Phone",
-    "Full Name",
     "Specialization",
     "Availability Slots",
     "Active",
-    " ",
   ];
 
 const menuOptions = [
@@ -60,11 +57,7 @@ const menuOptions = [
     action: () => navigate("/admin/operation-type")
   }
 
-
-
-
 ];
-
 
   const fetchStaffs = async () => {
     setLoading(true);

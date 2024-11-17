@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
 import Alert from "@/components/Alert";
-import Table from "@/components/Table";
+import Table from "@/components/Card";
 import Pagination from "@/components/Pagination";
 import { useOperationRequestModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
@@ -88,7 +88,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
       setTimeout(() => setPopupMessage(null), 3000);
     }
   }, [setPopupMessage]);
-  
+
   return (
     <div className="relative">
       <HamburgerMenu options={menuOptions} />
@@ -254,7 +254,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             >
               <option value="" disabled>
                 Select priority
-              </option> 
+              </option>
               <option value="Emergency">Emergency</option>
               <option value="Urgent">Urgent</option>
               <option value="Elective">Elective</option>
@@ -263,7 +263,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             <button
               onClick={handleEditSubmit}
               className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md"
-            > 
+            >
               Save changes
             </button>
           </div>

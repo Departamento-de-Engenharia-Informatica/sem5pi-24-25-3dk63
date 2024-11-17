@@ -2,7 +2,7 @@ import React from "react";
 import { useSurgeryRoomListModule } from "./module";
 import Loading from "@/components/Loading";
 import Alert from "@/components/Alert";
-import Table from "@/components/Table";
+import Table from "@/components/Card";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";

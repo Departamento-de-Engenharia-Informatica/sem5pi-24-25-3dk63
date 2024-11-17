@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
-import Table from "@/components/Table";
+import Table from "@/components/Card";
 import { useOpTypesListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
@@ -10,6 +10,7 @@ import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
 import SearchFilter from "@/components/SearchFilter";
 import DropdownMenu from "@/components/DropdownMenu";
+import SidebarMenu from "@/components/SidebarMenu";
 
 interface OperationTypeListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -43,6 +44,8 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     searchOperationTypes,
   } = useOpTypesListModule(setAlertMessage);
 
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+
   const totalPages = Math.ceil(totalOTypes / itemsPerPage);
 
 
@@ -69,32 +72,24 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
 
   const tableData = OTypes.map((opType) => ({
     ...opType,
-    Actions: renderActions(opType),
+    actions: renderActions(opType),
   }));
 
   return (
-    <div className="relative">
-      <HamburgerMenu options={menuOptions} />
-      <div className="container mx-auto p-4">
-      <SearchFilter
-        attributes={['name', 'specialization', 'active']}
-        labels={{
-          name: 'Name',
-          specialization: 'Specialization',
-          active: 'Active',
-        }}
-        fieldTypes={{
-          active: 'select',
-        }}
-        selectOptions={{
-          active: ['Yes', 'No'],
-        }}
-        onSearch={searchOperationTypes}
-        results={[]}
-        renderResult={() => <></>}
-      />
-        {loading && <Loading loadingText />}
-        {error && <Alert type="error" message={error} />}
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
+      <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
+        <SidebarMenu options={menuOptions} />
+      </div>
+      {/* Conteúdo principal */}
+      <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto h-full">
+      {/* Hamburger Menu: Só visível em telas pequenas */}
+      <div className="lg:hidden mb-4">
+        <HamburgerMenu
+          options={menuOptions}
+          onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+        />
+      </div>
+
         <div className="mb-4">
           <button
             onClick={handleAddOperationType}
@@ -103,6 +98,25 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             Add Operation Type
           </button>
         </div>
+        <SearchFilter
+          attributes={['name', 'specialization', 'active']}
+          labels={{
+            name: 'Name',
+            specialization: 'Specialization',
+            active: 'Active',
+          }}
+          fieldTypes={{
+            active: 'select',
+          }}
+          selectOptions={{
+            active: ['Yes', 'No'],
+          }}
+          onSearch={searchOperationTypes}
+          results={[]}
+          renderResult={() => <></>}
+        />
+        {loading && <Loading loadingText />}
+        {error && <Alert type="error" message={error} />}
         <div className="overflow-x-auto">
           <Table headers={headers} data={tableData} />
         </div>
@@ -112,6 +126,8 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
           onPageChange={setCurrentPage}
         />
       </div>
+      {/* Modal de Cadastro/edição */}
+
       {isModalVisible && (
         <Modal
           isVisible={isModalVisible}
@@ -130,83 +146,83 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
                 }))
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
+          />
 
-            <label className="block text-sm font-medium text-gray-700 mt-4">Preparation Time</label>
-            <input
-              type="number"
-              value={creatingOperationType?.preparationTime || ""}
-              min="1"
-              onKeyDown={(e) => {
-                if (e.key === "e" || e.key === "E") {
-                  e.preventDefault();
-                }
-              }}
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  preparationTime: parseInt(e.target.value, 10),
-                }))
+          <label className="block text-sm font-medium text-gray-700 mt-4">Preparation Time</label>
+          <input
+            type="number"
+            value={creatingOperationType?.preparationTime || ""}
+            min="1"
+            onKeyDown={(e) => {
+              if (e.key === "e" || e.key === "E") {
+                e.preventDefault();
               }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
+            }}
+            onChange={(e) =>
+              setCreatingOperationType((prev: any) => ({
+                ...prev,
+                preparationTime: parseInt(e.target.value, 10),
+              }))
+            }
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+          />
 
-            <label className="block text-sm font-medium text-gray-700 mt-4">Surgery Time</label>
-            <input
-              type="number"
-              value={creatingOperationType?.surgeryTime || ""}
-              min="1"
-              onKeyDown={(e) => {
-                if (e.key === "e" || e.key === "E") {
-                  e.preventDefault();
-                }
-              }}
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  surgeryTime: parseInt(e.target.value, 10),
-                }))
+          <label className="block text-sm font-medium text-gray-700 mt-4">Surgery Time</label>
+          <input
+            type="number"
+            value={creatingOperationType?.surgeryTime || ""}
+            min="1"
+            onKeyDown={(e) => {
+              if (e.key === "e" || e.key === "E") {
+                e.preventDefault();
               }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
+            }}
+            onChange={(e) =>
+              setCreatingOperationType((prev: any) => ({
+                ...prev,
+                surgeryTime: parseInt(e.target.value, 10),
+              }))
+            }
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+          />
 
-            <label className="block text-sm font-medium text-gray-700 mt-4">Cleaning Time</label>
-            <input
-              type="number"
-              value={creatingOperationType?.cleaningTime || ""}
-              min="1"
-              onKeyDown={(e) => {
-                if (e.key === "e" || e.key === "E") {
-                  e.preventDefault();
-                }
-              }}
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  cleaningTime: parseInt(e.target.value, 10),
-                }))
+          <label className="block text-sm font-medium text-gray-700 mt-4">Cleaning Time</label>
+          <input
+            type="number"
+            value={creatingOperationType?.cleaningTime || ""}
+            min="1"
+            onKeyDown={(e) => {
+              if (e.key === "e" || e.key === "E") {
+                e.preventDefault();
               }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
+            }}
+            onChange={(e) =>
+              setCreatingOperationType((prev: any) => ({
+                ...prev,
+                cleaningTime: parseInt(e.target.value, 10),
+              }))
+            }
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+          />
 
-            <label className="block text-sm font-medium text-gray-700 mt-4">Required Staff</label>
-            <input
-              type="number"
-              value={creatingOperationType?.requiredStaff || ""}
-              min="1"
-              onKeyDown={(e) => {
-                if (e.key === "e" || e.key === "E") {
-                  e.preventDefault();
-                }
-              }}
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  requiredStaff: parseInt(e.target.value, 10),
-                }))
+          <label className="block text-sm font-medium text-gray-700 mt-4">Required Staff</label>
+          <input
+            type="number"
+            value={creatingOperationType?.requiredStaff || ""}
+            min="1"
+            onKeyDown={(e) => {
+              if (e.key === "e" || e.key === "E") {
+                e.preventDefault();
               }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            />
+            }}
+            onChange={(e) =>
+              setCreatingOperationType((prev: any) => ({
+                ...prev,
+                requiredStaff: parseInt(e.target.value, 10),
+              }))
+            }
+            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+          />
 
           <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
             <select
@@ -251,9 +267,13 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
       }}
       onCancel={handleCancelDeactivate}
       message="Are you sure you want to deactivate this operation type?"
-    />
-        </div>
+     />
+    </div>
+
   );
+
 };
+
+
 
 export default OpTypesList;

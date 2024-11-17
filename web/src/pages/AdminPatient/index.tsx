@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
-import Table from "@/components/Table";
+import Table from "@/components/Card";
 import Pagination from "@/components/Pagination";
 import { usePatientListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
@@ -80,7 +80,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
 
   const tableData = patients.map((patient) => ({
     ...patient,
-    "": renderActions(patient),
+    actions: renderActions(patient),
   }));
 
   useEffect(() => {
@@ -96,7 +96,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         <SidebarMenu options={menuOptions} />
       </div>
       {/* Conteúdo principal */}
-      <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-auto">
+      <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto h-full">
         {/* Hamburger Menu: Só visível em telas pequenas */}
         <div className="lg:hidden mb-4">
           <HamburgerMenu
@@ -127,7 +127,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
         />
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
-        <div className="overflow-x-auto">
+       <div className="overflow-x-auto">
           <Table headers={headers} data={tableData} />
         </div>
         <Pagination

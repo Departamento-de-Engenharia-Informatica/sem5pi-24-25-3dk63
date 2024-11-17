@@ -1,7 +1,7 @@
 import React from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
-import Table from "@/components/Table";
+import Table from "@/components/Card";
 import { useMedicalRecordsListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";

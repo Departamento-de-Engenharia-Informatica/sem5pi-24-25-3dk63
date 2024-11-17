@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Loading from "@/components/Loading";
 import Alert from "@/components/Alert";
-import Table from "@/components/Table";
+import Table from "@/components/Card";
 import { useStaffListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
@@ -87,7 +87,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
 
   const tableData = staffs.map((staff) => ({
     ...staff,
-    " ": renderActions(staff),
+    actions: renderActions(staff),
   }));
 
   useEffect(() => {
@@ -101,45 +101,50 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
       <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
         <SidebarMenu options={menuOptions} />
-      </div>      <div className="container mx-auto p-4">
-        <div className="mb-4">
-          <button
-            onClick={handleAddStaff}
-            className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
-          >
-            Add Staff
-          </button>
-        </div>
+      </div>
+      {/* Conteúdo principal */}
+      <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto h-full">
 
-        <div className="relative z-10">
-          <SearchFilter
-            attributes={['Name', 'Email', 'Specialization']}
-            labels={{
-              Name: 'Name',
-              Email: 'Email',
-              Specialization: 'Specialization'
-            }}
-            onSearch={searchStaffs}
-            results={[]}
-            renderResult={() => <></>}
+      <div className="lg:hidden mb-4">
+          <HamburgerMenu
+            options={menuOptions}
+            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
           />
-        </div>
+      </div>
+      <div className="mb-4">
+        <button
+          onClick={handleAddStaff}
+          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600 transition duration-300"
+        >
+          Add Staff
+        </button>
+      </div>
+      <SearchFilter
+        attributes={['Name', 'Email', 'Specialization']}
+        labels={{
+          Name: 'Name',
+          Email: 'Email',
+          Specialization: 'Specialization'
+        }}
+        onSearch={searchStaffs}
+        results={[]}
+        renderResult={() => <></>}
+      />
+      {/* Loading and Error States */}
+      {loading && <Loading loadingText />}
+      {error && <Alert type="error" message={error} />}
 
-        {/* Loading and Error States */}
-        {loading && <Loading loadingText />}
-        {error && <Alert type="error" message={error} />}
+      {/* Table Data */}
+      <div className="overflow-x-auto">
+        <Table headers={headers} data={tableData} />
+      </div>
 
-        {/* Table Data */}
-        <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} />
-        </div>
-
-        {/* Pagination */}
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
+      {/* Pagination */}
+      <Pagination
+        totalPages={totalPages}
+        currentPage={currentPage}
+        onPageChange={setCurrentPage}
+      />
       </div>
 
       {/* Modal for adding staff */}

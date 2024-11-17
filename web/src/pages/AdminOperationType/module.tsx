@@ -39,12 +39,12 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     "Total Time",
     "Specialization",
     "Active",
-    "Actions",
   ];
 
   const menuOptions = [
-    { label: "Homepage", action: () => navigate("/") },
-    { label: "Admin Menu", action: () => navigate("/admin") },
+    { label: "Dashboard", action: () => navigate("/admin") },
+    { label: "Manage Staffs", action: () => navigate("/admin/staff") },
+    { label: "Manage Patients", action: () => navigate("/admin/patient") },
   ];
 
   const fetchOperationsTypes = async () => {
@@ -133,7 +133,7 @@ const handleEdit = async (id: string) => {
       }
     });
   };
-  
+
   const handleCancelDeactivate = () => {
     setConfirmDeactivate(null); // Cancela a desativação
   };
@@ -258,7 +258,7 @@ const handleEdit = async (id: string) => {
       console.log("Query:", query);
       const operationTypeData = await operationTypeService.searchOperationTypes(query);
       console.log("Data returned from searchOperationTypes:", operationTypeData);
-  
+
       const filteredData = operationTypeData.map((operationType) => ({
         id: operationType.id,
         Name: operationType.name.description,
@@ -270,7 +270,7 @@ const handleEdit = async (id: string) => {
         Specialization: operationType.specialization.value,
         Active: operationType.active ? "Yes" : "No",
       }));
-  
+
       if (filteredData.length === 0) {
         setNoDataMessage("No data found for the requirements.");
       }

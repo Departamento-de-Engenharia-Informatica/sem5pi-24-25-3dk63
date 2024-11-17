@@ -31,18 +31,15 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [patientIdToDelete, setPatientIdToDelete] = useState<string | null>(null);
 
-  const itemsPerPage = 10;
+  const itemsPerPage = 4;
 
   const headers = [
-    "Medical Record Number",
     "Full Name",
-    "Personal Email",
-    "IAM Email",
+    "Email",
     "Date of Birth",
     "Gender",
     "Contact Phone",
     "Active",
-    "",
   ];
 
 const menuOptions = [
@@ -82,7 +79,7 @@ const menuOptions = [
         lastName: patientUser.name.lastName,
         "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
         "Personal Email": patientUser.personalEmail.value,
-        "IAM Email": patientUser.iamEmail.value,
+        "Email": patientUser.iamEmail.value,
         "Date of Birth": formatDate(patientUser.dateOfBirth.date),
         Gender: patientUser.gender.gender,
         "Contact Phone": patientUser.phoneNumber.number,

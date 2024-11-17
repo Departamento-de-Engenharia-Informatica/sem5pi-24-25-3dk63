@@ -1,7 +1,7 @@
 import React from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
-import Table from "@/components/Table";
+import Table from "@/components/Card";
 import { useAppointmentsListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
@@ -32,7 +32,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
 
   const renderActions = (appointment: any) => (
     <div className="flex flex-wrap gap-2">
-    
+
     </div>
   );
 
