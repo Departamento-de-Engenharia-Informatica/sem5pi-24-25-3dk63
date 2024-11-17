@@ -248,6 +248,8 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
       await operationRequestService.createOperationRequest(dto);
   
       setPopupMessage("Operation request created successfully.");
+
+      fetchOperationRequests();
   
       setIsModalVisible(false);
       setIsAddModalVisible(false);

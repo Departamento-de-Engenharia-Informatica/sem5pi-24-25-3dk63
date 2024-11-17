@@ -53,7 +53,6 @@ export class StaffService implements IStaffService {
 
   async getDoctor(id: string): Promise<Staff>{
     const res = await this.http.get<Staff>(`/staff/doctor/${id}`);
-    console.log("Data", res.data);
     return res.data;
   }
 }

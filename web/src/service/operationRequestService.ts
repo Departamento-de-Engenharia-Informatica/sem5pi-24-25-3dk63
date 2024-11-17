@@ -39,10 +39,7 @@ export class OperationRequestService implements IOperationRequestService {
   }
 
   async createOperationRequest(operationRequest: CreatingOperationRequestDTO): Promise<void> {
-    console.log("Operation request before:", operationRequest);
-    const res = await this.http.post("/OperationRequest", operationRequest);
-    console.log("Operation request created:", res.data);
-    window.confirm(res.data as string);
+    await this.http.post("/OperationRequest", operationRequest);
   }
 
   async deleteOperationRequest(id: string): Promise<void> {
