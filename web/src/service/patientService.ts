@@ -70,13 +70,27 @@ export class PatientService implements IPatientService {
     }
   }
   
-  async confirmAccountDeletion(token: string): Promise<void> {
+  async confirmUpdate(token: string): Promise<string> {
     try {
-      await this.http.get("/patients/confirm-account-deletion", { params: { token }, headers: { withCredentials: "true" } });
+      const res = await this.http.get<{ data: string }>(`/patients/confirm-profile-update?token=${token}`, {
+        headers: { withCredentials: "true" },
+      });
+      return res.data.data;
+    } catch (error) {
+      throw new Error("Failed to confirm profile update.");
+    }
+  }  
+
+  async confirmDeletion(token: string): Promise<string> {
+    try {
+      const res: any = await this.http.get(`/patients/confirm-account-deletion?token=${token}`, {
+        headers: { withCredentials: "true" },
+      });
+      return res.data;
     } catch (error) {
       throw new Error("Failed to confirm account deletion.");
     }
-  }
+  }  
   
   async updateProfile(data: UpdateProfileDTO): Promise<void> {
     try {

@@ -52,32 +52,39 @@ namespace DDDSample1.Domain
             await SendEmailAsync(dto.personalEmail.ToString(), subject, body);
         }
 
-public async Task SendStaffNotificationEmailAsync(List<string> changedProperties, StaffUpdateDTO dto)
-{
-    var subject = "Staff Profile Updated";
-    var body = "<p>Your profile has been updated with changes to sensitive data. Please review the changes below:</p>";
-    
-    body += "<p>Updated Attributes:</p><ul>";
+        public async Task SendStaffNotificationEmailAsync(List<string> changedProperties, StaffUpdateDTO dto)
+        {
+            var subject = "Staff Profile Updated";
+            var body = "<p>Your profile has been updated with changes to sensitive data. Please review the changes below:</p>";
+            
+            body += "<p>Updated Attributes:</p><ul>";
 
-    // Adicionar cada mudança formatada da lista 'changedProperties'
-    foreach (string change in changedProperties)
-    {
-        body += $"<li>{change}</li>";
-    }
+            // Adicionar cada mudança formatada da lista 'changedProperties'
+            foreach (string change in changedProperties)
+            {
+                body += $"<li>{change}</li>";
+            }
 
-    body += "</ul>";
+            body += "</ul>";
 
-    // Envia o e-mail
-    await SendEmailAsync(dto.Email.ToString(), subject, body);
-}
-
-
+            // Envia o e-mail
+            await SendEmailAsync(dto.Email.ToString(), subject, body);
+        }
 
         public async Task SendUpdateEmail(string email, string token)
         {
-            var confirmationLink = $"https://localhost:5001/api/Patients/confirm-update?token={token}";
+            var confirmationLink = $"http://localhost:5173/patient/confirm-update?token={token}";
             var subject = "Confirm your profile update";
             var body = $"Please click on the following link to confirm your profile update: <a href=\"{confirmationLink}\">Confirm Update</a>";
+
+            await SendEmailAsync(email, subject, body);
+        }
+
+        public async Task SendDeletionConfirmationEmail(string email, string token)
+        {
+            var confirmationLink = $"http://localhost:5173/patient/confirm-account-deletion?token={token}";
+            var subject = "Confirm your account deletion";
+            var body = $"Please click on the following link to confirm your account deletion: <a href=\"{confirmationLink}\">Confirm Deletion</a>";
 
             await SendEmailAsync(email, subject, body);
         }
@@ -131,16 +138,6 @@ public async Task SendStaffNotificationEmailAsync(List<string> changedProperties
                     </div>
                 </body>
             </html>";
-
-            await SendEmailAsync(email, subject, body);
-        }
-
-
-        public async Task SendDeletionConfirmationEmail(string email, string token)
-        {
-            var confirmationLink = $"http://localhost:5173/patient/confirm-account-deletion?token={token}";
-            var subject = "Confirm your account deletion";
-            var body = $"Please click on the following link to confirm your account deletion: <a href=\"{confirmationLink}\">Confirm Deletion</a>";
 
             await SendEmailAsync(email, subject, body);
         }

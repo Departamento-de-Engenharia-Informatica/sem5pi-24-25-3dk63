@@ -10,8 +10,10 @@ export interface IPatientService {
   updatePatient(id: string, updatedData: Partial<Patient>): Promise<void>;
   createPatient(data: RegisterPatientDTO): Promise<PatientUser>;
   updateProfile(data: UpdateProfileDTO): Promise<void>;
+  confirmUpdate(token: string): Promise<string>;
   selfRegister(patientData: SelfRegisterPatientDTO): Promise<Response>;
   getAppointments(): Promise<PatientUser[]>;
   getMedicalRecords(): Promise<PatientUser[]>;
   requestAccountDeletion(): Promise<void>;
+  confirmDeletion(token: string): Promise<string>;
 }

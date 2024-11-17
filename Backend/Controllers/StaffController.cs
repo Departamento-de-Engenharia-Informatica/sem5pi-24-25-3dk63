@@ -110,8 +110,6 @@ namespace DDDSample1.Controllers
             bool phoneChanged = updateDto.PhoneNumber != null && updateDto.PhoneNumber.Number != userStaff.phoneNumber.Number;
             bool specializationChanged = false;
 
-
-
             if (updateDto.Specialization != null)
             {
                 specializationChanged = (await _staffService.CheckSpecializationExists(updateDto.Specialization)) ?? false;
