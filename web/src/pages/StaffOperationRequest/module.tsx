@@ -162,14 +162,12 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   };
 
   const handleAddRequest = () => {
-    console.log("Add new Operation Request");
     const newOperationRequestDTO = {
       patientId: "",
       operationType: "",
       dateRequested: { date: "" },
       status: "",
     };
-    console.log("New Operation Request:", newOperationRequestDTO);
 
     setNewRequest(newOperationRequestDTO);
     setIsModalVisible(true);
@@ -192,8 +190,6 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         const specialization = specializationService.getSpecializationById(doctor.specializationId);
 
         const resolvedSpec = await specialization;
-
-        console.log("Spec ", resolvedSpec);
   
         const activeOperationTypes = operationTypes.filter((operationType) => operationType.active);
 
