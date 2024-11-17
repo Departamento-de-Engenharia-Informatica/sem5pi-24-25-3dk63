@@ -2,11 +2,11 @@ import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
 import { RepeatIcon } from "@/styles/Icons";
 import "react-loading-skeleton/dist/skeleton.css";
-import React from 'react';
+import React from "react";
 
 interface LoadingProps {
   loadingText?: boolean;
-  loading?: boolean; // Adiciona controle de carregamento explícito
+  loading?: boolean; 
 }
 
 const Loading: React.FC<LoadingProps> = ({ loadingText = true, loading = true }) => {
@@ -15,7 +15,7 @@ const Loading: React.FC<LoadingProps> = ({ loadingText = true, loading = true })
       {loading && (
         <>
           {loadingText && (
-            <h1 className="flex w-full items-center justify-center text-center text-4xl font-bold text-[#284b62]">
+            <h1 className="flex w-full items-center justify-center text-center text-4xl font-bold text-primary dark:text-primary-light">
               Loading
               <div className="flex justify-start ml-2">
                 <motion.span
@@ -51,10 +51,10 @@ const Loading: React.FC<LoadingProps> = ({ loadingText = true, loading = true })
                   .
                 </motion.span>
               </div>
-              <RepeatIcon className="ml-4 h-8 w-8 animate-spin text-[#284b62]" />
+              <RepeatIcon className="ml-4 h-8 w-8 animate-spin text-primary dark:text-primary-light" />
             </h1>
           )}
-          <Skeleton className="mt-8 h-28 w-full bg-[#e0e0e0] dark:bg-slate-700/50" count={4} />
+          <Skeleton className="mt-8 h-28 w-full bg-secondary dark:bg-secondary-dark/50" count={4} />
         </>
       )}
     </div>

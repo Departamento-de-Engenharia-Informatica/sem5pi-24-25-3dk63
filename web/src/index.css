@@ -6,36 +6,40 @@
 
 @layer base {
   /* Variáveis globais para os temas */
+  /* Paleta de cores Soft Pastels */
   :root {
-    --text-light: #000000;
-    --background-light: #e5fcff;
-    --primary-light: #284b62;
-    --secondary-light: #d0e7f6;
-    --accent-light: #278ed3;
-    --text-dark: #ffffff;
-    --background-dark: #121212;
-    --primary-dark: #1e90ff;
-    --secondary-dark: #434343;
-    --accent-dark: #278ed3;
-  }
-
   /* Tema claro */
-  .light {
-    --text: var(--text-light);
-    --background: var(--background-light);
-    --primary: var(--primary-light);
-    --secondary: var(--secondary-light);
-    --accent: var(--accent-light);
-  }
+  --text-light: #000000;
+  --background-light: #e5fcff;
+  --primary-light: #3d5a80; /* Azul escuro suave */
+  --secondary-light: #98c2d3; /* Azul claro */
+  --accent-light:  #3d5a80;
 
-  /* Tema escuro */
-  .dark {
-    --text: var(--text-dark);
-    --background: var(--background-dark);
-    --primary: var(--primary-dark);
-    --secondary: var(--secondary-dark);
-    --accent: var(--accent-dark);
-  }
+  /* Tema escuro - modificado */
+  --text-dark: #f0f0f0; /* Texto claro contrastante */
+  --background-dark: #121212; /* Fundo muito escuro, quase preto */
+  --primary-dark: #1e3a8a; /* Azul escuro mais saturado */
+  --secondary-dark: #bb86fc; /* Roxo suave */
+  --accent-dark: #1e3a8a; /* Pink vibrante */
+}
+
+/* Tema claro */
+.light {
+  --text: var(--text-light);
+  --background: var(--background-light);
+  --primary: var(--primary-light);
+  --secondary: var(--secondary-light);
+  --accent: var(--accent-light);
+}
+
+/* Tema escuro */
+.dark {
+  --text: var(--text-dark);
+  --background: var(--background-dark);
+  --primary: var(--primary-dark);
+  --secondary: var(--secondary-dark);
+  --accent: var(--accent-dark);
+}
 
   /* Corpo da página */
   body {
@@ -53,6 +57,13 @@
   header {
     background-color: var(--primary);
     color: var(--text);
+    padding: 16px 20px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Estilos do gradiente no cabeçalho */
+  .header-gradient {
+    background: linear-gradient(135deg, var(--primary) 40%, var(--secondary) 100%);
   }
 
   /* Definindo cores principais para texto e fundo */
@@ -69,12 +80,32 @@
     font-family: "Poppins", sans-serif;
   }
 
-  * {
-    box-sizing: border-box;
-  }
-
+  /* Links e bordas interativas */
   a {
     text-decoration: none;
+    color: var(--primary);
+    transition: color 0.3s ease;
+  }
+
+  a:hover {
+    color: var(--accent);
+  }
+
+  /* Borda para inputs e outros elementos */
+  input, textarea, select {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 8px;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    border-color: var(--primary);
+    outline: none;
+  }
+
+  /* Estilos de overflow */
+  * {
+    box-sizing: border-box;
   }
 
   html {

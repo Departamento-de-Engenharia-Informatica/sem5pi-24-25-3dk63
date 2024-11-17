@@ -48,12 +48,12 @@ function App() {
     <Provider container={container} standalone>
       <Router>
         <div className="flex flex-col h-screen">
-          <header className="relative p-4 text-center flex-shrink-0 shadow-md bg-primary text-text">
-            <h1 className="text-lg font-semibold tracking-wide text-white">CliniTech Portal</h1>
+          <header className="relative p-4 text-center flex-shrink-0 shadow-md bg-gradient-to-b from-primary/80 to-secondary/70 text-white">
+            <h1 className="text-lg font-semibold tracking-wide">CliniTech Portal</h1>
             <ThemeToggleButton theme={theme} toggleTheme={toggleTheme} />
           </header>
           <main className="flex flex-1 overflow-hidden bg-main-background text-main-text">
-            <div className="flex-1 p-8 overflow-hidden">
+            <div className="flex-1 p-8 overflow-hidden bg-main-background text-main-text">
               {/* Main Content */}
               <Routes>
                 {/* Public Routes */}

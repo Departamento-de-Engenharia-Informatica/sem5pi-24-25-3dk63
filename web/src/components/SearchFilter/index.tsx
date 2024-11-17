@@ -50,7 +50,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
             className="relative border rounded-md shadow-sm p-2 w-full sm:w-auto flex-1 dark:bg-gray-700 dark:border-gray-600"
           >
             <div
-              className="flex justify-between items-center cursor-pointer text-gray-800 dark:text-gray-100"
+              className="flex justify-between items-center cursor-pointer text-text dark:text-text-light"
               onClick={() => toggleField(attribute)}
             >
               <label className="text-sm font-medium">
@@ -63,7 +63,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                 <select
                   value={query[attribute] || ''}
                   onChange={e => handleChange(attribute, e.target.value)}
-                  className="mt-2 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  className="mt-2 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
                 >
                   <option value="" disabled>Select</option>
                   {selectOptions[attribute].map(option => (
@@ -77,13 +77,13 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                   type="date"
                   value={query[attribute] || ''}
                   onChange={e => handleChange(attribute, e.target.value)}
-                  className="mt-2 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  className="mt-2 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
                 />
               ) : (
                 <input
                   type="text"
                   value={query[attribute] || ''}
-                  className="mt-2 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
+                  className="mt-2 block w-full px-3 py-2 rounded-md shadow-sm focus:outline-none focus:ring-primary focus:border-primary sm:text-sm dark:bg-gray-800 dark:border-gray-600 dark:text-gray-100"
                   onChange={e => handleChange(attribute, e.target.value)}
                 />
               )
@@ -99,7 +99,7 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
           </button>
           <button
             onClick={handleSearch}
-            className="px-4 py-2 bg-[#284b62] text-white rounded-md hover:bg-[#3a617d] dark:bg-blue-700 dark:hover:bg-blue-600"
+            className="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary-dark dark:bg-blue-700 dark:hover:bg-blue-600"
           >
             Search
           </button>
