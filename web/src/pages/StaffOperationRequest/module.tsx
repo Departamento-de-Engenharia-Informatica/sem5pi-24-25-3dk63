@@ -11,6 +11,7 @@ import { set } from "node_modules/cypress/types/lodash";
 import { StaffService } from "@/service/staffService";
 import { IStaffService } from "@/service/IService/IStaffService";
 import { IUserService } from "@/service/IService/IUserService";
+import { ISpecializationService } from "@/service/IService/ISpecializationService";
 
 export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
@@ -19,7 +20,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const patientService = useInjection<IPatientService>(TYPES.patientService); // Inject patient service
   const staffService = useInjection<IStaffService>(TYPES.staffService);
   const userService = useInjection<IUserService>(TYPES.userService);
-
+  const specializationService = useInjection<ISpecializationService>(TYPES.specializationsService);
   const [operationRequests, setOperationRequests] = useState<any[]>([]);
   const [patients, setPatients] = useState<any[]>([]); // State to hold list of patients
   const [operationTypes, setOperationTypes] = useState<any[]>([]); // State for operation types
@@ -36,6 +37,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [newRequest, setNewRequest] = useState<any>(null);
   const [editingRequest, setEditingRequest] = useState<any | null>(null);
+  const [doctor, setDoctor] = useState<any>(null);
   const itemsPerPage = 10;
 
   const headers = ["Patient Name", "Operation Type", "Priority", "Assigned Staff", "Deadline", "Status", "Actions"];
@@ -154,7 +156,6 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     }
 };
 
-
   const cancelDelete = () => {
     setIsDialogVisible(false);
     setRequestIdToDelete(null);
@@ -173,27 +174,44 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     setNewRequest(newOperationRequestDTO);
     setIsModalVisible(true);
   };
-
+  
   useEffect(() => {
     const fetchAdditionalData = async () => {
       try {
         const operationTypes = await operationTypeService.getOperationTypes();
         const patients = await patientService.getPatients();
-    
-        const activeOperationTypes = operationTypes.filter((operationType) => operationType.active);
+
+        const userId = await userService.getUserId();
+        if (!userId) {
+          throw new Error("User ID not found");
+        }
+
+        const doctor = await staffService.getDoctor(userId);
+        setDoctor(doctor);
+
+        const specialization = specializationService.getSpecializationById(doctor.specializationId);
+
+        const resolvedSpec = await specialization;
+
+        console.log("Spec ", resolvedSpec);
   
-        setOperationTypes(activeOperationTypes);
+        const activeOperationTypes = operationTypes.filter((operationType) => operationType.active);
+
+        const sameSpecializationTypes = activeOperationTypes.filter(
+          (operationType) => operationType.specialization.value === resolvedSpec.description
+        );
+  
+        setOperationTypes(sameSpecializationTypes);
         setPatients(patients);
       } catch (error) {
         console.error("Failed to fetch additional data:", error);
       }
-    };    
+    };
   
     if (isAddModalVisible) {
       fetchAdditionalData();
     }
   }, [isAddModalVisible]);
-  
 
   const searchOperationRequests = async (query: Record<string, string>) => {
     setLoading(true);
@@ -224,33 +242,36 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
 
   const handleSubmit = async () => {
     try {
-
       if (!newRequest.patientId || !newRequest.operationType || !newRequest.priority || !newRequest.deadline) {
-        setAlertMessage("All fields are required");
+        setPopupMessage("All fields are required.");
         return;
       }
-
-      const dto = buildCreateDto(newRequest);
-
-      await operationRequestService.createOperationRequest(await dto);
-      setAlertMessage("Operation request created successfully");
-        
+  
+      const dto = await buildCreateDto(newRequest);
+  
+      await operationRequestService.createOperationRequest(dto);
+  
+      setPopupMessage("Operation request created successfully.");
+  
       setIsModalVisible(false);
+      setIsAddModalVisible(false);
       setNewRequest(null);
-       
+  
     } catch (error) {
-      setAlertMessage("Failed to submit operation request.");
+      console.error('Error during submission:', error);
+  
+      setPopupMessage("There is already a request of this type for this patient.");
+
+      setIsModalVisible(false);
+      setIsAddModalVisible(false);
+      setNewRequest(null);
     }
   };
 
   const buildCreateDto = async (creatingRequest: any) => {
     try {
-      const userId = await userService.getUserId();
-      if (!userId) {
-        throw new Error('User ID not found');
-      }
-  
-      const licenseNumber = await staffService.getDoctorLicenseNumber(userId);
+
+      const licenseNumber = doctor.licenseNumber;
       if (!licenseNumber) {
         throw new Error('License number not found');
       }

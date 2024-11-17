@@ -13,4 +13,10 @@ export class SpecializationsService implements ISpecializationService {
 
     return res.data;
   }
+
+  async getSpecializationById(id: string): Promise<Specialization> {
+    const res = await this.http.get<Specialization>(`/specialization/${id}`);
+
+    return res.data;
+  }
 }

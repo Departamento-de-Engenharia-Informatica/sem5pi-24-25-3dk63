@@ -61,7 +61,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
       },
       {
         label: "Delete",
-        onClick: () => handleDelete(request["Id"]),
+        onClick: () => handleDelete(request.id),
         className: "text-red-500 hover:text-red-700 transition duration-200",
       },
     ];
@@ -83,7 +83,12 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
     if (!isEditModalVisible) setEditingRequest(null);
   }, [isAddModalVisible, isEditModalVisible]);
 
-
+  useEffect(() => {
+    if (setPopupMessage) {
+      setTimeout(() => setPopupMessage(null), 3000);
+    }
+  }, [setPopupMessage]);
+  
   return (
     <div className="relative">
       <HamburgerMenu options={menuOptions} />
