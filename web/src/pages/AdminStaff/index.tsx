@@ -141,12 +141,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
             onPageChange={setCurrentPage}/>
       </div>
 
-      {/* Pagination */}
-      <Pagination
-        totalPages={totalPages}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-      />
+     
       </div>
 
       {/* Modal for adding staff */}

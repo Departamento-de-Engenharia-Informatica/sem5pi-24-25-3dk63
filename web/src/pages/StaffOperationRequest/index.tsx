@@ -137,7 +137,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             onPageChange={setCurrentPage}/>
         </div>
 
-        <Pagination totalPages={totalPages} currentPage={currentPage} onPageChange={setCurrentPage} />
+  
       </div>
 
       {isAddModalVisible && (

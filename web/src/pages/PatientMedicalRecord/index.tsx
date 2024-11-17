@@ -50,11 +50,7 @@ const MedicalRecordsList: React.FC<MedicalRecordsListProps> = ({ setAlertMessage
             currentPage={currentPage}
             onPageChange={setCurrentPage}/>
         </div>
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
+      
       </div>
     </div>
   );

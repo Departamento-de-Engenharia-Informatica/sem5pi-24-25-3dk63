@@ -4,7 +4,6 @@ import Alert from "@/components/Alert/index";
 import Table from "@/components/Card";
 import { useOpTypesListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
-import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
@@ -126,11 +125,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             onPageChange={setCurrentPage}
           />
 
-          <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-          />
+
         </div>
 
       </div>

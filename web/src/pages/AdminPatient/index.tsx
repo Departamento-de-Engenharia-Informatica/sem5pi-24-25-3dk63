@@ -132,11 +132,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             currentPage={currentPage}
             onPageChange={setCurrentPage}/>
         </div>
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
+       
       </div>
 
       {/* Modal de Cadastro/edição */}

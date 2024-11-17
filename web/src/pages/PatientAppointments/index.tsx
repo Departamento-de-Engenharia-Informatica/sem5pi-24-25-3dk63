@@ -67,11 +67,7 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
             currentPage={currentPage}
             onPageChange={setCurrentPage}/>
         </div>
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
+      
       </div>
     </div>
   );

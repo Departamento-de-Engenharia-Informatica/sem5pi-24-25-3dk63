@@ -62,11 +62,7 @@ const SurgeryRoomList: React.FC<SurgeryRoomListProps> = ({ setAlertMessage }) =>
             currentPage={currentPage}
             onPageChange={setCurrentPage}/>
         </div>
-        <Pagination
-          totalPages={totalPages}
-          currentPage={currentPage}
-          onPageChange={setCurrentPage}
-        />
+       
       </div>
 
       {isModalVisible && (
