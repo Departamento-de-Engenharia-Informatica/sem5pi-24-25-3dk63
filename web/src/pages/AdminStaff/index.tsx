@@ -309,19 +309,27 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
                 }))
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
+              placeholder="example@domain.com"
             />
             <label className="block text-sm font-medium text-gray-700 mt-4">Phone</label>
             <input
               type="text"
               value={staffToEdit?.phoneNumber?.number || ""}
-              onChange={(e) =>
-                setStaffToEdit((prev: any) => ({
-                  ...prev,
-                  phoneNumber: { number: e.target.value },
-                }))
-              }
+              onChange={(e) => {
+                const value = e.target.value;
+
+                // Validar apenas números e '+' no início
+                const regex = /^\+?[0-9]*$/; // '+' opcional no início seguido de dígitos
+                if (regex.test(value)) {
+                  setStaffToEdit((prev: any) => ({
+                    ...prev,
+                    phoneNumber: { number: value },
+                  }));
+                }
+              }}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
-            />
+              placeholder="+1234567890"
+            />  
               <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
               <select
                 value={staffToEdit?.specialization || ""}
