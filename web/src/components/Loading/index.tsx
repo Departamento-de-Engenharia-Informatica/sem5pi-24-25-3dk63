@@ -1,60 +1,82 @@
 import { motion } from "framer-motion";
 import Skeleton from "react-loading-skeleton";
-import { RepeatIcon } from "@/styles/Icons";
+import { FaStethoscope } from "react-icons/fa"; // Importando o ícone de estetoscópio
 import "react-loading-skeleton/dist/skeleton.css";
 import React from "react";
 
 interface LoadingProps {
   loadingText?: boolean;
-  loading?: boolean; 
+  loading?: boolean;
 }
 
 const Loading: React.FC<LoadingProps> = ({ loadingText = true, loading = true }) => {
   return (
-    <div className="mt-6 w-full pr-8">
+    <div className="w-full h-full flex justify-center items-center flex-col space-y-6">
       {loading && (
         <>
           {loadingText && (
-            <h1 className="flex w-full items-center justify-center text-center text-4xl font-bold text-primary dark:text-primary-light">
-              Loading
-              <div className="flex justify-start ml-2">
+            <div className="flex items-center text-center space-x-3 text-3xl font-semibold text-primary dark:text-primary-light">
+              <span>Loading</span>
+              <div className="flex space-x-2">
                 <motion.span
-                  animate={{ translateY: [-5, 0, -5] }}
+                  animate={{ scale: [1, 1.2, 1] }}
                   transition={{
                     repeat: Infinity,
-                    duration: 1,
+                    duration: 0.8,
                     repeatType: "loop",
                   }}
+                  className="text-primary dark:text-primary-light"
                 >
                   .
                 </motion.span>
                 <motion.span
-                  animate={{ translateY: [-5, 0, -5] }}
+                  animate={{ scale: [1, 1.2, 1] }}
                   transition={{
                     repeat: Infinity,
-                    duration: 1,
+                    duration: 0.8,
                     repeatType: "loop",
                     delay: 0.2,
                   }}
+                  className="text-primary dark:text-primary-light"
                 >
                   .
                 </motion.span>
                 <motion.span
-                  animate={{ translateY: [-5, 0, -5] }}
+                  animate={{ scale: [1, 1.2, 1] }}
                   transition={{
                     repeat: Infinity,
-                    duration: 1,
+                    duration: 0.8,
                     repeatType: "loop",
                     delay: 0.4,
                   }}
+                  className="text-primary dark:text-primary-light"
                 >
                   .
                 </motion.span>
               </div>
-              <RepeatIcon className="ml-4 h-8 w-8 animate-spin text-primary dark:text-primary-light" />
-            </h1>
+            </div>
           )}
-          <Skeleton className="mt-8 h-28 w-full bg-secondary dark:bg-secondary-dark/50" count={4} />
+
+          {/* Skeleton para placeholders */}
+          <Skeleton
+            className="w-full h-16 bg-gradient-to-r from-primary/20 to-primary/60 dark:from-primary-light/20 dark:to-primary-light/60 rounded-full shadow-lg"
+            count={3}
+          />
+
+          {/* Ícone de Estetoscópio personalizado */}
+          <div className="flex justify-center mt-4">
+            <motion.div
+              animate={{ rotate: [0, 360] }}
+              transition={{
+                repeat: Infinity,
+                duration: 2,
+                repeatType: "loop",
+              }}
+              className="text-primary dark:text-primary-light"
+            >
+              <FaStethoscope className="h-12 w-12" />
+            </motion.div>
+          </div>
         </>
       )}
     </div>

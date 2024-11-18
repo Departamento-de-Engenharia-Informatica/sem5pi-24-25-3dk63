@@ -1,6 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  mode: 'jit',
+  mode: "jit",
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     extend: {
@@ -18,8 +18,14 @@ export default {
         poppins: ["Poppins", "Arial", "sans-serif"],
         archivo: ["Archivo", "Arial", "sans-serif"],
       },
+      spacing: {
+        "-20": "-5rem",
+        "-24": "-6rem",
+        "-32": "-8rem",
+        "-40": "-20rem",
+      },
     },
   },
-  darkMode: 'class',
+  darkMode: "class",
   plugins: [],
 };
