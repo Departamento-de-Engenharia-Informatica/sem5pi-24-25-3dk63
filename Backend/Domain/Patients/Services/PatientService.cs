@@ -430,7 +430,6 @@ namespace DDDSample1.Patients
             await _unitOfWork.CommitAsync();
         }
 
-
         public async Task<PatientDTO> DeletePatientAsync(MedicalRecordNumber id, string adminEmail)
         {
             var patientToRemove = await _patientRepository.FindByMedicalRecordNumberAsync(id);

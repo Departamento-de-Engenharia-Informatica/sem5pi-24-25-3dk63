@@ -12,17 +12,15 @@ export const useConfirmDeletionModule = () => {
 
   const confirmDeletion = async (token: string | null) => {
     if (!token) {
-      setConfirmationStatus("Invalid token.");
+      setConfirmationStatus("Invalid token. Please request another deletion.");
       return;
     }
+  
+    const response = await patientService.confirmDeletion(token);
+    setConfirmationStatus(response);
 
-    try {
-      const response = await patientService.confirmDeletion(token);
-      setConfirmationStatus(response);
-    } catch (error) {
-      setConfirmationStatus("Confirmation failed: " + (error as Error).message);
-    }
   };
+  
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);

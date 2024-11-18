@@ -82,15 +82,17 @@ export class PatientService implements IPatientService {
   }  
 
   async confirmDeletion(token: string): Promise<string> {
-    try {
-      const res: any = await this.http.get(`/patients/confirm-account-deletion?token=${token}`, {
-        headers: { withCredentials: "true" },
-      });
+    
+    const res: any = await this.http.get(`/patients/confirm-account-deletion?token=${token}`, {
+      headers: { withCredentials: "true" },
+    });
+
+    if (res.status === 200 && res.data) {
       return res.data;
-    } catch (error) {
-      throw new Error("Failed to confirm account deletion.");
+    } else {
+      throw new Error("Unexpected response from server.");
     }
-  }  
+  }
   
   async updateProfile(data: UpdateProfileDTO): Promise<void> {
     try {
