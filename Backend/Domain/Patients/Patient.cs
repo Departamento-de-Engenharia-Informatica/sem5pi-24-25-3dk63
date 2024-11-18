@@ -111,5 +111,16 @@ namespace DDDSample1.Domain
         {
             this.MarkedForDeletionDate = DateTime.UtcNow.AddMinutes(2);
         }
+
+        public void Anonymize()
+        {
+            this.dateOfBirth = new DateOfBirth(new DateTime(1900, 1, 1));
+            this.gender = new Gender("Unknown");
+            this.medicalHistory = new MedicalHistory("Anonymous medical history");
+            this.emergencyContact = new EmergencyContact("Anonymous");
+            this.Active = false;
+            this.MarkedForDeletionDate = null;
+        }
+
     }
 }

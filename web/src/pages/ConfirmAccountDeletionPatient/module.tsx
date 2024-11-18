@@ -9,24 +9,53 @@ export const useConfirmDeletionModule = () => {
   const location = useLocation();
 
   const [confirmationStatus, setConfirmationStatus] = useState<string>("Processing confirmation...");
+  const [loading, setLoading] = useState<boolean>(true);
+  const [hasProcessed, setHasProcessed] = useState<boolean>(false);
 
-  const confirmDeletion = async (token: string | null) => {
-    if (!token) {
-      setConfirmationStatus("Invalid token. Please request another deletion.");
-      return;
+  const confirmDeletion = async (token: string) => {
+    try {
+      const response = await patientService.confirmDeletion(token);
+
+      if (!response) {
+        throw new Error("No response from the server.");
+      }
+
+      let responseData;
+      try {
+        responseData = JSON.parse(response);
+      } catch (parseError) {
+        setConfirmationStatus("This account has already been deleted or the token has expired.");
+        return;
+      }
+
+      if (responseData.Error) {
+        setConfirmationStatus("This account has already been deleted.");
+      } else {
+        setConfirmationStatus("Account deletion confirmed successfully.");
+      }
+    } catch (error) {
+      setConfirmationStatus("This account has already been deleted or the token has expired.");
+    } finally {
+      setLoading(false);
+      setHasProcessed(true);
     }
-  
-    const response = await patientService.confirmDeletion(token);
-    setConfirmationStatus(response);
-
   };
-  
 
   useEffect(() => {
+    if (hasProcessed) return;
+
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
-    confirmDeletion(token);
-  }, [location.search]);
 
-  return { confirmationStatus };
+    if (!token) {
+      setConfirmationStatus("Token not found. Please request another deletion.");
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+    confirmDeletion(token);
+  }, [location.search, hasProcessed]);
+
+  return { confirmationStatus, loading };
 };

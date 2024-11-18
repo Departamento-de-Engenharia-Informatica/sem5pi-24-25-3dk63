@@ -414,20 +414,29 @@ namespace DDDSample1.Patients
             var user = await _userRepository.GetUserByConfirmationTokenAsync(token);
             if (user == null)
             {
-                throw new Exception("Invalid or expired confirmation token.");
+                throw new Exception("The confirmation token has expired or the account has been deleted.");
             }
 
-            if(FindByUserId(user.Id).Result.Active == false)
+            var patient = await _patientRepository.FindByUserIdAsync(user.Id);
+            if (patient == null)
             {
-                throw new BusinessRuleValidationException("Patient not active.");
+                throw new Exception("Patient data not found.");
             }
 
-            user.ChangeActiveFalse();
-            user.MarkForDeletion();
-            user.ConfirmationToken = null;
+            try
+            {
+                user.MarkForDeletion();
+                user.Anonymize();
+                patient.Anonymize();
 
-            await _userRepository.UpdateUserAsync(user);
-            await _unitOfWork.CommitAsync();
+                await _userRepository.UpdateUserAsync(user);
+                await _patientRepository.UpdatePatientAsync(patient);
+                await _unitOfWork.CommitAsync();
+            }
+            catch (Exception ex)
+            {
+                throw new Exception($"An error occurred while anonymizing user or patient data: {ex.Message}");
+            }
         }
 
         public async Task<PatientDTO> DeletePatientAsync(MedicalRecordNumber id, string adminEmail)

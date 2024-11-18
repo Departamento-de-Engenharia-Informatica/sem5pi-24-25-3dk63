@@ -222,7 +222,6 @@ namespace DDDSample1.Controllers
             return Ok("Account deletion requested. Please check your email to confirm.");
         }
 
-
         [HttpGet("confirm-account-deletion")]
         [Authorize(Roles = "Patient")]
         public async Task<IActionResult> ConfirmAccountDeletion(string token)
@@ -230,13 +229,22 @@ namespace DDDSample1.Controllers
             try
             {
                 await _service.ConfirmDeletionAsync(token);
-                return Ok("Account deletion confirmed successfully.");
+                return Ok(new { Message = "Account deletion confirmed successfully." });
             }
             catch (Exception ex)
             {
-                return BadRequest($"Error confirming deletion: {ex.Message}");
-            }
+                var errorResponse = new
+                {
+                    Error = true,
+                    ex.Message,
+                    Code = ex.Message.Contains("confirmation token has expired or the account has been deleted") ? "USER_ALREADY_DELETED_OR_TOKEN_EXPIRED" :
+                            ex.Message.Contains("Patient data not found") ? "PATIENT_NOT_FOUND" :
+                            ex.Message.Contains("anonymizing") ? "USER_ANONYMIZATION_ERROR" :
+                            "GENERAL_ERROR"
+                };
 
+                return BadRequest(errorResponse);
+            }
         }
 
         [HttpGet("appointments")]
