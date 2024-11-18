@@ -39,6 +39,7 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
     "Date of Birth",
     "Gender",
     "Contact Phone",
+    "Medical Record Number",
     "Active",
   ];
 
@@ -79,7 +80,7 @@ const menuOptions = [
         lastName: patientUser.name.lastName,
         "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
         "Personal Email": patientUser.personalEmail.value,
-        "Email": patientUser.iamEmail.value,
+        Email: patientUser.personalEmail.value,
         "Date of Birth": formatDate(patientUser.dateOfBirth.date),
         Gender: patientUser.gender.gender,
         "Contact Phone": patientUser.phoneNumber.number,
@@ -306,7 +307,7 @@ const searchPatients = async (query: Record<string, string>) => {
       lastName: patientUser.name.lastName,
       "Full Name": `${patientUser.name.firstName} ${patientUser.name.lastName}`,
       "Personal Email": patientUser.personalEmail.value,
-      "IAM Email": patientUser.iamEmail.value,
+      Email: patientUser.personalEmail.value,
       "Date of Birth": formatDate(patientUser.dateOfBirth.date),
       Gender: patientUser.gender.gender,
       "Contact Phone": patientUser.phoneNumber.number,
