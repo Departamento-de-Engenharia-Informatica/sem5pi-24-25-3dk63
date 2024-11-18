@@ -1,5 +1,4 @@
 import "reflect-metadata";
-import LoginPage from './pages/Login';
 import AdminPage from './pages/AdminMenu';
 import AdminPatient from './pages/AdminPatient';
 import PatientPage from './pages/PatientMenu';
@@ -22,6 +21,7 @@ import ConfirmUpdatePage from "./pages/ConfirmAccountUpdatePatient";
 import ConfirmDeletionPage from "./pages/ConfirmAccountDeletionPatient";
 import ProtectedRoute from './components/ProtectedRoute';
 import NotAuthorizedPage from "./pages/NotAuthorized";
+import LoginPage from "./pages/LoginPage";
 
 function App() {
   const [alertMessage, setAlertMessage] = useState<string | null>(null);
@@ -64,7 +64,7 @@ function App() {
                 <Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />
                 <Route path="/confirm-update/:token" element={<ConfirmUpdate />} />
                 <Route path="/patient/confirm-account-deletion" element={<ConfirmDeletionPage />} />
-                <Route path="/patient/confirm-update" element={<ConfirmUpdatePage />} />
+                <Route path="/patient/confirm-profile-update" element={<ConfirmUpdatePage />} />
 
                 {/* Protected Routes */}
                 <Route

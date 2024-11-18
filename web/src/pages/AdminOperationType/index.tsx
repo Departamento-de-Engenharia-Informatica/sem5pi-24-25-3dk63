@@ -83,10 +83,9 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto flex flex-col">
       {/* Hamburger Menu: Só visível em telas pequenas */}
       <div className="lg:hidden mb-4">
-        <HamburgerMenu
-          options={menuOptions}
-          onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-        />
+        <button onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
+          <HamburgerMenu options={menuOptions} />
+        </button>
       </div>
 
         <div className="mb-4">
