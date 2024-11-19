@@ -16,4 +16,5 @@ export interface IPatientService {
   getMedicalRecords(): Promise<PatientUser[]>;
   requestAccountDeletion(): Promise<void>;
   confirmDeletion(token: string): Promise<string>;
+  confirmRegistration(token: string): Promise<string>;
 }

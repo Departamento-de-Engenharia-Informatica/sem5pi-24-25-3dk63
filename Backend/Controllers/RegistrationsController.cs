@@ -74,6 +74,8 @@ namespace DDDSample1.Controllers
         [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmail(string token)
         {
+            Console.WriteLine("Token: ", token);
+
             try
             {
                 await _registrationService.ConfirmEmailAsync(token);
@@ -81,6 +83,7 @@ namespace DDDSample1.Controllers
             }
             catch (Exception ex)
             {
+                Console.WriteLine($"Email confirmation failed: {ex.Message}");
                 return BadRequest($"Email confirmation failed: {ex.Message}");
             }
         }

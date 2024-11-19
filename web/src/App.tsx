@@ -19,6 +19,7 @@ import ThemeToggleButton from "./components/TheToggleButton";
 import ConfirmUpdate from "./pages/ConfirmUpdateStaff";
 import ConfirmUpdatePage from "./pages/ConfirmAccountUpdatePatient";
 import ConfirmDeletionPage from "./pages/ConfirmAccountDeletionPatient";
+import ConfirmRegistrationPage from "./pages/ConfirmEmailRegistration";
 import ProtectedRoute from './components/ProtectedRoute';
 import NotAuthorizedPage from "./pages/NotAuthorized";
 import LoginPage from "./pages/LoginPage";
@@ -65,6 +66,7 @@ function App() {
                 <Route path="/confirm-update/:token" element={<ConfirmUpdate />} />
                 <Route path="/patient/confirm-account-deletion" element={<ConfirmDeletionPage />} />
                 <Route path="/patient/confirm-profile-update" element={<ConfirmUpdatePage />} />
+                <Route path="/confirm-email" element={<ConfirmRegistrationPage />} />
 
                 {/* Protected Routes */}
                 <Route

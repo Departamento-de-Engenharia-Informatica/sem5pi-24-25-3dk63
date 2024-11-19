@@ -44,7 +44,7 @@ namespace DDDSample1.Patients
             await _unitOfWork.CommitAsync();
 
             // Send the confirmation email with the token
-            await _emailService.SendConfirmationEmailAsync(user.Email.ToString(), user.ConfirmationToken);
+            await _emailService.SendConfirmationEmailAsync(user, user.Email.ToString(), user.ConfirmationToken);
         }
 
         private async Task<User> updateUser(User user, SelfRegisterPatientDTO dto, string iamEmail)

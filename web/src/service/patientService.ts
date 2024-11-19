@@ -103,5 +103,13 @@ export class PatientService implements IPatientService {
       throw new Error("Failed to update profile.");
     }
   }
-  
+
+  async confirmRegistration(token: string): Promise<string> {
+    try {
+      const res = await this.http.get<{ data: string }>(`/Registrations/confirm-email?token=${token}`);
+      return res.data.data;
+    } catch (error) {
+      throw new Error("Failed to confirm registration. Error: " + error);
+    }
+  }
 }
