@@ -1,4 +1,4 @@
-name: Frontend CI/CD
+name: Frontend Deploy CI/CD
 
 on:
   schedule:
