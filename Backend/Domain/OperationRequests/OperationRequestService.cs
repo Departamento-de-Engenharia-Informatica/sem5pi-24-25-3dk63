@@ -285,7 +285,7 @@ namespace DDDSample1.OperationRequests
                             ?? throw new InvalidOperationException("Required staff information is missing.")
                     });
                 }
-                catch (BusinessRuleValidationException ex)
+                catch (Exception ex)
                 {
                     Console.WriteLine($"Error processing request {or.Id}: {ex.Message}");
                 }
@@ -293,5 +293,6 @@ namespace DDDSample1.OperationRequests
 
             return result;
         }
+
     }
 }

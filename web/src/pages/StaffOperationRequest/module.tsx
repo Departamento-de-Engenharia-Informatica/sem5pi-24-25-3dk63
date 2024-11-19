@@ -22,6 +22,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const userService = useInjection<IUserService>(TYPES.userService);
   const specializationService = useInjection<ISpecializationService>(TYPES.specializationsService);
   const [operationRequests, setOperationRequests] = useState<any[]>([]);
+  const [filterOperationRequests, setFilterOperationRequests] = useState<any[]>([]);
   const [patients, setPatients] = useState<any[]>([]); // State to hold list of patients
   const [operationTypes, setOperationTypes] = useState<any[]>([]); // State for operation types
   const [loading, setLoading] = useState(true);
@@ -172,6 +173,22 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     setNewRequest(newOperationRequestDTO);
     setIsModalVisible(true);
   };
+
+  const fetchActiveOperationTypes = async () => {
+    try {
+      const allOperationTypes = await operationTypeService.getOperationTypes();
+  
+      const activeOperationTypes = allOperationTypes.filter((operationType: any) => operationType.active);
+  
+      setFilterOperationRequests(activeOperationTypes);
+    } catch (error) {
+      console.error("Erro ao buscar tipos de operação ativos:", error);
+    }
+  };
+  
+  useEffect(() => {
+    fetchActiveOperationTypes();
+  }, []);
   
   useEffect(() => {
     const fetchAdditionalData = async () => {
@@ -215,6 +232,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     setOperationRequests([]);
     try {
       const requestsData = await operationRequestService.searchOperationRequests(query);
+  
       const filteredData = requestsData.map((request) => ({
         "Patient Name": `${request.patientName}`,
         "Operation Type": request.operationType,
@@ -224,18 +242,16 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         "Assigned Staff": request.assignedStaff,
         "Id": request.id,
       }));
+  
       setOperationRequests(filteredData);
-      if (filteredData.length === 0) {
-        setAlertMessage("No operation requests found.");
-      }
-
+  
     } catch (error) {
-      setError("Error fetching operation requests.");
+      setError("No operation requests found.");
     } finally {
       setLoading(false);
     }
   };
-
+  
   const handleSubmit = async () => {
     try {
       if (!newRequest.patientId || !newRequest.operationType || !newRequest.priority || !newRequest.deadline) {
@@ -316,6 +332,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     cancelDelete,
     handleAddRequest,
     searchOperationRequests,
+    filterOperationRequests,
     menuOptions,
     headers,
     setCurrentPage,

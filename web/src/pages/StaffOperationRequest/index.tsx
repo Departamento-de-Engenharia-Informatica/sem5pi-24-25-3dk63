@@ -27,6 +27,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
     currentPage,
     setCurrentPage,
     searchOperationRequests,
+    filterOperationRequests,
     handleDelete,
     totalRequests,
     itemsPerPage,
@@ -118,15 +119,28 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             dueDate: "date",
             status: "select",
             priority: "select",
+            operationType: "select",
           }}
           selectOptions={{
-            status: ["Active", "Inactive"],
-            priority: ["Emergency", "Urgent", "Elective"],
+            status: [
+              { label: "Active", value: "active" },
+              { label: "Inactive", value: "inactive" },
+            ],
+            priority: [
+              { label: "Emergency", value: "emergency" },
+              { label: "Urgent", value: "urgent" },
+              { label: "Elective", value: "elective" },
+            ],
+            operationType: filterOperationRequests.map((type: any) => ({
+              label: type.name.description, 
+              value: type.id,
+            })),
           }}
           onSearch={searchOperationRequests}
           results={[]}
           renderResult={() => <></>}
         />
+
 
         {loading && <Loading />}
         {error && <Alert type="error" message={error} />}

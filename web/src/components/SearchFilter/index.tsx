@@ -8,7 +8,7 @@ interface SearchFilterProps {
   results: any[];
   renderResult: (result: any) => JSX.Element;
   fieldTypes?: Record<string, 'text' | 'select' | 'date'>;
-  selectOptions?: Record<string, string[]>;
+  selectOptions?: Record<string, { label: string, value: string }[]>;
 }
 
 const SearchFilter: React.FC<SearchFilterProps> = ({
@@ -67,8 +67,8 @@ const SearchFilter: React.FC<SearchFilterProps> = ({
                 >
                   <option value="" disabled>Select</option>
                   {selectOptions[attribute].map(option => (
-                    <option key={option} value={option}>
-                      {option}
+                    <option key={option.value} value={option.value}>
+                      {option.label}
                     </option>
                   ))}
                 </select>
