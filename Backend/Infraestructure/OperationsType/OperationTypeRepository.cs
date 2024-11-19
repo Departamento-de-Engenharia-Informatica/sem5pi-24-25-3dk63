@@ -23,10 +23,11 @@ namespace DDDSample1.Infrastructure.OperationsType
                 .FirstOrDefaultAsync(o => o.Name.Description == name);
         }
 
-        public async Task<OperationType> GetBySpecializationAsync(SpecializationId id)
+        public async Task<List<OperationType>> GetBySpecializationAsync(SpecializationId id)
         {
             return await _context.OperationsTypes
-                .FirstOrDefaultAsync(o => o.SpecializationId == id);
+                .Where(o => o.Specializations.Any(s => s == id))
+                .ToListAsync();
         }
 
 

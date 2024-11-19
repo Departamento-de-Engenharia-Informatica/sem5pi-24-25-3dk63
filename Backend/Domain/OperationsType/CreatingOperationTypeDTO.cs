@@ -1,28 +1,26 @@
 using Backend.Domain.Users.ValueObjects;
 using DDDSample1.Domain.OperationsType;
 
-
 namespace DDDSample1.OperationsType
 {
     public class CreatingOperationTypeDTO
     {
+        public string Name { get; set; }
+        public int Preparation { get; set; }
+        public int Surgery { get; set; }
+        public int Cleaning { get; set; }
+        public int RequiredStaff { get; set; }
+        public List<string> Specialities { get; set; } // Alterado para lista de especializações
 
-    public string Name { get; set; }
-    public int Preparation { get; set; }
-    public int Surgery { get; set; }
-    public int Cleaning { get; set; }
-    public int RequiredStaff { get; set; }
-    public string speciality { get; set; }
-
-    public CreatingOperationTypeDTO(string Name, int preparation, int surgery, int cleaning, int requiredStaff, string speciality)
-{
-    this.Name = Name;
-    this.Preparation = preparation;
-    this.Surgery = surgery;
-    this.Cleaning = cleaning;
-    this.RequiredStaff = requiredStaff;
-    this.speciality = speciality;
-}
-
+        // Construtor atualizado
+        public CreatingOperationTypeDTO(string name, int preparation, int surgery, int cleaning, int requiredStaff, List<string> specialities)
+        {
+            this.Name = name;
+            this.Preparation = preparation;
+            this.Surgery = surgery;
+            this.Cleaning = cleaning;
+            this.RequiredStaff = requiredStaff;
+            this.Specialities = specialities ?? new List<string>(); // Garante que a lista não seja null
+        }
     }
 }

@@ -10,10 +10,10 @@ namespace DDDSample1.Infraestructure.OperationTypes
     {
         public void Configure(EntityTypeBuilder<OperationType> builder)
         {
-            // chave composta
+            // Configuração da chave composta
             builder.HasKey(o => new { o.Id, o.Active });
 
-            // Configura a propriedade Name (associada ao Value Object Name)
+            // Configura a propriedade Name (Value Object)
             builder.OwnsOne(o => o.Name, name =>
             {
                 name.Property(n => n.Description)
@@ -21,6 +21,7 @@ namespace DDDSample1.Infraestructure.OperationTypes
                     .IsRequired();
             });
 
+            // Configura as propriedades Duration (Value Object)
             builder.OwnsOne(o => o.Duration, duration =>
             {
                 duration.Property(d => d.PreparationPhase)
@@ -38,27 +39,23 @@ namespace DDDSample1.Infraestructure.OperationTypes
                 duration.Property(d => d.TotalDuration)
                     .HasColumnName("TotalDuration")
                     .IsRequired();
-            });  
+            });
 
+            // Configura a propriedade RequiredStaff (Value Object)
             builder.OwnsOne(o => o.RequiredStaff, requiredStaff =>
             {
                 requiredStaff.Property(rs => rs.RequiredNumber)
                     .HasColumnName("RequiredNumber")
                     .IsRequired();
             });
-
-            builder.Property(s => s.SpecializationId)
-                .HasColumnName("SpecializationId")
-                .HasConversion(
-                    specializationId => specializationId.AsString(),
-                    specializationIdString => new SpecializationId(specializationIdString))
-                .IsRequired();
-
-            // Configura o campo Active
+            // Configura a propriedade Active
             builder.Property(o => o.Active)
                 .IsRequired();
+                 builder.Property(o => o.Specializations)
+                .HasColumnName("Specializations")
+                .IsRequired(false); // Caso seja opcional, ajuste conforme necessário
 
-            // Define o nome da tabela no banco de dados (opcional)
+            // Define o nome da tabela no banco de dados
             builder.ToTable("OperationTypes");
         }
     }

@@ -4,6 +4,6 @@ export interface CreatingOperationTypeDTO {
     surgery: number;
     cleaning: number;
     requiredStaff: number;
-    speciality: string;
+    specialities: [];
   }
   

@@ -4,6 +4,7 @@ using DDDSample1.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DDDNetCore.Migrations
 {
     [DbContext(typeof(DDDSample1DbContext))]
-    partial class DDDSample1DbContextModelSnapshot : ModelSnapshot
+    [Migration("20241119192946_operationtype")]
+    partial class operationtype
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -80,7 +83,7 @@ namespace DDDNetCore.Migrations
                         .HasColumnType("longtext")
                         .HasColumnName("Specializations");
 
-                    b.HasKey("Id", "Active");
+                    b.HasKey("Id");
 
                     b.ToTable("OperationTypes", (string)null);
                 });
@@ -374,9 +377,6 @@ namespace DDDNetCore.Migrations
                             b1.Property<string>("OperationTypeId")
                                 .HasColumnType("varchar(255)");
 
-                            b1.Property<bool>("OperationTypeActive")
-                                .HasColumnType("tinyint(1)");
-
                             b1.Property<int>("CleaningPhase")
                                 .HasColumnType("int")
                                 .HasColumnName("CleaningPhaseDuration");
@@ -393,12 +393,12 @@ namespace DDDNetCore.Migrations
                                 .HasColumnType("int")
                                 .HasColumnName("TotalDuration");
 
-                            b1.HasKey("OperationTypeId", "OperationTypeActive");
+                            b1.HasKey("OperationTypeId");
 
                             b1.ToTable("OperationTypes");
 
                             b1.WithOwner()
-                                .HasForeignKey("OperationTypeId", "OperationTypeActive");
+                                .HasForeignKey("OperationTypeId");
                         });
 
                     b.OwnsOne("DDDSample1.Domain.OperationsType.OperationName", "Name", b1 =>
@@ -406,20 +406,17 @@ namespace DDDNetCore.Migrations
                             b1.Property<string>("OperationTypeId")
                                 .HasColumnType("varchar(255)");
 
-                            b1.Property<bool>("OperationTypeActive")
-                                .HasColumnType("tinyint(1)");
-
                             b1.Property<string>("Description")
                                 .IsRequired()
                                 .HasColumnType("longtext")
                                 .HasColumnName("Name");
 
-                            b1.HasKey("OperationTypeId", "OperationTypeActive");
+                            b1.HasKey("OperationTypeId");
 
                             b1.ToTable("OperationTypes");
 
                             b1.WithOwner()
-                                .HasForeignKey("OperationTypeId", "OperationTypeActive");
+                                .HasForeignKey("OperationTypeId");
                         });
 
                     b.OwnsOne("DDDSample1.Domain.OperationsType.RequiredStaff", "RequiredStaff", b1 =>
@@ -427,19 +424,16 @@ namespace DDDNetCore.Migrations
                             b1.Property<string>("OperationTypeId")
                                 .HasColumnType("varchar(255)");
 
-                            b1.Property<bool>("OperationTypeActive")
-                                .HasColumnType("tinyint(1)");
-
                             b1.Property<int>("RequiredNumber")
                                 .HasColumnType("int")
                                 .HasColumnName("RequiredNumber");
 
-                            b1.HasKey("OperationTypeId", "OperationTypeActive");
+                            b1.HasKey("OperationTypeId");
 
                             b1.ToTable("OperationTypes");
 
                             b1.WithOwner()
-                                .HasForeignKey("OperationTypeId", "OperationTypeActive");
+                                .HasForeignKey("OperationTypeId");
                         });
 
                     b.Navigation("Duration")

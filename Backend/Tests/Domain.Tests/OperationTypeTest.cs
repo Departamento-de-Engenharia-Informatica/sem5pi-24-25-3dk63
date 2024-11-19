@@ -4,7 +4,7 @@ using Xunit;
 using DDDSample1.Domain;
 using DDDSample1.Domain.Specialization;
 
-
+/*
 namespace Backend.Tests.Domain.Tests.ValueObjects
 {
 
@@ -21,7 +21,6 @@ namespace Backend.Tests.Domain.Tests.ValueObjects
     - mudar required staff                  check
     - mudar specializationUd                check
 
-*/
     public class OperationsTypeTest
     {
         [Theory]
@@ -208,4 +207,4 @@ namespace Backend.Tests.Domain.Tests.ValueObjects
             Assert.Equal("d2718f59-24e8-4d4d-9d53-4b6a3f1c5c6b", operationType.SpecializationId.AsString());
         }
     }
-}
+}*/

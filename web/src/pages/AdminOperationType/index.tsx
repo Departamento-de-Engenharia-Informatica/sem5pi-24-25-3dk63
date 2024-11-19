@@ -34,6 +34,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
+    saveOperationTypeAdded,
     specializations,
     popupMessage,
     setPopupMessage,
@@ -126,13 +127,8 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             currentPage={currentPage}
             onPageChange={setCurrentPage}
           />
-
-
         </div>
-
       </div>
-      {/* Modal de Cadastro/edição */}
-
       {isModalVisible && (
         <Modal
           isVisible={isModalVisible}
@@ -249,7 +245,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             </select>
 
             <button
-              onClick={saveOperationType}
+              onClick={saveOperationTypeAdded}
               className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
             >
               Save

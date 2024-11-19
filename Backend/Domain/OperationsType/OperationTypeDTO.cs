@@ -9,7 +9,7 @@ namespace DDDSample1.Domain.OperationsType
         public OperationName Name { get; set; }
         public Duration Duration { get; set; }
         public RequiredStaff RequiredStaff { get; set; }
-        public SpecializationId SpecializationId { get; set; }
+         public List<SpecializationId> Specializations { get; set; } // Alterado para lista
         public bool Active { get; set; }
     }
 }

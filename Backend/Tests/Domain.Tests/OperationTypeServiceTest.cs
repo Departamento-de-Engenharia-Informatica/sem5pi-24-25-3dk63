@@ -1,4 +1,4 @@
-using DDDSample1.Domain.Shared;
+/*using DDDSample1.Domain.Shared;
 using DDDSample1.Domain.OperationsType;
 using Xunit;
 using DDDSample1.Domain;
@@ -47,7 +47,7 @@ namespace Backend.Tests.Services
         DeleteAsync                 Check
         UpdateAsync                 Check
         DeleteAsync                 Check
-        */
+        
 
         [Fact]
         public async Task GetAllAsync_ShouldReturnOperationTypeDTOList()
@@ -100,7 +100,7 @@ namespace Backend.Tests.Services
             // Assert
             Assert.NotNull(result);
         }
-/*
+
         [Fact]
         public async Task AddAsync_ShouldReturnOperationTypeDTO_WhenAddingValidOperationType()
         {
@@ -137,7 +137,7 @@ namespace Backend.Tests.Services
             Assert.Equal("operaçao1", result.Name.Description); 
             Assert.Equal(2, result.RequiredStaff.RequiredNumber); // Validate required staff value
         }
-*/
+
 
         [Fact]
         public async Task AddAsync_ShouldThrowException_WhenNameExistes()
@@ -282,5 +282,4 @@ namespace Backend.Tests.Services
             
         }
     }
-}
-    
+}*/

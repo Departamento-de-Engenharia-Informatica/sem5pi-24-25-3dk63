@@ -5,6 +5,8 @@ namespace DDDSample1.Domain.Specialization
 {
     public class SpecializationId : EntityId
     {
+
+        
         [JsonConstructor]
         public SpecializationId(Guid value) : base(value) {}
 

@@ -4,9 +4,7 @@ export interface OperationType {
   name: {
     description: string;
   };
-  specialization: {
-    value: string;
-  };
+  specializations: string[];
   active: boolean;
   [key: string]: any;
 

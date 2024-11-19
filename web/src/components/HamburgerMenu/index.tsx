@@ -32,16 +32,18 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ options }) => {
 
   return (
     <div className="fixed top-0 left-0 m-2">
-      <button
+      {/* Alterado de <button> para <div> */}
+      <div
+        role="button"
         onClick={toggleMenu}
-        className="p-4 rounded-md focus:outline-none bg-white text-[#284b62] dark:bg-gray-800 dark:text-white"
+        className="p-4 rounded-md focus:outline-none bg-white text-[#284b62] dark:bg-gray-800 dark:text-white cursor-pointer"
       >
         <div className="space-y-1">
           <span className="block w-6 h-0.5 bg-[#284b62] dark:bg-white"></span>
           <span className="block w-6 h-0.5 bg-[#284b62] dark:bg-white"></span>
           <span className="block w-6 h-0.5 bg-[#284b62] dark:bg-white"></span>
         </div>
-      </button>
+      </div>
 
       {isOpen && (
         <div className="absolute left-0 mt-2 w-48 bg-white dark:bg-gray-800 shadow-lg rounded-lg z-10">
@@ -55,7 +57,7 @@ const HamburgerMenu: React.FC<HamburgerMenuProps> = ({ options }) => {
             </button>
           ))}
 
-          {/* Botão de Logout Adicionado no Menu */}
+          {/* Botão de Logout */}
           <button
             onClick={logout}
             className="block w-full px-4 py-2 text-left text-gray-700 dark:text-gray-200 hover:bg-red-600 dark:hover:bg-red-700 hover:text-white dark:hover:text-white rounded-md transition-colors duration-150 mt-2"

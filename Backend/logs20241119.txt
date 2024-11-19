@@ -1,0 +1,3 @@
+2024-11-19 19:38:19.491 +00:00 [INF] OperationType Operaçao Cardiovascular (bcd50813-37ad-4d2e-ae13-35943d6dc155) was created by Admin (diogoandre.8269@gmail.com) on 19/11/2024 19:38:19
+2024-11-19 19:38:36.859 +00:00 [INF] OperationType Operaçao Cardiovascular2 specs (e552f91f-3866-471b-80d9-9b60f16ebf2a) was created by Admin (diogoandre.8269@gmail.com) on 19/11/2024 19:38:36
+2024-11-19 21:59:34.730 +00:00 [INF] OperationType Operaçao Cardiovascularu2 (baead217-cabd-4986-a521-53a910d6171e) was created by Admin (diogoandre.8269@gmail.com) on 19/11/2024 21:59:34

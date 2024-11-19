@@ -144,7 +144,7 @@ namespace DDDSample1.Controllers
             }
         }
 
-        [HttpPatch("{id}")]
+     /*   [HttpPatch("{id}")]
         [Authorize(Roles="Admin")]
         public async Task<ActionResult<OperationTypeDTO>> Patch(Guid id, [FromBody] UpdateOperationTypeDTO dto)
         {
@@ -162,9 +162,9 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest(new { Message = ex.Message });
             }
-        }
+        }*/
 
-        [HttpGet("search")]
+       /*[HttpGet("search")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<SearchOperationTypeDTO>>> SearchOperationTypeAsync([FromQuery] string? name = null, [FromQuery] string? specialization = null, [FromQuery] string? active = null)
         {
@@ -176,7 +176,7 @@ namespace DDDSample1.Controllers
             }
 
             return Ok(operationTypeList);
-        }
+        }*/
 
         [HttpGet("active")]
         [Authorize(Roles="Admin")]

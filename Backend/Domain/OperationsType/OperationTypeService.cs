@@ -53,27 +53,49 @@ namespace DDDSample1.OperationsType
                 Name = operationType.Name,
                 Duration = operationType.Duration,
                 RequiredStaff = operationType.RequiredStaff,
-                SpecializationId = operationType.SpecializationId
+                Specializations = operationType.Specializations // Adaptado para a lista
             });
 
             return listDto;
         }
+
 
         public async Task<List<SearchOperationTypeDTO>> GetAllOperationTypeAsync()
         {
-            var list = await this._operationTypeRepository.GetAllAsync();
+            var list = await _operationTypeRepository.GetAllAsync();
 
-            List<SearchOperationTypeDTO> listDto = list.ConvertAll(operationType => new SearchOperationTypeDTO
+            List<SearchOperationTypeDTO> listDto = new List<SearchOperationTypeDTO>();
+
+            foreach (var operationType in list)
             {
-                Id =  operationType.Id.AsGuid(),
-                Name = operationType.Name,
-                Specialization = _specializationRepository.GetByIdAsync(operationType.SpecializationId).Result.Description,
-                Active = operationType.Active,
-                RequiredStaff = operationType.RequiredStaff,
-                Duration = operationType.Duration
-            });
+                // Obtém descrições das especializações sequencialmente
+                var specializations = new List<string>();
+                foreach (var specializationId in operationType.Specializations)
+                {
+                    var specialization = await _specializationRepository.GetByIdAsync(specializationId);
+                    if (specialization != null)
+                    {
+                        specializations.Add(specialization.Description.Value);
+                    }
+                }
+
+                // Adiciona o DTO à lista
+                listDto.Add(new SearchOperationTypeDTO
+                {
+                    Id = operationType.Id.AsGuid(),
+                    Name = operationType.Name,
+                    Specialization = new Description(string.Join(", ", specializations)),
+                    Active = operationType.Active,
+                    RequiredStaff = operationType.RequiredStaff,
+                    Duration = operationType.Duration
+                });
+            }
+
             return listDto;
         }
+
+
+
 
 
         // Obtém uma operation pelo ID
@@ -96,31 +118,43 @@ namespace DDDSample1.OperationsType
 
         public async Task<OperationTypeDTO> AddAsync(CreatingOperationTypeDTO dto, string adminEmail)
         {
-
             var name = new OperationName(dto.Name);
 
-            var operation =  await this._operationTypeRepository.GetByNameAsync(dto.Name);
+            // Verificar se já existe uma operação com o mesmo nome
+            var operation = await this._operationTypeRepository.GetByNameAsync(dto.Name);
             if (operation != null)
             {
                 throw new BusinessRuleValidationException("Operation type já existe no sistema, por favor tente novamente com outro nome.");
             }
 
             var duration = new Duration(dto.Preparation, dto.Surgery, dto.Cleaning);
-
             var requiredStaff = new RequiredStaff(dto.RequiredStaff);
 
-            var specialization = await this._specializationRepository.GetByDescriptionAsync(new Description(dto.speciality));
+            // Processar especializações
+            var specializations = new List<SpecializationId>();
+            foreach (var specializationDescription in dto.Specialities)
+            {
+                var specialization = await this._specializationRepository.GetByDescriptionAsync(new Description(specializationDescription));
+                if (specialization == null)
+                {
+                    throw new BusinessRuleValidationException($"A especialização '{specializationDescription}' não existe.");
+                }
+                specializations.Add(specialization.Id);
+            }
 
-            if (specialization == null) throw new BusinessRuleValidationException("A especialização não existe.");
+            // Criar o OperationType
+            var operationType = new OperationType(name, duration, requiredStaff, specializations);
 
-            var operationType = new OperationType(name, duration, requiredStaff, specialization.Id);
-
+            // Logar auditoria
             _auditService.LogCreateOperationType(operationType, adminEmail);
+
+            // Persistir a nova operação
             await this._operationTypeRepository.AddAsync(operationType);
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<OperationTypeDTO>(operationType);
         }
+
 
         public async Task <OperationTypeDTO> DeleteAsync(OperationTypeId id) {
             var operationType = await this._operationTypeRepository.GetByIdAsync(id);
@@ -145,68 +179,66 @@ namespace DDDSample1.OperationsType
 
             await this._unitOfWork.CommitAsync();
 
-            var operationType2= await this._operationTypeRepository.GetByIdAsync(new OperationTypeId(dto.Id));
-Debug.Assert(operationType != null, "OperationType should not be null");
             var OperationTypeDTO = _mapper.Map<OperationTypeDTO>(operationType);
 
             return OperationTypeDTO;
 
         }
 
-        public async Task<OperationTypeDTO> UpdateCurrentActiveType(UpdateOperationTypeDTO dto, Guid id)
-{
-    var currentActiveOperationType = await this._operationTypeRepository.GetActiveOperationTypeByIdAsync(new OperationTypeId(id));
-
-    if (currentActiveOperationType == null)
-    {
-        return null;
-    }
-
-    try
-    {
-        await this._operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
-        await _unitOfWork.CommitAsync();
-
-        currentActiveOperationType.Deactivate();
-        await _operationTypeRepository.AddAsync(currentActiveOperationType);
-        await _unitOfWork.CommitAsync();
-
-        var newOperationType = new OperationType(
-            id: currentActiveOperationType.Id,
-            name: !string.IsNullOrWhiteSpace(dto.Name) ? new OperationName(dto.Name) : currentActiveOperationType.Name,
-            duration: new Duration(
-                dto.Preparation.HasValue ? dto.Preparation.Value : currentActiveOperationType.Duration.PreparationPhase,
-                dto.Surgery.HasValue ? dto.Surgery.Value : currentActiveOperationType.Duration.SurgeryPhase,
-                dto.Cleaning.HasValue ? dto.Cleaning.Value : currentActiveOperationType.Duration.CleaningPhase
-            ),
-            requiredStaff: new RequiredStaff
-            (
-                dto.RequiredStaff.HasValue ? dto.RequiredStaff.Value : currentActiveOperationType.RequiredStaff.RequiredNumber
-            ),
-            specializationId: currentActiveOperationType.SpecializationId
-        );
-
-        await this._operationTypeRepository.AddAsync(newOperationType);
-        await this._unitOfWork.CommitAsync();
-
-        return _mapper.Map<OperationTypeDTO>(newOperationType);
-    }
-    catch (Exception ex)
-    {
-        Console.WriteLine($"An error occurred: {ex.Message}");
-        await this._operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
-        await _unitOfWork.CommitAsync();
-
-        currentActiveOperationType.Activate();
-        await _operationTypeRepository.AddAsync(currentActiveOperationType);
-        await _unitOfWork.CommitAsync();
-        throw;
-    }
-}
-
-        public async Task<OperationTypeDTO>  DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
+       /* public async Task<OperationTypeDTO> UpdateCurrentActiveType(UpdateOperationTypeDTO dto, Guid id)
         {
-            OperationType operationType = new OperationType();
+            var currentActiveOperationType = await this._operationTypeRepository.GetActiveOperationTypeByIdAsync(new OperationTypeId(id));
+
+            if (currentActiveOperationType == null)
+            {
+                return null;
+            }
+
+            try
+            {
+                await this._operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
+                await _unitOfWork.CommitAsync();
+
+                currentActiveOperationType.Deactivate();
+                await _operationTypeRepository.AddAsync(currentActiveOperationType);
+                await _unitOfWork.CommitAsync();
+
+                var newOperationType = new OperationType(
+                    id: currentActiveOperationType.Id,
+                    name: !string.IsNullOrWhiteSpace(dto.Name) ? new OperationName(dto.Name) : currentActiveOperationType.Name,
+                    duration: new Duration(
+                        dto.Preparation.HasValue ? dto.Preparation.Value : currentActiveOperationType.Duration.PreparationPhase,
+                        dto.Surgery.HasValue ? dto.Surgery.Value : currentActiveOperationType.Duration.SurgeryPhase,
+                        dto.Cleaning.HasValue ? dto.Cleaning.Value : currentActiveOperationType.Duration.CleaningPhase
+                    ),
+                    requiredStaff: new RequiredStaff
+                    (
+                        dto.RequiredStaff.HasValue ? dto.RequiredStaff.Value : currentActiveOperationType.RequiredStaff.RequiredNumber
+                    ),
+                    specializationId: currentActiveOperationType.SpecializationId
+                );
+
+                await this._operationTypeRepository.AddAsync(newOperationType);
+                await this._unitOfWork.CommitAsync();
+
+                return _mapper.Map<OperationTypeDTO>(newOperationType);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"An error occurred: {ex.Message}");
+                await this._operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
+                await _unitOfWork.CommitAsync();
+
+                currentActiveOperationType.Activate();
+                await _operationTypeRepository.AddAsync(currentActiveOperationType);
+                await _unitOfWork.CommitAsync();
+                throw;
+            }
+        }*/
+
+        public async Task<OperationTypeDTO> DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
+        {
+            OperationType operationType = null;
 
             if (!string.IsNullOrEmpty(name))
             {
@@ -214,11 +246,16 @@ Debug.Assert(operationType != null, "OperationType should not be null");
             }
             else if (!string.IsNullOrEmpty(specialization))
             {
-                var specializationVAR = await _specializationRepository.GetByDescriptionAsync(new Description(specialization));
-                if (specializationVAR == null)
+                var specializationEntity = await _specializationRepository.GetByDescriptionAsync(new Description(specialization));
+                if (specializationEntity == null)
                     throw new BusinessRuleValidationException("A especialização não existe.");
 
-                operationType = await _operationTypeRepository.GetBySpecializationAsync(specializationVAR.Id);
+                var operationTypes = await _operationTypeRepository.GetBySpecializationAsync(specializationEntity.Id);
+                if (!operationTypes.Any())
+                    throw new BusinessRuleValidationException("Nenhum tipo de operação associado a essa especialização foi encontrado.");
+
+                // Selecionar o primeiro ativo, se houver
+                operationType = operationTypes.FirstOrDefault(o => o.Active);
             }
             else if (!string.IsNullOrEmpty(id))
             {
@@ -235,21 +272,24 @@ Debug.Assert(operationType != null, "OperationType should not be null");
             if (!operationType.Active)
                 throw new BusinessRuleValidationException("O tipo de operação já se encontra inativo.");
 
+            // Registrar auditoria
             _auditService.LogDeactivateOperationType(operationType, adminEmail);
 
             // Remover o registro atual (com active = true)
             await _operationTypeRepository.DeleteAsync(operationType.Id);
 
-            // Modificar o estado do registro
-            operationType.Deactivate(); // Certifique-se que essa função atualiza o estado apropriado
+            // Modificar o estado do registro para inativo
+            operationType.Deactivate();
 
-            // Adicionar o registro modificado de volta à base de dados
+            // Adicionar o registro modificado de volta ao banco de dados
             await _operationTypeRepository.AddAsync(operationType);
             await _unitOfWork.CommitAsync();
 
             return _mapper.Map<OperationTypeDTO>(operationType);
         }
 
+
+/*
         public async Task<List<SearchOperationTypeDTO>> SearchOperationTypeAsync(string? name = null, string? specializationDesc = null, string? active = null)
         {
             var query = from operationType in _operationTypeRepository.GetQueryable()
@@ -294,24 +334,41 @@ Debug.Assert(operationType != null, "OperationType should not be null");
                 RequiredStaff = op.operationType.RequiredStaff,
                 Duration = op.operationType.Duration
             }).ToList();
-        }
+        }*/
 
         public async Task<List<SearchOperationTypeDTO>> GetAllActiveOperationTypeAsync()
         {
             var list = await this._operationTypeRepository.GetAllActiveAsync();
 
-            List<SearchOperationTypeDTO> listDto = list.ConvertAll(operationType => new SearchOperationTypeDTO
+            List<SearchOperationTypeDTO> listDto = new List<SearchOperationTypeDTO>();
+
+            foreach (var operationType in list)
             {
-                Id =  operationType.Id.AsGuid(),
-                Name = operationType.Name,
-                Specialization = _specializationRepository.GetByIdAsync(operationType.SpecializationId).Result.Description,
-                Active = operationType.Active,
-                RequiredStaff = operationType.RequiredStaff,
-                Duration = operationType.Duration
-            });
+                // Recupera as especializações associadas a este OperationType
+                var specializations = new List<string>();
+                foreach (var specializationId in operationType.Specializations)
+                {
+                    var specialization = await _specializationRepository.GetByIdAsync(specializationId);
+                    if (specialization != null)
+                    {
+                        specializations.Add(specialization.Description.ToString());
+                    }
+                }
+
+                // Adiciona o DTO com as informações da operação
+                listDto.Add(new SearchOperationTypeDTO
+                {
+                    Id = operationType.Id.AsGuid(),
+                    Name = operationType.Name,
+                    Specialization = new Description(string.Join(", ", specializations)),  // Junta as especializações em uma string
+                    Active = operationType.Active,
+                    RequiredStaff = operationType.RequiredStaff,
+                    Duration = operationType.Duration
+                });
+            }
+
             return listDto;
         }
-
 
     }
 
