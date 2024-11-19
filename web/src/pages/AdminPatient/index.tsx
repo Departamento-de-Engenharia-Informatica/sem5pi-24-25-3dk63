@@ -99,10 +99,9 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
       <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto h-full">
         {/* Hamburger Menu: Só visível em telas pequenas */}
         <div className="lg:hidden mb-4">
-          <HamburgerMenu
-            options={menuOptions}
-            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-          />
+          <div onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
+            <HamburgerMenu options={menuOptions} />
+          </div>
         </div>
 
         <div className="mb-4">
@@ -132,7 +131,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
             currentPage={currentPage}
             onPageChange={setCurrentPage}/>
         </div>
-       
+
       </div>
 
       {/* Modal de Cadastro/edição */}
