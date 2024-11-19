@@ -53,7 +53,7 @@ function App() {
             <ThemeToggleButton theme={theme} toggleTheme={toggleTheme} />
           </header>
           <main className="flex flex-1 overflow-hidden bg-main-background text-main-text">
-            <div className="flex-1 p-8 overflow-hidden bg-main-background text-main-text">
+            <div className="flex-1 overflow-hidden bg-main-background text-main-text">
               {/* Main Content */}
               <Routes>
                 {/* Public Routes */}
