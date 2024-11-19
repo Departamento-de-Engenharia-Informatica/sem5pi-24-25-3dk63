@@ -77,7 +77,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
   return (
     <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
       <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
-        <SidebarMenu options={menuOptions} />
+        <SidebarMenu options={menuOptions} title = "Admin Panel" />
       </div>
       {/* Conteúdo principal */}
     <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto flex flex-col">
@@ -107,7 +107,10 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             active: 'select',
           }}
           selectOptions={{
-            active: ['Yes', 'No'],
+            active: [
+              { label: 'Yes', value: 'Yes' },
+              { label: 'No', value: 'No' },
+            ],
           }}
           onSearch={searchOperationTypes}
           results={[]}

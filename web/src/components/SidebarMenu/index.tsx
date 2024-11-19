@@ -5,9 +5,10 @@ import logoImage from "@/assets/image.png";  // Importando a imagem do logo
 
 interface SidebarMenuProps {
   options: { label: string; path?: string; action?: () => void; icon?: React.ReactNode }[];
+  title: string;
 }
 
-const SidebarMenu: React.FC<SidebarMenuProps> = ({ options }) => {
+const SidebarMenu: React.FC<SidebarMenuProps> = ({ options, title }) => {
   const menuItems = useMemo(
     () =>
       options.map((option, index) => (
@@ -57,9 +58,9 @@ const SidebarMenu: React.FC<SidebarMenuProps> = ({ options }) => {
       {/* Linha separadora mais próxima do topo */}
       <div className="border-t-2 border-white -my-40"></div> {/* Linha separadora com menor margem superior */}
 
-      {/* Sidebar - Admin Panel */}
+      {/* Sidebar - Panel */}
       <div className="py-2 px-6 flex flex-col">
-        <h2 className="text-2xl font-bold mb-4 text-center tracking-widest uppercase">Admin Panel</h2> {/* Título mais próximo do topo */}
+        <h2 className="text-2xl font-bold mb-4 text-center tracking-widest uppercase">{title}</h2>
         <ul className="space-y-6">{menuItems}</ul>
       </div>
 

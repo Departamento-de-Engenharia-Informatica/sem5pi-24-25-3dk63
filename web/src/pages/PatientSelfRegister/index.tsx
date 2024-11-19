@@ -1,9 +1,10 @@
-import React from "react";
-import { usePatientSelfRegisterModule } from "./module";
-import Button from "@/components/Button/index";
-import Alert from "@/components/Alert/index";
+import React, { useState } from "react";
+import Button from "@/components/Button";
+import Alert from "@/components/Alert";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Popup from "@/components/Popup";
+import SidebarMenu from "@/components/SidebarMenu";
+import { usePatientSelfRegisterModule } from "./module";
 
 const PatientSelfRegister: React.FC = () => {
   const {
@@ -17,24 +18,45 @@ const PatientSelfRegister: React.FC = () => {
     setPopupMessage,
   } = usePatientSelfRegisterModule();
 
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
+
   return (
-    <div className="relative pt-20 p-8 bg-gray-50 min-h-screen">
-      <div className="fixed top-1 left-4 z-10">
-        <HamburgerMenu options={menuOptions} onClick={() => { /* handle click */ }} />
+    <div className="flex flex-col lg:flex-row w-full h-screen bg-gray-50 dark:bg-gray-900 border-none">
+      {/* Sidebar */}
+      <div
+        className={`lg:w-64 w-full transition-transform duration-300 ease-in-out transform ${
+          isSidebarVisible ? "translate-x-0" : "-translate-x-full"
+        } lg:translate-x-0 dark:bg-gray-800`}
+      >
+        <SidebarMenu options={menuOptions} title="Registration Panel" />
       </div>
 
-      <h1 className="text-3xl font-bold text-center mb-6">Self-Register</h1>
-
-      {alertMessage && (
-        <div className="mb-4">
-          <Alert type="warning" message={alertMessage} />
+      {/* Main Content */}
+      <div className="flex-1 pt-16 pb-10 px-6 bg-gray-50 dark:bg-gray-900 overflow-y-auto border-none">
+        {/* Hamburger Menu */}
+        <div className="lg:hidden mb-4">
+          <HamburgerMenu
+            options={menuOptions}
+            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
+          />
         </div>
-      )}
 
-      <div className="bg-white shadow-lg rounded-lg p-6 max-w-md mx-auto">
-        <form onSubmit={handleSelfRegister} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block font-semibold mb-2"> Personal Email </label>
+        <h1 className="text-4xl font-semibold text-center text-blue-800 dark:text-blue-400 mb-8">
+          Self-Register
+        </h1>
+
+        {alertMessage && (
+          <div className="mb-6">
+            <Alert type="warning" message={alertMessage} />
+          </div>
+        )}
+
+        {/* Form Section */}
+        <div className="bg-white dark:bg-gray-700 shadow-2xl rounded-lg p-8 max-w-lg mx-auto border border-gray-200 dark:border-gray-600">
+          <form onSubmit={handleSelfRegister} className="space-y-8">
+            {/* Personal Email */}
+            <div>
+            <label className="block text-lg font-semibold text-gray-800 dark:text-gray-200 mb-2">Personal Email</label>
             <input
               type="email"
               value={selfRegisteringPatient?.personalEmail || ""}
@@ -44,28 +66,31 @@ const PatientSelfRegister: React.FC = () => {
                   personalEmail: e.target.value,
                 })
               }
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-              required
-              style={{
-                backgroundColor: 'transparent',
-              }}
+              placeholder="Enter personal email"
+              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
             />
-          </div>
+            </div>
 
-          <div className="pt-4">
-            <Button onClick={saveSelfRegisterPatient} name="self-register-patient">
-              Self Register
-            </Button>
-          </div>
-        </form>
+            {/* Submit Button */}
+            <div>
+              <Button
+                onClick={saveSelfRegisterPatient}
+                name="self-register-patient"
+                className="w-full bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition duration-300 ease-in-out dark:bg-blue-500 dark:hover:bg-blue-600"
+              >
+                Self Register
+              </Button>
+            </div>
+          </form>
+        </div>
+
+        {/* Popup */}
+        <Popup
+          isVisible={!!popupMessage}
+          setIsVisible={() => setPopupMessage(null)}
+          message={popupMessage}
+        />
       </div>
-
-      {/* Added: Popup for displaying messages */}
-      <Popup
-        isVisible={!!popupMessage}
-        setIsVisible={() => setPopupMessage(null)}
-        message={popupMessage}
-      />
     </div>
   );
 };

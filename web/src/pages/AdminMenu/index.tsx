@@ -14,7 +14,7 @@ const AdminMenu: React.FC = () => {
     <div className="flex min-h-screen">
       {/* Sidebar Menu para telas grandes */}
       <div className="hidden lg:block w-64">
-        <SidebarMenu options={menuOptions} />
+        <SidebarMenu options={menuOptions} title = "Admin Panel" />
       </div>
 
       {/* Hamburger Menu para dispositivos móveis */}
@@ -22,7 +22,7 @@ const AdminMenu: React.FC = () => {
         <HamburgerMenu options={menuOptions} />
         {isMobileMenuVisible && (
           <div className="fixed top-0 left-0 w-full h-full bg-[rgba(0,0,0,0.5)] z-10">
-            <SidebarMenu options={menuOptions} />
+            <SidebarMenu options={menuOptions} title = "Admin Panel" />
           </div>
         )}
       </div>
