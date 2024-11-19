@@ -1,0 +1,67 @@
+name: Frontend CI/CD
+
+on:
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+defaults:
+  run:
+    working-directory: web/
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Archive production artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: build
+          path: web/dist
+
+      - name: Setup SSH directory
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Create target directory
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p ~/deploy-web"
+
+      - name: Copy Files
+        uses: appleboy/scp-action@v0.1.4
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          source: "web/dist/*"
+          target: "~/deploy-web"
+          rm: true
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy Server
+        uses: appleboy/ssh-action@v1.0.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            echo "Starting deployment on $(date)" | tee ~/deploy-web/deploy.log
+            cd ~/deploy-web
+            echo "Setting environment variables..." | tee -a ~/deploy-web/deploy.log
+            export NODE_ENV="production"
+            echo "Stopping previous instance..." | tee -a ~/deploy-web/deploy.log
+            killall -9 node || echo "No previous instance running." | tee -a ~/deploy-web/deploy.log
+            echo "Starting new instance..." | tee -a ~/deploy-web/deploy.log
+            nohup npx serve -s . > ~/deploy-web/app.log 2>&1 &
+            sleep 5
+            if pgrep -f "serve" > /dev/null; then
+              echo "Deployment successful: $(date)" | tee -a ~/deploy-web/deploy.log
+            else
+              echo "Deployment failed: $(date)" | tee -a 
