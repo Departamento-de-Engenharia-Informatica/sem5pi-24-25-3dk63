@@ -6,7 +6,8 @@ namespace DDDSample1.Domain.PendingChange
 {
     public class PendingChangesDTO
     {
-        public Name? Name { get; set; }
+        public string? FirstName;
+        public string? LastName;
         public Email? Email { get; set; }
         public EmergencyContact? EmergencyContact { get; set; }
         public PhoneNumber? PhoneNumber { get; set; }

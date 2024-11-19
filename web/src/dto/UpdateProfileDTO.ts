@@ -3,10 +3,8 @@ export interface UpdateProfileDTO {
   id: {
     value: string;
   };
-  name?: {
-    firstName: string;
-    lastName: string;
-  };
+  firstName?: string;
+  lastName?: string;
   email?: {
     value: string;
   };

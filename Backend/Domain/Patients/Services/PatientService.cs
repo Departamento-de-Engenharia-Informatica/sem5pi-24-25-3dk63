@@ -300,7 +300,7 @@ namespace DDDSample1.Patients
         {
             var pendingChanges = new PendingChanges(userId)
             {
-                Name = pendingChangesDto.Name,
+                Name = new Name(pendingChangesDto.FirstName, pendingChangesDto.LastName),
                 Email = pendingChangesDto.Email,
                 EmergencyContact = pendingChangesDto.EmergencyContact,
                 PhoneNumber = pendingChangesDto.PhoneNumber,

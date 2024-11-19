@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { usePatientMenuModule } from "./module";
 import Button from "@/components/Button/index";
 import Alert from "@/components/Alert/index";
@@ -11,7 +11,7 @@ const PatientMenu: React.FC = () => {
     loading,
     isDeletionRequested,
     handleAppointments,
-    updateProfileData,
+    updateProfileData = {},
     setUpdateProfile,
     isModalVisible,
     submitProfileUpdate,
@@ -22,9 +22,10 @@ const PatientMenu: React.FC = () => {
     countryCode,
     setCountryCode,
     phoneNumberPart,
-    setPhoneNumberPart,
     handleMedicalRecords,
     handleAccountDeletionRequest,
+    handleChange,
+    handlePhoneNumberChange,
   } = usePatientMenuModule();
 
   return (
@@ -48,7 +49,7 @@ const PatientMenu: React.FC = () => {
           
           {/* Edit Profile Button */}
           <Button
-            onClick={() => setIsModalVisible(true)}  // Opens the modal
+            onClick={() => setIsModalVisible(true)}
             name="edit-profile"
           >
             Edit Profile
@@ -64,16 +65,16 @@ const PatientMenu: React.FC = () => {
                 <label className="block text-sm font-medium text-gray-700">First Name</label>
                 <input
                   type="text"
-                  value={updateProfileData?.name?.firstName || ""}
-                  onChange={(e) => setUpdateProfile({ ...updateProfileData, name: { ...updateProfileData?.name, firstName: e.target.value } })}
+                  value={updateProfileData?.firstName || ""}
+                  onChange={(e) => handleChange('firstName', e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                 />
 
                 <label className="block text-sm font-medium text-gray-700">Last Name</label>
                 <input
                   type="text"
-                  value={updateProfileData?.name?.lastName || ""}
-                  onChange={(e) => setUpdateProfile({ ...updateProfileData, name: { ...updateProfileData?.name, lastName: e.target.value } })}
+                  value={updateProfileData?.lastName || ""}
+                  onChange={(e) => handleChange('lastName', e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                 />
 
@@ -81,7 +82,7 @@ const PatientMenu: React.FC = () => {
                 <input
                   type="email"
                   value={updateProfileData?.email?.value || ""}
-                  onChange={(e) => setUpdateProfile({ ...updateProfileData, email: { value: e.target.value } })}
+                  onChange={(e) => handleChange('email', e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                 />
 
@@ -89,7 +90,11 @@ const PatientMenu: React.FC = () => {
                 <div className="flex mt-1">
                   <select
                     value={countryCode}
-                    onChange={(e) => setCountryCode(e.target.value)}
+                    onChange={(e) => {
+                      const newCountryCode = e.target.value;
+                      setCountryCode(newCountryCode);
+                      handlePhoneNumberChange(`${newCountryCode}${phoneNumberPart}`);
+                    }}
                     className="w-1/4 border border-gray-300 rounded-l-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
                   >
                     {countryOptions.map((option) => (
@@ -102,12 +107,7 @@ const PatientMenu: React.FC = () => {
                   <input
                     type="tel"
                     value={phoneNumberPart}
-                    onChange={(e) => {
-                      const inputValue = e.target.value.trim();
-                      if (/^\d*$/.test(inputValue)) {
-                        setPhoneNumberPart(inputValue);
-                      }
-                    }}
+                    onChange={(e) => handlePhoneNumberChange(e.target.value)}
                     placeholder="Enter phone number"
                     className="w-full border border-l-0 border-gray-300 rounded-r-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
                   />
@@ -117,14 +117,14 @@ const PatientMenu: React.FC = () => {
                 <input
                   type="text"
                   value={updateProfileData?.emergencyContact?.emergencyContact || ""}
-                  onChange={(e) => setUpdateProfile({ ...updateProfileData, emergencyContact: { emergencyContact: e.target.value } })}
+                  onChange={(e) => handleChange('emergencyContact', e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                 />
 
                 <label className="block text-sm font-medium text-gray-700">Medical History</label>
                 <input
                   value={updateProfileData?.medicalHistory?.medicalHistory || ""}
-                  onChange={(e) => setUpdateProfile({ ...updateProfileData, medicalHistory: { medicalHistory: e.target.value } })}
+                  onChange={(e) => handleChange('medicalHistory', e.target.value)}
                   className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                 />
 
@@ -138,7 +138,6 @@ const PatientMenu: React.FC = () => {
             </Modal>
           )}
 
-          {/* Delete Account Button */}
           <Button
             onClick={handleAccountDeletionRequest}
             name="delete-account"
@@ -155,7 +154,6 @@ const PatientMenu: React.FC = () => {
         setIsVisible={() => setPopupMessage(null)}
         message={popupMessage}
       />
-
     </div>
   );
 };

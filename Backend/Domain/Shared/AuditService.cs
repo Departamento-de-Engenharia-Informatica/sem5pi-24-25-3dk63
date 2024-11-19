@@ -60,8 +60,11 @@ namespace Backend.Domain.Shared
             {
                 var updatedFields = new List<string>();
 
-                if (changes.Name != null && !changes.Name.Equals(user.Name))
-                    updatedFields.Add($"Name changed to: {changes.Name.FirstName} {changes.Name.LastName}");
+                if(changes.FirstName != null && !changes.FirstName.Equals(user.Name.FirstName))
+                    updatedFields.Add($"First Name changed to: {changes.FirstName}");
+
+                if(changes.LastName != null && !changes.LastName.Equals(user.Name.LastName))
+                    updatedFields.Add($"Last Name changed to: {changes.LastName}");
 
                 if (changes.Email != null && !changes.Email.Equals(user.Email))
                     updatedFields.Add($"Email changed to: {changes.Email.Value}");

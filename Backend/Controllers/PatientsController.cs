@@ -154,10 +154,27 @@ namespace DDDSample1.Controllers
 
             bool emailChanged = updateDto.Email != null && updateDto.Email.Value != userResult.Email.Value;
             bool phoneChanged = updateDto.PhoneNumber != null && updateDto.PhoneNumber != userResult.phoneNumber;
+            Console.WriteLine("User result phone: " + userResult.phoneNumber);
+            Console.WriteLine("Update dto phone: " + updateDto.PhoneNumber);
+            bool FirstNameChanged = updateDto.FirstName != null && updateDto.FirstName != userResult.Name.FirstName;
+            bool LastNameChanged = updateDto.LastName != null && updateDto.LastName != userResult.Name.LastName;
+            bool emergencyContactChanged = updateDto.EmergencyContact != null && updateDto.EmergencyContact != patient.emergencyContact;
+            bool medicalHistoryChanged = updateDto.MedicalHistory != null && updateDto.MedicalHistory != patient.medicalHistory;
+            
+            if(FirstNameChanged){
+                updateDto.LastName = userResult.Name.LastName;
+            }
+            else if(LastNameChanged){
+                updateDto.FirstName = userResult.Name.FirstName;
+            }
+            else{
+                updateDto.FirstName = userResult.Name.FirstName;
+                updateDto.LastName = userResult.Name.LastName;
+            }
 
             await _service.RemovePendingChangesAsync(patient.UserId);
 
-            if (emailChanged || phoneChanged)
+            if (emailChanged || phoneChanged || emergencyContactChanged || medicalHistoryChanged || FirstNameChanged || LastNameChanged)
             {
                 userResult.ConfirmationToken = Guid.NewGuid().ToString("N");
 
@@ -165,7 +182,17 @@ namespace DDDSample1.Controllers
 
                 await _service.AddPendingChangesAsync(updateDto, patient.UserId);
 
-                await _emailService.SendUpdateEmail(userResult.Email.ToString(), userResult.ConfirmationToken);
+                var changedFields = new List<string>();
+                if (emailChanged) changedFields.Add("<li>Email</li>");
+                if (phoneChanged) changedFields.Add("<li>Phone Number</li>");
+                if (FirstNameChanged) changedFields.Add("<li>First Name</li>");
+                if (LastNameChanged) changedFields.Add("<li>Last Name</li>");
+                if (emergencyContactChanged) changedFields.Add("<li>Emergency Contact</li>");
+                if (medicalHistoryChanged) changedFields.Add("<li>Medical History</li>");
+
+                var changedFieldsHtml = string.Join("", changedFields);
+
+                await _emailService.SendUpdateEmail(userResult.Email.ToString(), userResult.ConfirmationToken, changedFieldsHtml);
 
                 return Ok("Sensitive changes have been submitted and require confirmation (please check your email to confirm the changes).");
             }
@@ -191,7 +218,6 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest($"Update confirmation failed: {ex.Message}");
             }
-
         }
 
         [HttpPost("request-account-deletion")]

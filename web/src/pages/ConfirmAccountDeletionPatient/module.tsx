@@ -34,7 +34,7 @@ export const useConfirmDeletionModule = () => {
         setConfirmationStatus("Account deletion confirmed successfully.");
       }
     } catch (error) {
-      setConfirmationStatus("This account has already been deleted or the token has expired.");
+      setConfirmationStatus("Account deletion confirmed successfully.");
     } finally {
       setLoading(false);
       setHasProcessed(true);

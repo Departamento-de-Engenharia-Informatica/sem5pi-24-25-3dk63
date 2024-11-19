@@ -71,11 +71,14 @@ namespace DDDSample1.Domain
             await SendEmailAsync(dto.Email.ToString(), subject, body);
         }
 
-        public async Task SendUpdateEmail(string email, string token)
+        public async Task SendUpdateEmail(string email, string token, string changedFields)
         {
             var confirmationLink = $"http://localhost:5173/patient/confirm-update?token={token}";
             var subject = "Confirm your profile update";
-            var body = $"Please click on the following link to confirm your profile update: <a href=\"{confirmationLink}\">Confirm Update</a>";
+            var body = $@"
+                <p>The following information in your profile has been changed:</p>
+                <ul>{changedFields}</ul>
+                <p>Please click on the following link to confirm your profile update: <a href=""{confirmationLink}"">Confirm Update</a></p>";
 
             await SendEmailAsync(email, subject, body);
         }
