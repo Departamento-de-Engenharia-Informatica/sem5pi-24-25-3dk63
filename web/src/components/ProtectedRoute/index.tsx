@@ -9,6 +9,7 @@ interface ProtectedRouteProps {
 const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRoles = [] }) => {
   const [isAuthenticated, setIsAuthenticated] = useState<boolean | null>(null);
   const [userRole, setUserRole] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchClaims = async () => {
@@ -33,14 +34,20 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, requiredRoles
       } catch (error) {
         console.error('Failed to fetch claims:', error);
         setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
       }
     };
 
     fetchClaims();
   }, []);
 
-  if (isAuthenticated === null) {
+  if (loading) {
     return <div>Loading...</div>;
+  }
+
+  if (isAuthenticated === false) {
+    return <Navigate to="/" />;
   }
 
   if (requiredRoles.length > 0 && userRole && !requiredRoles.includes(userRole)) {
