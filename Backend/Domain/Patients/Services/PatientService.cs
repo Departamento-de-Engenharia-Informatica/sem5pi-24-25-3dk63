@@ -217,9 +217,10 @@ namespace DDDSample1.Patients
                 var pendingChangeDto = _mapper.Map<PendingChangesDTO>(pendingChange);
                 var patientDto = _mapper.Map<PatientDTO>(patient);
                 var userDto = _mapper.Map<UserDTO>(user);
-                _auditService.LogProfileUpdate(patientDto, userDto, pendingChangeDto);
-                await ApplyPendingChangesAsync(new UserId(user.Id.Value));
 
+                _auditService.LogProfileUpdate(patientDto, userDto, pendingChangeDto);
+
+                await ApplyPendingChangesAsync(new UserId(user.Id.Value));
             }
             catch (Exception ex)
             {

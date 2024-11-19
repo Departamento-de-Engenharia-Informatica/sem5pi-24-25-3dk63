@@ -212,13 +212,14 @@ namespace DDDSample1.Controllers
             try
             {
                 await _service.ConfirmUpdateAsync(token);
-                return Ok("Update confirmed successfully. Your changes have been applied.");
+                return Ok(new { message = "Update confirmed successfully. Your changes have been applied." });  // Sucesso
             }
             catch (Exception ex)
             {
-                return BadRequest($"Update confirmation failed: {ex.Message}");
+                return BadRequest(new { error = $"Update confirmation failed: {ex.Message}" });
             }
         }
+
 
         [HttpPost("request-account-deletion")]
         [Authorize(Roles = "Patient")]
