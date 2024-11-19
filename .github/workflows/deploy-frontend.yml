@@ -17,11 +17,22 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build project
+        run: npm run build
+
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
           name: build
-          path: web/dist
+          path: dist
 
       - name: Setup SSH directory
         run: |
@@ -40,7 +51,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
-          source: "web/dist/*"
+          source: "dist/*"
           target: "~/deploy-web"
           rm: true
           key: ${{ secrets.SSH_PRIVATE_KEY }}
@@ -54,14 +65,15 @@ jobs:
           script: |
             echo "Starting deployment on $(date)" | tee ~/deploy-web/deploy.log
             cd ~/deploy-web
-            echo "Setting environment variables..." | tee -a ~/deploy-web/deploy.log
-            export NODE_ENV="production"
             echo "Stopping previous instance..." | tee -a ~/deploy-web/deploy.log
-            killall -9 node || echo "No previous instance running." | tee -a ~/deploy-web/deploy.log
+            killall -9 serve || echo "No previous instance running." | tee -a ~/deploy-web/deploy.log
             echo "Starting new instance..." | tee -a ~/deploy-web/deploy.log
             nohup npx serve -s . > ~/deploy-web/app.log 2>&1 &
             sleep 5
             if pgrep -f "serve" > /dev/null; then
               echo "Deployment successful: $(date)" | tee -a ~/deploy-web/deploy.log
             else
-              echo "Deployment failed: $(date)" | tee -a 
+              echo "Deployment failed: $(date)" | tee -a ~/deploy-web/deploy.log
+              exit 1
+            fi
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
