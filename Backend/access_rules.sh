@@ -10,7 +10,7 @@ iptables -F INPUT
 iptables -A INPUT -s 10.8.0.0/16 -j ACCEPT 
 
 # permitir tráfego para uma porta específica
-iptables -A INPUT -p tcp --dport <port> -j ACCEPT 
+iptables -A INPUT -p tcp --dport 22 -j ACCEPT 
 
 # permitir tráfego relacionado ou estabelecido
 iptables -A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
