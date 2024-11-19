@@ -51,7 +51,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USER }}
           port: ${{ secrets.SSH_PORT }}
-          source: "dist/*"
+          source: "web/*"
           target: "~/deploy-web"
           rm: true
           key: ${{ secrets.SSH_PRIVATE_KEY }}
