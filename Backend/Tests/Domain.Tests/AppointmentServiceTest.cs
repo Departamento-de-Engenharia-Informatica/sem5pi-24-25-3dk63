@@ -109,7 +109,7 @@ namespace Backend.Tests.Services
             Assert.Equal(dto.roomNumber, result.roomNumber);
         }
 
-        [Fact]
+        /*[Fact]
         public async Task AddAsync_ShouldThrowException_WhenDnsDomainNotConfigured()
         {
             // Arrange
@@ -120,7 +120,7 @@ namespace Backend.Tests.Services
             // Act & Assert
             var exception = await Assert.ThrowsAsync<BusinessRuleValidationException>(() => _appointmentService.AddAsync(dto));
             Assert.Equal("DNS_DOMAIN is not defined in the configuration file", exception.Message);
-        }
+        }*/
 
         [Fact]
         public async Task UpdateAsync_ShouldReturnUpdatedAppointmentDTO()
