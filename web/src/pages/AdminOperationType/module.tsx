@@ -5,7 +5,6 @@ import { IOperationTypeService } from "@/service/IService/IOperationTypeService"
 import { ISpecializationService } from "@/service/IService/ISpecializationService";
 import { useNavigate } from "react-router-dom";
 import { UpdateOperationTypeDTO } from "@/dto/UpdateOperationTypeDTO";
-import { Console } from "console";
 
 export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
@@ -53,10 +52,8 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     setError(null);
     try {
       const opsTypedata = await operationTypeService.getOperationTypes();
-console.log("Fetched Operation Types:", opsTypedata);
-
       setTotalOTypes(opsTypedata.length);
-      console.log("Filtered Data:");
+
       const filteredData = opsTypedata
         .filter((OperationType) => {
           // Filtrar com base nas checkboxes de status
@@ -79,10 +76,9 @@ console.log("Fetched Operation Types:", opsTypedata);
           "Cleaning Time": OperationType.duration.cleaningPhase,
           "Total Time": OperationType.duration.totalDuration,
           Specializations: OperationType.specialization?.value,
-        Active: OperationType.active ? "Yes" : "No",
-      }));
-        console.log("Filtered Data:", filteredData);
-  
+          Active: OperationType.active ? "Yes" : "No",
+        }));
+
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setOTypes(paginatedOperationTypes);
@@ -103,8 +99,6 @@ const handleEdit = async (id: string) => {
     setPopupMessage("Operation type needs to be active to be edited!");
     return;
   }
-
-  console.log("Editing Operation Type2222:", opTypeToEdit);
 
   if (opTypeToEdit) {
     setCreatingOperationType({
@@ -153,35 +147,19 @@ const handleEdit = async (id: string) => {
     fetchSpecializations();
     const newOperationTypeDTO = {
       name: "",
+      requiredStaff: 0,
       preparationTime: 0,
       surgeryTime: 0,
       cleaningTime: 0,
-      requiredStaff: 0,
-      specialities: [],
-      active: true,
+      totalDuration: 0,
+      specialization: [],
+      active: true
     };
     console.log("New Operation Type:", newOperationTypeDTO);
 
     setCreatingOperationType(newOperationTypeDTO);
     setIsModalVisible(true);
   };
-
-  const saveOperationTypeAdded = async () => {
-    if (!creatingOperationType) {
-      return;
-    }
-    try {
-      console.log("Salvando Tipo de Operação:", creatingOperationType);
-
-      await operationTypeService.addOperationType(creatingOperationType);
-       setPopupMessage("Operation Type created successfully!");
-      setIsModalVisible(false);
-      fetchOperationsTypes();
-    } catch (BusinessRuleValidationException) {
-      console.error("Erro ao criar Tipo de Operação:", error);
-       setPopupMessage("Error creating Operation Type.");
-    }
-  }
 
   const saveOperationType = async () => {
     if (!creatingOperationType) {
@@ -329,7 +307,6 @@ const handleEdit = async (id: string) => {
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
-    saveOperationTypeAdded,
     specializations,
     showActive,
     setShowActive,

@@ -34,7 +34,6 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
     creatingOperationType,
     setCreatingOperationType,
     saveOperationType,
-    saveOperationTypeAdded,
     specializations,
     popupMessage,
     setPopupMessage,
@@ -127,8 +126,13 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             currentPage={currentPage}
             onPageChange={setCurrentPage}
           />
+
+
         </div>
+
       </div>
+      {/* Modal de Cadastro/edição */}
+
       {isModalVisible && (
         <Modal
           isVisible={isModalVisible}
@@ -152,7 +156,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
           <label className="block text-sm font-medium text-gray-700 mt-4">Preparation Time</label>
           <input
             type="number"
-            value={creatingOperationType?.preparationTime || ""}
+            value={creatingOperationType?.preparation || ""}
             min="1"
             onKeyDown={(e) => {
               if (e.key === "e" || e.key === "E") {
@@ -162,7 +166,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             onChange={(e) =>
               setCreatingOperationType((prev: any) => ({
                 ...prev,
-                preparationTime: parseInt(e.target.value, 10),
+                preparation: parseInt(e.target.value, 10),
               }))
             }
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
@@ -171,7 +175,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
           <label className="block text-sm font-medium text-gray-700 mt-4">Surgery Time</label>
           <input
             type="number"
-            value={creatingOperationType?.surgeryTime || ""}
+            value={creatingOperationType?.surgery || ""}
             min="1"
             onKeyDown={(e) => {
               if (e.key === "e" || e.key === "E") {
@@ -181,7 +185,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             onChange={(e) =>
               setCreatingOperationType((prev: any) => ({
                 ...prev,
-                surgeryTime: parseInt(e.target.value, 10),
+                surgery: parseInt(e.target.value, 10),
               }))
             }
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
@@ -190,7 +194,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
           <label className="block text-sm font-medium text-gray-700 mt-4">Cleaning Time</label>
           <input
             type="number"
-            value={creatingOperationType?.cleaningTime || ""}
+            value={creatingOperationType?.cleaning|| ""}
             min="1"
             onKeyDown={(e) => {
               if (e.key === "e" || e.key === "E") {
@@ -200,7 +204,7 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             onChange={(e) =>
               setCreatingOperationType((prev: any) => ({
                 ...prev,
-                cleaningTime: parseInt(e.target.value, 10),
+                cleaning: parseInt(e.target.value, 10),
               }))
             }
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
@@ -225,27 +229,32 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
           />
 
-          <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
-            <select
-              value={creatingOperationType?.specialization || ""}
-              onChange={(e) =>
-                setCreatingOperationType((prev: any) => ({
-                  ...prev,
-                  specialization: e.target.value,
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-            >
-              <option value="" disabled>Select Specialization</option>
-              {specializations.map((spec) => (
-                <option key={`${spec.id}-${spec.description}`} value={spec.description}>
-                  {spec.description}
-                </option>
-              ))}
-            </select>
+          <label className="block text-sm font-medium text-gray-700 mt-4">
+  Specialization
+</label>
+<select
+  value={creatingOperationType?.specialization[0]    || ""} // Mostra apenas o primeiro elemento selecionado
+  onChange={(e) => {
+    const selectedSpecialization = e.target.value;
+    setCreatingOperationType((prev: any) => ({
+      ...prev,
+      specialities: [selectedSpecialization], // Substitui o array com um único valor selecionado
+    }));
+  }}
+  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+>
+  <option value="" disabled>
+    Select Specialization
+  </option>
+  {specializations.map((spec) => (
+    <option key={`${spec.id}-${spec.description}`} value={spec.description}>
+      {spec.description}
+    </option>
+  ))}
+</select>
 
             <button
-              onClick={saveOperationTypeAdded}
+              onClick={saveOperationType}
               className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
             >
               Save

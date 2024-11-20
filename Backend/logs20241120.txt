@@ -1,0 +1,5 @@
+2024-11-20 00:02:24.769 +00:00 [INF] OperationType asd (0d871d6e-6506-4454-bd70-a1ef1e1d6b06) was created by Admin (diogoandre.8269@gmail.com) on 20/11/2024 00:02:24
+2024-11-20 00:03:39.801 +00:00 [INF] OperationType asd (c0685c83-c8e5-47ff-af76-04110aeb9ab8) was created by Admin (diogoandre.8269@gmail.com) on 20/11/2024 00:03:39
+2024-11-20 00:03:39.859 +00:00 [INF] OperationType asd (1ce2b218-b963-4f83-a965-7efaadd5b495) was created by Admin (diogoandre.8269@gmail.com) on 20/11/2024 00:03:39
+2024-11-20 00:08:04.996 +00:00 [INF] OperationType asd (d99a4e2e-e58c-4cd0-a3f7-fd78104afed3) was created by Admin (diogoandre.8269@gmail.com) on 20/11/2024 00:08:04
+2024-11-20 00:20:14.804 +00:00 [INF] OperationType ok (348691ad-3326-43e3-8945-4544ebc94681) was created by Admin (diogoandre.8269@gmail.com) on 20/11/2024 00:20:14
