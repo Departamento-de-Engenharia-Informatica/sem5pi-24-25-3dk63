@@ -63,7 +63,11 @@ namespace DDDSample1.Users
 
             int sequentialNumber = await this._userRepository.GetNextSequentialNumberAsync();
 
-            string domain = "myhospital.com";
+            string domain = _configuration["DNS_DOMAIN"];
+            if (string.IsNullOrEmpty(domain))
+            {
+                throw new BusinessRuleValidationException("O domínio DNS não está configurado corretamente.");
+            }
 
             int recruitmentYear = DateTime.Now.Year;
             var role = new Role(dto.Role.Value);
@@ -90,7 +94,17 @@ namespace DDDSample1.Users
 
             int sequentialNumber = await this._userRepository.GetNextSequentialNumberAsync();
 
-            string domain = "myhospital.com";
+            string domain = _configuration["DNS_DOMAIN"];
+if (string.IsNullOrEmpty(domain))
+{
+    Console.WriteLine("DNS_DOMAIN não encontrado!");
+    throw new BusinessRuleValidationException("O domínio DNS não está configurado corretamente.");
+}
+else
+{
+    Console.WriteLine($"DNS_DOMAIN encontrado: {domain}");
+}
+
 
             int recruitmentYear = DateTime.Now.Year;
             var role = new Role(dto.Role.Value);

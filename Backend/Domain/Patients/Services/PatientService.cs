@@ -108,8 +108,11 @@ namespace DDDSample1.Patients
         private async Task<User> createUser(RegisterPatientDTO dto)
         {
             int sequentialNumber = await this._userRepository.GetNextSequentialNumberAsync();
-            
-            string domain = "myhospital.com";
+            string domain = _configuration["DNS_DOMAIN"];
+            if (string.IsNullOrEmpty(domain))
+            {
+                throw new BusinessRuleValidationException("O domínio DNS não está configurado corretamente.");
+            }
             int recruitmentYear = DateTime.Now.Year;
             var role = new Role(RoleType.Patient);
             var phoneNumber = new PhoneNumber(dto.phoneNumber.Number);
