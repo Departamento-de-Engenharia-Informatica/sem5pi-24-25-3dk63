@@ -3,7 +3,7 @@ import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 
 // URL do backend
-const BACKEND_URL = "https://lapr5.sytes.net:5001";
+const BACKEND_URL = "https://localhost:5001";
 
 export default defineConfig({
   base: "./",

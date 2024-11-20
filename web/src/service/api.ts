@@ -1,7 +1,7 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL || "https://lapr5.sytes.net:5001") +
+  (import.meta.env.VITE_API_BASE_URL || "https://localhost:5001") +
   "/api";
 
 const api = axios.create({
