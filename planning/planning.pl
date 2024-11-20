@@ -86,6 +86,15 @@ assignment_surgery(so100003,a001).
 % (ID da sala, data, lista de horários com cirurgia atribuída)
 agenda_operation_room(or1, 20241028, []).
 
+
+% staff_phase(Staff, TAnesthesia, TSurgery, TCleaning)
+
+% staff_phase(anaesthetist, TAnesthesia, TSurgery, 0).  % Anestesia + Cirurgia
+% staff_phase(orthopaedist, 0, TSurgery, 0).           % Apenas Cirurgia
+% staff_phase(instrumenting, 0, TSurgery, 0).          % Apenas Cirurgia
+% staff_phase(circulating, 0, TSurgery, 0).            % Apenas Cirurgia
+% staff_phase(assistant_anaesthetist, 0, 0, TCleaning). % Apenas Limpeza
+
 %-------------------------------------------------------------------------------------------------------------%
 
 free_agenda0([], [(0, 1440)]).
@@ -187,10 +196,11 @@ min_max(I, I1, I, I1) :- I < I1, !.
 min_max(I, I1, I1, I).
 
 availability_all_surgeries([], _, _).
+
 availability_all_surgeries([OpCode | LOpCode], Room, Day) :-
     surgery_id(OpCode,OpType),surgery(OpType,TAnesthesia,TSurgery,TCleaning),
     TempoTotal is TAnesthesia + TSurgery + TCleaning,
-    availability_operation(OpCode, Room, Day, LPossibilities, LDoctors),
+    availability_operation(OpCode, Room, Day, LPossibilities, LStaffs),
 
     schedule_first_interval(TempoTotal, LPossibilities, (TinS, TfinS)),
 
@@ -198,51 +208,62 @@ availability_all_surgeries([OpCode | LOpCode], Room, Day) :-
     insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
     assertz(agenda_operation_room1(Room, Day, Agenda1)),
 
-    insert_agenda_staff((TinS, TfinS, OpCode), Day, LDoctors),
+    insert_agenda_staff((TinS, TfinS, OpCode), Day, LStaffs),
 
     availability_all_surgeries(LOpCode, Room, Day).
 
-availability_operation(OpCode, Room, Day, LPossibilities, LDoctors) :-
-surgery_id(OpCode, OpType), surgery(OpType, TAnesthesia, TSurgery, TCleaning),
+availability_operation(OpCode, Room, Day, LPossibilities, LStaffs) :-
+
+    surgery_id(OpCode, OpType), surgery(OpType, TAnesthesia, TSurgery, TCleaning),
 
     TempoTotal is TAnesthesia + TSurgery + TCleaning,
 
-    findall(Doctor, assignment_surgery(OpCode, Doctor), LDoctors),
+    findall(Staff, assignment_surgery(OpCode, Staff), LStaffs),
 
-    intersect_all_agendas(LDoctors, Day, LA),
+    intersect_all_agendas(LStaffs, Day, LA),
 
     agenda_operation_room1(Room, Day, LAgenda),
+
     free_agenda0(LAgenda, LFAgRoom),
 
-    intersect_2_agendas(LA, LFAgRoom, LIntAgDoctorsRoom),
+    intersect_2_agendas(LA, LFAgRoom, LIntAgStaffsRoom),
 
-    remove_unf_intervals(TempoTotal, LIntAgDoctorsRoom, LPossibilities).
 
-    remove_unf_intervals(_, [], []).
-    remove_unf_intervals(TempoTotal, [(Tin, Tfin) | LA], [(Tin, Tfin) | LA1]) :-
-        DT is Tfin - Tin + 1,
-        TempoTotal =< DT,
-        !,
-        remove_unf_intervals(TempoTotal, LA, LA1).
-    remove_unf_intervals(TempoTotal, [_ | LA], LA1) :-
-        remove_unf_intervals(TempoTotal, LA, LA1).
+remove_unf_intervals(TempoTotal, LIntAgStaffsRoom, LPossibilities).
 
-    schedule_first_interval(TempoTotal, [(Tin, _) | _], (Tin, TfinS)) :-
-        TfinS is Tin + TempoTotal - 1.
+remove_unf_intervals(_, [], []).
 
-    insert_agenda((TinS, TfinS, OpCode), [], [(TinS, TfinS, OpCode)]). % Caso base
-    insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(TinS, TfinS, OpCode), (Tin, Tfin, OpCode1) | LA]) :-
-        TfinS < Tin, !.
-    insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(Tin, Tfin, OpCode1) | LA1]) :-
-        insert_agenda((TinS, TfinS, OpCode), LA, LA1).
+remove_unf_intervals(TempoTotal, [(Tin, Tfin) | LA], [(Tin, Tfin) | LA1]) :-
+    DT is Tfin - Tin + 1,
+    TempoTotal =< DT,
+    !,
+    remove_unf_intervals(TempoTotal, LA, LA1).
 
-    insert_agenda_staff(_, _, []).
-    insert_agenda_staff((TinS, TfinS, OpCode), Day, [Staff | LStaffs]) :-
-        retract(agenda_staff1(Staff, Day, Agenda)),
-        insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
-        assert(agenda_staff1(Staff, Day, Agenda1)),
+remove_unf_intervals(TempoTotal, [_ | LA], LA1) :-
+    remove_unf_intervals(TempoTotal, LA, LA1).
 
-        insert_agenda_staff((TinS, TfinS, OpCode), Day, LStaffs).
+
+schedule_first_interval(TempoTotal, [(Tin, _) | _], (Tin, TfinS)) :-
+    TfinS is Tin + TempoTotal - 1.
+
+
+insert_agenda((TinS, TfinS, OpCode), [], [(TinS, TfinS, OpCode)]).
+
+insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(TinS, TfinS, OpCode), (Tin, Tfin, OpCode1) | LA]) :-
+    TfinS < Tin, !.
+
+insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(Tin, Tfin, OpCode1) | LA1]) :-
+    insert_agenda((TinS, TfinS, OpCode), LA, LA1).
+
+
+insert_agenda_staff(_, _, []).
+
+insert_agenda_staff((TinS, TfinS, OpCode), Day, [Staff | LStaffs]) :-
+    retract(agenda_staff1(Staff, Day, Agenda)),
+    insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
+    assert(agenda_staff1(Staff, Day, Agenda1)),
+
+insert_agenda_staff((TinS, TfinS, OpCode), Day, LStaffs).
 
 
 % Predicado principal: tenta obter a melhor solução de agendamento para as operações.
@@ -289,9 +310,9 @@ update_better_sol(Day, Room, Agenda, LOpCode):-
     %write('best solution updated'), nl,
 
     retract(better_sol(_, _, _, _, _)),
-    findall(Doctor, assignment_surgery(_, Doctor), LDoctors1),
-    remove_equals(LDoctors1, LDoctors),
-    list_staffs_agenda(Day, LDoctors, LDAgendas),
+    findall(Staff, assignment_surgery(_, Staff), LStaffs1),
+    remove_equals(LStaffs1, LStaffs),
+    list_staffs_agenda(Day, LStaffs, LDAgendas),
     asserta(better_sol(Day, Room, Agenda, LDAgendas, FinTime1)).
 
 
