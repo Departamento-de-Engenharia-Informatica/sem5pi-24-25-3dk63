@@ -9,7 +9,8 @@ namespace DDDSample1.Domain.Users
         Doctor,
         Nurse,
         Technician,
-        Patient
+        Patient,
+        Assistant
     }
 
     public class Role : ValueObject
@@ -36,5 +37,6 @@ namespace DDDSample1.Domain.Users
         public static Role Nurse => new Role(RoleType.Nurse);
         public static Role Technician => new Role(RoleType.Technician);
         public static Role Patient => new Role(RoleType.Patient);
+        public static Role Assistant => new Role(RoleType.Assistant);
     }
 }
