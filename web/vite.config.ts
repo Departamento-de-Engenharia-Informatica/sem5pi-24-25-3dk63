@@ -1,21 +1,21 @@
-import { defineConfig } from 'vite';
-import react from '@vitejs/plugin-react';
-import path from 'path';
+import path from "path";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
 
 // URL do backend
-const BACKEND_URL = 'https://localhost:5001';
+const BACKEND_URL = "https://lapr5.sytes.net:5001";
 
 export default defineConfig({
-  base: './',
+  base: "./",
   plugins: [react()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src'),
+      "@": path.resolve(__dirname, "src"),
     },
   },
   server: {
     proxy: {
-      '/api': {
+      "/api": {
         target: BACKEND_URL,
         changeOrigin: true,
         secure: false,
@@ -23,13 +23,11 @@ export default defineConfig({
     },
   },
   build: {
-    outDir: 'dist',
-    assetsDir: 'assets',
+    outDir: "dist",
+    assetsDir: "assets",
     sourcemap: false,
     rollupOptions: {
-      input: path.resolve(__dirname, 'index.html'),
+      input: path.resolve(__dirname, "index.html"),
     },
   },
 });
-
-

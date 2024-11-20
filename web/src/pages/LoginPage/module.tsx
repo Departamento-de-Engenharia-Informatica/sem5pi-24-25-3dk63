@@ -14,7 +14,7 @@ export const useLoginPage = () => {
     }
 
     try {
-      const response = await fetch("https://localhost:5001/api/weblogin", {
+      const response = await fetch("https://lapr5.sytes.net:5001/api/weblogin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -39,7 +39,7 @@ export const useLoginPage = () => {
 
   const fetchClaims = async () => {
     try {
-      const response = await fetch("https://localhost:5001/api/claims", {
+      const response = await fetch("https://lapr5.sytes.net:5001/api/claims", {
         method: "GET",
         credentials: "include",
       });

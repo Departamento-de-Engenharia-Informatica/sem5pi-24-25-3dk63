@@ -1,7 +1,8 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
 
 const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL || "https://localhost:5001") + "/api";
+  (import.meta.env.VITE_API_BASE_URL || "https://lapr5.sytes.net:5001") +
+  "/api";
 
 const api = axios.create({
   baseURL: API_BASE_URL,
@@ -26,7 +27,8 @@ api.interceptors.response.use(
 
     if (error.response) {
       errorMessage =
-        (error.response.data as { message?: string })?.message ?? `Error: ${error.response.status}`;
+        (error.response.data as { message?: string })?.message ??
+        `Error: ${error.response.status}`;
     } else if (error.request) {
       errorMessage = "No response received from server";
     } else {
