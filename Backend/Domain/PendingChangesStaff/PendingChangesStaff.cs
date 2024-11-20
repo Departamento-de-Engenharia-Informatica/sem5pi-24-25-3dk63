@@ -11,7 +11,7 @@ namespace DDDSample1.Domain.PendingChangeStaff
         public Email? Email { get; set; }
         public PhoneNumber? PhoneNumber { get; set; }
         public String? Specialization { get; set; }
-
+        public AvailabilitySlots? AvailabilitySlots { get; set; }
         public PendingChangesStaff(UserId userId)
         {
             UserId = userId;
@@ -30,6 +30,11 @@ namespace DDDSample1.Domain.PendingChangeStaff
         public void UpdateSpecialization(String newSpecialization)
         {
             Specialization = newSpecialization;
+        }
+
+        public void UpdateAvailabilitySlots(AvailabilitySlots newAvailabilitySlots)
+        {
+            AvailabilitySlots = newAvailabilitySlots;
         }
 
         public void ResetChanges()

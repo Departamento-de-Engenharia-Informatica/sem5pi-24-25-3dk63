@@ -43,6 +43,14 @@ namespace DDDSample1.Infrastructure.PendingChange
                 .IsRequired()
                 .IsUnicode();
 
+                builder.Property(s => s.AvailabilitySlots)
+                .HasConversion(
+                    availabilitySlots => availabilitySlots != null ? availabilitySlots.SerializeSlots() : null,
+                    json => AvailabilitySlots.DeserializeSlots(json))
+                .HasColumnName("AvailabilitySlots")
+                .IsRequired(false);
+
+
         }
     }
 }

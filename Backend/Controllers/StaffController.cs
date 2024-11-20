@@ -146,7 +146,7 @@ namespace DDDSample1.Controllers
                 return Ok("Sensitive changes have been submitted and require confirmation from the staff member.");
             }
 
-            if (!specializationChanged)
+            if (!specializationChanged || updateDto.AvailabilitySlots == null)
             {
                 return Ok("Staffs profile already up to date.");
             }

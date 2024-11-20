@@ -446,7 +446,8 @@ namespace DDDSample1.Domain.Staff
             {
                 Email = pendingChangesDto.Email,
                 PhoneNumber = pendingChangesDto.PhoneNumber,
-                Specialization = pendingChangesDto.Specialization
+                Specialization = pendingChangesDto.Specialization,
+                AvailabilitySlots = pendingChangesDto.AvailabilitySlots
             };
             await _pendingChangesStaffRepository.AddPendingChangesStaffAsync(pendingChanges);
 
@@ -479,6 +480,10 @@ namespace DDDSample1.Domain.Staff
                     throw new ArgumentException($"Specialization '{pendingChanges.Specialization}' not found.");
                 staff.changeSpecialization(specialization.Id);
             }
+            if (pendingChanges.AvailabilitySlots != null)
+            {
+                staff.UpdateAvailabilitySlots(pendingChanges.AvailabilitySlots);
+            }
             await _userRepository.UpdateUserAsync(user);
             await _staffRepository.UpdateStaffAsync(staff);
             await _pendingChangesStaffRepository.RemovePendingChangesStaffAsync(user.Id);
@@ -486,12 +491,10 @@ namespace DDDSample1.Domain.Staff
             }
             catch (Exception ex)
             {
-                Console.WriteLine("SORRY GANG", ex.Message);
                 throw new Exception($"Apply pending changes failed: {ex.Message}");
             }
         }
 
-        //await _staffService.CheckSpecialization(updateDto.Specialization, staff)) ?? false;
 
         public async Task<bool?> CheckSpecializationExists(string specializationDescription)
         {
