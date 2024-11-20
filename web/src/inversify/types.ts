@@ -1,3 +1,5 @@
+import { LoginService } from "@/service/loginService";
+
 export const TYPES = {
   userService: Symbol.for("UserService"),
   patientService: Symbol.for("PatientService"),
@@ -7,5 +9,6 @@ export const TYPES = {
   specializationsService: Symbol.for("SpecializationService"),
   operationRequestService: Symbol.for("OperationRequestService"),
   surgeryRoomService: Symbol.for("SurgeryRoomService"),
+  LoginService: Symbol.for("LoginService"),
   api: Symbol.for("Api"),
 };

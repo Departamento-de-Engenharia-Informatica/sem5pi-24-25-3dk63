@@ -8,13 +8,14 @@ import { IStaffService } from "@/service/IService/IStaffService";
 import { OperationTypeService } from "@/service/operationTypeService";
 import {IOperationTypeService} from "@/service/IService/IOperationTypeService";
 import { ISpecializationService } from "@/service/IService/ISpecializationService";
-import { SpecializationsService } from "@/service/SpecializationService";
 import { SurgeryRoomService } from "@/service/surgeryRoomService";
 import { ISurgeryRoomService } from "@/service/IService/ISurgeryRoomService";
-
+import { ILoginService } from "@/service/IService/ILoginService";
 import { IOperationRequestService } from "@/service/IService/IOperationRequestService";
 import { api } from "../service/api";
 import { OperationRequestService } from "@/service/operationRequestService";
+import { LoginService } from "@/service/loginService";
+import { SpecializationsService } from "@/service/specializationsService";
 
 const container = new Container();
 
@@ -43,5 +44,6 @@ container.bind<ISurgeryRoomService>(TYPES.surgeryRoomService).to(SurgeryRoomServ
 container.bind(TYPES.userService).to(UserService);
 container.bind<IOperationRequestService>(TYPES.operationRequestService).to(OperationRequestService);
 
+container.bind<ILoginService>(TYPES.LoginService).to(LoginService);
 
 export { container };

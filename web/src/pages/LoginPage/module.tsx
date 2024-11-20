@@ -1,7 +1,11 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { ILoginService } from "@/service/IService/ILoginService";
+import { TYPES } from "@/inversify/types";
+import { useInjection } from "inversify-react";
 
 export const useLoginPage = () => {
+  const loginService = useInjection<ILoginService>(TYPES.LoginService);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -14,60 +18,14 @@ export const useLoginPage = () => {
     }
 
     try {
-      const response = await fetch("https://lapr5.sytes.net:5001/api/weblogin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({ token }),
-      });
+      await loginService.loginWithToken(token);
 
-      const result = await response.json();
-      if (response.ok) {
-        await fetchClaims();
-      } else {
-        setErrorMessage(result.Message);
-        console.error("Login failed:", result.Message);
-        navigate("/self-register");
-      }
+      const { redirectTo } = await loginService.getLoginClaims();
+      navigate(redirectTo);
     } catch (error) {
-      setErrorMessage("Error in request to backend.");
-      console.error("Error in request to backend:", error);
-    }
-  };
-
-  const fetchClaims = async () => {
-    try {
-      const response = await fetch("https://lapr5.sytes.net:5001/api/claims", {
-        method: "GET",
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const claims = await response.json();
-        const userRole = claims.find(
-          (claim: { type: string; value: string }) =>
-            claim.type ===
-            "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"
-        )?.value;
-
-        if (userRole === "Admin") navigate("/admin");
-        else if (userRole === "Patient") navigate("/patient");
-        else if (
-          userRole === "Doctor" ||
-          userRole === "Nurse" ||
-          userRole === "Technician"
-        )
-          navigate("/staff");
-        else navigate("/");
-      } else {
-        setErrorMessage("Error obtaining user claims.");
-        console.error("Error obtaining claims:", response.status);
-      }
-    } catch (error) {
-      setErrorMessage("Error making request to obtain claims.");
-      console.error("Error in request to obtain claims:", error);
+      setErrorMessage((error as Error).message || "Error in login process.");
+      console.error("Login error:", error);
+      navigate("/self-register");
     }
   };
 
