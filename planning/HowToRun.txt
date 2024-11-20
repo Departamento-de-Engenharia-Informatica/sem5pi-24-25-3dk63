@@ -1,6 +1,6 @@
 swipl
 
-planning:obtain_better_sol(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp).
+planning:obtain_better_sol(Room,Day,AgOpRoomBetter,LAgStaffsBetter,TFinOp).
 
 cd .\planning\
 
