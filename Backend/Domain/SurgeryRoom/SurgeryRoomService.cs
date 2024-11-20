@@ -104,13 +104,6 @@ namespace Backend.Domain.SurgeryRoom
                 throw new ArgumentNullException(nameof(creatingDto), "Creating DTO cannot be null.");
             }
 
-            string domain = _configuration["DNS_DOMAIN"];
-            if (string.IsNullOrEmpty(domain))
-            {
-                throw new BusinessRuleValidationException("O domínio DNS não está configurado corretamente.");
-            }
-
-
             var surgeryRoomEntity = _mapper.Map<SurgeryRoomEntity>(creatingDto);
             await _surgeryRoomRepository.AddAsync(surgeryRoomEntity);
             await _unitOfWork.CommitAsync();

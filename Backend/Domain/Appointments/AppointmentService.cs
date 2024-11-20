@@ -56,12 +56,6 @@ namespace DDDSample1.Appointments
         {
             int sequentialNumber = await this._appointmentRepository.GetNextSequentialNumberAsync();
 
-            string domain = _configuration["DNS_DOMAIN"];
-            if (string.IsNullOrEmpty(domain))
-            {
-                throw new BusinessRuleValidationException("DNS_DOMAIN is not defined in the configuration file");
-            }
-
             var date = new Date(dto.date.Value);
             var time = new Time(dto.time.Value);
             var operationRequestId = new OperationRequestId(dto.operationRequestId.Value);
