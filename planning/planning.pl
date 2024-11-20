@@ -36,7 +36,6 @@ staff(d003, doctor, orthopaedist, [so2, so3, so4]).
 
 
 %surgery(SurgeryType,TAnesthesia,TSurgery,TCleaning).
-
 surgery(so2, 45, 60, 45).
 surgery(so3, 45, 90, 45).
 surgery(so4, 45, 75, 45).

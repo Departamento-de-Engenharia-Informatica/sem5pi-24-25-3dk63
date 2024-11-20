@@ -5,3 +5,7 @@ planning:obtain_better_sol(Room,Day,AgOpRoomBetter,LAgDoctorsBetter,TFinOp).
 cd .\planning\
 
 swipl -s .\planning.pl
+
+schedule_all_surgeries(Room, Day).
+
+

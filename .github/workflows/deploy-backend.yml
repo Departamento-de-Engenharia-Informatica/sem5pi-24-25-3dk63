@@ -2,7 +2,7 @@ name: Backend CI/CD
 
 on:
   schedule:
-    - cron: "0 6 * * *"
+    - cron: "0 6 * * *" # Daily at 6 AM UTC
   workflow_dispatch:
 
 defaults:
@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Setup .NET 8.0
@@ -22,68 +22,61 @@ jobs:
         with:
           dotnet-version: "8.0"
 
-      - name: Install dependencies
+      - name: Restore dependencies
         run: dotnet restore DDDNetCore.csproj
 
-      - name: Build
+      - name: Build application
         run: dotnet build DDDNetCore.csproj -c Release -o ./dist
 
-      - name: Test
+      - name: Run tests
         run: dotnet test DDDNetCore.csproj
 
-      - name: Archive production artifacts
+      - name: Upload build artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: build
-          path: Backend/dist
+          name: backend-build
+          path: ./dist
 
-      - name: Setup SSH directory
+      - name: Setup SSH
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Create target directory
+      - name: Deploy artifacts
         run: |
-          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p ~/deploy-Backend"
+          scp -P ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa -r ./dist ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/deploy-Backend
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+            set -e
+            echo "Deployment started: $(date)"
+            DEPLOY_DIR=~/deploy-Backend
+            APP_NAME=DDDNetCore
 
-      - name: Copy Files
-        uses: appleboy/scp-action@v0.1.4
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
-          source: "Backend/*"
-          target: "~/deploy-Backend"
-          rm: true
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+            # Navigate to deployment directory
+            cd $DEPLOY_DIR
 
-      - name: Deploy Server
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SSH_HOST }}
-          username: ${{ secrets.SSH_USER }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            echo "Starting deployment on $(date)" | tee ~/deploy-Backend/deploy.log
-            cd ~/deploy-Backend/Backend
-            echo "Restoring tools..." | tee -a ~/deploy-Backend/deploy.log
-            dotnet tool restore
-            echo "Setting environment variables..." | tee -a ~/deploy-Backend/deploy.log
+            # Setup environment
             export ASPNETCORE_ENVIRONMENT="Production"
             export ASPNETCORE_URLS="https://localhost:5001"
-            echo "Updating database..." | tee -a ~/deploy-Backend/deploy.log
+
+            # Database migration
+            echo "Running migrations..."
             dotnet ef database update
-            echo "Stopping previous instance..." | tee -a ~/deploy-Backend/deploy.log
-            killall -9 DDDNetCore || echo "No previous instance running." | tee -a ~/deploy-Backend/deploy.log
-            echo "Starting new instance..." | tee -a ~/deploy-Backend/deploy.log
-            nohup ./dist/DDDNetCore > ~/deploy-Backend/app.log 2>&1 &
-            sleep 5
-            if pgrep -f DDDNetCore > /dev/null; then
-              echo "Deployment successful: $(date)" | tee -a ~/deploy-Backend/deploy.log
+
+            # Stop existing app
+            echo "Stopping existing instance..."
+            pkill -f $APP_NAME || echo "No running instance found."
+
+            # Start application
+            echo "Starting new instance..."
+            nohup ./dist/$APP_NAME > app.log 2>&1 &
+
+            # Verify deployment
+            if pgrep -f $APP_NAME > /dev/null; then
+              echo "Deployment successful: $(date)"
             else
-              echo "Deployment failed: $(date)" | tee -a ~/deploy-Backend/deploy.log
+              echo "Deployment failed: $(date)"
               exit 1
             fi
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          EOF
