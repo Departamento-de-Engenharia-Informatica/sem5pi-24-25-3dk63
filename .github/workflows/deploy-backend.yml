@@ -26,16 +26,13 @@ jobs:
         run: dotnet restore DDDNetCore.csproj
 
       - name: Build application
-        run: dotnet build DDDNetCore.csproj -c Release -o ./dist
+        run: dotnet publish DDDNetCore.csproj -c Release -o ./dist --self-contained -r linux-x64
 
       - name: Run tests
         run: dotnet test DDDNetCore.csproj
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v3
-        with:
-          name: backend-build
-          path: ./dist
+      - name: Archive production artifacts
+        run: tar -czf dist.tar.gz -C ./dist .
 
       - name: Setup SSH
         run: |
@@ -46,12 +43,19 @@ jobs:
 
       - name: Deploy artifacts
         run: |
-          scp -P ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa -r ./dist ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/deploy-Backend
+          # Upload compressed artifacts
+          scp -P ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa dist.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/deploy-Backend
+
+          # Execute deployment steps on the server
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
             set -e
             echo "Deployment started: $(date)"
             DEPLOY_DIR=~/deploy-Backend
             APP_NAME=DDDNetCore
+
+            # Extract files
+            echo "Extracting artifacts..."
+            tar -xzf $DEPLOY_DIR/dist.tar.gz -C $DEPLOY_DIR && rm $DEPLOY_DIR/dist.tar.gz
 
             # Navigate to deployment directory
             cd $DEPLOY_DIR
@@ -60,9 +64,14 @@ jobs:
             export ASPNETCORE_ENVIRONMENT="Production"
             export ASPNETCORE_URLS="https://localhost:5001"
 
-            # Database migration
-            echo "Running migrations..."
-            dotnet ef database update
+            # Run migrations if there are pending changes
+            echo "Checking for pending migrations..."
+            if dotnet ef migrations list | grep -q 'Pending'; then
+              echo "Running migrations..."
+              dotnet ef database update
+            else
+              echo "No pending migrations."
+            fi
 
             # Stop existing app
             echo "Stopping existing instance..."
@@ -73,6 +82,7 @@ jobs:
             nohup ./dist/$APP_NAME > app.log 2>&1 &
 
             # Verify deployment
+            sleep 5
             if pgrep -f $APP_NAME > /dev/null; then
               echo "Deployment successful: $(date)"
             else
