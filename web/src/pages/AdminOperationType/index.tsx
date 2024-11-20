@@ -228,30 +228,66 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             }
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
           />
+<label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
+<div className="relative">
+  <button
+    className="block w-full text-left border border-gray-300 rounded-md shadow-sm p-2 bg-white focus:outline-none focus:ring focus:ring-blue-500"
+    onClick={() =>
+      setCreatingOperationType((prev: any) => ({
+        ...prev,
+        showSpecializationDropdown: !prev?.showSpecializationDropdown,
+      }))
+    }
+  >
+    {creatingOperationType?.specialities?.length > 0
+      ? creatingOperationType.specialities.join(', ')
+      : 'Select Specializations'}
+  </button>
+  {creatingOperationType?.showSpecializationDropdown && (
+    <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+      {specializations.map((spec) => (
+        <div key={spec.id} className="flex items-center px-4 py-2">
+          <input
+            type="checkbox"
+            id={`specialization-${spec.id}`}
+            value={spec.description}
+            checked={
+              creatingOperationType?.specialities?.includes(spec.description) || false
+            }
+            onChange={(e) => {
+              const selectedSpecialization = e.target.value;
+              setCreatingOperationType((prev: any) => {
+                const currentSpecialities = prev?.specialities || [];
+                if (e.target.checked) {
+                  return {
+                    ...prev,
+                    specialities: [...currentSpecialities, selectedSpecialization],
+                  };
+                } else {
+                  return {
+                    ...prev,
+                    specialities: currentSpecialities.filter(
+                      (spec: string) => spec !== selectedSpecialization
+                    ),
+                  };
+                }
+              });
+            }}
+            className="mr-2"
+          />
+          <label
+            htmlFor={`specialization-${spec.id}`}
+            className="text-gray-700"
+          >
+            {spec.description}
+          </label>
+        </div>
+      ))}
+    </div>
+  )}
+</div>
 
-          <label className="block text-sm font-medium text-gray-700 mt-4">
-  Specialization
-</label>
-<select
-  value={creatingOperationType?.specialization[0]    || ""} // Mostra apenas o primeiro elemento selecionado
-  onChange={(e) => {
-    const selectedSpecialization = e.target.value;
-    setCreatingOperationType((prev: any) => ({
-      ...prev,
-      specialities: [selectedSpecialization], // Substitui o array com um único valor selecionado
-    }));
-  }}
-  className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
->
-  <option value="" disabled>
-    Select Specialization
-  </option>
-  {specializations.map((spec) => (
-    <option key={`${spec.id}-${spec.description}`} value={spec.description}>
-      {spec.description}
-    </option>
-  ))}
-</select>
+
 
             <button
               onClick={saveOperationType}
