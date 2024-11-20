@@ -26,15 +26,17 @@ jobs:
         run: dotnet restore DDDNetCore.csproj
 
       - name: Build application
-        run: dotnet publish DDDNetCore.csproj -c Release -o ./dist --self-contained -r linux-x64
+        run: dotnet build DDDNetCore.csproj -c Release -o ./dist
 
       - name: Run tests
         run: dotnet test DDDNetCore.csproj
 
-      - name: Archive production artifacts
-        run: tar -czf dist.tar.gz -C ./dist .
+      - name: Upload artifacts to server
+        run: |
+          echo "Uploading build artifacts..."
+          scp -i ~/.ssh/id_rsa -P ${{ secrets.SSH_PORT }} -r ./dist ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/deploy-Backend
 
-      - name: Deploy artifacts and start application
+      - name: Deploy application
         uses: appleboy/ssh-action@v0.1.8
         with:
           host: ${{ secrets.SSH_HOST }}
@@ -46,18 +48,6 @@ jobs:
             echo "Deployment started: $(date)"
             DEPLOY_DIR=~/deploy-Backend
             APP_NAME=DDDNetCore
-
-            # Ensure deployment directory exists
-            mkdir -p $DEPLOY_DIR
-
-            # Upload artifacts
-            echo "Uploading artifacts..."
-            cat > $DEPLOY_DIR/dist.tar.gz << 'EOF'
-            $(base64 -w 0 dist.tar.gz)
-            EOF
-            base64 -d $DEPLOY_DIR/dist.tar.gz > $DEPLOY_DIR/dist.tar.gz
-            tar -xzf $DEPLOY_DIR/dist.tar.gz -C $DEPLOY_DIR
-            rm $DEPLOY_DIR/dist.tar.gz
 
             # Setup environment
             export ASPNETCORE_ENVIRONMENT="Production"
