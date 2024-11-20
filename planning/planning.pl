@@ -89,11 +89,11 @@ agenda_operation_room(or1, 20241028, []).
 
 % staff_phase(Staff, TAnesthesia, TSurgery, TCleaning)
 
-% staff_phase(anaesthetist, TAnesthesia, TSurgery, 0).  % Anestesia + Cirurgia
-% staff_phase(orthopaedist, 0, TSurgery, 0).           % Apenas Cirurgia
-% staff_phase(instrumenting, 0, TSurgery, 0).          % Apenas Cirurgia
-% staff_phase(circulating, 0, TSurgery, 0).            % Apenas Cirurgia
-% staff_phase(assistant_anaesthetist, 0, 0, TCleaning). % Apenas Limpeza
+staff_phase(anaesthetist, TAnesthesia, TSurgery, 0).  % Anestesia + Cirurgia
+staff_phase(orthopaedist, 0, TSurgery, 0).           % Apenas Cirurgia
+staff_phase(instrumenting, 0, TSurgery, 0).          % Apenas Cirurgia
+staff_phase(circulating, 0, TSurgery, 0).            % Apenas Cirurgia
+staff_phase(assistant_anaesthetist, 0, 0, TCleaning). % Apenas Limpeza
 
 %-------------------------------------------------------------------------------------------------------------%
 
