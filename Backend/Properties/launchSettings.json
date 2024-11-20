@@ -15,7 +15,7 @@
       "launchUrl": "api/values",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DNS_DOMAIN": "lapr5.sytes.net"
+        "DNS_DOMAIN": "myhospital.com"
       }
     },
     "DDDNetCore": {
@@ -25,7 +25,7 @@
       "applicationUrl": "https://lapr5.sytes.net:5001;http://lapr5.sytes.net:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "DNS_DOMAIN": "lapr5.sytes.net"
+        "DNS_DOMAIN": "myhospital.com"
       }
     }
   }
