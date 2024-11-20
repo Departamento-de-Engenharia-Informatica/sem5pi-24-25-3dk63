@@ -3,3 +3,5 @@
 2024-11-20 00:03:39.859 +00:00 [INF] OperationType asd (1ce2b218-b963-4f83-a965-7efaadd5b495) was created by Admin (diogoandre.8269@gmail.com) on 20/11/2024 00:03:39
 2024-11-20 00:08:04.996 +00:00 [INF] OperationType asd (d99a4e2e-e58c-4cd0-a3f7-fd78104afed3) was created by Admin (diogoandre.8269@gmail.com) on 20/11/2024 00:08:04
 2024-11-20 00:20:14.804 +00:00 [INF] OperationType ok (348691ad-3326-43e3-8945-4544ebc94681) was created by Admin (diogoandre.8269@gmail.com) on 20/11/2024 00:20:14
+2024-11-20 19:11:03.314 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 20/11/2024 19:11:03. Changes: Specialization changed to: Cardiology
+2024-11-20 19:22:05.684 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 20/11/2024 19:22:05. Changes: Specialization changed to: Cardiology

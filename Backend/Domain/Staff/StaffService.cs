@@ -462,16 +462,18 @@ namespace DDDSample1.Domain.Staff
                 Console.WriteLine("No pending changes found for this user.");
                 throw new Exception("No pending changes found for this user.");
             }
+
+            var userFromRepo = await _userRepository.GetByIdAsync(user.Id);
             var staff = await _staffRepository.GetByUserIdAsync(user.Id);
 
             if (pendingChanges.Email != null)
             {
-                user.ChangeEmail(pendingChanges.Email);
+                userFromRepo.ChangeEmail(pendingChanges.Email);
             }
             if (pendingChanges.PhoneNumber != null)
                 {
                     var newPhoneNumber = new PhoneNumber(pendingChanges.PhoneNumber.Number);
-                    user.ChangephoneNumber(newPhoneNumber);
+                    userFromRepo.ChangephoneNumber(newPhoneNumber);
                 }
             if (pendingChanges.Specialization != null)
             {
@@ -484,7 +486,7 @@ namespace DDDSample1.Domain.Staff
             {
                 staff.UpdateAvailabilitySlots(pendingChanges.AvailabilitySlots);
             }
-            await _userRepository.UpdateUserAsync(user);
+            await _userRepository.UpdateUserAsync(userFromRepo);
             await _staffRepository.UpdateStaffAsync(staff);
             await _pendingChangesStaffRepository.RemovePendingChangesStaffAsync(user.Id);
             await _unitOfWork.CommitAsync();
@@ -517,11 +519,14 @@ namespace DDDSample1.Domain.Staff
 
         public async Task RemovePendingChangesAsync(UserId userId)
         {
+            Console.WriteLine("Removing2");
             var pendingChanges = await _pendingChangesStaffRepository.GetPendingChangesByUserIdAsync(userId);
+            Console.WriteLine("morri");
             if (pendingChanges == null)
             {
                 return;
             }
+            Console.WriteLine("Removing");
             await _pendingChangesStaffRepository.RemovePendingChangesStaffAsync(userId);
             await _unitOfWork.CommitAsync();
         }
