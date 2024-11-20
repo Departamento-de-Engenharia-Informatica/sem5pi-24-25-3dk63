@@ -34,37 +34,36 @@ jobs:
       - name: Archive production artifacts
         run: tar -czf dist.tar.gz -C ./dist .
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_HOST }} >> ~/.ssh/known_hosts
-
-      - name: Deploy artifacts
-        run: |
-          # Upload compressed artifacts
-          scp -P ${{ secrets.SSH_PORT }} -i ~/.ssh/id_rsa dist.tar.gz ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:~/deploy-Backend
-
-          # Execute deployment steps on the server
-          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} << 'EOF'
+      - name: Deploy artifacts and start application
+        uses: appleboy/ssh-action@v0.1.8
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USER }}
+          port: ${{ secrets.SSH_PORT }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
             set -e
             echo "Deployment started: $(date)"
             DEPLOY_DIR=~/deploy-Backend
             APP_NAME=DDDNetCore
 
-            # Extract files
-            echo "Extracting artifacts..."
-            tar -xzf $DEPLOY_DIR/dist.tar.gz -C $DEPLOY_DIR && rm $DEPLOY_DIR/dist.tar.gz
+            # Ensure deployment directory exists
+            mkdir -p $DEPLOY_DIR
 
-            # Navigate to deployment directory
-            cd $DEPLOY_DIR
+            # Upload artifacts
+            echo "Uploading artifacts..."
+            cat > $DEPLOY_DIR/dist.tar.gz << 'EOF'
+            $(base64 -w 0 dist.tar.gz)
+            EOF
+            base64 -d $DEPLOY_DIR/dist.tar.gz > $DEPLOY_DIR/dist.tar.gz
+            tar -xzf $DEPLOY_DIR/dist.tar.gz -C $DEPLOY_DIR
+            rm $DEPLOY_DIR/dist.tar.gz
 
             # Setup environment
             export ASPNETCORE_ENVIRONMENT="Production"
             export ASPNETCORE_URLS="https://localhost:5001"
 
-            # Run migrations if there are pending changes
+            # Database migration
             echo "Checking for pending migrations..."
             if dotnet ef migrations list | grep -q 'Pending'; then
               echo "Running migrations..."
@@ -89,4 +88,3 @@ jobs:
               echo "Deployment failed: $(date)"
               exit 1
             fi
-          EOF
