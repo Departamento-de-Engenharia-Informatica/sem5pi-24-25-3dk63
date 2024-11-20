@@ -89,7 +89,7 @@ namespace Backend.Tests.Services
                 101
             );
 
-            _configurationMock.Setup(c => c["DNS_DOMAIN"]).Returns("https://localhost:5001");
+            //_configurationMock.Setup(c => c["DNS_DOMAIN"]).Returns("https://localhost:5001");
             _appointmentRepositoryMock.Setup(repo => repo.GetNextSequentialNumberAsync()).ReturnsAsync(1);
 
             var appointment = new Appointment(
