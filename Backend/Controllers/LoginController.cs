@@ -40,13 +40,11 @@ namespace DDDSample1.Presentation.Controllers
 
                 var userDto = await userService.GetUserByUsernameAsync(emailGoogle);
                                 
-                // Check if the IAM email was found and the account is active
                 if (userDto == null || !userDto.Active)
                 {
                     Console.WriteLine("IAM email not found or inactive. Checking personal email.");
                     userDto = await userService.checkIfAccountExists(emailGoogle);
 
-                    // Check if the personal email was found and the account is active
                     if (userDto == null || !userDto.Active)
                     {
                         Console.WriteLine("Personal email not found or inactive.");
@@ -74,7 +72,6 @@ namespace DDDSample1.Presentation.Controllers
                         });
                     }
 
-                    // Return 302 if the patient is active and trying to login through personal email
                     if (userDto.Role.Value == RoleType.Patient && 
                     userDto.Active)
                     {
@@ -82,7 +79,6 @@ namespace DDDSample1.Presentation.Controllers
                     }
                 }
 
-                // Process login for an authenticated user
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Email, emailGoogle),
@@ -93,7 +89,6 @@ namespace DDDSample1.Presentation.Controllers
 
                 var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
 
-                // Logging to track SignInAsync call
                 Console.WriteLine("Calling SignInAsync for authenticated user.");
 
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, new ClaimsPrincipal(claimsIdentity));

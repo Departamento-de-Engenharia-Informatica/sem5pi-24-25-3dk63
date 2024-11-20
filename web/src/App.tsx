@@ -64,7 +64,7 @@ function App() {
                 <Route path="/staff/surgery-rooms" element={<SurgeryRoom setAlertMessage={setAlertMessage} />} />
                 <Route path="/patient/medical-record" element={<PatientMedicalRecord setAlertMessage={setAlertMessage} />} />
                 <Route path="/confirm-update/:token" element={<ConfirmUpdate />} />
-                <Route path="/patient/confirm-deletion" element={<ConfirmDeletionPage />} />
+                <Route path="/patient/confirm-account-deletion" element={<ConfirmDeletionPage />} />
                 <Route path="/patient/confirm-update" element={<ConfirmUpdatePage />} />
                 <Route path="/patient/confirm-email" element={<ConfirmRegistrationPage />} />
 
