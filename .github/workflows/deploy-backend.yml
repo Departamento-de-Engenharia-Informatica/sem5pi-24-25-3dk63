@@ -48,6 +48,10 @@ jobs:
         run: |
           ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p ~/deploy-Backend"
 
+      - name: Kill previous DDDNetCore process
+        run: |
+          ssh -i ~/.ssh/id_rsa -p ${{ secrets.SSH_PORT }} ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "killall -9 DDDNetCore || echo 'No previous instance running.'"
+
       - name: Copy Files
         uses: appleboy/scp-action@v0.1.4
         with:
@@ -75,8 +79,6 @@ jobs:
             export ASPNETCORE_URLS="https://localhost:5001"
             echo "Updating database..." | tee -a ~/deploy-Backend/deploy.log
             dotnet ef database update
-            echo "Stopping previous instance..." | tee -a ~/deploy-Backend/deploy.log
-            killall -9 DDDNetCore || echo "No previous instance running." | tee -a ~/deploy-Backend/deploy.log
             echo "Starting new instance..." | tee -a ~/deploy-Backend/deploy.log
             nohup ./dist/DDDNetCore > ~/deploy-Backend/app.log 2>&1 &
             sleep 5
