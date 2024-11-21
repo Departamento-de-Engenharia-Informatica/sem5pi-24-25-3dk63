@@ -1,17 +1,18 @@
 # Documentação do Projeto
 
 ## Índice
-1. [Visão Geral](#visão-geral)
-2. [Artefatos Globais](#artefatos-globais)
-   - [C4 Model](#c4-model)
-   - [Modelo de Domínio](#modelo-de-domínio)
-   - [Glossário](#glossário)
-   - [Diagramas de Caso de Uso](#diagramas-de-caso-de-uso)
-3. [Vistas e Granularidade](#vistas-e-granularidade)
-   - [Nível 1](#nível-1)
-   - [Nível 2](#nível-2)
-   - [Nível 3](#nível-3)
-   - [Nível 3.5](#nível-35)
+- [Documentação do Projeto](#documentação-do-projeto)
+  - [Índice](#índice)
+  - [Visão Geral](#visão-geral)
+  - [Artefatos Globais](#artefatos-globais)
+    - [Modelo de Domínio](#modelo-de-domínio)
+    - [Glossário](#glossário)
+    - [Diagramas de Caso de Uso](#diagramas-de-caso-de-uso)
+  - [Vistas e Granularidade](#vistas-e-granularidade)
+- [User storie de edição](#user-storie-de-edição)
+    - [Nível 1](#nível-1)
+    - [Nível 2](#nível-2)
+    - [Nível 3](#nível-3)
 
 ## Visão Geral
 
@@ -19,24 +20,6 @@ Este repositório contém a documentação detalhada do projeto, organizada em v
 
 ## Artefatos Globais
 
-### C4 Model
-Esta seção contém os diferentes níveis do modelo C4 (Contexto, Containers, Componentes e Código) para a arquitetura do sistema. O modelo C4 descreve a estrutura do sistema em diferentes níveis de abstração, oferecendo uma visão clara de como os componentes interagem entre si.
-
-- **Nível 1**: Visão de contexto do sistema, mostrando as interações externas.
-
-  ![Level1](C4/Level1/Level1.png)
-
-- **Nível 2**: Visão de container, representando os principais containers e como eles se comunicam.
-
-  ![Level2](C4/Level2/Level2.png)
-
-- **Nível 3**: Visão de componentes, detalhando a arquitetura interna dos containers.
-
-  ![Level3](C4/Level3/Level3.png)
-
-- **Nível 4**: Visão de código, descrevendo as interações a nível de classe.
-
-  ![Level4](C4/Level4/Level4.png)
 
 ### Modelo de Domínio
 
@@ -67,7 +50,7 @@ Abaixo estão os diagramas que representam diferentes vistas e níveis de detalh
 ### Nível 1
 - **Logical**: Visão lógica do sistema no Nível 1.
 
-  ![Logical](ViewsAndGranularity/Edit/Level1/Logical.jpg)
+  ![Logical](ViewsAndGranularity/Edit/Level1/Logical.png)
 
 - **Process**: Diagrama de processos no Nível 1.
 
@@ -107,11 +90,3 @@ Abaixo estão os diagramas que representam diferentes vistas e níveis de detalh
 
   ![Process](ViewsAndGranularity/Edit/Level3/Process.png)
 
-### Nível 3.5
-- **Logical**: Visão lógica adicional no Nível 3.5.
-
-  ![Logical](ViewsAndGranularity/Edit/Level3.5/Logical.png)
-
-- **SystemDiagramEdit**: Edição do diagrama do sistema no Nível 3.5.
-
-  ![SystemDiagramEdit](ViewsAndGranularity/Edit/Level3.5/SystemDiagramEdit.jpg)
