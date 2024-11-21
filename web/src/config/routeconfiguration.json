@@ -19,10 +19,16 @@
   
     "PATIENT": "/patient",
     "PATIENTS": "/patients",
+    "PATIENTS_UPDATE": "/patients/update",
     "SEARCH_PATIENTS": "/patients/search", 
     "PATIENT_REGISTRATION": "/patients/register-patient",
     "PATIENT_SELF_REGISTRATION": "/Registrations/self-register", 
     "PATIENT_CONFIRM_REGISTRATION": "/Registrations/confirm-email",
+    "PATIENT_APPOINTMENTS": "/patients/appointments",
+    "PATIENT_MEDICALHISTORY": "/patients/medicalhistory",
+    "PATIENT_REQUEST_ACCOUNT_DELETION": "/patients/request-account-deletion",
+    "PATIENT_CONFIRM_UPDATE": "/patients/confirm-update",
+    "PATIENT_CONFIRM_ACCOUNT_DELETION": "/patients/confirm-account-deletion",
     
     "STAFF": "/staff",
     "SEARCH_STAFF": "/staff/search",

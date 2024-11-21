@@ -1,7 +1,5 @@
 import { inject, injectable } from "inversify";
-
 import "reflect-metadata";
-
 import { TYPES } from "../inversify/types";
 import { PatientUpdateDTO } from "@/dto/PatientUpdateDTO";
 import { RegisterPatientDTO } from "@/dto/RegisterPatientDTO";
@@ -9,16 +7,16 @@ import { SelfRegisterPatientDTO } from "@/dto/SelfRegisterPatientDTO";
 import { UpdateProfileDTO } from "@/dto/UpdateProfileDTO";
 import { Patient } from "@/model/Patient";
 import { PatientUser } from "@/model/PatientUser";
-
 import type { HttpService } from "./IService/HttpService";
 import { IPatientService } from "./IService/IPatientService";
+import routeconfiguration from "@/config/routeconfiguration.json";
 
 @injectable()
 export class PatientService implements IPatientService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
 
   async getPatients(): Promise<PatientUser[]> {
-    const res = await this.http.get<PatientUser[]>("/patients");
+    const res = await this.http.get<PatientUser[]>(routeconfiguration.PATIENTS);
     console.log("Dados retornados do getAllPatients:", res.data);
     return res.data;
   }
@@ -26,13 +24,13 @@ export class PatientService implements IPatientService {
   async searchPatients(query: Record<string, string>): Promise<PatientUser[]> {
     let queryString = new URLSearchParams(query).toString();
     let res = await this.http.get<PatientUser[]>(
-      `/patients/search?${queryString}`
+      `${routeconfiguration.SEARCH_PATIENTS}?${queryString}`
     );
     return res.data;
   }
 
   async deletePatient(id: string): Promise<void> {
-    await this.http.delete(`/patients/${id}`);
+    await this.http.delete(`${routeconfiguration.PATIENTS}/${id}`);
     console.log("Patient deleted:", id);
   }
 
@@ -40,13 +38,13 @@ export class PatientService implements IPatientService {
     id: string,
     updatedData: Partial<PatientUpdateDTO>
   ): Promise<void> {
-    await this.http.patch(`/patients/${id}`, updatedData);
+    await this.http.patch(`${routeconfiguration.PATIENTS}/${id}`, updatedData);
     console.log("Patient updated:", id);
   }
 
   async createPatient(patientData: RegisterPatientDTO): Promise<PatientUser> {
     const res = await this.http.post<PatientUser>(
-      "/patients/register-patient",
+      routeconfiguration.PATIENT_REGISTRATION,
       patientData
     );
     console.log("Patient created:", res.data);
@@ -55,7 +53,7 @@ export class PatientService implements IPatientService {
 
   async selfRegister(patientData: SelfRegisterPatientDTO): Promise<Response> {
     const res = await this.http.post<Response>(
-      "/Registrations/self-register",
+      routeconfiguration.PATIENT_SELF_REGISTRATION,
       {personalEmail: patientData.personalEmail},
       { headers: { withCredentials: "true" } }
       );
@@ -64,19 +62,19 @@ export class PatientService implements IPatientService {
   }
 
   async getAppointments(): Promise<PatientUser[]> {
-    const res = await this.http.get<PatientUser[]>(`/patients/appointments`);
+    const res = await this.http.get<PatientUser[]>(routeconfiguration.PATIENT_APPOINTMENTS);
     return res.data;
   }
 
   async getMedicalRecords(): Promise<PatientUser[]> {
-    const res = await this.http.get<PatientUser[]>(`/patients/medicalhistory`);
+    const res = await this.http.get<PatientUser[]>(routeconfiguration.PATIENT_MEDICALHISTORY);
     return res.data;
   }
 
   async requestAccountDeletion(): Promise<void> {
     try {
       await this.http.post(
-        "/patients/request-account-deletion",
+        routeconfiguration.PATIENT_REQUEST_ACCOUNT_DELETION,
         {},
         { headers: { withCredentials: "true" } }
       );
@@ -88,7 +86,7 @@ export class PatientService implements IPatientService {
   async confirmUpdate(token: string): Promise<string> {
     try {
       const res = await this.http.get<{ data: string }>(
-        `/patients/confirm-update?token=${token}`,
+        `${routeconfiguration.PATIENT_CONFIRM_UPDATE}?token=${token}`,
         {
           headers: { withCredentials: "true" },
         }
@@ -102,7 +100,7 @@ export class PatientService implements IPatientService {
   async confirmDeletion(token: string): Promise<string> {
     try {
       const res = await this.http.get<{ data: string }>(
-        `/patients/confirm-account-deletion?token=${token}`,
+        `${routeconfiguration.PATIENT_CONFIRM_ACCOUNT_DELETION}?token=${token}`,
         {
           headers: { withCredentials: "true" },
         }
@@ -117,7 +115,7 @@ export class PatientService implements IPatientService {
   async updateProfile(data: UpdateProfileDTO): Promise<void> {
     try {
       console.log("Data to update profile:", data);
-      await this.http.patch("/patients/update", data, {
+      await this.http.patch(routeconfiguration.PATIENTS_UPDATE, data, {
         headers: { withCredentials: "true" },
       });
     } catch (error) {
@@ -128,7 +126,7 @@ export class PatientService implements IPatientService {
   async confirmRegistration(token: string): Promise<string> {
     try {
       const res = await this.http.get<{ data: string }>(
-        `/Registrations/confirm-email?token=${token}`
+        `${routeconfiguration.PATIENT_CONFIRM_REGISTRATION}?token=${token}`
       );
       return res.data.data;
     } catch (error) {

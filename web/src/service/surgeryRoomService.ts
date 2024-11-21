@@ -8,6 +8,7 @@ import { SurgeryRoom } from "@/model/SurgeryRoom";
 
 import type { HttpService } from "./IService/HttpService";
 import { ISurgeryRoomService } from "./IService/ISurgeryRoomService";
+import routeconfiguration from "@/config/routeconfiguration.json";
 
 import axios, { AxiosError } from "axios";
 
@@ -42,7 +43,7 @@ export class SurgeryRoomService implements ISurgeryRoomService {
     updatedData: Partial<SurgeryRoom>
   ): Promise<SurgeryRoom> {
     const res = await this.http.put<SurgeryRoom>(
-      `/SurgeryRoom/${id}`,
+      `${routeconfiguration.SURGERY_ROOM}/${id}`,
       updatedData
     );
     console.log("Surgery room updated:", res.data);
@@ -57,7 +58,7 @@ export class SurgeryRoomService implements ISurgeryRoomService {
   async getByNumber(roomNumber: string): Promise<SurgeryRoom | null> {
     try {
       const res = await this.http.get<SurgeryRoom>(
-        `/SurgeryRoom/number/${roomNumber}`
+        `${routeconfiguration.SURGERY_ROOM_BY_NUMBER}/${roomNumber}`
       );
       return res.data;
     } catch (error) {
