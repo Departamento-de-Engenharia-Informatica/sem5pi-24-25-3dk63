@@ -9,6 +9,8 @@ export const useConfirmRegistrationModule = () => {
   const location = useLocation();
 
   const [confirmationStatus, setConfirmationStatus] = useState<string>("Processing confirmation...");
+  const [loading, setLoading] = useState<boolean>(true);
+  
   const hasInitialized = useRef(false);
 
   const confirmRegistration = async (token: string) => {
@@ -18,6 +20,8 @@ export const useConfirmRegistrationModule = () => {
       setConfirmationStatus("Registration confirmed successfully.");
     } catch (error) {
       setConfirmationStatus("Confirmation failed: " + (error as Error).message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -34,6 +38,6 @@ export const useConfirmRegistrationModule = () => {
   }
 
   return { 
-    confirmationStatus
+    confirmationStatus, loading
   };
 };
