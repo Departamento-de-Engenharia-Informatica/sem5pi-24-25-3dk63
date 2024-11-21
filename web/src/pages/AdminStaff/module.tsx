@@ -3,6 +3,8 @@ import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IStaffService } from "@/service/IService/IStaffService";
 import { useNavigate } from "react-router-dom";
+import { AvailabilitySlot } from "@/model/AvailabilitySlots";
+import { CreatingStaffDTO } from "@/dto/CreatingStaffDTO";
 
 const countryOptions = [
   { code: "+351" },
@@ -29,6 +31,7 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
   const [noDataMessage, setNoDataMessage] = useState<string | null>(null);
   const [isEditing, setIsEditing] = useState(false);
   const [specializations, setSpecializations] = useState<string[]>([]);
+  const [availabilitySlots, setAvailabilitySlots] = useState<AvailabilitySlot[]>([]);
 
   const itemsPerPage = 4;
 
@@ -110,62 +113,49 @@ const menuOptions = [
     setIsEditing(false);
     setStaffToEdit(null);
     setIsModalVisible(true);
-
-    const staffFormDto = {
-      username: { value: "" },
-      email: { value: "" },
-      phoneNumber: { number: "" },
-      role: { value: "" },
-      firstName: { value: "" },
-      lastName: { value: "" },
-      specialization: { value: "" },
-      availabilitySlots: { value: "" },
-    };
-
-    console.log("New Staff Form:", staffFormDto);
-
 };
 
 const saveStaff = async () => {
-    if (!creatingStaff) {
-        return;
-    }
+  if (!creatingStaff) {
+    return;
+  }
 
-    try {
-        const newStaff = {
-            ...creatingStaff,
-            phoneNumber: `${countryCode}${phoneNumberPart}`,
-            specializationDescription: creatingStaff.specialization,
-        };
+  try {
+    const newStaff = {
+      ...creatingStaff,
+      phoneNumber: `${countryCode}${phoneNumberPart}`,
+      specializationDescription: creatingStaff.specialization,
+      availabilitySlots: availabilitySlots
+    };
 
-        const dto = buildCreateStaffDto(newStaff);
+    const dto = buildCreateStaffDto(newStaff);
 
-        console.log("Creating new staff:", dto);
+    console.log("Creating new staff:", dto);
 
-        await staffService.addStaff(dto);
+    await staffService.addStaff(dto);
 
-        setPopupMessage("New staff created successfully.");
-
-        setIsModalVisible(false);
-
-        fetchStaffs();
-    } catch (error) {
-        console.error("Error creating new staff:", error);
-        setPopupMessage("Error creating new staff.");
-    }
+    setPopupMessage("New staff created successfully.");
+    setIsModalVisible(false);
+    setAvailabilitySlots([]);
+    fetchStaffs();
+  } catch (error) {
+    console.error("Error creating new staff:", error);
+    setPopupMessage("Error creating new staff.");
+  }
 };
 
-const buildCreateStaffDto = (newStaff: any) => {
-    return {
-      licenseNumber: newStaff.licenseNumber,
-      specializationDescription: newStaff.specializationDescription,
-      email: newStaff.email,
-      role: newStaff.role,
-      phoneNumber: newStaff.phoneNumber,
-      firstName: newStaff.firstName,
-      lastName: newStaff.lastName,
-};
-}
+const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
+  return {
+    licenseNumber: newStaff.licenseNumber,
+    specializationDescription: newStaff.specializationDescription,
+    email: newStaff.email,
+    role: newStaff.role,
+    phoneNumber: newStaff.phoneNumber,
+    firstName: newStaff.firstName,
+    lastName: newStaff.lastName,
+    availabilitySlots: newStaff.availabilitySlots
+  };
+  }
 
   const handleDelete = async (id: string) => {
     if (window.confirm("Are you sure you want to delete this staff?")) {
@@ -181,22 +171,48 @@ const buildCreateStaffDto = (newStaff: any) => {
   };
 
   const handleEdit = async (staff: any) => {
-    console.log("Editing staff:", staff);
-
     const newStaff = {
-      email: {
+      Email: {
         value: staff.Email
       },
       phoneNumber: {
-        number: staff.Phone
+        Number: staff.Phone
       },
-      specialization: staff.Specialization
-    };
-    console.log("New staff to edit:", newStaff);
+      Specialization: staff.Specialization,
 
+      'Availability Slots': staff['Availability Slots']
+
+    };
+  
+    let formattedSlots: AvailabilitySlot[] = [];
+    
+    const existingSlots = staff['Availability Slots'];
+    console.log("Existing slots before formatting:", existingSlots);
+  
+    if (typeof existingSlots === 'string') {
+      formattedSlots = [];
+    } else if (Array.isArray(existingSlots)) {
+      formattedSlots = existingSlots.map((slot: any) => {
+        if (slot.Start && slot.End) {
+          return {
+            start: new Date(slot.Start).toISOString().slice(0, 16),
+            end: new Date(slot.End).toISOString().slice(0, 16)
+          };
+        } else if (slot.start && slot.end) {
+          return { 
+            start: new Date(slot.start).toISOString().slice(0, 16),
+            end: new Date(slot.end).toISOString().slice(0, 16)
+          };
+        }
+        return { start: '', end: '' };
+      }).filter(slot => slot.start || slot.end);
+    }
+  
+    setAvailabilitySlots(formattedSlots);
+    
     setStaffToEdit(newStaff);
     setIsEditing(true);
-    setLicenseToEdit(staff.id);
+    setLicenseToEdit(staff['License Number']);
     setIsModalVisible(true);
   };
 
@@ -204,7 +220,7 @@ const buildCreateStaffDto = (newStaff: any) => {
     setConfirmDeactivate(() => async () => {
       try {
         await staffService.deactivateStaff(id);
-        fetchStaffs(); // Refresh the list after deactivation
+        fetchStaffs();
         setPopupMessage("Staff deactivated successfully.");
       } catch (error) {
         console.error("Error deactivating staff:", error);
@@ -214,20 +230,36 @@ const buildCreateStaffDto = (newStaff: any) => {
   };
 
   const handleCancelDeactivate = () => {
-    setConfirmDeactivate(null); // Cancela a desativação
+    setConfirmDeactivate(null);
   };
 
 
   const saveChanges = async () => {
     if (staffToEdit) {
       try {
-        setPopupMessage( await staffService.editStaff(licenseStaffToEdit, staffToEdit));
-        fetchStaffs(); // Refresh the staff list
+        const staffUpdateData = {
+          Email: {
+            value: staffToEdit.Email?.value || staffToEdit.Email
+          },
+          phoneNumber: {
+            Number: staffToEdit.phoneNumber?.Number || staffToEdit.phoneNumber
+          },
+          Specialization: staffToEdit.Specialization,
+          AvailabilitySlots: {
+            Slots: availabilitySlots.map(slot => ({
+              Start: new Date(slot.start).toISOString(),
+              End: new Date(slot.end).toISOString()
+            }))
+          }
+        };
+    
+        setPopupMessage(await staffService.editStaff(licenseStaffToEdit, staffUpdateData));
+        fetchStaffs();
       } catch (error) {
         console.error("Error updating staff information:", error);
         setPopupMessage("Error updating staff information.");
       } finally {
-        setIsModalVisible(false); // Close the modal after saving
+        setIsModalVisible(false);
       }
     }
   };
@@ -268,6 +300,38 @@ const buildCreateStaffDto = (newStaff: any) => {
     } finally {
       setLoading(false);
     }
+  };
+
+  const addAvailabilitySlot = () => {
+    setAvailabilitySlots([
+      ...availabilitySlots, 
+      { start: '', end: '' }
+    ]);
+  };
+
+  const removeAvailabilitySlot = (index: number) => {
+    const newSlots = availabilitySlots.filter((_, i) => i !== index);
+    setAvailabilitySlots(newSlots);
+  };
+
+  const updateAvailabilitySlot = (index: number, field: 'start' | 'end', value: string) => {
+    const newSlots = [...availabilitySlots];
+    newSlots[index][field] = value;
+    setAvailabilitySlots(newSlots);
+  };
+
+  const formatAvailabilitySlots = (slots: AvailabilitySlot[]) => {
+    if (!slots || slots.length === 0) return "No availability slots";
+    
+    return (
+      <div className="text-sm">
+        {slots.map((slot, index) => (
+          <div key={index} className="mb-1">
+            {new Date(slot.start).toLocaleString()} - {new Date(slot.end).toLocaleString()}
+          </div>
+        ))}
+      </div>
+    );
   };
 
   useEffect(() => {
@@ -311,6 +375,11 @@ const buildCreateStaffDto = (newStaff: any) => {
     setConfirmDeactivate,
     handleCancelDeactivate,
     noDataMessage,
-
+    availabilitySlots,
+    setAvailabilitySlots,
+    addAvailabilitySlot,
+    removeAvailabilitySlot,
+    updateAvailabilitySlot,
+    formatAvailabilitySlots
   };
 };

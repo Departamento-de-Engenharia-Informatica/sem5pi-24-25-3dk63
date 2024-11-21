@@ -4,13 +4,11 @@ import Alert from "@/components/Alert";
 import Table from "@/components/Card";
 import { useStaffListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
-import Pagination from "@/components/Pagination";
 import Modal from "@/components/Modal";
 import SearchFilter from "@/components/SearchFilter";
 import DropdownMenu from "@/components/DropdownMenu";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
-import { StaffUser } from "@/model/StaffUser";
 import SidebarMenu from "@/components/SidebarMenu";
 
 interface StaffListProps {
@@ -53,6 +51,12 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
     confirmDeactivate,
     setConfirmDeactivate,
     handleCancelDeactivate,
+    availabilitySlots,
+    setAvailabilitySlots,
+    addAvailabilitySlot,
+    removeAvailabilitySlot,
+    updateAvailabilitySlot,
+    formatAvailabilitySlots,
   } = useStaffListModule(setAlertMessage);
 
   const [isSidebarVisible, setIsSidebarVisible] = useState(false); // Controla a visibilidade da sidebar em telas pequenas
@@ -84,14 +88,16 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
       </div>
     );
   };
-
+  
   const tableData = staffs.map((staff) => ({
     ...staff,
+    "Availability Slots": formatAvailabilitySlots(staff["Availability Slots"]),
     actions: renderActions(staff),
   }));
 
   useEffect(() => {
     if (!isModalVisible) {
+      setAvailabilitySlots([]);
       setCountryCode(countryOptions[0].code);
       setPhoneNumberPart("");
     }
@@ -151,7 +157,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
           setIsVisible={setIsModalVisible}
           title="Add new staff"
         >
-          <div className="p-6">
+          <div className="p-4">
             {/* First name */}
             <label className="block text-sm font-medium text-gray-700">First Name</label>
             <input
@@ -279,6 +285,67 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               ))}
             </select>
 
+            {/* Availability Slots */}
+            <div className="mt-4">
+            <label className="block text-sm font-medium text-gray-700">Availability Slots</label>
+            {availabilitySlots.map((slot, index) => {
+              const now = new Date();
+              const minDateTime = now.toISOString().slice(0, 16);
+              return (
+                <div key={index} className="relative flex gap-2 mb-2">
+                  <button
+                    type="button"
+                    onClick={() => removeAvailabilitySlot(index)}
+                    className="text-red-500 hover:text-red-700 self-center mr-2"
+                  >
+                    ✕
+                  </button>
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-600">Start</label>
+                    <input
+                      type="datetime-local"
+                      value={slot.start}
+                      min={minDateTime}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (new Date(value) < now) {
+                          setPopupMessage("Start time cannot be in the past.");
+                          return;
+                        }
+                        updateAvailabilitySlot(index, "start", value);
+                      }}
+                      className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    />
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-600">End</label>
+                    <input
+                      type="datetime-local"
+                      value={slot.end}
+                      min={slot.start || minDateTime}
+                      onChange={(e) => {
+                        const value = e.target.value;
+                        if (slot.start && new Date(value) <= new Date(slot.start)) {
+                          setPopupMessage("End time must be after the start time.");
+                          return;
+                        }
+                        updateAvailabilitySlot(index, "end", value);
+                      }}
+                      className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                    />
+                  </div>
+                </div>
+              );
+            })}
+            <button
+              type="button"
+              onClick={addAvailabilitySlot}
+              className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+            >
+              Add Slot
+            </button>
+          </div>
+
             {/* Save Staff Button */}
             <button
               onClick={saveStaff}
@@ -297,7 +364,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
           setIsVisible={setIsModalVisible}
           title="Edit Staff Information"
         >
-          <div className="p-6">
+          <div className="p-2">
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
@@ -348,6 +415,68 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
                   </option>
                 ))}
               </select>
+              
+              {/* Availability Slots */}
+              <div className="mt-4">
+              <label className="block text-sm font-medium text-gray-700">Availability Slots</label>
+              {availabilitySlots.map((slot, index) => {
+                const now = new Date();
+                const minDateTime = now.toISOString().slice(0, 16);
+                return (
+                  <div key={index} className="relative flex gap-2 mb-2">
+                    <button
+                      type="button"
+                      onClick={() => removeAvailabilitySlot(index)}
+                      className="text-red-500 hover:text-red-700 self-center mr-2"
+                    >
+                      ✕
+                    </button>
+                    <div className="flex-1">
+                      <label className="block text-xs text-gray-600">Start</label>
+                      <input
+                        type="datetime-local"
+                        value={slot.start}
+                        min={minDateTime}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (new Date(value) < now) {
+                            setPopupMessage("Start time cannot be in the past.");
+                            return;
+                          }
+                          updateAvailabilitySlot(index, "start", value);
+                        }}
+                        className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <label className="block text-xs text-gray-600">End</label>
+                      <input
+                        type="datetime-local"
+                        value={slot.end}
+                        min={slot.start || minDateTime}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (slot.start && new Date(value) <= new Date(slot.start)) {
+                            setPopupMessage("End time must be after the start time.");
+                            return;
+                          }
+                          updateAvailabilitySlot(index, "end", value);
+                        }}
+                        className="block w-full border border-gray-300 rounded-md shadow-sm p-2"
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+              <button
+                type="button"
+                onClick={addAvailabilitySlot}
+                className="mt-2 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+              >
+                Add Slot
+              </button>
+            </div>
+            
             <button
               onClick={saveChanges}
               className="mt-6 w-full bg-[#284b62] text-white font-semibold py-2 rounded-md hover:bg-opacity-80 transition duration-200"
