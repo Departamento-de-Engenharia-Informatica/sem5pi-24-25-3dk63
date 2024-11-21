@@ -84,7 +84,7 @@ assignment_surgery(so100002,a001).
 assignment_surgery(so100003,a001).
 
 % (ID da sala, data, lista de horários com cirurgia atribuída)
-agenda_operation_room(or1, 20241028, [(1000, 1059, so100003)]).
+agenda_operation_room(or1, 20241028, [(1000, 1059, so099998), (1100, 1200, so099999)]).
 agenda_operation_room(or2, 20241028, []).
 
 
@@ -194,7 +194,6 @@ availability_all_surgeries([OpCode | LOpCode], Room, Day) :-
     surgery_id(OpCode,OpType),surgery(OpType,TAnesthesia,TSurgery,TCleaning),
     TempoTotal is TAnesthesia + TSurgery + TCleaning,
     availability_operation(OpCode, Room, Day, LPossibilities, LStaffs),
-    write('LStaffs') , write(LStaffs), nl ,
 
     schedule_first_interval(TempoTotal, LPossibilities, (TinS, TfinS)),
 
@@ -256,25 +255,13 @@ insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(Tin, Tfin, O
 insert_agenda_staff(_, _, []).
 
 insert_agenda_staff((TinS, TfinS, OpCode), Day, [Staff | LStaffs]) :-
-    write('LStaffs:'), write(LStaffs), nl,
-        write('Staff:'), write(Staff), nl,
-
-
     staff(Staff, _, Role, _),
-    write('Role:'), write(Role), nl,
     surgery_id(OpCode, OpType),
-    write('Optype'), write(OpType), nl,
     surgery(OpType, TAnesthesia, TSurgery, TCleaning),
-     write('1111'), nl ,write(OpType), nl,
     compute_phase_times((TinS, TfinS),TAnesthesia, TSurgery, TCleaning  ,  Role, (TStart, TEnd)),
-    write('2222'), nl,
     retract(agenda_staff1(Staff, Day, Agenda)),
-     write('3333'), write(OpType), nl,
     insert_agenda((TStart, TEnd, OpCode), Agenda, Agenda1),
-     write('444444'), write(OpType), nl,
     assertz(agenda_staff1(Staff, Day, Agenda1)),
-
-    write('LStaffs final:'), write(LStaffs), nl,
 
     insert_agenda_staff((TinS, TfinS, OpCode), Day, LStaffs).
 
