@@ -58,9 +58,11 @@ export const usePatientSelfRegisterModule = () => {
       }
       else
       {
-        console.log("Registration initiated. Please check your personal email for confirmation.")
-        setPopupMessage("Registration initiated. Please check your personal email for confirmation.");
-        navigate("/");
+        console.log("Registration initiated. Please check your personal email for confirmation. Redirecting to the login page...")
+        setPopupMessage("Registration initiated. Please check your personal email for confirmation. Redirecting to the login page...");
+        setTimeout(() => {
+          navigate("/");
+        }, 3000);
       }
     }
     catch (error)

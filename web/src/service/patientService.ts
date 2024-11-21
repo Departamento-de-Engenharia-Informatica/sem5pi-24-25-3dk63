@@ -54,17 +54,13 @@ export class PatientService implements IPatientService {
   }
 
   async selfRegister(patientData: SelfRegisterPatientDTO): Promise<Response> {
-    return await fetch(
-      "https://lapr5.sytes.net:5001/api/Registrations/self-register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ personalEmail: patientData.personalEmail }),
-        credentials: "include",
-      }
-    );
+    const res = await this.http.post<Response>(
+      "/Registrations/self-register",
+      {personalEmail: patientData.personalEmail},
+      { headers: { withCredentials: "true" } }
+      );
+
+    return res.data;
   }
 
   async getAppointments(): Promise<PatientUser[]> {

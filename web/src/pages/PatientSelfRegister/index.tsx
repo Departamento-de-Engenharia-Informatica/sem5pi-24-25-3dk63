@@ -35,10 +35,9 @@ const PatientSelfRegister: React.FC = () => {
       <div className="flex-1 pt-16 pb-10 px-6 bg-gray-50 dark:bg-gray-900 overflow-y-auto border-none">
         {/* Hamburger Menu */}
         <div className="lg:hidden mb-4">
-          <HamburgerMenu
-            options={menuOptions}
-            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
-          />
+          <div onClick={() => setIsSidebarVisible(!isSidebarVisible)}>
+            <HamburgerMenu options={menuOptions} />
+          </div>
         </div>
 
         <h1 className="text-4xl font-semibold text-center text-blue-800 dark:text-blue-400 mb-8">
@@ -46,10 +45,36 @@ const PatientSelfRegister: React.FC = () => {
         </h1>
 
         {alertMessage && (
-          <div className="mb-6">
-            <Alert type="warning" message={alertMessage} />
+          <div
+            className="flex items-center justify-center fixed top-4 left-1/2 transform -translate-x-1/2 bg-blue-100 border border-blue-300 text-blue-700 p-3 rounded-lg shadow-md max-w-md w-full"
+            role="info"
+          >
+            <svg
+              aria-hidden="true"
+              className="w-5 h-5 mr-2 text-blue-600 animate-spin"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                className="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                strokeWidth="4"
+              ></circle>
+              <path
+                className="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8v8H4z"
+              ></path>
+            </svg>
+            <span className="font-medium">{alertMessage}</span>
           </div>
         )}
+
+
 
         {/* Form Section */}
         <div className="bg-white dark:bg-gray-700 shadow-2xl rounded-lg p-8 max-w-lg mx-auto border border-gray-200 dark:border-gray-600">
