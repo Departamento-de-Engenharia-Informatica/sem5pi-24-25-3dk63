@@ -47,11 +47,46 @@ namespace DDDSample1.Domain
             await SendEmailAsync(email, subject, body);
         }
 
-        public async Task SendPatientNotificationEmailAsync(PatientUpdateDTO dto)
+        // public async Task SendPatientNotificationEmailAsync(PatientUpdateDTO dto, User user)
+        // {
+        //     var subject = "Patient Profile Updated";
+        //     var body = "<p>Your profile has been updated with changes to sensitive data. Please review the changes below:</p>";
+        //     body += "<p>Updated Attributes:</p><ul>";
+
+        //     PropertyInfo[] properties = typeof(PatientUpdateDTO).GetProperties();
+        //     foreach (PropertyInfo property in properties)
+        //     {
+        //         if (property != null)
+        //         {
+        //             var newValue = property.GetValue(dto, null);
+        //             if (newValue != null)
+        //             {
+        //                 body += $"<li><strong>{property.Name}:</strong> {newValue}</li>";
+        //             }
+        //         }
+        //     }
+        //     body += "</ul>";
+
+        //     await SendEmailAsync(dto.personalEmail.ToString(), subject, body);
+        // }
+
+        public async Task SendPatientNotificationEmailAsync(PatientUpdateDTO dto, User userStaff)
         {
-            var subject = "Patient Profile Updated";
-            var body = "<p>Your profile has been updated with changes to sensitive data. Please review the changes below:</p>";
-            body += "<p>Updated Attributes:</p><ul>";
+            var subject = "Your Profile Has Been Updated | Clinitech";
+            var logo = "../Backend/assets/image.png";
+            var body = $@"
+            <html>
+                <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+                    <div style='max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);'>
+                        <div style='text-align: center;'>
+                            <img src='{logo}' alt='Clinitech Logo' style='max-width: 150px;' />
+                        </div>
+                        <h2 style='text-align: center; color: #333;'>Profile Update Notification</h2>
+                        <p style='font-size: 16px; color: #333;'>Dear {userStaff.Name},</p>
+                        <p style='font-size: 16px; color: #333;'>Your profile at Clinitech has been updated with the following changes:</p>
+                        
+                        <h3 style='font-size: 18px; color: #333;'>Updated Information:</h3>
+                        <ul style='font-size: 16px; color: #333; list-style-type: none; padding: 0;'>";
 
             PropertyInfo[] properties = typeof(PatientUpdateDTO).GetProperties();
             foreach (PropertyInfo property in properties)
@@ -61,14 +96,29 @@ namespace DDDSample1.Domain
                     var newValue = property.GetValue(dto, null);
                     if (newValue != null)
                     {
-                        body += $"<li><strong>{property.Name}:</strong> {newValue}</li>";
+                        body += $@"
+                            <li style='margin-bottom: 10px;'>
+                                <strong style='color: #000;'>{property.Name}:</strong> 
+                                <span style='color: #007bff;'>{newValue}</span>
+                            </li>";
                     }
                 }
             }
-            body += "</ul>";
 
+            body += @"
+                        </ul>
+                        <p style='font-size: 16px; color: #333;'>If you did not request these changes, please contact Clinitech support immediately.</p>
+                        <p style='font-size: 16px; color: #333;'>Thank you for being a part of Clinitech!</p>
+                        <p style='font-size: 16px; color: #333;'>Best regards,</p>
+                        <p style='font-size: 16px; color: #333;'>The Clinitech Team</p>
+                    </div>
+                </body>
+            </html>";
+
+            // Send the email
             await SendEmailAsync(dto.personalEmail.ToString(), subject, body);
         }
+
 
         public async Task SendStaffNotificationEmailAsync(List<string> changedProperties, StaffUpdateDTO dto)
         {
