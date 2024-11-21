@@ -1,5 +1,7 @@
 import { inject, injectable } from "inversify";
 
+import "reflect-metadata";
+
 import { TYPES } from "../inversify/types";
 import { PatientUpdateDTO } from "@/dto/PatientUpdateDTO";
 import { RegisterPatientDTO } from "@/dto/RegisterPatientDTO";
