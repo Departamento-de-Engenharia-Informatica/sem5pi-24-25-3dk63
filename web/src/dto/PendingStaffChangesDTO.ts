@@ -1,4 +1,4 @@
-interface PendingStaffChangesDTO {
+export interface PendingStaffChangesDTO {
   email: string;
   phoneNumber: string;
   specializationDescription: string;
