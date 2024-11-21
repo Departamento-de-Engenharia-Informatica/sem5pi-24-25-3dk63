@@ -8,30 +8,3 @@ swipl -s .\planning.pl
 
 schedule_all_surgeries(Room, Day).
 
-
-insert_agenda_staff(_, _, []).
-
-insert_agenda_staff((TinS, TfinS, OpCode), Day, [Staff | LStaffs]) :-
-    staff(Staff, _, Role, _),
-    surgery_id(OpCode, OpType),
-    surgery(OpType, TAnesthesia, TSurgery, TCleaning),
-    staff_phase(Role, PAnesthesia, PSurgery, PCleaning),
-    compute_phase_times((TinS, TfinS), PAnesthesia, PSurgery, PCleaning, (TStart, TEnd)),
-    retract(agenda_staff1(Staff, Day, Agenda)),
-    insert_agenda((TStart, TEnd, OpCode), Agenda, Agenda1),
-    assertz(agenda_staff1(Staff, Day, Agenda1)),
-    insert_agenda_staff((TinS, TfinS, OpCode), Day, LStaffs).
-
-compute_phase_times((TinS, _), PAnesthesia, _, _, (TinS, TEnd)) :-
-    PAnesthesia > 0,
-    TEnd is TinS + PAnesthesia - 1.
-
-compute_phase_times((_, TfinS), _, PSurgery, _, (TStart, TEnd)) :-
-    PSurgery > 0,
-    TStart is TfinS - PSurgery + 1,
-    TEnd = TfinS.
-
-compute_phase_times((_, TfinS), _, _, PCleaning, (TStart, TEnd)) :-
-    PCleaning > 0,
-    TStart is TfinS - PCleaning + 1,
-    TEnd = TfinS.

@@ -39,7 +39,7 @@ staff(d004, doctor, anaesthetist, [so2, so3, so4]).
 staff(n001, nurse, instrumenting, [so2, so3, so4]).
 staff(n002, nurse, circulating, [so2, so3, so4]).
 staff(n003, nurse, anaesthetist, [so2, so3, so4]).
-staff(a001, assistant, anaesthetist, [so2, so3, so4]).
+staff(a001, assistant , assistant_anaesthetist, [so2, so3, so4]).
 
 
 %surgery(SurgeryType,TAnesthesia,TSurgery,TCleaning).
@@ -84,21 +84,9 @@ assignment_surgery(so100002,a001).
 assignment_surgery(so100003,a001).
 
 % (ID da sala, data, lista de horários com cirurgia atribuída)
-agenda_operation_room(or1, 20241028, []).
+agenda_operation_room(or1, 20241028, [(1000, 1059, so100003)]).
+agenda_operation_room(or2, 20241028, []).
 
-
-
-
-% O doutor anestesista: fase de anestesia + fase de cirurgia.
-% O Dr. ortopedista, enfermeiro de instrumentação, enfermeiro circulante: fase de cirurgia.
-% Assistente anestesista: fase de limpeza.
-
-% staff_phase(Staff, TAnesthesia, TSurgery, TCleaning)
-staff_phase(anaesthetist, TAnesthesia, TSurgery, 0).  % Anestesia + Cirurgia
-staff_phase(orthopaedist, 0, TSurgery, 0).           % Apenas Cirurgia
-staff_phase(instrumenting, 0, TSurgery, 0).          % Apenas Cirurgia
-staff_phase(circulating, 0, TSurgery, 0).            % Apenas Cirurgia
-staff_phase(assistant_anaesthetist, 0, 0, TCleaning). % Apenas Limpeza
 
 %-------------------------------------------------------------------------------------------------------------%
 
@@ -206,6 +194,7 @@ availability_all_surgeries([OpCode | LOpCode], Room, Day) :-
     surgery_id(OpCode,OpType),surgery(OpType,TAnesthesia,TSurgery,TCleaning),
     TempoTotal is TAnesthesia + TSurgery + TCleaning,
     availability_operation(OpCode, Room, Day, LPossibilities, LStaffs),
+    write('LStaffs') , write(LStaffs), nl ,
 
     schedule_first_interval(TempoTotal, LPossibilities, (TinS, TfinS)),
 
@@ -261,15 +250,54 @@ insert_agenda((TinS, TfinS, OpCode), [(Tin, Tfin, OpCode1) | LA], [(Tin, Tfin, O
     insert_agenda((TinS, TfinS, OpCode), LA, LA1).
 
 
+
+
+
 insert_agenda_staff(_, _, []).
 
 insert_agenda_staff((TinS, TfinS, OpCode), Day, [Staff | LStaffs]) :-
+    write('LStaffs:'), write(LStaffs), nl,
+        write('Staff:'), write(Staff), nl,
+
+
+    staff(Staff, _, Role, _),
+    write('Role:'), write(Role), nl,
+    surgery_id(OpCode, OpType),
+    write('Optype'), write(OpType), nl,
+    surgery(OpType, TAnesthesia, TSurgery, TCleaning),
+     write('1111'), nl ,write(OpType), nl,
+    compute_phase_times((TinS, TfinS),TAnesthesia, TSurgery, TCleaning  ,  Role, (TStart, TEnd)),
+    write('2222'), nl,
     retract(agenda_staff1(Staff, Day, Agenda)),
-    insert_agenda((TinS, TfinS, OpCode), Agenda, Agenda1),
-    assert(agenda_staff1(Staff, Day, Agenda1)),
+     write('3333'), write(OpType), nl,
+    insert_agenda((TStart, TEnd, OpCode), Agenda, Agenda1),
+     write('444444'), write(OpType), nl,
+    assertz(agenda_staff1(Staff, Day, Agenda1)),
 
-insert_agenda_staff((TinS, TfinS, OpCode), Day, LStaffs).
+    write('LStaffs final:'), write(LStaffs), nl,
 
+    insert_agenda_staff((TinS, TfinS, OpCode), Day, LStaffs).
+
+
+
+compute_phase_times((TinS, _), TAnesthesia,TSurgery, _, anaesthetist, (TinS, TEnd)) :-
+    TEnd is TinS + TAnesthesia + TSurgery -1.
+
+compute_phase_times((TinS, TEnd), TAnesthesia,_, TCleaning, orthopaedist , (TinS2, TEnd2)) :-
+    TinS2 is TinS + TAnesthesia-1,
+    TEnd2 is TEnd - TCleaning -1.
+
+compute_phase_times((TinS, TEnd), TAnesthesia,_, TCleaning, instrumenting , (TinS2, TEnd2)) :-
+    TinS2 is TinS + TAnesthesia-1,
+    TEnd2 is TEnd - TCleaning -1.
+
+compute_phase_times((TinS, TEnd), TAnesthesia,_, TCleaning, circulating , (TinS2, TEnd2)) :-
+    TinS2 is TinS + TAnesthesia-1,
+    TEnd2 is TEnd - TCleaning -1.
+
+
+compute_phase_times((TinS, TEnd), TAnesthesia,TSurgery, _, assistant_anaesthetist, (TinS2, TEnd)) :-
+    TinS2 is  TinS + TAnesthesia+TSurgery-1.
 
 % Predicado principal: tenta obter a melhor solução de agendamento para as operações.
 obtain_better_sol(Room,Day,AgOpRoomBetter,LAgStaffBetter,TFinOp):-
