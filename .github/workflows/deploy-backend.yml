@@ -60,7 +60,7 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           source: "Backend/*"
           target: "~/deploy-Backend"
-          rm: true
+          rm: false
           key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Deploy Server
