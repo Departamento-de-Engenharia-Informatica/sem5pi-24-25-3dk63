@@ -87,8 +87,13 @@ assignment_surgery(so100003,a001).
 agenda_operation_room(or1, 20241028, []).
 
 
-% staff_phase(Staff, TAnesthesia, TSurgery, TCleaning)
 
+
+% O doutor anestesista: fase de anestesia + fase de cirurgia.
+% O Dr. ortopedista, enfermeiro de instrumentação, enfermeiro circulante: fase de cirurgia.
+% Assistente anestesista: fase de limpeza.
+
+% staff_phase(Staff, TAnesthesia, TSurgery, TCleaning)
 staff_phase(anaesthetist, TAnesthesia, TSurgery, 0).  % Anestesia + Cirurgia
 staff_phase(orthopaedist, 0, TSurgery, 0).           % Apenas Cirurgia
 staff_phase(instrumenting, 0, TSurgery, 0).          % Apenas Cirurgia
