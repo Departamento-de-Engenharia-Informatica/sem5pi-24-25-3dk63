@@ -16,13 +16,13 @@ export class SurgeryRoomService implements ISurgeryRoomService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
 
   async getAll(): Promise<SurgeryRoom[]> {
-    const res = await this.http.get<SurgeryRoom[]>("/SurgeryRoom");
+    const res = await this.http.get<SurgeryRoom[]>(routeconfiguration.SURGERY_ROOM);
     return res.data;
   }
 
   async getById(id: string): Promise<SurgeryRoom | null> {
     try {
-      const res = await this.http.get<SurgeryRoom>(`/SurgeryRoom/${id}`);
+      const res = await this.http.get<SurgeryRoom>(`${routeconfiguration.SURGERY_ROOM}/${id}`);
       return res.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
@@ -33,7 +33,7 @@ export class SurgeryRoomService implements ISurgeryRoomService {
   }
 
   async create(data: CreatingSurgeryRoomDTO): Promise<SurgeryRoom> {
-    const res = await this.http.post<SurgeryRoom>("/SurgeryRoom", data);
+    const res = await this.http.post<SurgeryRoom>(routeconfiguration.SURGERY_ROOM, data);
     return res.data;
   }
 
@@ -50,7 +50,7 @@ export class SurgeryRoomService implements ISurgeryRoomService {
   }
 
   async delete(id: string): Promise<void> {
-    await this.http.delete(`/SurgeryRoom/${id}`);
+    await this.http.delete(`${routeconfiguration.SURGERY_ROOM}/${id}`);
     console.log("Surgery room deleted:", id);
   }
 
@@ -70,7 +70,7 @@ export class SurgeryRoomService implements ISurgeryRoomService {
 
   async createJson(): Promise<void> {
     try {
-      const res = await this.http.get<SurgeryRoom>(`/SurgeryRoom/createJson`);
+      const res = await this.http.get<SurgeryRoom>(routeconfiguration.SURGERY_ROOM_CREATEJSON);
     } catch (error) {
       if (axios.isAxiosError(error) && error.response?.status === 404) {
       }

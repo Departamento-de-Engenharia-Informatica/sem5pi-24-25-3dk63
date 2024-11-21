@@ -5,6 +5,7 @@ import { IOperationRequestService } from "./IService/IOperationRequestService";
 import { OperationRequest } from "@/model/OperationRequest";
 import { UpdateOperationRequestDTO } from "@/dto/UpdateOperationRequestDTO";
 import { CreatingOperationRequestDTO } from "@/dto/CreatingOperationRequestDTO";
+import routeconfiguration from "@/config/routeconfiguration.json";
 
 @injectable()
 export class OperationRequestService implements IOperationRequestService {
@@ -12,7 +13,7 @@ export class OperationRequestService implements IOperationRequestService {
 
   async getOperationRequests(): Promise<OperationRequest[]> {
     try {
-      const res = await this.http.get<OperationRequest[]>("/OperationRequest/doctor", { 
+      const res = await this.http.get<OperationRequest[]>(routeconfiguration.OPERATION_REQUEST_DOCTOR, { 
         headers: { 
           withCredentials: "true"
         }
@@ -29,7 +30,7 @@ export class OperationRequestService implements IOperationRequestService {
     const queryString = new URLSearchParams(query).toString();
     console.log("Query string:", queryString);
   
-    const res = await this.http.get<OperationRequest[]>(`/OperationRequest/search?${queryString}`, { 
+    const res = await this.http.get<OperationRequest[]>(`${routeconfiguration.SEARCH_OPERATION_REQUEST}?${queryString}`, { 
       headers: { 
         withCredentials: "true" 
       }
@@ -39,20 +40,20 @@ export class OperationRequestService implements IOperationRequestService {
   }
 
   async createOperationRequest(operationRequest: CreatingOperationRequestDTO): Promise<void> {
-    await this.http.post("/OperationRequest", operationRequest);
+    await this.http.post(routeconfiguration.OPERATION_REQUEST, operationRequest);
   }
 
   async deleteOperationRequest(id: string): Promise<void> {
-    await this.http.delete(`/OperationRequest/${id}`);
+    await this.http.delete(`${routeconfiguration.SEARCH_OPERATION_REQUEST}/${id}`);
     console.log("Operation request deleted:", id);
   }
 
   async editOperationRequest(operationRequest: UpdateOperationRequestDTO): Promise<void> {~
-    await this.http.patch(`/OperationRequest/${operationRequest.Id}`, operationRequest);
+    await this.http.patch(`${routeconfiguration.SEARCH_OPERATION_REQUEST}/${operationRequest.Id}`, operationRequest);
     console.log("Operation request updated:", operationRequest.Id);
   }
 
   async deactivateOperationRequest(id: string): Promise<void> {
-    await this.http.patch(`/OperationRequest/deactivate/${id}`, {});
+    await this.http.patch(`${routeconfiguration.DEACTIVATE_OPERATION_REQUEST}/${id}`, {});
   }
 }

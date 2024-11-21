@@ -1,9 +1,7 @@
 import path from "path";
 import react from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
-
-// URL do backend
-const BACKEND_URL = "https://localhost:5001";
+import routeconfiguration from "./src/config/routeconfiguration.json";
 
 export default defineConfig({
   base: "./",
@@ -16,7 +14,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: BACKEND_URL,
+        target: routeconfiguration.BACKEND_URL,
         changeOrigin: true,
         secure: false,
       },

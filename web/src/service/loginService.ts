@@ -3,14 +3,14 @@ import type { HttpService } from "./IService/HttpService";
 import { ILoginService } from "./IService/ILoginService";
 import { injectable } from "inversify";
 import { TYPES } from "@/inversify/types";
-
+import routeconfiguration from "@/config/routeconfiguration.json";
 @injectable()
 export class LoginService implements ILoginService {
   constructor(@inject(TYPES.api) private http: HttpService) {}
 
   async fetchClaims(): Promise<{ type: string; value: string }[]> {
     try {
-      const res = await this.http.get<any>("/claims", {
+      const res = await this.http.get<any>(routeconfiguration.CLAIMS, {
         headers: { withCredentials: "true" },
       });
 
@@ -31,17 +31,17 @@ export class LoginService implements ILoginService {
       )?.value;
 
       if (userRole === "Admin") {
-        return { userRole, redirectTo: "/admin" };
+        return { userRole, redirectTo: routeconfiguration.ADMIN };
       } else if (userRole === "Patient") {
-        return { userRole, redirectTo: "/patient" };
+        return { userRole, redirectTo: routeconfiguration.PATIENT };
       } else if (
         userRole === "Doctor" ||
         userRole === "Nurse" ||
         userRole === "Technician"
       ) {
-        return { userRole, redirectTo: "/staff" };
+        return { userRole, redirectTo: routeconfiguration.STAFF };
       } else {
-        return { userRole: userRole ?? "Guest", redirectTo: "/" };
+        return { userRole: userRole ?? "Guest", redirectTo: routeconfiguration.HOME };
       }
     } catch (error) {
       console.error("Error processing claims:", error);
@@ -52,7 +52,7 @@ export class LoginService implements ILoginService {
   async loginWithToken(token: string): Promise<void> {
     try {
       const response = await this.http.post<any>(
-        "/weblogin",
+        routeconfiguration.WEBLOGIN,
         { token },
         {
           headers: { withCredentials: "true" },

@@ -1,0 +1,49 @@
+{   
+    "BACKEND_URL": "https://localhost:5001",
+
+    "HOME": "/",
+
+    "WEBLOGIN": "/weblogin",
+
+    "ROLES": "/roles",
+
+    "OPERATION_REQUEST": "/OperationRequest",
+    "OPERATION_REQUEST_DOCTOR": "/OperationRequest/doctor",
+    "SEARCH_OPERATION_REQUEST": "/OperationRequest/search", 
+    "DEACTIVATE_OPERATION_REQUEST": "/OperationRequest/deactivate",
+    
+    "OPERATION_TYPE": "/OperationTypes", 
+    "SEARCH_OPERATION_TYPE": "/OperationType/search",
+    "DEACTIVATE_OPERATION_TYPE": "/OperationType/deactivate",
+    "OPERATION_TYPE_ALL": "/OperationType/all",
+  
+    "PATIENT": "/patient",
+    "PATIENTS": "/patients",
+    "SEARCH_PATIENTS": "/patients/search", 
+    "PATIENT_REGISTRATION": "/patients/register-patient",
+    "PATIENT_SELF_REGISTRATION": "/Registrations/self-register", 
+    "PATIENT_CONFIRM_REGISTRATION": "/Registrations/confirm-email",
+    
+    "STAFF": "/staff",
+    "SEARCH_STAFF": "/staff/search",
+    "STAFF_UPDATE": "/staff/update", 
+    "DEACTIVATE_STAFF": "/staff/deactivate",
+    "STAFF_CONFIRM_UPDATE": "/staff/confirm-update",
+    "STAFF_DOCTOR": "/staff/doctor",
+
+    "ADMIN": "/admin",
+  
+    "SURGERY_ROOM": "/SurgeryRoom",
+    "SURGERY_ROOM_BY_NUMBER": "/SurgeryRoom/number",
+    "SURGERY_ROOM_CREATEJSON": "/SurgeryRoom/createJson",
+    
+    "USERS": "/users",
+    "USER_SIGNUP": "/users/signup",
+    "USER_ME": "/me",
+    "USER_REQUESTS": "/requests",
+
+    "CLAIMS": "/claims",
+
+    "SPECIALIZATION": "/specialization"
+
+}

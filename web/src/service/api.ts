@@ -1,7 +1,8 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from "axios";
+import routeconfiguration from "@/config/routeconfiguration.json";
 
 const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL || "https://localhost:5001") +
+  (import.meta.env.VITE_API_BASE_URL ||routeconfiguration.BACKEND_URL) +
   "/api";
 
 const api = axios.create({
