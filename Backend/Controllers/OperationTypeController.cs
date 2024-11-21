@@ -61,7 +61,7 @@ namespace DDDSample1.Controllers
             {
             var adminEmail = User.FindFirstValue(ClaimTypes.Email);
             var operationType = await _service.AddAsync(dto, adminEmail );
-
+            Console.WriteLine("BOAS PESSOAL");
             return Ok(operationType);
             }
             catch (BusinessRuleValidationException ex)

@@ -281,7 +281,7 @@ namespace DDDSample1.OperationRequests
                         Status = or.Active ? "Active" : "Inactive",
                         Priority = or.priority.Value.ToString(),
                         Deadline = or.deadline.Value,
-                        AssignedStaff = operationTypeEntity.RequiredStaff?.RequiredNumber.ToString()
+                        AssignedStaff = operationTypeEntity.RequiredStaff?.Sum(rs => rs.RequiredNumber).ToString()
                             ?? throw new InvalidOperationException("Required staff information is missing.")
                     });
                 }

@@ -52,7 +52,7 @@ namespace DDDSample1.OperationsType
                 Id = operationType.Id.AsGuid(),
                 Name = operationType.Name,
                 Duration = operationType.Duration,
-                RequiredStaff = operationType.RequiredStaff,
+                RequiredStaff = operationType.RequiredStaff.Select(rs => rs.RequiredNumber).ToList(), 
                 Specializations = operationType.Specializations // Adaptado para a lista
             });
 
@@ -86,7 +86,7 @@ namespace DDDSample1.OperationsType
                     Name = operationType.Name,
                     Specialization = new Description(string.Join(", ", specializations)),
                     Active = operationType.Active,
-                    RequiredStaff = operationType.RequiredStaff,
+                    RequiredStaff = operationType.RequiredStaff.Select(rs => rs.RequiredNumber).ToList(), 
                     Duration = operationType.Duration
                 });
             }
@@ -118,6 +118,8 @@ namespace DDDSample1.OperationsType
 
         public async Task<OperationTypeDTO> AddAsync(CreatingOperationTypeDTO dto, string adminEmail)
         {
+                        Console.WriteLine("BOAS PESSOAL");
+
             var name = new OperationName(dto.Name);
 
             // Verificar se já existe uma operação com o mesmo nome
@@ -128,8 +130,11 @@ namespace DDDSample1.OperationsType
             }
 
             var duration = new Duration(dto.Preparation, dto.Surgery, dto.Cleaning);
-            var requiredStaff = new RequiredStaff(dto.RequiredStaff);
-
+            var requiredStaffs = new List<RequiredStaff>();
+            foreach (var nrStaff in dto.RequiredStaff)
+            {
+                requiredStaffs.Add(new RequiredStaff(nrStaff));
+            }
             // Processar especializações
             var specializations = new List<SpecializationId>();
             foreach (var specializationDescription in dto.Specialities)
@@ -143,7 +148,7 @@ namespace DDDSample1.OperationsType
             }
 
             // Criar o OperationType
-            var operationType = new OperationType(name, duration, requiredStaff, specializations);
+            var operationType = new OperationType(name, duration, requiredStaffs, specializations);
 
             // Logar auditoria
             _auditService.LogCreateOperationType(operationType, adminEmail);
@@ -175,7 +180,8 @@ namespace DDDSample1.OperationsType
 
             operationType.ChangeName(dto.Name);
             operationType.ChangeDuration(dto.Duration);
-            operationType.ChangeRequiredStaff(dto.RequiredStaff);
+            var requiredStaffs = dto.RequiredStaff.Select(rs => new RequiredStaff(rs)).ToList();
+            operationType.ChangeRequiredStaff(requiredStaffs);
 
             await this._unitOfWork.CommitAsync();
 
@@ -362,7 +368,7 @@ namespace DDDSample1.OperationsType
                     Name = operationType.Name,
                     Specialization = new Description(string.Join(", ", specializations)),  // Junta as especializações em uma string
                     Active = operationType.Active,
-                    RequiredStaff = operationType.RequiredStaff,
+                    RequiredStaff = operationType.RequiredStaff.Select(rs => rs.RequiredNumber).ToList(),   // Junta os funcionários necessários em uma string
                     Duration = operationType.Duration
                 });
             }

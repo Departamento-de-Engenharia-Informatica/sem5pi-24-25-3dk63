@@ -1,3 +1,4 @@
+using System.Text.Json;
 using DDDSample1.Domain;
 using DDDSample1.Domain.OperationsType;
 using DDDSample1.Domain.Specialization;
@@ -41,13 +42,15 @@ namespace DDDSample1.Infraestructure.OperationTypes
                     .IsRequired();
             });
 
-            // Configura a propriedade RequiredStaff (Value Object)
-            builder.OwnsOne(o => o.RequiredStaff, requiredStaff =>
-            {
-                requiredStaff.Property(rs => rs.RequiredNumber)
-                    .HasColumnName("RequiredNumber")
-                    .IsRequired();
-            });
+            builder.Property(o => o.RequiredStaff)
+                    .HasConversion(
+                        rs => JsonSerializer.Serialize(rs, new JsonSerializerOptions { WriteIndented = false }),
+                        rs => JsonSerializer.Deserialize<List<RequiredStaff>>(rs, new JsonSerializerOptions()) ?? new List<RequiredStaff>()
+                    )
+                    .HasColumnName("RequiredStaff")
+                    .IsRequired(false);
+
+            
             // Configura a propriedade Active
             builder.Property(o => o.Active)
                 .IsRequired();

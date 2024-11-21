@@ -11,8 +11,8 @@ namespace DDDSample1.Domain
     {
         public OperationName Name { get; private set; }
         public Duration Duration { get; private set; }
-        public RequiredStaff RequiredStaff { get; private set; }
-         public List<SpecializationId> Specializations { get; private set; }
+        public List<RequiredStaff> RequiredStaff { get; private set; }
+        public List<SpecializationId> Specializations { get; private set; }
         public bool Active { get; private set; }
 
         public OperationType()
@@ -20,23 +20,23 @@ namespace DDDSample1.Domain
             this.Active = true;
         }
 
-        public OperationType(OperationName name, Duration duration, RequiredStaff requiredStaff, List<SpecializationId> specializations)
+        public OperationType(OperationName name, Duration duration, List<RequiredStaff> requiredStaff, List<SpecializationId> specializations)
         {
             this.Id = new OperationTypeId(Guid.NewGuid());
             this.Active = true;
             this.Name = name;
             this.Duration = duration;
-            this.RequiredStaff = requiredStaff;
+            this.RequiredStaff = requiredStaff?? new List<RequiredStaff>();
             this.Specializations = specializations ?? new List<SpecializationId>();
         }
 
-        public OperationType(OperationTypeId id, OperationName name, Duration duration, RequiredStaff requiredStaff, List<SpecializationId> specializations)
+        public OperationType(OperationTypeId id, OperationName name, Duration duration, List<RequiredStaff> requiredStaff, List<SpecializationId> specializations)
         {
             this.Id = id;
             this.Active = true;
             this.Name = name;
             this.Duration = duration;
-            this.RequiredStaff = requiredStaff;
+            this.RequiredStaff = requiredStaff?? new List<RequiredStaff>();
             this.Specializations = specializations ?? new List<SpecializationId>();
         }
 
@@ -52,10 +52,10 @@ namespace DDDSample1.Domain
             this.Duration = duration;
         }
 
-        public void ChangeRequiredStaff(RequiredStaff requiredStaff)
+        public void ChangeRequiredStaff(List<RequiredStaff> requiredStaff)
         {
-            if (!this.Active) throw new BusinessRuleValidationException("Operation type cannot be changed in this state");
-            this.RequiredStaff = requiredStaff;
+            if (!Active) throw new BusinessRuleValidationException("Operation type cannot be changed in this state");
+            RequiredStaff = requiredStaff ?? new List<RequiredStaff>();
         }
 
         public void ChangeSpecializationId(List<SpecializationId> specializations)
