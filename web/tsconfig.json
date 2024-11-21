@@ -33,6 +33,10 @@
       "@/*": ["src/*"]
     }
   },
-  "include": ["src/**/*", "src/Floor/hospital.d.ts"],
+  "include": [
+  "src/**/*",
+  "cypress/**/*.ts",
+  "node_modules/cypress/types/**/*.ts"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

@@ -96,9 +96,9 @@ function App() {
                 <Route
                   path="/admin/patient"
                   element={
-                    <ProtectedRoute requiredRoles={["Admin"]}>
+                    //<ProtectedRoute requiredRoles={["Admin"]}>
                       <AdminPatient setAlertMessage={setAlertMessage} />
-                    </ProtectedRoute>
+                    //</ProtectedRoute>
                   }
                 />
                 <Route

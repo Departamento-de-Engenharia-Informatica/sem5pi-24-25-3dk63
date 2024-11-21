@@ -56,13 +56,13 @@ namespace DDDSample1
 
             services.AddCors(options =>
             {
-                  options.AddPolicy("CorsPolicy", builder =>
-                {
-                    builder.WithOrigins("http://localhost:5173")
-                        .AllowAnyMethod()
-                        .AllowAnyHeader()
-                        .AllowCredentials();
-                });
+                options.AddPolicy("CorsPolicy", builder =>
+              {
+                  builder.WithOrigins("http://localhost:5173")
+                      .AllowAnyMethod()
+                      .AllowAnyHeader()
+                      .AllowCredentials();
+              });
             });
 
 
@@ -85,11 +85,12 @@ namespace DDDSample1
                 options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = GoogleDefaults.AuthenticationScheme;
             })
-            .AddCookie(options => {
+            .AddCookie(options =>
+            {
 
                 options.Cookie.SameSite = SameSiteMode.None;
                 options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-                options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                options.ExpireTimeSpan = TimeSpan.FromDays(150);
             })
 
             .AddGoogle(GoogleDefaults.AuthenticationScheme, options =>
@@ -190,7 +191,7 @@ namespace DDDSample1
             // Surgery Room Services
             services.AddTransient<ISurgeryRoomRepository, SurgeryRoomRepository>();
             services.AddTransient<SurgeryRoomService>();
-            
+
             //Specialization services
             services.AddTransient<ISpecializationRepository, SpecializationRepository>();
             services.AddTransient<SpecializationService>();
