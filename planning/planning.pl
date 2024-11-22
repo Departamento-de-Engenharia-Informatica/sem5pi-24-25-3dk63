@@ -89,6 +89,7 @@ agenda_operation_room(or2, 20241028, []).
 
 
 %-------------------------------------------------------------------------------------------------------------%
+find_free_agendas(Date):-retractall(availability(_,_,_)),findall(_,(agenda_staff(D,Date,L),free_agenda0(L,LFA),adapt_timetable(D,Date,LFA,LFA2),assertz(availability(D,Date,LFA2))),_).
 
 free_agenda0([], [(0, 1440)]).
 
