@@ -371,7 +371,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               onChange={(e) =>
                 setStaffToEdit((prev: any) => ({
                   ...prev,
-                  email: { value: e.target.value },
+                  Email: { value: e.target.value },
                 }))
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
@@ -389,7 +389,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
                 if (regex.test(value)) {
                   setStaffToEdit((prev: any) => ({
                     ...prev,
-                    phoneNumber: { number: value },
+                    phoneNumber: { Number: value },
                   }));
                 }
               }}
@@ -402,7 +402,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
                 onChange={(e) =>
                   setStaffToEdit((prev: any) => ({
                     ...prev,
-                    specialization: e.target.value,
+                    Specialization: e.target.value,
                   }))
                 }
                 className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
