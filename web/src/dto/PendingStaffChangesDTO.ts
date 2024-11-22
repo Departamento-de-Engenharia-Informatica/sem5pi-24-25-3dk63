@@ -1,9 +1,15 @@
 export interface PendingStaffChangesDTO {
-  email: string;
-  phoneNumber: string;
-  specializationDescription: string;
-  availabilitySlots: {
-    start: string;
-    end: string;
-  }[];
+  Email: {
+    value: string;
+  };
+  phoneNumber: {
+    Number: string;
+  };
+  Specialization: string;
+  AvailabilitySlots: {
+    Slots: {
+      Start: string;
+      End: string;
+    }[];
+  };
 }
