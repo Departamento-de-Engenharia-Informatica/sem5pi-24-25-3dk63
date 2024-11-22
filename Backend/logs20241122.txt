@@ -2,3 +2,8 @@
 2024-11-22 11:08:11.332 +00:00 [INF] Patient 202410000004 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/22/2024 11:08:11 AM
 2024-11-22 11:08:11.332 +00:00 [INF] User bd9a5127-8cef-4fe7-a77f-6cf116f7bfba was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/22/2024 11:08:11 AM
 2024-11-22 18:45:29.165 +00:00 [INF] OperationType asda (09907c60-ba94-4a44-84a5-4d8d2970cb40) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 18:45:29
+2024-11-22 18:52:55.054 +00:00 [INF] OperationType erro (185a4ed2-4d7d-4ed6-a635-9f1cf5bd5d96) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 18:52:55
+2024-11-22 18:55:22.004 +00:00 [INF] OperationType sdfsdf (31251152-529e-4b0b-9ad7-9e2956d57b77) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 18:55:22
+2024-11-22 19:08:45.442 +00:00 [INF] OperationType asd (dfe2df45-cbd0-44da-8263-d97205f5a3d3) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 19:08:45
+2024-11-22 19:16:33.657 +00:00 [INF] OperationType já está (d05c5a25-5d53-4e7d-beae-141687a9c1a1) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 19:16:33
+2024-11-22 19:19:10.964 +00:00 [INF] OperationType ehehe (f94cab4b-9924-4584-b2b1-f53fc689a373) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 19:19:10
