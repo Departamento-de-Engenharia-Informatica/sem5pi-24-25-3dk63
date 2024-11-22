@@ -1,3 +1,6 @@
+# 1221959 
+# As system administrator, I want to define the MBCO (Minimum Business Continuity Objective) to propose to stakeholders
+
 O MBCO (Minimum Business Continuity Objective) define o nível mínimo de operacionalidade que deve ser mantido durante uma disrupção na infraestrutura. Por exemplo, enquanto um serviço como S1 pode estar indisponível, outro serviço, como S2, deve operar a um nível aceitável. Esse nível aceitável é avaliado com base em critérios de segurança, integridade e disponibilidade (tempo de resposta) que são previamente estabelecidos e aceites pela organização. 
 
 A missão da nossa organização é gerir, de forma eficaz e eficiente, os recursos e o staff de um hospital, incluindo enfermeiros, doutores e estagiários. Para tal, é necessário manter uma operação otimizada ao longo dos dias, assegurando a gestão adequada de salas, marcações, tipos de operação e outros recursos hospitalares. 
