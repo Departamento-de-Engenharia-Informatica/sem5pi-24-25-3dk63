@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Loading from "@/components/Loading/index";
 import Alert from "@/components/Alert/index";
 import Table from "@/components/Card";
@@ -6,10 +6,13 @@ import { useAppointmentsListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import Checkbox from "@/components/CheckBox";
+import SidebarMenu from "@/components/SidebarMenu";
 
 interface AppointmentsListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
 }
+
+
 
 const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) => {
   const {
@@ -40,16 +43,19 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
     ...appointment,
     Actions: renderActions(appointment),
   }));
-
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
   return (
-    <div className="relative">
-      <HamburgerMenu options={menuOptions} onClick={() => {}} />
-      <div className="container mx-auto p-4">
-        {loading && <Loading loadingText={true} />}
-        {error && <Alert type="error" message={error} />}
-        {!loading && appointments.length === 0 && (
-          <Alert type="info" message="You don't have any appointments." />
-        )}
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden">      <HamburgerMenu options={menuOptions}/>
+    <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
+      <SidebarMenu options={menuOptions} title = "Patient Menu"  basePath="/patient"/>
+    </div>
+
+     <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto flex flex-col">
+       <div className="lg:hidden mb-4">
+          <HamburgerMenu
+            options={menuOptions}
+          />
+        </div>
         <div className="mb-4 flex items-center">
           <Checkbox
             label="Active"
@@ -62,12 +68,17 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
             onChange={() => setShowInactive(!showInactive)}
           />
         </div>
-        <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} totalPages={totalPages}
+        {loading && <Loading loadingText />}
+        {error && <Alert type="error" message={error} />}
+        <div className="overflow-x-auto overflow-y-auto">
+          <Table
+            headers={headers}
+            data={tableData}
+            totalPages={totalPages}
             currentPage={currentPage}
-            onPageChange={setCurrentPage}/>
+            onPageChange={setCurrentPage}
+          />
         </div>
-      
       </div>
     </div>
   );
