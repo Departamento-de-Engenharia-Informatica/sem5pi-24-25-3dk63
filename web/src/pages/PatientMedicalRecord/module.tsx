@@ -22,10 +22,15 @@ export const useMedicalRecordsListModule = (
   const headers = ["Record ID", "Patient Name", "Date", "Notes"];
 
   const menuOptions = [
-    { label: "Homepage", action: () => navigate("/") },
-    { label: "Patient", action: () => navigate("/patient") },
-  ];
-
+  {
+    label: "Appointments",
+    action: () => navigate("/patient/appointments")
+  },
+  {
+    label: "Medical Record",
+    action: () => navigate("/patient/medical-record")
+  },
+];
   const fetchMedicalRecords = async () => {
     setLoading(true);
     setError(null);

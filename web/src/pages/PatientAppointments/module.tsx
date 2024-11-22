@@ -21,10 +21,17 @@ export const useAppointmentsListModule = (
 
   const itemsPerPage = 10;
   const headers = ["Date", "Hour", "Room", "Active"];
+
   const menuOptions = [
-    { label: "Homepage", action: () => navigate("/") },
-    { label: "Patient", action: () => navigate("/patient") },
-  ];
+  {
+    label: "Appointments",
+    action: () => navigate("/patient/appointments")
+  },
+  {
+    label: "Medical Record",
+    action: () => navigate("/patient/medical-record")
+  },
+];
 
   const fetchAppointments = async () => {
     console.log("Fetching appointments...");

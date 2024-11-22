@@ -76,13 +76,13 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
 
   return (
     <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
-      <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
-        <SidebarMenu options={menuOptions} title = "Admin Panel"  basePath="/admin"/>
-      </div>
-      {/* Conteúdo principal */}
+    <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
+      <SidebarMenu options={menuOptions} title = "Admin Panel"  basePath="/admin"/>
+    </div>
+    {/* Conteúdo principal */}
     <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto flex flex-col">
       {/* Hamburger Menu: Só visível em telas pequenas */}
-    <div className="lg:hidden mb-4">
+      <div className="lg:hidden mb-4">
           <HamburgerMenu
             options={menuOptions}
           />
@@ -126,8 +126,6 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             currentPage={currentPage}
             onPageChange={setCurrentPage}
           />
-
-
         </div>
 
       </div>
