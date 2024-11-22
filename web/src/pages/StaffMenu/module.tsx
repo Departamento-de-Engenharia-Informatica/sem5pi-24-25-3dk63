@@ -10,7 +10,7 @@ export const useStaffMenuModule = () => {
   const menuOptions = [
   {
     label: "Manage requests",
-    action: () => navigate("operation-requests")
+    action: () => navigate("/staff/operation-requests")
   },
   {
     label: "Open 3D",

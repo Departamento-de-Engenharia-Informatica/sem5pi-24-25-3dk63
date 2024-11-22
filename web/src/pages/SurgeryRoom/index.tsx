@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useSurgeryRoomListModule } from "./module";
 import Loading from "@/components/Loading";
 import Alert from "@/components/Alert";
@@ -10,6 +10,7 @@ import SearchFilter from "@/components/SearchFilter";
 import DropdownMenu from "@/components/DropdownMenu";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
+import SidebarMenu from "@/components/SidebarMenu";
 
 interface SurgeryRoomListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -26,19 +27,6 @@ const SurgeryRoomList: React.FC<SurgeryRoomListProps> = ({ setAlertMessage }) =>
     currentPage,
     setCurrentPage,
     itemsPerPage,
-    isModalVisible,
-    setIsModalVisible,
-    surgeryRoomToEdit,
-    setSurgeryRoomToEdit,
-    handleEdit,
-    handleDelete,
-    saveChanges,
-    searchSurgeryRooms,
-    popupMessage,
-    setPopupMessage,
-    confirmDeactivate,
-    setConfirmDeactivate,
-    handleCancelDeactivate,
     roomNumber,
     setRoomNumber,
   } = useSurgeryRoomListModule(setAlertMessage);
@@ -50,68 +38,33 @@ const SurgeryRoomList: React.FC<SurgeryRoomListProps> = ({ setAlertMessage }) =>
   const tableData = surgeryRooms.map((surgeryRoom) => ({
     ...surgeryRoom,
   }));
+ const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   return (
-    <div className="relative">
-      <HamburgerMenu options={menuOptions} onClick={() => {}} />
-      <div className="container mx-auto p-4">
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
+    <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
+          <SidebarMenu options={menuOptions} title = "Staff Panel"  basePath="/staff"/>
+    </div>
+    <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto flex flex-col">
+    {/* Conteúdo principal */}
+      <div className="lg:hidden mb-4">
+        <HamburgerMenu
+          options={menuOptions}
+        />
+      </div>
         {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
-        <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} totalPages={totalPages}
+        <div className="overflow-x-auto overflow-y-auto">
+          <Table
+            headers={headers}
+            data={tableData}
+            totalPages={totalPages}
             currentPage={currentPage}
-            onPageChange={setCurrentPage}/>
-        </div>
-       
+            onPageChange={setCurrentPage}
+        />
       </div>
-
-      {isModalVisible && (
-        <Modal
-          isVisible={isModalVisible}
-          setIsVisible={setIsModalVisible}
-          title="Edit Surgery Room Information"
-        >
-          <div className="p-6">
-            <label className="block text-sm font-medium text-gray-700">Name</label>
-            <input
-              type="text"
-              value={surgeryRoomToEdit?.name || ""}
-              onChange={(e) =>
-                setSurgeryRoomToEdit((prev: any) => ({
-                  ...prev,
-                  name: e.target.value,
-                }))
-              }
-              className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
-            />
-            <button
-              onClick={saveChanges}
-              className="mt-6 w-full bg-[#284b62] text-white font-semibold py-2 rounded-md hover:bg-opacity-80 transition duration-200"
-            >
-              Save
-            </button>
-          </div>
-        </Modal>
-      )}
-
-      <Popup
-        isVisible={!!popupMessage}
-        setIsVisible={() => setPopupMessage(null)}
-        message={popupMessage}
-      />
-
-      <Confirmation
-        isVisible={!!confirmDeactivate}
-        onConfirm={() => {
-          if (confirmDeactivate) {
-            confirmDeactivate();
-            setConfirmDeactivate(null);
-          }
-        }}
-        onCancel={handleCancelDeactivate}
-        message="Are you sure you want to delete this surgery room?"
-      />
     </div>
+  </div>
   );
 };
 
