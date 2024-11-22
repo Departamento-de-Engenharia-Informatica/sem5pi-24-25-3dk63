@@ -166,14 +166,6 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             onPageChange={setCurrentPage}
           />
         </div>
-
-        <div className="overflow-x-auto">
-          <Table headers={headers} data={tableData} totalPages={totalPages}
-            currentPage={currentPage}
-            onPageChange={setCurrentPage}/>
-        </div>
-
-
       </div>
 
       {isAddModalVisible && (
