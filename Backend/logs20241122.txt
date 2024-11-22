@@ -1,3 +1,4 @@
 2024-11-22 10:50:37.601 +00:00 [INF] Staff D111111111 was deactivated by Admin (lapr3dkg69sup@gmail.com) on 11/22/2024 10:50:37 AM
 2024-11-22 11:08:11.332 +00:00 [INF] Patient 202410000004 was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/22/2024 11:08:11 AM
 2024-11-22 11:08:11.332 +00:00 [INF] User bd9a5127-8cef-4fe7-a77f-6cf116f7bfba was deleted by Admin (lapr3dkg69sup@gmail.com) on 11/22/2024 11:08:11 AM
+2024-11-22 18:45:29.165 +00:00 [INF] OperationType asda (09907c60-ba94-4a44-84a5-4d8d2970cb40) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 18:45:29

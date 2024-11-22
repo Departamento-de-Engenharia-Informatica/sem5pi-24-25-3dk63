@@ -207,86 +207,103 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
             }
             className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
           />
-
-          <label className="block text-sm font-medium text-gray-700 mt-4">Required Staff</label>
-          <input
-            type="number"
-            value={creatingOperationType?.requiredStaff || ""}
-            min="1"
-            onKeyDown={(e) => {
-              if (e.key === "e" || e.key === "E") {
-                e.preventDefault();
+          <label className="block text-sm font-medium text-gray-700 mt-4">Specialization and Required Staff</label>
+          <div className="relative">
+            <button
+              className="block w-full text-left border border-gray-300 rounded-md shadow-sm p-2 bg-white focus:outline-none focus:ring focus:ring-blue-500"
+              onClick={() =>
+                setCreatingOperationType((prev: any) => ({
+                  ...prev,
+                  showSpecializationDropdown: !prev?.showSpecializationDropdown,
+                }))
               }
-            }}
-            onChange={(e) =>
-              setCreatingOperationType((prev: any) => ({
-                ...prev,
-                requiredStaff: parseInt(e.target.value, 10),
-              }))
-            }
-            className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
-          />
-<label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
-<div className="relative">
-  <button
-    className="block w-full text-left border border-gray-300 rounded-md shadow-sm p-2 bg-white focus:outline-none focus:ring focus:ring-blue-500"
-    onClick={() =>
-      setCreatingOperationType((prev: any) => ({
-        ...prev,
-        showSpecializationDropdown: !prev?.showSpecializationDropdown,
-      }))
-    }
-  >
-    {creatingOperationType?.specialities?.length > 0
-      ? creatingOperationType.specialities.join(', ')
-      : 'Select Specializations'}
-  </button>
-  {creatingOperationType?.showSpecializationDropdown && (
-    <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
-      {specializations.map((spec) => (
-        <div key={spec.id} className="flex items-center px-4 py-2">
-          <input
-            type="checkbox"
-            id={`specialization-${spec.id}`}
-            value={spec.description}
-            checked={
-              creatingOperationType?.specialities?.includes(spec.description) || false
-            }
-            onChange={(e) => {
-              const selectedSpecialization = e.target.value;
-              setCreatingOperationType((prev: any) => {
-                const currentSpecialities = prev?.specialities || [];
-                if (e.target.checked) {
-                  return {
-                    ...prev,
-                    specialities: [...currentSpecialities, selectedSpecialization],
-                  };
-                } else {
+            >
+            {creatingOperationType?.specialities?.length > 0
+                  ? creatingOperationType.specialities
+                  .map((spec: any, index: number) => `${spec} (${creatingOperationType.requiredStaff[index] || 1})`)
+                  .join(', ')
+              : 'Select Specializations'}
+              </button>
+              {creatingOperationType?.showSpecializationDropdown && (
+                <div className="absolute z-10 mt-2 w-full bg-white border border-gray-300 rounded-md shadow-lg">
+                {specializations.map((spec) => (
+                  <div key={spec.id} className="flex items-center px-4 py-2">
+                    <input
+                      type="checkbox"
+                      id={`specialization-${spec.id}`}
+                      value={spec.description}
+                      checked={
+                        creatingOperationType?.specialities?.includes(spec.description) || false
+                      }
+                      onChange={(e) => {
+                        const selectedSpecialization = e.target.value;
+                        setCreatingOperationType((prev: any) => {
+                          const currentSpecialities = prev?.specialities || [];
+                          const currentRequiredStaff = prev?.requiredStaff || [];
+                          if (e.target.checked) {
+                            return {
+                              ...prev,
+                              specialities: [...currentSpecialities, selectedSpecialization],
+                              requiredStaff: [...currentRequiredStaff, 1],
+                            };
+                          } else {
+                            const indexToRemove = currentSpecialities.indexOf(selectedSpecialization);
+
                   return {
                     ...prev,
                     specialities: currentSpecialities.filter(
                       (spec: string) => spec !== selectedSpecialization
+                    ),
+                    requiredStaff: currentRequiredStaff.filter(
+                      (item: any) => item.specialization !== selectedSpecialization
                     ),
                   };
                 }
               });
             }}
             className="mr-2"
-          />
-          <label
-            htmlFor={`specialization-${spec.id}`}
-            className="text-gray-700"
-          >
-            {spec.description}
-          </label>
-        </div>
-      ))}
-    </div>
-  )}
-</div>
-
-
-
+                    />
+                    <label
+                      htmlFor={`specialization-${spec.id}`}
+                      className="text-gray-700"
+                    >
+                      {spec.description}
+                    </label>
+                    {/* Add new required staff input field */}
+                    {creatingOperationType?.specialities?.includes(spec.description) && (
+                      <div className="ml-4">
+                        <input
+                          type="number"
+                          value={
+                            creatingOperationType?.requiredStaff?.[
+                              creatingOperationType.specialities.indexOf(spec.description)
+                            ] || 1}
+                          min="1"
+                          onKeyDown={(e) => {
+                            if (e.key === "e" || e.key === "E") {
+                              e.preventDefault();
+                            }
+                          }}
+                          onChange={(e) =>
+                            setCreatingOperationType((prev: any) => {
+                              const indexToUpdate = prev.specialities.indexOf(spec.description);
+                              const updatedRequiredStaff = [...prev.requiredStaff];
+                              updatedRequiredStaff[indexToUpdate] = parseInt(e.target.value, 10);
+                              return {
+                                ...prev,
+                                requiredStaff: updatedRequiredStaff,
+                              };
+                            })
+                          }
+                          className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
+                        />
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+              )}
+            </div>
             <button
               onClick={saveOperationType}
               className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"

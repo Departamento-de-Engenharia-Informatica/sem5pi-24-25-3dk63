@@ -12,7 +12,7 @@
     "SEARCH_OPERATION_REQUEST": "/OperationRequest/search", 
     "DEACTIVATE_OPERATION_REQUEST": "/OperationRequest/deactivate",
     
-    "OPERATION_TYPE": "/OperationTypes", 
+    "OPERATION_TYPE": "/OperationType", 
     "SEARCH_OPERATION_TYPE": "/OperationType/search",
     "DEACTIVATE_OPERATION_TYPE": "/OperationType/deactivate",
     "OPERATION_TYPE_ALL": "/OperationType/all",
