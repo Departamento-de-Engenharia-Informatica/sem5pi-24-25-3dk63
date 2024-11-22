@@ -44,8 +44,19 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const headers = ["Patient Name", "Operation Type", "Priority", "Assigned Staff", "Deadline", "Status", "Actions"];
 
   const menuOptions = [
-    { label: "Homepage", action: () => navigate("/") },
-    { label: "Staff Menu", action: () => navigate("/staff") },
+  {
+    label: "Manage requests",
+    action: () => navigate("/staff/operation-requests")
+  },
+  {
+    label: "Open 3D",
+    action: () => navigate("/staff/floor")
+  },
+
+  {
+    label: "Surgery Rooms",
+    action: () => navigate("/staff/surgery-rooms")
+  }
   ];
 
   const formatDate = (dateString: string) => {
@@ -53,7 +64,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     const [year, month, day] = dateParts.split('-');
     return `${day}-${month}-${year}`;
   };
-  
+
   const fetchOperationRequests = async () => {
     setLoading(true);
     setError(null);
@@ -84,30 +95,30 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
 
   const buildOperationUpdateDTO = (originalRequest: any, updatedFields: any) => {
     const updatedRequestDTO: UpdateOperationRequestDTO = { Id: originalRequest.Id };
-  
+
     if (updatedFields.deadline) updatedRequestDTO.Deadline = updatedFields.deadline;
     if (updatedFields.priority) updatedRequestDTO.Priority = updatedFields.priority;
-  
+
     return updatedRequestDTO;
   };
-  
+
   const handleEdit = async (request: any) => {
     const updatedFields = {
       deadline: request.deadline,
       priority: request.priority,
     };
-  
+
     const updatedRequestDTO = buildOperationUpdateDTO(request, updatedFields);
-  
+
     if (!updatedRequestDTO.Id) {
       setAlertMessage("Request ID is missing.");
       return;
     }
-  
+
     setEditingRequest(updatedRequestDTO);
     setIsEditModalVisible(true);
   };
-  
+
   const handleEditSubmit = async () => {
     if (editingRequest) {
       try {
@@ -177,19 +188,19 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const fetchActiveOperationTypes = async () => {
     try {
       const allOperationTypes = await operationTypeService.getOperationTypes();
-  
+
       const activeOperationTypes = allOperationTypes.filter((operationType: any) => operationType.active);
-  
+
       setFilterOperationRequests(activeOperationTypes);
     } catch (error) {
       console.error("Erro ao buscar tipos de operação ativos:", error);
     }
   };
-  
+
   useEffect(() => {
     fetchActiveOperationTypes();
   }, []);
-  
+
   useEffect(() => {
     const fetchAdditionalData = async () => {
       try {
@@ -207,20 +218,20 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         const specialization = specializationService.getSpecializationById(doctor.specializationId);
 
         const resolvedSpec = await specialization;
-  
+
         const activeOperationTypes = operationTypes.filter((operationType) => operationType.active);
 
         const sameSpecializationTypes = activeOperationTypes.filter(
           (operationType) => operationType.specialization.value === resolvedSpec.description
         );
-  
+
         setOperationTypes(sameSpecializationTypes);
         setPatients(patients);
       } catch (error) {
         console.error("Failed to fetch additional data:", error);
       }
     };
-  
+
     if (isAddModalVisible) {
       fetchAdditionalData();
     }
@@ -232,7 +243,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     setOperationRequests([]);
     try {
       const requestsData = await operationRequestService.searchOperationRequests(query);
-  
+
       const filteredData = requestsData.map((request) => ({
         "Patient Name": `${request.patientName}`,
         "Operation Type": request.operationType,
@@ -242,38 +253,38 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         "Assigned Staff": request.assignedStaff,
         "Id": request.id,
       }));
-  
+
       setOperationRequests(filteredData);
-  
+
     } catch (error) {
       setError("No operation requests found.");
     } finally {
       setLoading(false);
     }
   };
-  
+
   const handleSubmit = async () => {
     try {
       if (!newRequest.patientId || !newRequest.operationType || !newRequest.priority || !newRequest.deadline) {
         setPopupMessage("All fields are required.");
         return;
       }
-  
+
       const dto = await buildCreateDto(newRequest);
-  
+
       await operationRequestService.createOperationRequest(dto);
-  
+
       setPopupMessage("Operation request created successfully.");
 
       fetchOperationRequests();
-  
+
       setIsModalVisible(false);
       setIsAddModalVisible(false);
       setNewRequest(null);
-  
+
     } catch (error) {
       console.error('Error during submission:', error);
-  
+
       setPopupMessage("There is already a request of this type for this patient.");
 
       setIsModalVisible(false);
@@ -289,7 +300,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
       if (!licenseNumber) {
         throw new Error('License number not found');
       }
-  
+
       return {
         deadline: {
           value: creatingRequest.deadline,

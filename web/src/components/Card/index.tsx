@@ -28,7 +28,7 @@ const Card: React.FC<{ patient: any; headers: string[] }> = ({ patient, headers 
       );
     })}
     <div className="flex justify-end mt-4">
-      {patient.actions || 'Actions'}
+      {patient.actions}
     </div>
   </div>
 );

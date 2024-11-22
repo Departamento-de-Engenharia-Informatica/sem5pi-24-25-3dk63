@@ -10,6 +10,7 @@ import DropdownMenu from "@/components/DropdownMenu";
 import Modal from "@/components/Modal";
 import Popup from "@/components/Popup";
 import Confirmation from "@/components/Confirmation";
+import SidebarMenu from "@/components/SidebarMenu";
 
 interface OperationRequestListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -52,6 +53,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
   } = useOperationRequestModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalRequests / itemsPerPage);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(false);
 
   const renderActions = (request: any) => {
     const options = [
@@ -91,8 +93,19 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
   }, [setPopupMessage]);
 
   return (
-    <div className="relative">
-      <HamburgerMenu options={menuOptions} onClick={() => {}} />
+    <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
+      <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
+      <SidebarMenu options={menuOptions} title = "Staff Panel"  basePath="/staff"/>
+    </div>
+    {/* Conteúdo principal */}
+    <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto flex flex-col">
+       {/* Hamburger Menu: Só visível em telas pequenas */}
+      <div className="lg:hidden mb-4">
+          <HamburgerMenu
+            options={menuOptions}
+          />
+      </div>
+
       <div className="container mx-auto p-4">
         <div className="mb-4">
           <button
@@ -132,7 +145,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
               { label: "Elective", value: "elective" },
             ],
             operationType: filterOperationRequests.map((type: any) => ({
-              label: type.name.description, 
+              label: type.name.description,
               value: type.id,
             })),
           }}
@@ -142,8 +155,17 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
         />
 
 
-        {loading && <Loading />}
+       {loading && <Loading loadingText />}
         {error && <Alert type="error" message={error} />}
+        <div className="overflow-x-auto overflow-y-auto">
+          <Table
+            headers={headers}
+            data={tableData}
+            totalPages={totalPages}
+            currentPage={currentPage}
+            onPageChange={setCurrentPage}
+          />
+        </div>
 
         <div className="overflow-x-auto">
           <Table headers={headers} data={tableData} totalPages={totalPages}
@@ -151,7 +173,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
             onPageChange={setCurrentPage}/>
         </div>
 
-  
+
       </div>
 
       {isAddModalVisible && (
@@ -294,6 +316,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
         message="Are you sure you want to delete this request?"
       />
     </div>
+  </div>
   );
 };
 
