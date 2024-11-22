@@ -88,7 +88,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
       </div>
     );
   };
-  
+
   const tableData = staffs.map((staff) => ({
     ...staff,
     "Availability Slots": formatAvailabilitySlots(staff["Availability Slots"]),
@@ -106,7 +106,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
   return (
     <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
       <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
-        <SidebarMenu options={menuOptions} title = "Admin Panel"/>
+        <SidebarMenu options={menuOptions} title = "Admin Panel" basePath="/admin"/>
       </div>
       {/* Conteúdo principal */}
       <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto h-full">
@@ -114,7 +114,6 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
       <div className="lg:hidden mb-4">
           <HamburgerMenu
             options={menuOptions}
-            onClick={() => setIsSidebarVisible(!isSidebarVisible)}
           />
       </div>
       <div className="mb-4">
@@ -147,7 +146,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
             onPageChange={setCurrentPage}/>
       </div>
 
-     
+
       </div>
 
       {/* Modal for adding staff */}
@@ -396,7 +395,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
               }}
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
               placeholder="+1234567890"
-            />  
+            />
               <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
               <select
                 value={staffToEdit?.specialization || ""}
@@ -415,7 +414,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
                   </option>
                 ))}
               </select>
-              
+
               {/* Availability Slots */}
               <div className="mt-4">
               <label className="block text-sm font-medium text-gray-700">Availability Slots</label>
@@ -476,7 +475,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
                 Add Slot
               </button>
             </div>
-            
+
             <button
               onClick={saveChanges}
               className="mt-6 w-full bg-[#284b62] text-white font-semibold py-2 rounded-md hover:bg-opacity-80 transition duration-200"

@@ -3,8 +3,8 @@ import { useAdminMenuModule } from "./module";
 import SidebarMenu from "@/components/SidebarMenu";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Alert from "@/components/Alert/index";
-import { FaUserAlt, FaUsersCog, FaProcedures } from "react-icons/fa";  // Usando react-icons
-import MenuSection from "@/components/MenuSection";  // Importando o MenuSection
+import { FaUserAlt, FaUsersCog, FaProcedures } from "react-icons/fa";
+import MenuSection from "@/components/MenuSection";
 
 const AdminMenu: React.FC = () => {
   const { menuOptions, alertMessage } = useAdminMenuModule();
@@ -14,7 +14,7 @@ const AdminMenu: React.FC = () => {
     <div className="flex min-h-screen">
       {/* Sidebar Menu para telas grandes */}
       <div className="hidden lg:block w-64">
-        <SidebarMenu options={menuOptions} title = "Admin Panel" />
+        <SidebarMenu options={menuOptions} title = "Admin Panel" basePath="/admin" />
       </div>
 
       {/* Hamburger Menu para dispositivos móveis */}

@@ -47,19 +47,18 @@ export const useStaffListModule = (setAlertMessage: React.Dispatch<React.SetStat
 
 const menuOptions = [
   {
-    label: "Dashboard",
-    action: () => navigate("/admin")
-  },
-  {
-    label: "Manage Patients",
+    label: "Patients",
     action: () => navigate("/admin/patient")
   },
+  {
+    label: "Staff",
+    action: () => navigate("/admin/staff")
+  },
 
   {
-    label: "Manage Operation Types",
+    label: "Operation Types",
     action: () => navigate("/admin/operation-type")
   }
-
 ];
 
   const fetchStaffs = async () => {
@@ -183,12 +182,12 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
       'Availability Slots': staff['Availability Slots']
 
     };
-  
+
     let formattedSlots: AvailabilitySlot[] = [];
-    
+
     const existingSlots = staff['Availability Slots'];
     console.log("Existing slots before formatting:", existingSlots);
-  
+
     if (typeof existingSlots === 'string') {
       formattedSlots = [];
     } else if (Array.isArray(existingSlots)) {
@@ -199,7 +198,7 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
             end: new Date(slot.End).toISOString().slice(0, 16)
           };
         } else if (slot.start && slot.end) {
-          return { 
+          return {
             start: new Date(slot.start).toISOString().slice(0, 16),
             end: new Date(slot.end).toISOString().slice(0, 16)
           };
@@ -207,9 +206,9 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
         return { start: '', end: '' };
       }).filter(slot => slot.start || slot.end);
     }
-  
+
     setAvailabilitySlots(formattedSlots);
-    
+
     setStaffToEdit(newStaff);
     setIsEditing(true);
     setLicenseToEdit(staff['License Number']);
@@ -252,7 +251,7 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
             }))
           }
         };
-    
+
         setPopupMessage(await staffService.editStaff(licenseStaffToEdit, staffUpdateData));
         fetchStaffs();
       } catch (error) {
@@ -304,7 +303,7 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
 
   const addAvailabilitySlot = () => {
     setAvailabilitySlots([
-      ...availabilitySlots, 
+      ...availabilitySlots,
       { start: '', end: '' }
     ]);
   };
@@ -322,7 +321,7 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
 
   const formatAvailabilitySlots = (slots: AvailabilitySlot[]) => {
     if (!slots || slots.length === 0) return "No availability slots";
-    
+
     return (
       <div className="text-sm">
         {slots.map((slot, index) => (

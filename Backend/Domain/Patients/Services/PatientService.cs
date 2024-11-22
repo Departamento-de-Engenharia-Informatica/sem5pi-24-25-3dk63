@@ -192,7 +192,7 @@ namespace DDDSample1.Patients
 
             if (userSensitiveDataChanged || patientSensitiveDataChanged)
             {
-                await _emailService.SendPatientNotificationEmailAsync(updateDto);
+                await _emailService.SendPatientNotificationEmailAsync(updateDto, user);
             }
 
             return patient;

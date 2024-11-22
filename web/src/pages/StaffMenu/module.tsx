@@ -5,26 +5,26 @@ export const useStaffMenuModule = () => {
   const navigate = useNavigate();
   const [alertMessage, setAlertMessage] = React.useState<string | null>(null);
 
-  const handleManageOperationRequests = () => {
-    navigate("/staff/operation-requests");
-  };
 
-  const handleSurgeryRooms = () => {
-    navigate("/staff/surgery-rooms");
-  };
 
   const menuOptions = [
-    { label: "Homepage", action: () => navigate("/") },
-  ];
+  {
+    label: "Manage requests",
+    action: () => navigate("operation-requests")
+  },
+  {
+    label: "Open 3D",
+    action: () => navigate("/staff/floor")
+  },
 
-  const handle3DFloor = () => {
-    navigate("/staff/floor");
-  };
+  {
+    label: "Surgery Rooms",
+    action: () => navigate("/staff/surgery-rooms")
+  }
+];
 
   return { setAlertMessage,
-    handleManageOperationRequests,
     menuOptions,
-    handleSurgeryRooms,
      alertMessage,
-     handle3DFloor };
+      };
 };

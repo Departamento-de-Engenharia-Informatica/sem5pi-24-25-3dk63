@@ -25,14 +25,31 @@ export const usePatientMenuModule = () => {
 
   const patientService = useInjection<PatientService>(TYPES.patientService);
 
-  const handleAppointments = () => {
-    navigate("/patient/appointments");
-  };
 
-  const handleMedicalRecords = () => {
-    navigate("/patient/medical-record");
-  };
-  
+
+  const menuOptions = [
+  {
+    label: "Appointments",
+    action: () => navigate("/patient/appointments")
+  },
+  {
+    label: "Medical Record",
+    action: () => navigate("/patient/medical-record")
+  },
+
+  {
+    label: "Edit Profile",
+    action: () => setIsModalVisible(true)
+  },
+
+    {
+    label: "Account Deletion",
+    action: () => handleAccountDeletionRequest()
+  }
+];
+
+
+
   useEffect(() => {
     if (isModalVisible) {
       setUpdateProfile({});
@@ -44,9 +61,9 @@ export const usePatientMenuModule = () => {
       setPopupMessage("Please fill in at least one field before submitting.");
       return;
     }
-  
+
     if (loading) return;
-  
+
     setLoading(true);
     try {
       await patientService.updateProfile(updateProfileData);
@@ -58,7 +75,7 @@ export const usePatientMenuModule = () => {
       setLoading(false);
     }
   };
-  
+
 
   const handleAccountDeletionRequest = async () => {
     if (loading) return;
@@ -94,10 +111,7 @@ export const usePatientMenuModule = () => {
 
   return {
     alertMessage,
-    loading,
-    isDeletionRequested,
     updateProfileData,
-    setUpdateProfile,
     isModalVisible,
     submitProfileUpdate,
     setIsModalVisible,
@@ -107,10 +121,7 @@ export const usePatientMenuModule = () => {
     countryCode,
     setCountryCode,
     phoneNumberPart,
-    setPhoneNumberPart,
-    handleAppointments,
-    handleMedicalRecords,
-    handleAccountDeletionRequest,
+    menuOptions,
     handleChange,
     handlePhoneNumberChange,
   };
