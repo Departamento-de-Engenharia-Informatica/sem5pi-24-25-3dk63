@@ -38,7 +38,7 @@ const MedicalRecordsList: React.FC<MedicalRecordsListProps> = ({ setAlertMessage
 
   return (
     <div className="relative">
-      <HamburgerMenu options={menuOptions} onClick={() => {}} />
+      <HamburgerMenu options={menuOptions} />
       <div className="container mx-auto p-4">
         {loading && <Loading loadingText = {true} />}
         {error && <Alert type="error" message={error} />}
@@ -50,7 +50,7 @@ const MedicalRecordsList: React.FC<MedicalRecordsListProps> = ({ setAlertMessage
             currentPage={currentPage}
             onPageChange={setCurrentPage}/>
         </div>
-      
+
       </div>
     </div>
   );

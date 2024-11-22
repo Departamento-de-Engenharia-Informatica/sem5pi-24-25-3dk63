@@ -3,8 +3,8 @@ import { useAdminMenuModule } from "./module";
 import SidebarMenu from "@/components/SidebarMenu";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Alert from "@/components/Alert/index";
-import { FaUserAlt, FaUsersCog, FaProcedures } from "react-icons/fa";  // Usando react-icons
-import MenuSection from "@/components/MenuSection";  // Importando o MenuSection
+import { FaUserAlt, FaUsersCog, FaProcedures } from "react-icons/fa";
+import MenuSection from "@/components/MenuSection";
 
 const AdminMenu: React.FC = () => {
   const { menuOptions, alertMessage } = useAdminMenuModule();

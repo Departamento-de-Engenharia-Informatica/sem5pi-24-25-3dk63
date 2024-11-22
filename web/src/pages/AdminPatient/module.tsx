@@ -45,16 +45,16 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
 const menuOptions = [
   {
-    label: "Manage Patients",
+    label: "Patients",
     action: () => navigate("/admin/patient")
   },
   {
-    label: "Manage Staff",
+    label: "Staff",
     action: () => navigate("/admin/staff")
   },
 
   {
-    label: "Manage Operation Types",
+    label: "Operation Types",
     action: () => navigate("/admin/operation-type")
   }
 ];

@@ -1,13 +1,13 @@
 import React from "react";
-import { IconType } from "react-icons";  // Para tipar os ícones passados como props
+import { IconType } from "react-icons";
 
 interface MenuSectionProps {
   title: string;
   description?: string;
-  Icon?: IconType;  // Tipo para ícones (opcional)
+  Icon?: IconType;
   iconColorClass: string;
   backgroundClass: string;
-  isWelcomeMessage?: boolean;  // Propriedade opcional para exibir a mensagem de boas-vindas
+  isWelcomeMessage?: boolean;
 }
 
 const MenuSection: React.FC<MenuSectionProps> = ({
@@ -16,7 +16,7 @@ const MenuSection: React.FC<MenuSectionProps> = ({
   Icon,
   iconColorClass,
   backgroundClass,
-  isWelcomeMessage = false,  // Se for true, será uma mensagem de boas-vindas
+  isWelcomeMessage = false,
 }) => {
   return (
     <div className={`p-6 rounded-lg shadow-xl ${backgroundClass} overflow-y-auto max-h-screen`}>
