@@ -13,6 +13,10 @@
     - [Nível 1](#nível-1)
     - [Nível 2](#nível-2)
     - [Nível 3](#nível-3)
+- [User storie de edição](#user-storie-de-listar/procurar)
+    - [Nível 1](#nível-1)
+    - [Nível 2](#nível-2)
+    - [Nível 3](#nível-3)
 
 ## Visão Geral
 
@@ -89,4 +93,51 @@ Abaixo estão os diagramas que representam diferentes vistas e níveis de detalh
 - **Process**: Diagrama de processo no Nível 3.
 
   ![Process](ViewsAndGranularity/Edit/Level3/Process.png)
+
+
+# User storie de Listar/Procurar
+
+### Nível 1
+- **Logical**: Visão lógica do sistema no Nível 1.
+
+  ![Logical](ViewsAndGranularity/List\Search/level1/Logical.png)
+
+- **Process**: Diagrama de processos no Nível 1.
+
+  ![Process](ViewsAndGranularity/List\Search/level1/Process.png)
+
+- **Scenarios**: Cenários de uso no Nível 1.
+
+  ![Scenarios](ViewsAndGranularity/List\Search/level1/Scenarios.png)
+
+### Nível 2
+- **Development**: Visão de desenvolvimento no Nível 2.
+
+  ![Development](ViewsAndGranularity/List\Search/level1/Development.png)
+
+- **Logical**: Visão lógica no Nível 2.
+
+  ![Logical](ViewsAndGranularity/List\Search/level2/Logical.png)
+
+- **Physical**: Visão física da arquitetura no Nível 2.
+
+  ![Physical](ViewsAndGranularity/List\Search/level2/Physical.png)
+
+- **Process**: Detalhes de processo no Nível 2.
+
+  ![Process](ViewsAndGranularity/List\Search/level2/Process.png)
+
+### Nível 3
+- **Development**: Visão de desenvolvimento no Nível 3.
+
+  ![Development](ViewsAndGranularity/List\Search/level3/Development.png)
+
+- **Logical**: Visão lógica no Nível 3.
+
+  ![Logical](ViewsAndGranularity/List\Search/level3/Logical.png)
+
+- **Process**: Diagrama de processo no Nível 3.
+
+  ![Process](ViewsAndGranularity/List\Search/level1/3Process.png)
+
 
