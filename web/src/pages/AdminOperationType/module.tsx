@@ -41,11 +41,21 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     "Active",
   ];
 
-  const menuOptions = [
-    { label: "Dashboard", action: () => navigate("/admin") },
-    { label: "Manage Staffs", action: () => navigate("/admin/staff") },
-    { label: "Manage Patients", action: () => navigate("/admin/patient") },
-  ];
+const menuOptions = [
+  {
+    label: "Manage Patients",
+    action: () => navigate("/admin/patient")
+  },
+  {
+    label: "Manage Staff",
+    action: () => navigate("/admin/staff")
+  },
+
+  {
+    label: "Manage Operation Types",
+    action: () => navigate("/admin/operation-type")
+  }
+];
 
   const fetchOperationsTypes = async () => {
     setLoading(true);

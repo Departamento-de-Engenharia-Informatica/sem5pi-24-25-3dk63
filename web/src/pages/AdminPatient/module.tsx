@@ -45,11 +45,11 @@ export const usePatientListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
 const menuOptions = [
   {
-    label: "Dashboard",
-    action: () => navigate("/admin")
+    label: "Manage Patients",
+    action: () => navigate("/admin/patient")
   },
   {
-    label: "Manage Staffs",
+    label: "Manage Staff",
     action: () => navigate("/admin/staff")
   },
 
@@ -58,6 +58,7 @@ const menuOptions = [
     action: () => navigate("/admin/operation-type")
   }
 ];
+
 
 
   const formatDate = (dateString: string) => {

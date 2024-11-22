@@ -93,7 +93,7 @@ const PatientList: React.FC<PatientListProps> = ({ setAlertMessage }) => {
   return (
     <div className="flex flex-col lg:flex-row h-screen overflow-hidden">
       <div className={`lg:w-64 w-full ${isSidebarVisible ? 'block' : 'hidden'} lg:block`}>
-        <SidebarMenu options={menuOptions} title = "Admin Panel" />
+        <SidebarMenu options={menuOptions} title = "Admin Panel" basePath="/admin" />
       </div>
       {/* Conteúdo principal */}
       <div className="flex-1 pt-20 pb-10 px-6 bg-[var(--background)] overflow-y-auto h-full">

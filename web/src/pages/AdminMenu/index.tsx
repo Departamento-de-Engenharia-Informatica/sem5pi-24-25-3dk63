@@ -14,7 +14,7 @@ const AdminMenu: React.FC = () => {
     <div className="flex min-h-screen">
       {/* Sidebar Menu para telas grandes */}
       <div className="hidden lg:block w-64">
-        <SidebarMenu options={menuOptions} title = "Admin Panel" />
+        <SidebarMenu options={menuOptions} title = "Admin Panel" basePath="/admin" />
       </div>
 
       {/* Hamburger Menu para dispositivos móveis */}
