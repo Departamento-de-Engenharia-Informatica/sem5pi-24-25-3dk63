@@ -367,7 +367,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700">Email</label>
             <input
               type="email"
-              value={staffToEdit?.email?.value || ""}
+              value={staffToEdit?.Email?.value || ""}
               onChange={(e) =>
                 setStaffToEdit((prev: any) => ({
                   ...prev,
@@ -380,7 +380,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
             <label className="block text-sm font-medium text-gray-700 mt-4">Phone</label>
             <input
               type="text"
-              value={staffToEdit?.phoneNumber?.number || ""}
+              value={staffToEdit?.phoneNumber?.Number    || ""}
               onChange={(e) => {
                 const value = e.target.value;
 
@@ -398,7 +398,7 @@ const StaffList: React.FC<StaffListProps> = ({ setAlertMessage }) => {
             />
               <label className="block text-sm font-medium text-gray-700 mt-4">Specialization</label>
               <select
-                value={staffToEdit?.specialization || ""}
+                value={staffToEdit?.Specialization || ""}
                 onChange={(e) =>
                   setStaffToEdit((prev: any) => ({
                     ...prev,
