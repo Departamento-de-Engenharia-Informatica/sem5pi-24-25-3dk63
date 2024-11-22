@@ -1,3 +1,5 @@
 2024-11-21 20:29:45.253 +00:00 [INF] OperationType Operaçao Cardiovascularu2a (04c93b46-9fbc-4bcb-bfcd-c4ecce31e216) was created by Admin (diogoandre.8269@gmail.com) on 21/11/2024 20:29:45
 2024-11-21 20:33:18.480 +00:00 [INF] OperationType Operaçao Cardiovascularu2aa (7763f01f-dc9e-4d52-9cb2-f7c032e5ac38) was created by Admin (diogoandre.8269@gmail.com) on 21/11/2024 20:33:18
 2024-11-21 20:33:32.136 +00:00 [INF] OperationType Operaçao ehehehe (5bbc55a2-b24f-4d71-88d5-ed32d62db9a3) was created by Admin (diogoandre.8269@gmail.com) on 21/11/2024 20:33:32
+2024-11-21 20:56:28.425 +00:00 [INF] OperationType Operaçao ehehehe (828ec0af-a5b5-42c9-a7cf-c968a5e338fc) was created by Admin (diogoandre.8269@gmail.com) on 21/11/2024 20:56:28
+2024-11-21 20:56:54.972 +00:00 [INF] OperationType Operaçao  (88cd39ba-dc02-4ea1-bd7d-e4cf37be348b) was created by Admin (diogoandre.8269@gmail.com) on 21/11/2024 20:56:54

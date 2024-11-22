@@ -8,9 +8,9 @@ export interface OperationType {
   active: boolean;
   [key: string]: any;
 
-  requiredStaff: {
-    requiredNumber: number;
-  };
+  requiredStaff: Array<{
+    requiredNumber: number; 
+  }>;
   duration: {
     preparationPhase: number;
     surgeryPhase: number;

@@ -47,7 +47,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
     { label: "Manage Patients", action: () => navigate("/admin/patient") },
   ];
 
-  const fetchOperationsTypes = async () => {
+const fetchOperationsTypes = async () => {
     setLoading(true);
     setError(null);
     try {
@@ -56,28 +56,31 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
       const filteredData = opsTypedata
         .filter((OperationType) => {
-          // Filtrar com base nas checkboxes de status
-          if (showActive && showInactive) {
-            return true; // Mostrar todos
-          } else if (showActive) {
-            return OperationType.active;
-          } else if (showInactive) {
-            return !OperationType.active;
-          } else {
-            return false;
-          }
+          if (showActive && showInactive) return true;
+          else if (showActive) return OperationType.active;
+          else if (showInactive) return !OperationType.active;
+          return false;
         })
-        .map((OperationType) => ({
-          id: OperationType.id,
-          Name: OperationType.name.description,
-          "Required Staff": OperationType.requiredStaff.requiredNumber,
-          "Preparation Time": OperationType.duration.preparationPhase,
-          "Surgery Time": OperationType.duration.surgeryPhase,
-          "Cleaning Time": OperationType.duration.cleaningPhase,
-          "Total Time": OperationType.duration.totalDuration,
-          Specializations: OperationType.specialization?.value,
-          Active: OperationType.active ? "Yes" : "No",
-        }));
+        .map((OperationType) => {
+          // Criar arrays de especialização e staff requerido
+          const specializations = OperationType.specialization?.value.split(',').map(s => s.trim());
+          const requiredStaff = String(OperationType.requiredStaff).split(',').map(s => s.trim());
+
+          return {
+            id: OperationType.id,
+            Name: OperationType.name.description,
+            "Required Staff": requiredStaff.join(', '), // Mantém como string para compatibilidade
+            "Preparation Time": OperationType.duration.preparationPhase,
+            "Surgery Time": OperationType.duration.surgeryPhase,
+            "Cleaning Time": OperationType.duration.cleaningPhase,
+            "Total Time": OperationType.duration.totalDuration,
+            Specializations: specializations.join(', '), // Mantém como string para compatibilidade
+            Active: OperationType.active ? "Yes" : "No",
+            // Adiciona os arrays originais para uso no componente
+            specializationsList: specializations,
+            requiredStaffList: requiredStaff
+          };
+        });
 
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
@@ -112,7 +115,6 @@ const handleEdit = async (id: string) => {
       specialization: opTypeToEdit.Specialization,
     });
 
-    console.log("olaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
 
     setIsModalVisible(true);
   }
