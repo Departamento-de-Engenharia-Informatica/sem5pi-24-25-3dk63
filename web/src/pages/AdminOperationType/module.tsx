@@ -32,13 +32,14 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
   const headers = [
     "Name",
-    "Required Staff",
     "Preparation Time",
     "Surgery Time",
     "Cleaning Time",
     "Total Time",
-    "Specializations",
+    "Specialization and Required Staff",
+    "Total Staff",
     "Active",
+   
   ];
 
 const menuOptions = [
@@ -75,18 +76,22 @@ const fetchOperationsTypes = async () => {
           // Criar arrays de especialização e staff requerido
           const specializations = OperationType.specialization?.value.split(',').map(s => s.trim());
           const requiredStaff = String(OperationType.requiredStaff).split(',').map(s => s.trim());
+          const totalStaff = requiredStaff.reduce((acc, curr) => acc + parseInt(curr), 0);
+          const specializationAndStaff = specializations.map((spec: any, index: any) => {
+            const staff = requiredStaff[index] || "N/A"; // "N/A" se faltar staff para a especialização
+            return `${spec} (${staff})`;
+          }).join(', ');
 
           return {
             id: OperationType.id,
             Name: OperationType.name.description,
-            "Required Staff": requiredStaff.join(', '), // Mantém como string para compatibilidade
             "Preparation Time": OperationType.duration.preparationPhase,
             "Surgery Time": OperationType.duration.surgeryPhase,
             "Cleaning Time": OperationType.duration.cleaningPhase,
             "Total Time": OperationType.duration.totalDuration,
-            Specializations: specializations.join(', '), // Mantém como string para compatibilidade
+            "Specialization and Required Staff": specializationAndStaff,
             Active: OperationType.active ? "Yes" : "No",
-            // Adiciona os arrays originais para uso no componente
+            "Total Staff": totalStaff,
             specializationsList: specializations,
             requiredStaffList: requiredStaff
           };
