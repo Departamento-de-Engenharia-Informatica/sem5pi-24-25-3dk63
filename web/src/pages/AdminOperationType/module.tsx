@@ -118,6 +118,7 @@ const handleEdit = async (id: string) => {
     return;
   }
 
+  try{
   if (opTypeToEdit) {
     setCreatingOperationType({
       id: opTypeToEdit.id,
@@ -133,7 +134,13 @@ const handleEdit = async (id: string) => {
 
     setIsModalVisible(true);
   }
-};
+} catch (error: any) {
+  console.error("Error editing Operation Type:", error);
+  const errorMessage = error?.response?.data?.message || 
+                       error?.message || 
+                       "An unknown error occurred.";
+  setPopupMessage(errorMessage);
+}};
 
 
   const handleDeactivate = (id: string) => {
@@ -144,9 +151,12 @@ const handleEdit = async (id: string) => {
         await operationTypeService.deactivateOperationType(id);
         fetchOperationsTypes();
         setPopupMessage("Operation Type deactivated successfully.");
-      } catch (error) {
+      } catch (error:any ) {
         console.error("Error deactivating Operation Type:", error);
-        setPopupMessage("Error deactivating Operation Type.");
+        const errorMessage = error?.response?.data?.message || 
+                           error?.message || 
+                           "An unknown error occurred.";
+        setPopupMessage(errorMessage);
       }
     });
   };
@@ -213,9 +223,14 @@ const handleEdit = async (id: string) => {
         fetchOperationsTypes();
       }
 
-    } catch (error) {
+    } catch (error: any) {
       console.error(isEdit ? "Error updating operation type:" : "Error creating Operation Type:", error);
-      setPopupMessage(isEdit ? "Error updating operation type." : "Error creating Operation Type.");
+  
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message || 
+                           error?.message || 
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
     }
   }
 
@@ -261,8 +276,12 @@ const handleEdit = async (id: string) => {
       const specializations = await specializationsService.getSpecializations();
       console.log("Specializations:", specializations);
       setSpecializations(specializations);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error fetching specializations:", error);
+      const errorMessage = error?.response?.data?.message || 
+                           error?.message || 
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
     }
   };
 
@@ -292,10 +311,14 @@ const handleEdit = async (id: string) => {
         setNoDataMessage("No data found for the requirements.");
       }
       setOTypes(filteredData);
-    } catch (error) {
+    } catch (error: any) {
       setError("No data found for the requirements.");
       console.error("Error fetching operation types:", error);
       setAlertMessage("No data found for the requirements.");
+      const errorMessage = error?.response?.data?.message || 
+                           error?.message || 
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
       setOTypes([]);
     } finally {
       setLoading(false);

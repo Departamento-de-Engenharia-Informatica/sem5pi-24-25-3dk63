@@ -221,9 +221,11 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
         await staffService.deactivateStaff(id);
         fetchStaffs();
         setPopupMessage("Staff deactivated successfully.");
-      } catch (error) {
-        console.error("Error deactivating staff:", error);
-        setPopupMessage("Error deactivating staff.");
+      } catch (error:any) {
+        const errorMessage = error?.response?.data?.message || 
+                           error?.message || 
+                           "An unknown error occurred.";
+        setPopupMessage(errorMessage);
       }
     });
   };
@@ -254,9 +256,11 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
 
         setPopupMessage(await staffService.editStaff(licenseStaffToEdit, staffUpdateData));
         fetchStaffs();
-      } catch (error) {
-        console.error("Error updating staff information:", error);
-        setPopupMessage("Error updating staff information.");
+      } catch (error:any) {
+        const errorMessage = error?.response?.data?.message || 
+                           error?.message || 
+                           "An unknown error occurred.";
+        setPopupMessage(errorMessage);
       } finally {
         setIsModalVisible(false);
       }
