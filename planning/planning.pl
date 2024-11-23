@@ -351,6 +351,164 @@ remove_equals([], []).
 remove_equals([X|L], L1):- member(X, L), !, remove_equals(L, L1).
 remove_equals([X|L], [X|L1]):- remove_equals(L, L1).
 
+%------------------------------------------------- First Heuristic -----------------------------------------------------------------------------%
+
+assign_surgeries(Date) :-
+    % Get all surgeries and required staff in one go
+    findall(Surgery, surgery_id(Surgery, _), SurgeryList),
+    find_free_agendas(Date),
+
+    % Process each surgery
+    forall(
+        member(Surgery, SurgeryList),
+        process_surgery(Surgery, Date)
+    ),
+    
+    % Fetch all agenda assignments once
+    findall(
+        (Doctor, Agenda),
+        agenda_staff(Doctor, Date, Agenda),
+        Assignments
+    ),
+    format("Assignments: ~w~n", [Assignments]).
+
+% Process each surgery
+process_surgery(Surgery, Date) :-
+    % Get the required staff for this surgery
+    findall(Staff, assignment_surgery(Surgery, Staff), RequiredStaff),
+    assign_surgery(Date, Surgery, RequiredStaff).
+
+% Assign surgery to the operation room along with the required staff
+assign_surgery(Date, Surgery, RequiredStaff) :-
+    surgery_id(Surgery, SurgeryType),
+    surgery(SurgeryType, TAnesthesia, TSurgery, TCleaning),
+    TotalTime is TAnesthesia + TSurgery + TCleaning,
+
+    % Find the earliest available time slot for staff
+    find_earliest_available_team(Date, RequiredStaff, TotalTime, StartTime, EndTime),
+
+    % Assign surgery to the required staff
+    forall(
+        member(Staff, RequiredStaff),
+        assign_to_staff(Staff, Date, Surgery, StartTime, EndTime)
+    ),
+
+    % Find an available room for the surgery
+    find_available_room(Date, StartTime, EndTime, Room),
+    
+    % Assign the surgery to the room
+    assign_surgery_to_room(Room, Date, Surgery, StartTime, EndTime).
+
+% Find an available room for the surgery based on the time
+find_available_room(Date, StartTime, EndTime, Room) :-
+    findall(
+        Room,
+        (   agenda_operation_room(Room, Date, Agenda),
+            \+ member((StartTime, EndTime, _), Agenda)  % Room is available during the given time
+        ),
+        AvailableRooms),
+    AvailableRooms \= [],
+    member(Room, AvailableRooms).
+
+% Assign surgery to the operation room's schedule
+assign_surgery_to_room(Room, Date, Surgery, StartTime, EndTime) :-
+    agenda_operation_room(Room, Date, Agenda),
+    % Avoid duplicates in the room's schedule
+    (   member((StartTime, EndTime, Surgery), Agenda)
+    ->  UpdatedAgenda = Agenda
+    ;   append(Agenda, [(StartTime, EndTime, Surgery)], UpdatedAgenda)
+    ),
+    retract(agenda_operation_room(Room, Date, Agenda)),
+    assertz(agenda_operation_room(Room, Date, UpdatedAgenda)).
+
+% Find earliest available time for all staff
+find_earliest_available_team(Date, StaffList, TotalTime, StartTime, EndTime) :-
+    % Collect all staff availability slots in one go
+    findall(
+        StaffSlots,
+        (   member(Staff, StaffList),
+            availability(Staff, Date, StaffSlots)
+        ),
+        AllStaffSlots
+    ),
+    % Find the common available slot for all staff
+    find_common_slot(AllStaffSlots, TotalTime, StartTime, EndTime).
+
+% Find the earliest common slot that fits the surgery
+find_common_slot(AllStaffSlots, TotalTime, StartTime, EndTime) :-
+    % Find the available slots for all staff that can accommodate the total surgery time
+    find_available_slots(AllStaffSlots, TotalTime, AvailableSlots),
+    sort(AvailableSlots, SortedSlots),
+    member((StartTime, EndTime), SortedSlots),
+    fits_for_all_staff(AllStaffSlots, (StartTime, EndTime)).
+
+% Find all possible available time slots that fit the surgery duration
+find_available_slots(AllStaffSlots, TotalTime, AvailableSlots) :-
+    findall(
+        (Start, EndSlot),
+        (   member(StaffSlots, AllStaffSlots),
+            member((Start, End), StaffSlots),
+            Duration is End - Start + 1,
+            Duration >= TotalTime,
+            EndSlot is Start + TotalTime - 1
+        ),
+        AvailableSlots
+    ).
+
+% Check if the time slot fits for all staff
+fits_for_all_staff([], _).
+fits_for_all_staff([StaffSlots | Rest], (StartTime, EndTime)) :-
+    member((Start, End), StaffSlots),
+    Start =< StartTime,
+    End >= EndTime,
+    fits_for_all_staff(Rest, (StartTime, EndTime)).
+
+% Assign surgery to staff and update their schedule
+assign_to_staff(Staff, Date, Surgery, StartTime, EndTime) :-
+    retract(availability(Staff, Date, Slots)),
+    update_schedule(Slots, (StartTime, EndTime), UpdatedSlots),
+    assertz(availability(Staff, Date, UpdatedSlots)),
+
+    % Update the agenda for the staff
+    update_agenda_staff(Staff, Date, Surgery, StartTime, EndTime).
+
+% Update agenda for staff
+update_agenda_staff(Staff, Date, Surgery, StartTime, EndTime) :-
+    (   retract(agenda_staff(Staff, Date, Agenda))
+    ->  true
+    ;   Agenda = []
+    ),
+    % Avoid duplicates in the agenda
+    (   member((StartTime, EndTime, Surgery), Agenda)
+    ->  UpdatedAgenda = Agenda
+    ;   append(Agenda, [(StartTime, EndTime, Surgery)], UpdatedAgenda)
+    ),
+    assertz(agenda_staff(Staff, Date, UpdatedAgenda)).
+
+% Update availability schedule after assigning a time slot
+update_schedule([], _, []).
+update_schedule([(Start, End) | Rest], (StartTime, EndTime), UpdatedSlots) :-
+    (End < StartTime; Start > EndTime),
+    !,
+    update_schedule(Rest, (StartTime, EndTime), RemainingSlots),
+    UpdatedSlots = [(Start, End) | RemainingSlots].
+update_schedule([(Start, End) | Rest], (StartTime, EndTime), UpdatedSlots) :-
+    % Adjust slot before and after the assigned time
+    NewStart is max(Start, EndTime + 1),
+    NewEnd is min(End, StartTime - 1),
+    findall(
+        Slot,
+        (   Slot = (SlotStart, SlotEnd),
+            member((SlotStart, SlotEnd), [(Start, NewEnd), (NewStart, End)]),
+            SlotStart =< SlotEnd
+        ),
+        AdjustedSlots
+    ),
+    update_schedule(Rest, (StartTime, EndTime), RemainingSlots),
+    append(AdjustedSlots, RemainingSlots, UpdatedSlots).
+
+%--------------------------------------------- Second Heuristic --------------------------------------------------------------%
+
 heuristic_2_for_doctors_only(Room, Day):-
     
     % apagar dados anteriores
