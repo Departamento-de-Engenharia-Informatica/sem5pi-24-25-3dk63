@@ -10,6 +10,7 @@ export const useConfirmRegistrationModule = () => {
 
   const [confirmationStatus, setConfirmationStatus] = useState<string>("Processing confirmation...");
   const [loading, setLoading] = useState<boolean>(true);
+const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
   const hasInitialized = useRef(false);
 
@@ -18,9 +19,15 @@ export const useConfirmRegistrationModule = () => {
       console.log("123");
       const response = await patientService.confirmRegistration(token);
       setConfirmationStatus("Registration confirmed successfully.");
-    } catch (error) {
-      setConfirmationStatus("Confirmation failed: " + (error as Error).message);
-    } finally {
+    } catch (error: any) {
+      console.error( "Error confirming profile update:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+      } finally {
       setLoading(false);
     }
   };
@@ -40,6 +47,6 @@ export const useConfirmRegistrationModule = () => {
   }
 
   return {
-    confirmationStatus, loading
+    confirmationStatus, loading, popupMessage, setPopupMessage
   };
 };

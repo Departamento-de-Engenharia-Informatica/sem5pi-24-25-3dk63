@@ -40,5 +40,5 @@ export const useProfileUpdateModule = (token: string | undefined) => {
     confirmUpdate();
   }, [token]);
 
-  return { isUpdated, loading, error, popupMessage };
+  return { isUpdated, loading, error, popupMessage, setPopupMessage };
 };

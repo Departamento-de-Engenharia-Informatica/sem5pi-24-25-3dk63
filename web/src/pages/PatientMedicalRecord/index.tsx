@@ -6,6 +6,7 @@ import { useMedicalRecordsListModule } from "./module";
 import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import SidebarMenu from "@/components/SidebarMenu";
+import Popup from "@/components/Popup";
 
 interface MedicalRecordsListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -22,6 +23,8 @@ const MedicalRecordsList: React.FC<MedicalRecordsListProps> = ({ setAlertMessage
     currentPage,
     setCurrentPage,
     itemsPerPage,
+    popupMessage,
+    setPopupMessage,
   } = useMedicalRecordsListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalMedicalRecords / itemsPerPage);
@@ -64,6 +67,12 @@ const MedicalRecordsList: React.FC<MedicalRecordsListProps> = ({ setAlertMessage
             onPageChange={setCurrentPage}
           />
         </div>
+        {/* Popup */}
+        <Popup
+          isVisible={!!popupMessage}
+          setIsVisible={() => setPopupMessage(null)}
+          message={popupMessage}
+        />
     </div>
   </div>
   );

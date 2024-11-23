@@ -1,8 +1,9 @@
 import React from "react";
 import { useConfirmRegistrationModule } from "./module";
+import Popup from "@/components/Popup";
 
 const ConfirmRegistrationPage: React.FC = () => {
-  const { confirmationStatus, loading } = useConfirmRegistrationModule();
+  const { confirmationStatus, loading, popupMessage, setPopupMessage } = useConfirmRegistrationModule();
 
   return (
     <div
@@ -23,6 +24,12 @@ const ConfirmRegistrationPage: React.FC = () => {
             {confirmationStatus}
           </p>
         )}
+          {/* Popup */}
+        <Popup
+          isVisible={!!popupMessage}
+          setIsVisible={() => setPopupMessage(null)}
+          message={popupMessage}
+        />
       </div>
     </div>
   );

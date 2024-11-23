@@ -79,7 +79,8 @@ export const useMedicalRecordsListModule = (
     currentPage,
     setCurrentPage,
     itemsPerPage,
-        popupMessage,
+    popupMessage,
+     setPopupMessage,
 
   };
 };

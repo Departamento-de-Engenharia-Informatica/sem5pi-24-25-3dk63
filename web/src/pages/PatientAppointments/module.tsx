@@ -4,6 +4,7 @@ import { TYPES } from "@/inversify/types";
 import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
 import { PatientUser } from "@/model/PatientUser";
+import { set } from "node_modules/cypress/types/lodash";
 
 export const useAppointmentsListModule = (
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>
@@ -101,6 +102,7 @@ export const useAppointmentsListModule = (
     showInactive,
     setShowInactive,
         popupMessage,
+        setPopupMessage,
 
   };
 };

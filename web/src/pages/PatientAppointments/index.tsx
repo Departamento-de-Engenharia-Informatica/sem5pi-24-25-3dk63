@@ -7,6 +7,7 @@ import HamburgerMenu from "@/components/HamburgerMenu";
 import Pagination from "@/components/Pagination";
 import Checkbox from "@/components/CheckBox";
 import SidebarMenu from "@/components/SidebarMenu";
+import Popup from "@/components/Popup";
 
 interface AppointmentsListProps {
   setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>;
@@ -29,6 +30,8 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
     setShowActive,
     showInactive,
     setShowInactive,
+    popupMessage,
+    setPopupMessage,
   } = useAppointmentsListModule(setAlertMessage);
 
   const totalPages = Math.ceil(totalAppointments / itemsPerPage);
@@ -79,6 +82,12 @@ const AppointmentsList: React.FC<AppointmentsListProps> = ({ setAlertMessage }) 
             onPageChange={setCurrentPage}
           />
         </div>
+         {/* Popup */}
+        <Popup
+          isVisible={!!popupMessage}
+          setIsVisible={() => setPopupMessage(null)}
+          message={popupMessage}
+        />
       </div>
     </div>
   );

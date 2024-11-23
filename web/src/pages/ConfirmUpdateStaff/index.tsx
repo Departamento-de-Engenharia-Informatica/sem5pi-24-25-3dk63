@@ -2,12 +2,13 @@ import React from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Alert from "@/components/Alert/index";
 import { useProfileUpdateModule } from "./module";
+import Popup from "@/components/Popup";
 
 const ConfirmAccountUpdate: React.FC = () => {
   const navigate = useNavigate();
   const { token } = useParams<{ token: string }>();
 
-  const { isUpdated, loading, error } = useProfileUpdateModule(token);
+  const { isUpdated, loading, error, popupMessage, setPopupMessage } = useProfileUpdateModule(token);
 
   return (
     <div className="relative pt-20 p-8 bg-gray-50 min-h-screen">
@@ -34,6 +35,12 @@ const ConfirmAccountUpdate: React.FC = () => {
         >
           Go to Homepage
         </button>
+         {/* Popup */}
+        <Popup
+          isVisible={!!popupMessage}
+          setIsVisible={() => setPopupMessage(null)}
+          message={popupMessage}
+        />
       </div>
     </div>
   );
