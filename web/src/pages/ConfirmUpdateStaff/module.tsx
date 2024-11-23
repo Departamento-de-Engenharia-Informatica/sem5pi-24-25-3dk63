@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { StaffService } from "@/service/staffService"; // Altere para o serviço correto
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
-const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
 export const useProfileUpdateModule = (token: string | undefined) => {
   const [isUpdated, setIsUpdated] = useState(false);
@@ -11,6 +10,7 @@ export const useProfileUpdateModule = (token: string | undefined) => {
   const [error, setError] = useState<string | null>(null);
   const staffService = useInjection<StaffService>(TYPES.staffService); // Injeta o serviço
   const navigate = useNavigate();
+const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
   useEffect(() => {
     if (!token) {

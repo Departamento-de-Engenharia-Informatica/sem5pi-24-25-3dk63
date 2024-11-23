@@ -3,12 +3,12 @@ import { useNavigate } from "react-router-dom";
 import { ILoginService } from "@/service/IService/ILoginService";
 import { TYPES } from "@/inversify/types";
 import { useInjection } from "inversify-react";
-const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
 export const useLoginPage = () => {
   const loginService = useInjection<ILoginService>(TYPES.LoginService);
   const navigate = useNavigate();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
   const handleLoginSuccess = async (credentialResponse: any) => {
     const token = credentialResponse.credential;
