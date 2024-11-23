@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { ILoginService } from "@/service/IService/ILoginService";
 import { TYPES } from "@/inversify/types";
 import { useInjection } from "inversify-react";
+const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
 export const useLoginPage = () => {
   const loginService = useInjection<ILoginService>(TYPES.LoginService);
@@ -22,12 +23,18 @@ export const useLoginPage = () => {
 
       const { redirectTo } = await loginService.getLoginClaims();
       navigate(redirectTo);
-    } catch (error) {
-      setErrorMessage((error as Error).message || "Error in login process.");
-      console.error("Login error:", error);
+    }  catch (error: any) {
+      console.error( "Error during login:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
       navigate("/self-register");
-    }
+  }
   };
 
-  return { errorMessage, handleLoginSuccess };
+  return { errorMessage,    popupMessage,
+ handleLoginSuccess };
 };

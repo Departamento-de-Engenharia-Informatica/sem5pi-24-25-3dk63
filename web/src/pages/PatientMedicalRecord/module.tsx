@@ -16,6 +16,7 @@ export const useMedicalRecordsListModule = (
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [totalMedicalRecords, setTotalMedicalRecords] = useState<number>(0);
+  const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
   const itemsPerPage = 10;
 
@@ -51,10 +52,15 @@ export const useMedicalRecordsListModule = (
       }));
 
       setMedicalRecords(formattedRecords);
-    } catch (error) {
-      setError("Error fetching medical records.");
-      setAlertMessage("Error fetching medical records.");
-    } finally {
+    } catch (error: any) {
+      console.error( "Error searching patients:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
       setLoading(false);
     }
   };
@@ -73,5 +79,7 @@ export const useMedicalRecordsListModule = (
     currentPage,
     setCurrentPage,
     itemsPerPage,
+        popupMessage,
+
   };
 };

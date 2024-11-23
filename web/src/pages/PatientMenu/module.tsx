@@ -69,9 +69,15 @@ export const usePatientMenuModule = () => {
       await patientService.updateProfile(updateProfileData);
       setPopupMessage("Please check your email to confirm the changes.");
       setIsModalVisible(false);
-    } catch (error) {
-      setPopupMessage("Failed to update profile.");
-    } finally {
+    }catch (error: any) {
+      console.error( "Error updating profile:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
       setLoading(false);
     }
   };
@@ -84,9 +90,15 @@ export const usePatientMenuModule = () => {
       await patientService.requestAccountDeletion();
       setAlertMessage("Account deletion requested. Please check your email to confirm.");
       setIsDeletionRequested(true);
-    } catch (error) {
-      setAlertMessage("Failed to request account deletion.");
-    } finally {
+    } catch (error: any) {
+      console.error( "Error requesting account deletion:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
       setLoading(false);
     }
   };

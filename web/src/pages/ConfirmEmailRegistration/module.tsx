@@ -10,7 +10,7 @@ export const useConfirmRegistrationModule = () => {
 
   const [confirmationStatus, setConfirmationStatus] = useState<string>("Processing confirmation...");
   const [loading, setLoading] = useState<boolean>(true);
-  
+
   const hasInitialized = useRef(false);
 
   const confirmRegistration = async (token: string) => {
@@ -25,6 +25,8 @@ export const useConfirmRegistrationModule = () => {
     }
   };
 
+
+
   if (!hasInitialized.current) {
     hasInitialized.current = true;
     const params = new URLSearchParams(location.search);
@@ -37,7 +39,7 @@ export const useConfirmRegistrationModule = () => {
     }
   }
 
-  return { 
+  return {
     confirmationStatus, loading
   };
 };

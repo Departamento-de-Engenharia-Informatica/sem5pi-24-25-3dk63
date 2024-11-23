@@ -18,6 +18,7 @@ export const useAppointmentsListModule = (
   const [totalAppointments, setTotalAppointments] = useState<number>(0);
   const [showActive, setShowActive] = useState<boolean>(true);
   const [showInactive, setShowInactive] = useState<boolean>(true);
+  const [popupMessage, setPopupMessage] = useState<string | null>(null);
 
   const itemsPerPage = 10;
   const headers = ["Date", "Hour", "Room", "Active"];
@@ -67,11 +68,15 @@ export const useAppointmentsListModule = (
       } else {
         console.log("Appointments found:", paginatedAppointments);
       }
-    } catch (error) {
-      console.error("Error fetching appointments:", error);
-      setError("Error fetching appointments.");
-      setAlertMessage("Error fetching appointments.");
-    } finally {
+    } catch (error: any) {
+      console.error( "Error  searching appointments:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
       setLoading(false);
     }
   };
@@ -95,5 +100,7 @@ export const useAppointmentsListModule = (
     setShowActive,
     showInactive,
     setShowInactive,
+        popupMessage,
+
   };
 };

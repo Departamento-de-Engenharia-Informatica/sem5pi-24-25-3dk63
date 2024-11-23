@@ -86,9 +86,14 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
       const paginatedRequests = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setOperationRequests(paginatedRequests);
     } catch (error: any) {
-      setError("Error fetching operation requests.");
-      setAlertMessage("Error fetching operation requests.");
-    } finally {
+      console.error( "Error searching operation request:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
       setLoading(false);
     }
   };
@@ -127,11 +132,15 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         setIsEditModalVisible(false);
         setIsModalVisible(false);
         fetchOperationRequests();
-      } catch (error) {
-        setIsEditModalVisible(false);
-        setIsModalVisible(false);
-        setPopupMessage("Error updating operation request.");
-      } finally {
+      } catch (error: any) {
+      console.error( "Error editing operation request:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
         setEditingRequest(null);
       }
     }
@@ -157,11 +166,15 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         );
         setAlertMessage("Operation request deleted successfully.");
         setPopupMessage("Operation request deleted successfully.");
-    } catch (error) {
-        console.error("Error deleting operation request:", error);
-        setAlertMessage("Error deleting operation request.");
-        setPopupMessage("Error while deleting operation request.");
-    } finally {
+    } catch (error: any) {
+      console.error( "Error deleting operation request:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
         setIsDialogVisible(false);
         setRequestIdToDelete(null);
         fetchOperationRequests();
@@ -192,9 +205,15 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
       const activeOperationTypes = allOperationTypes.filter((operationType: any) => operationType.active);
 
       setFilterOperationRequests(activeOperationTypes);
-    } catch (error) {
-      console.error("Erro ao buscar tipos de operação ativos:", error);
-    }
+    } catch (error: any) {
+      console.error( "Error searching active operation types:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  }
   };
 
   useEffect(() => {
@@ -227,9 +246,15 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
 
         setOperationTypes(sameSpecializationTypes);
         setPatients(patients);
-      } catch (error) {
-        console.error("Failed to fetch additional data:", error);
-      }
+      }catch (error: any) {
+      console.error( "Error searching additional data:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  }
     };
 
     if (isAddModalVisible) {
@@ -256,9 +281,15 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
 
       setOperationRequests(filteredData);
 
-    } catch (error) {
-      setError("No operation requests found.");
-    } finally {
+    } catch (error: any) {
+      console.error( "Error searching operation request:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
       setLoading(false);
     }
   };

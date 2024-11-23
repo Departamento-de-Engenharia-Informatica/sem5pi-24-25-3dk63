@@ -99,9 +99,13 @@ const menuOptions = [
       const paginatedPatients = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setPatients(paginatedPatients);
     } catch (error: any) {
-      console.error("Error fetching patients:", error);
-      setError("Error fetching patients.");
-      setAlertMessage("Error fetching patients.");
+      console.error( "Error searching patients:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -110,37 +114,47 @@ const menuOptions = [
   const handleEdit = async (id: string) => {
     const patientToEdit = patients.find(patient => patient.id === id);
 
-    if (patientToEdit) {
-      // First, prepare creatingPatient without phone number or country code logic
-      const fullName = patientToEdit["Full Name"].split(" ");
-      const firstName = fullName[0] || "";
-      const lastName = fullName.length > 1 ? fullName.slice(1).join(" ") : "";
+    try {
+      if (patientToEdit) {
+        // First, prepare creatingPatient without phone number or country code logic
+        const fullName = patientToEdit["Full Name"].split(" ");
+        const firstName = fullName[0] || "";
+        const lastName = fullName.length > 1 ? fullName.slice(1).join(" ") : "";
 
-      setCreatingPatient({
-        id: patientToEdit.id,
-        firstName: { value: firstName },
-        lastName: { value: lastName },
-        dateOfBirth: { date: patientToEdit["Date of Birth"] },
-        gender: { gender: patientToEdit["Gender"] },
-        personalEmail: { value: patientToEdit["Personal Email"] },
-        phoneNumber: { number: patientToEdit["Contact Phone"] },
-        emergencyContact: { emergencyContact: patientToEdit["Emergency Contact"] },
-        medicalHistory: { medicalHistory: patientToEdit["Medical History"] },
-      });
+        setCreatingPatient({
+          id: patientToEdit.id,
+          firstName: { value: firstName },
+          lastName: { value: lastName },
+          dateOfBirth: { date: patientToEdit["Date of Birth"] },
+          gender: { gender: patientToEdit["Gender"] },
+          personalEmail: { value: patientToEdit["Personal Email"] },
+          phoneNumber: { number: patientToEdit["Contact Phone"] },
+          emergencyContact: { emergencyContact: patientToEdit["Emergency Contact"] },
+          medicalHistory: { medicalHistory: patientToEdit["Medical History"] },
+        });
 
-      setIsModalVisible(true);
+        setIsModalVisible(true);
 
-      // Show phone number when editing
-      const phoneNumber = patientToEdit["Contact Phone"] || "";
-      const matchedCountry = countryOptions.find((option) =>
-        phoneNumber.startsWith(option.code)
-      );
+        // Show phone number when editing
+        const phoneNumber = patientToEdit["Contact Phone"] || "";
+        const matchedCountry = countryOptions.find((option) =>
+          phoneNumber.startsWith(option.code)
+        );
 
-      const countryCode = matchedCountry ? matchedCountry.code : countryOptions[0].code;
-      const phoneNumberPart = matchedCountry ? phoneNumber.replace(matchedCountry.code, "") : "";
+        const countryCode = matchedCountry ? matchedCountry.code : countryOptions[0].code;
+        const phoneNumberPart = matchedCountry ? phoneNumber.replace(matchedCountry.code, "") : "";
 
-      setCountryCode(countryCode);
-      setPhoneNumberPart(phoneNumberPart);
+        setCountryCode(countryCode);
+        setPhoneNumberPart(phoneNumberPart);
+    }
+    } catch (error: any) {
+      console.error( "Error editing patients:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
     }
   };
 
@@ -157,10 +171,14 @@ const menuOptions = [
         setPatients((prev) => prev.filter((patient) => patient.id !== patientIdToDelete));
         setAlertMessage("Patient deleted successfully.");
         setPopupMessage("Patient deleted successfully.");
-      } catch (error) {
-        console.error("Error deleting patient:", error);
-        setAlertMessage("Error deleting patient.");
-        setPopupMessage("Error while deleting patient.");
+      }  catch (error: any) {
+      console.error( "Error deleting patients:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
       } finally {
         setIsDialogVisible(false);
         setPatientIdToDelete(null);
@@ -233,10 +251,17 @@ const menuOptions = [
 
         setIsModalVisible(false);
         fetchPatients();
-    } catch (error) {
-        console.error(isEdit ? "Error updating patient:" : "Error creating patient:", error);
-        setPopupMessage(isEdit ? "Error updating patient." : "Error creating patient.");
+    }   catch (error: any) {
+      console.error( "Error saving patients:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
     }
+
+
   };
 
   const buildUpdateDto = (patientToEdit: any, updatedPatient: any, sensitiveDataUpdated: boolean) => {
@@ -322,11 +347,14 @@ const searchPatients = async (query: Record<string, string>) => {
       setNoDataMessage("No data found for the requirements.");
     }
     setPatients(filteredData);
-  } catch (error) {
-    setError("No data found for the requirements.");
-    console.error("Error fetching patients:", error);
-    setAlertMessage("No data found for the requirements.");
-    setPatients([]);
+  }   catch (error: any) {
+      console.error( "Error searching patients:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
   } finally {
     setLoading(false);
   }

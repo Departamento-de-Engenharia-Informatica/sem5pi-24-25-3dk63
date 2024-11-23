@@ -33,7 +33,7 @@ export const usePatientSelfRegisterModule = () => {
         setAlertMessage("Please enter your email.");
         return;
       }
-  
+
       // Clear alert message
       setAlertMessage(null);
 
@@ -65,11 +65,15 @@ export const usePatientSelfRegisterModule = () => {
         }, 3000);
       }
     }
-    catch (error)
-    {
-      console.error("Error while self registering:", error);
-      setPopupMessage("Error while self-registering.");
-    }
+   catch (error: any) {
+      console.error( "Error while self registering:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  }
   }
 
   // Menu options for HamburgerMenu

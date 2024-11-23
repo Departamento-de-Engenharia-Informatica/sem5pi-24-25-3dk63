@@ -67,11 +67,15 @@ export const useSurgeryRoomListModule = (setAlertMessage: React.Dispatch<React.S
       console.log("Paginated surgery rooms:", paginatedSurgeryRooms);
 
       setSurgeryRooms(paginatedSurgeryRooms);
-    } catch (error) {
-      console.error("Error fetching surgery rooms:", error);
-      setError("Error fetching surgery rooms.");
-      setAlertMessage("Error fetching surgery rooms.");
-    } finally {
+    } catch (error: any) {
+      console.error( "Error searching surgery rooms:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage(errorMessage);
+  } finally {
       setLoading(false);
     }
   };
