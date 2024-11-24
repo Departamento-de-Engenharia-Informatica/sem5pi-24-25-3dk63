@@ -1,0 +1,15 @@
+Received planning request
+room_id-or2
+date-20241028
+planning_error-error(type_error(dict,planning),_12032)
+error-Planning module error: error(type_error(dict,planning),_12094)
+Received planning request
+room_id-or2
+date-20241028
+planning_success-or2
+error-Unexpected error: error(syntax_error(http_parameter(Final Result -)),_670)
+Received planning request
+room_id-or2
+date-20241028
+planning_success-or2
+error-Unexpected error: error(syntax_error(http_parameter(Final Result -)),_670)

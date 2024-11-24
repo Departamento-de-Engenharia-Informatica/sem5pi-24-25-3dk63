@@ -363,7 +363,7 @@ assign_surgeries(Date) :-
         member(Surgery, SurgeryList),
         process_surgery(Surgery, Date)
     ),
-    
+
     % Fetch all agenda assignments once
     findall(
         (Doctor, Agenda),
@@ -395,7 +395,7 @@ assign_surgery(Date, Surgery, RequiredStaff) :-
 
     % Find an available room for the surgery
     find_available_room(Date, StartTime, EndTime, Room),
-    
+
     % Assign the surgery to the room
     assign_surgery_to_room(Room, Date, Surgery, StartTime, EndTime).
 
@@ -526,20 +526,20 @@ heuristic_all_staff(Room, Day, Solution, FinalTime, ExecutionTime):-
               assertz(agenda_staff1(D,Day,Agenda))),_),
     agenda_operation_room(Room,Day,Agenda),
     assert(agenda_operation_room1(Room,Day,Agenda)),
-    
+
     % obter tempo livre para todo o staff
     find_free_agendas(Day),
-    
+
     % obter todas as cirurgias não agendadas
     findall(OpCode, surgery_id(OpCode,_), AllSurgeries),
     schedule_surgeries_all_staff(Room, Day, AllSurgeries),
-    
+
     % obter a agenda final
     agenda_operation_room1(Room, Day, Solution),
-    
+
     % obter o tempo final da ultima cirurgia
     findLast(Solution, FinalTime),
-    
+
     % calcular o tempo de execução
     get_time(Tf),
     ExecutionTime is Tf - Ti.
@@ -554,10 +554,10 @@ schedule_surgeries_all_staff(_, _, []).
 schedule_surgeries_all_staff(Room, Day, Surgeries) :-
     % calcular a ocupação média das equipes para cada cirurgia
     calculate_teams_occupation(Day, Surgeries, TeamOccupationRates),
-    
+
     % encontrar cirurgia com equipe de maior taxa de ocupação média
     find_highest_team_occupation(TeamOccupationRates, NextSurgery, _),
-    
+
     % tentar agendar a cirurgia selecionada
     (
         availability_all_surgeries([NextSurgery], Room, Day),
@@ -582,13 +582,13 @@ calculate_teams_occupation(Day, Surgeries, TeamOccupationRates) :-
 calculate_surgery_team_rate(Surgery, Day, AverageRate) :-
     % obter todos os membros da equipe necessários para a cirurgia
     findall(Staff, assignment_surgery(Surgery, Staff), TeamMembers),
-    
+
     % calcular taxa de ocupação para cada membro
     findall(Rate,
             (member(Staff, TeamMembers),
              calculate_staff_rate(Staff, Day, Surgery, Rate)),
             Rates),
-    
+
     % calcular média das taxas
     sum_list(Rates, TotalRate),
     length(Rates, NumMembers),
@@ -602,12 +602,12 @@ calculate_staff_rate(Staff, Day, Surgery, Rate) :-
     % calcular tempo total disponível
     availability(Staff, Day, FreeSlots),
     sum_available_time(FreeSlots, AvailableTime),
-    
+
     % obter duração da cirurgia
     surgery_id(Surgery, Type),
     surgery(Type, TAnesthesia, TSurgery, TCleaning),
     Duration is TAnesthesia + TSurgery + TCleaning,
-    
+
     % calcular taxa
     (AvailableTime > 0,
      Rate is (Duration / AvailableTime) * 100
