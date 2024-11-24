@@ -213,7 +213,7 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
           console.log("Updating Operation Type:", dto);
 
           await operationTypeService.updateOperationType(opTypeToEdit.id, dto);
-          setPopupMessage("Operation Type created successfully.");
+          setPopupMessage("Operation Type updated successfully.");
           setIsModalVisible(false);
           fetchOperationsTypes();
         } else {
@@ -245,8 +245,11 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
     console.log("Editing Operation Type:", updateDto);
 
-    const isEqual = (val1: any, val2: any) => {
-        return String(val1).trim().toLowerCase() === String(val2).trim().toLowerCase();
+    const isEqual = (val1: any, val2: any): boolean => {
+      if (Array.isArray(val1) && Array.isArray(val2)) {
+          return val1.length === val2.length && val1.every((item, index) => isEqual(item, val2[index]));
+      }
+      return String(val1).trim().toLowerCase() === String(val2).trim().toLowerCase();
     };
 
     if (!isEqual(creatingOperationType.name, opTypeToEdit.Name)) {
@@ -265,16 +268,16 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
         updateDto.cleaning = creatingOperationType.cleaning;
     }
 
-    if (!isEqual(creatingOperationType.requiredStaff, opTypeToEdit["Required Staff"])) {
+    if (!isEqual(creatingOperationType.specialities, opTypeToEdit.specializationsList)) {
+      updateDto.specializations = creatingOperationType.specialities;
+    }
+
+    if (!isEqual(creatingOperationType.requiredStaff, opTypeToEdit.requiredStaffList)) {
         updateDto.requiredStaff = creatingOperationType.requiredStaff;
     }
 
-    if (!isEqual(creatingOperationType.specialization, opTypeToEdit.Specialization)) {
-        updateDto.specialization = creatingOperationType.specialization;
-    }
-
     return Object.keys(updateDto).length > 1 ? updateDto : null;
-};
+  };
 
 
   const fetchSpecializations = async () => {

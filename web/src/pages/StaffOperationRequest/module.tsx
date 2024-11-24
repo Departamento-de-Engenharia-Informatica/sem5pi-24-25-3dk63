@@ -193,6 +193,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         );
         setAlertMessage("Operation request deleted successfully.");
         setPopupMessage("Operation request deleted successfully.");
+        fetchOperationRequests();
     } catch (error: any) {
       console.error( "Error deleting operation request:", error);
 

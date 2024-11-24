@@ -9,6 +9,7 @@ using AutoMapper;
 using System.Threading.Tasks.Dataflow;
 using System.Diagnostics;
 using Microsoft.EntityFrameworkCore;
+using DDDSample1.Infrastructure;
 
 namespace DDDSample1.OperationsType
 {
@@ -21,8 +22,9 @@ namespace DDDSample1.OperationsType
         private readonly IConfiguration _configuration;
        private readonly AuditService _auditService;
        private readonly IMapper _mapper;
+       private readonly DDDSample1DbContext _dbContext;
 
-        public OperationTypeService(IMapper mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, AuditService auditService, ISpecializationRepository specializationRepository)
+        public OperationTypeService(IMapper mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, AuditService auditService, ISpecializationRepository specializationRepository, DDDSample1DbContext dbContext)
         {
             _unitOfWork = unitOfWork;
             _operationTypeRepository = operationTypeRepository;
@@ -30,6 +32,7 @@ namespace DDDSample1.OperationsType
             _auditService = auditService;
             _specializationRepository = specializationRepository;
             _mapper = mapper;
+            _dbContext = dbContext;
         }
 
         public OperationTypeService(IMapper mapper,IUnitOfWork unitOfWork, IOperationTypeRepository operationTypeRepository, IConfiguration configuration, ISpecializationRepository specializationRepository)
@@ -95,11 +98,7 @@ namespace DDDSample1.OperationsType
         }
 
 
-
-
-
         // Obtém uma operation pelo ID
-
         public async Task<OperationTypeDTO> GetByIdAsync(OperationTypeId id)
         {
             try {
@@ -118,8 +117,6 @@ namespace DDDSample1.OperationsType
 
         public async Task<OperationTypeDTO> AddAsync(CreatingOperationTypeDTO dto, string adminEmail)
         {
-                        Console.WriteLine("BOAS PESSOAL");
-
             var name = new OperationName(dto.Name);
 
             // Verificar se já existe uma operação com o mesmo nome
@@ -202,12 +199,13 @@ namespace DDDSample1.OperationsType
 
             try
             {
-                await this._operationTypeRepository.DeleteAsync(currentActiveOperationType.Id);
-                await _unitOfWork.CommitAsync();
+                await _dbContext.Database.ExecuteSqlRawAsync(
+                    "UPDATE OperationTypes SET Active = @p0 WHERE Id = @p1 AND Active = 1", 
+                    false,
+                    id
+                );
 
-                currentActiveOperationType.Deactivate();
-                await _operationTypeRepository.AddAsync(currentActiveOperationType);
-                await _unitOfWork.CommitAsync();
+                _dbContext.Entry(currentActiveOperationType).State = EntityState.Detached;
 
                 var newOperationType = new OperationType(
                     id: currentActiveOperationType.Id,
