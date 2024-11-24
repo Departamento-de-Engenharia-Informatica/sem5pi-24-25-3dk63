@@ -126,6 +126,7 @@ const menuOptions = [
 
 const saveStaff = async () => {
   if (!creatingStaff) {
+    setPopupMessage("Please fill in all required fields.");
     return;
   }
 
@@ -139,7 +140,10 @@ const saveStaff = async () => {
 
     const dto = buildCreateStaffDto(newStaff);
 
-    console.log("Creating new staff:", dto);
+    if (!dto.licenseNumber || !dto.specializationDescription || !dto.email || !dto.role || !dto.phoneNumber || !dto.firstName || !dto.lastName) {
+      setPopupMessage("Please fill in all required fields.");
+      return;
+    }
 
     await staffService.addStaff(dto);
 
