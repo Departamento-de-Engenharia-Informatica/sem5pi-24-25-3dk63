@@ -9,6 +9,7 @@ using DDDSample1.Domain.Appointments;
 using AutoMapper;
 using Backend.Domain.OperationRequests;
 using DDDSample1.Domain.Patients;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace DDDSample1.OperationRequests
 {
@@ -223,7 +224,6 @@ namespace DDDSample1.OperationRequests
             return "Operation requisition updated successfully.";
         }
 
-
         public async Task<List<ListOperationRequestDTO>> SearchOperationRequests(
             string firstName, 
             string lastName, 
@@ -250,7 +250,7 @@ namespace DDDSample1.OperationRequests
                 {
                     if (or.medicalRecordNumber == null)
                     {
-                        throw new InvalidOperationException("OperationRequest is missing a valid medical record number.");
+                        throw new InvalidOperationException("Operation request is missing a valid medical record number.");
                     }
 
                     var patient = await _patientRepository.FindByMedicalRecordNumberAsync(or.medicalRecordNumber)
@@ -264,11 +264,11 @@ namespace DDDSample1.OperationRequests
 
                     if (or.priority == null)
                     {
-                        throw new InvalidOperationException("Priority is required for OperationRequest but was not provided.");
+                        throw new InvalidOperationException("Priority is required for operation request but was not provided.");
                     }
                     if (or.deadline == null)
                     {
-                        throw new InvalidOperationException("Deadline is required for OperationRequest but was not provided.");
+                        throw new InvalidOperationException("Deadline is required for operation request but was not provided.");
                     }
 
                     Console.Write(or.deadline.Value);

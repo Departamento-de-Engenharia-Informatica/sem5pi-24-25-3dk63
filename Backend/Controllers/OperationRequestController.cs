@@ -167,69 +167,77 @@ namespace DDDSample1.Controllers
             [FromQuery] string dateRequested = null,
             [FromQuery] string dueDate = null)
         {
-            status = status?.Trim();
-
-            var user = await _3service.FindByEmailAsync(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value);
-            var doctorProfile = await _4service.GetByUserIdAsync(new UserId(user.Id));
-
-            if (!string.IsNullOrWhiteSpace(status) && 
-                !status.Equals("active", StringComparison.OrdinalIgnoreCase) && 
-                !status.Equals("inactive", StringComparison.OrdinalIgnoreCase))
+            try
             {
-                return BadRequest("Status must be 'active' or 'inactive'.");
-            }
+                status = status?.Trim();
 
-            Priority priorityEnum = null;
-            if (!string.IsNullOrWhiteSpace(priority))
+                var user = await _3service.FindByEmailAsync(User.Claims.FirstOrDefault(c => c.Type == ClaimTypes.Email)?.Value);
+                var doctorProfile = await _4service.GetByUserIdAsync(new UserId(user.Id));
+
+                if (!string.IsNullOrWhiteSpace(status) &&
+                    !status.Equals("active", StringComparison.OrdinalIgnoreCase) &&
+                    !status.Equals("inactive", StringComparison.OrdinalIgnoreCase))
+                {
+                    return BadRequest(new { message = "Status must be 'active' or 'inactive'." });
+                }
+
+                Priority priorityEnum = null;
+                if (!string.IsNullOrWhiteSpace(priority))
+                {
+                    if (Enum.TryParse(typeof(PriorityType), priority, true, out var parsedPriority))
+                    {
+                        priorityEnum = new Priority((PriorityType)parsedPriority);
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Invalid priority. Expected values: 'Elective', 'Urgent', 'Emergency'." });
+                    }
+                }
+
+                DateTime? parsedDateRequested = null;
+                if (!string.IsNullOrWhiteSpace(dateRequested))
+                {
+                    dateRequested = dateRequested.Trim();
+                    if (DateTime.TryParseExact(dateRequested, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
+                    {
+                        parsedDateRequested = parsedDate;
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Invalid date format for dateRequested. Expected format: dd-MM-yyyy." });
+                    }
+                }
+
+                DateTime? parsedDueDate = null;
+                if (!string.IsNullOrWhiteSpace(dueDate))
+                {
+                    dueDate = dueDate.Trim();
+                    if (DateTime.TryParseExact(dueDate, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDue))
+                    {
+                        parsedDueDate = parsedDue;
+                    }
+                    else
+                    {
+                        return BadRequest(new { message = "Invalid date format for dueDate. Expected format: dd-MM-yyyy." });
+                    }
+                }
+
+                var licenseNumber = doctorProfile.LicenseNumber;
+                var doctorId = new LicenseNumber(licenseNumber);
+
+                var requests = await _service.SearchOperationRequests(
+                    firstName, lastName, operationType, status, priorityEnum, parsedDateRequested, parsedDueDate, doctorId);
+
+                return Ok(requests);
+            }
+            catch (InvalidOperationException ex)
             {
-                if (Enum.TryParse(typeof(PriorityType), priority, true, out var parsedPriority))
-                {
-                    priorityEnum = new Priority((PriorityType)parsedPriority);
-                }
-                else
-                {
-                    return BadRequest("Invalid priority value. Must be elective, urgent, or emergency.");
-                }
+                return BadRequest(new { message = ex.Message });
             }
-
-            DateTime? parsedDateRequested = null;
-            if (!string.IsNullOrWhiteSpace(dateRequested))
+            catch (Exception ex)
             {
-                dateRequested = dateRequested.Trim();
-                Console.WriteLine(dateRequested);
-                if (DateTime.TryParseExact(dateRequested, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDate))
-                {
-                    parsedDateRequested = parsedDate;
-                    Console.WriteLine(parsedDateRequested);
-                }
-                else
-                {
-                    return BadRequest("Invalid date format for dateRequested. Expected format: dd-MM-yyyy.");
-                }
+                return StatusCode(500, new { message = "An unexpected error occurred.", details = ex.Message });
             }
-
-            DateTime? parsedDueDate = null;
-            if (!string.IsNullOrWhiteSpace(dueDate))
-            {
-                dueDate = dueDate.Trim();   
-                if (DateTime.TryParseExact(dueDate, "dd-MM-yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out var parsedDue))
-                {
-                    parsedDueDate = parsedDue;
-                    Console.WriteLine(parsedDueDate);
-                }
-                else
-                {
-                    return BadRequest("Invalid date format for dueDate. Expected format: dd-MM-yyyy.");
-                }
-            }
-
-            var licenseNumber = doctorProfile.LicenseNumber;
-            var doctorId = new LicenseNumber(licenseNumber);
-
-            var requests = await _service.SearchOperationRequests(
-                firstName, lastName, operationType, status, priorityEnum, parsedDateRequested, parsedDueDate, doctorId);
-
-            return Ok(requests);
         }
 
     }
