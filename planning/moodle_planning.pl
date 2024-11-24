@@ -45,34 +45,34 @@ surgery_id(so100001,so2).
 surgery_id(so100002,so3).
 surgery_id(so100003,so4).
 surgery_id(so100004,so2).
-%surgery_id(so100005,so4).
-% surgery_id(so100006,so2).
-% surgery_id(so100007,so3).
-% surgery_id(so100008,so2).
-% surgery_id(so100009,so2).
-% surgery_id(so100010,so2).
-% surgery_id(so100011,so4).
-%surgery_id(so100012,so2).
-%surgery_id(so100013,so2).
+surgery_id(so100005,so4).
+ surgery_id(so100006,so2).
+ surgery_id(so100007,so3).
+ surgery_id(so100008,so2).
+ surgery_id(so100009,so2).
+ surgery_id(so100010,so2).
+ surgery_id(so100011,so4).
+surgery_id(so100012,so2).
+surgery_id(so100013,so2).
 
 % Atribuição de cirurgias a médicos específicos para indicar quais médicos irão realizar qual cirurgia
 assignment_surgery(so100001,d001).
 assignment_surgery(so100002,d002).
 assignment_surgery(so100003,d003).
 assignment_surgery(so100004,d001).
-% assignment_surgery(so100004,d002).
-% assignment_surgery(so100005,d002).
-% assignment_surgery(so100005,d003).
-% assignment_surgery(so100006,d001).
-% assignment_surgery(so100007,d003).
-% assignment_surgery(so100008,d004).
-% assignment_surgery(so100008,d003).
-% assignment_surgery(so100009,d002).
-% assignment_surgery(so100009,d004).
-% assignment_surgery(so100010,d003).
-% assignment_surgery(so100011,d001).
-%assignment_surgery(so100012,d001).
-%assignment_surgery(so100013,d004)
+ assignment_surgery(so100004,d002).
+ assignment_surgery(so100005,d002).
+ assignment_surgery(so100005,d003).
+ assignment_surgery(so100006,d001).
+ assignment_surgery(so100007,d003).
+ assignment_surgery(so100008,d004).
+ assignment_surgery(so100008,d003).
+ assignment_surgery(so100009,d002).
+ assignment_surgery(so100009,d004).
+ assignment_surgery(so100010,d003).
+ assignment_surgery(so100011,d001).
+assignment_surgery(so100012,d001).
+assignment_surgery(so100013,d004).
 
 % Definição da agenda da sala de operações para um determinado dia
 % Cada entrada é composta por (ID da sala, data, lista de horários com cirurgia atribuída)
@@ -388,3 +388,124 @@ remove_equals([], []).
 remove_equals([X|L], L1):- member(X, L), !, remove_equals(L, L1).
 remove_equals([X|L], [X|L1]):- remove_equals(L, L1).
 
+find_free_agendas(Date):-retractall(availability(_,_,_)),findall(_,(agenda_staff(D,Date,L),free_agenda0(L,LFA),adapt_timetable(D,Date,LFA,LFA2),assertz(availability(D,Date,LFA2))),_).
+
+heuristic_2_for_doctors_only(Room, Day, Solution, FinalTime, ExecutionTime):-
+    % tempo inicial de execução
+    get_time(Ti),
+
+    % apagar dados antigos
+    retractall(agenda_staff1(_,_,_)),
+    retractall(agenda_operation_room1(_,_,_)),
+    retractall(availability(_,_,_)),
+    retractall(assignment_surgery1(_,_)),
+
+    % inicializar dados
+    findall(_,(assignment_surgery(Surgery,Staff),
+              assertz(assignment_surgery1(Surgery,Staff))),_),
+    findall(_,(agenda_staff(D,Day,Agenda),
+              assertz(agenda_staff1(D,Day,Agenda))),_),
+    agenda_operation_room(Room,Day,Agenda),
+    assert(agenda_operation_room1(Room,Day,Agenda)),
+    
+    % obter tempo livre para os medicos
+    find_free_agendas(Day),
+    
+    % obter todas as cirurgias que não estão agendadas
+    findall(OpCode, surgery_id(OpCode,_), AllSurgeries),
+    schedule_surgeries(Room, Day, AllSurgeries),
+    
+    % obter a agenda final de acordo com a ocupação dos medicos
+    agenda_operation_room1(Room, Day, Solution),
+    
+    % obter o tempo final da ultima cirurgia
+    findLast(Solution, FinalTime),
+    
+    % calcular o tempo de execução
+    get_time(Tf),
+    ExecutionTime is Tf - Ti.
+
+% predicado para obter o tempo final da ultima cirurgia
+findLast([], 0).
+findLast([(_, End, _)], End).
+findLast([_|Rest], FinalTime) :- findLast(Rest, FinalTime).
+
+% agendar cirurgias
+schedule_surgeries(_, _, []).
+schedule_surgeries(Room, Day, Surgeries) :-
+    % calcular a ocupação para cada medico
+    calculate_doctors_occupation(Day, Surgeries, OccupationRates),
+    
+    % encontrar medico com maior taxa de ocupação
+    find_highest_occupation(OccupationRates, Doctor, _),
+    
+    % obter primeira cirurgia disponível para o medico
+    find_doctor_surgery(Doctor, Surgeries, NextSurgery),
+    
+    % agendar cirurgia para o medico
+    (
+        availability_all_surgeries([NextSurgery], Room, Day),
+        % tirar cirurgia da lista
+        delete(Surgeries, NextSurgery, RemainingSurgeries),
+        % Continua com as cirurgias restantes
+        schedule_surgeries(Room, Day, RemainingSurgeries)
+    ;
+        % no caso de falha, tenta a proxima cirurgia
+        delete(Surgeries, NextSurgery, RemainingSurgeries),
+        schedule_surgeries(Room, Day, RemainingSurgeries)
+    ).
+
+% predicado auxiliar para calcular a taxa de ocupação de cada medico
+calculate_doctors_occupation(Day, Surgeries, OccupationRates) :-
+    findall(Doctor, staff(Doctor, doctor, _, _), Doctors),
+    findall((Doctor, Rate),
+            (member(Doctor, Doctors),
+             calculate_doctor_rate(Doctor, Day, Surgeries, Rate)),
+            OccupationRates).
+
+% predicado auxiliar para calcular a taxa de ocupação de um medico
+calculate_doctor_rate(Doctor, Day, Surgeries, Rate) :-
+    % Calcula tempo total disponível
+    availability(Doctor, Day, FreeSlots),
+    sum_available_time(FreeSlots, AvailableTime),
+    
+    % calcula o tempo total de cirurgias pendentes
+    findall(Duration,
+            (member(Surgery, Surgeries),
+             assignment_surgery(Surgery, Doctor),
+             surgery_id(Surgery, Type),
+             surgery(Type, TAnesthesia, TSurgery, TCleaning),
+             Duration is TAnesthesia + TSurgery + TCleaning),
+            Durations),
+    sum_list(Durations, TotalSurgeryTime),
+    
+    (
+        AvailableTime > 0,
+        Rate is (TotalSurgeryTime / AvailableTime) * 100
+    ;
+        Rate = 0
+    ).
+
+% soma do tempo disponível
+sum_available_time([], 0).
+sum_available_time([(Start, End)|Rest], Total) :-
+    sum_available_time(Rest, RestTotal),
+    Total is RestTotal + (End - Start + 1).
+
+% encontra maior taxa de ocupação
+find_highest_occupation([], none, 0).
+find_highest_occupation([(Doctor, Rate)|Rest], HighestDoctor, HighestRate) :-
+    find_highest_occupation(Rest, RestDoctor, RestRate),
+    (
+        Rate > RestRate,
+        HighestDoctor = Doctor,
+        HighestRate = Rate
+    ;
+        HighestDoctor = RestDoctor,
+        HighestRate = RestRate
+    ).
+
+% encontra a primeira cirurgia disponível para um medico
+find_doctor_surgery(Doctor, Surgeries, Surgery) :-
+    member(Surgery, Surgeries),
+    assignment_surgery(Surgery, Doctor).
