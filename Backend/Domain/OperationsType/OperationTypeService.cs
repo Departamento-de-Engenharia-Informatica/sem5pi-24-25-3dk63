@@ -191,7 +191,7 @@ namespace DDDSample1.OperationsType
 
         }
 
-       /* public async Task<OperationTypeDTO> UpdateCurrentActiveType(UpdateOperationTypeDTO dto, Guid id)
+        public async Task<OperationTypeDTO> UpdateCurrentActiveType(UpdateOperationTypeDTO dto, Guid id)
         {
             var currentActiveOperationType = await this._operationTypeRepository.GetActiveOperationTypeByIdAsync(new OperationTypeId(id));
 
@@ -217,11 +217,8 @@ namespace DDDSample1.OperationsType
                         dto.Surgery.HasValue ? dto.Surgery.Value : currentActiveOperationType.Duration.SurgeryPhase,
                         dto.Cleaning.HasValue ? dto.Cleaning.Value : currentActiveOperationType.Duration.CleaningPhase
                     ),
-                    requiredStaff: new RequiredStaff
-                    (
-                        dto.RequiredStaff.HasValue ? dto.RequiredStaff.Value : currentActiveOperationType.RequiredStaff.RequiredNumber
-                    ),
-                    specializationId: currentActiveOperationType.SpecializationId
+                    requiredStaff: dto.RequiredStaff?.Select(rs => new RequiredStaff(rs)).ToList() ?? currentActiveOperationType.RequiredStaff,
+                    specializations: dto.Specialities?.Select(s => new SpecializationId(s)).ToList() ?? currentActiveOperationType.Specializations
                 );
 
                 await this._operationTypeRepository.AddAsync(newOperationType);
@@ -240,7 +237,7 @@ namespace DDDSample1.OperationsType
                 await _unitOfWork.CommitAsync();
                 throw;
             }
-        }*/
+        }
 
         public async Task<OperationTypeDTO> DeactivateAsync(string adminEmail, string? name = null, string? specialization = null, string? id = null)
         {
@@ -297,70 +294,70 @@ namespace DDDSample1.OperationsType
 
 
        public async Task<List<SearchOperationTypeDTO>> SearchOperationTypeAsync(string? name = null, string? specializationDesc = null, string? active = null)
-{
-    // Step 1: Fetch the OperationTypes without including Specializations
-    var operationTypes = await _operationTypeRepository.GetQueryable().ToListAsync(); // Get OperationTypes
-
-    // Step 2: Fetch the Specializations from the database
-    var specializations = await _specializationRepository.GetQueryable().ToListAsync(); // Get Specializations
-
-    // Step 3: Join the data in memory using LINQ
-    var query = from operationType in operationTypes
-                from specializationId in operationType.Specializations
-                join specialization in specializations
-                    on specializationId equals specialization.Id
-                select new { operationType, specialization };
-
-    // Apply additional filtering based on the 'name' parameter
-    if (!string.IsNullOrEmpty(name))
-    {
-        query = query.Where(op => op.operationType.Name.Description.Contains(name));
-    }
-
-    // Execute the query to get the filtered data
-    var results = query.ToList();
-
-    // Post-query filtering based on 'specializationDesc'
-    if (!string.IsNullOrEmpty(specializationDesc))
-    {
-        results = results.Where(op => op.specialization.Description.Value.Contains(specializationDesc)).ToList();
-    }
-
-    // Post-query filtering based on 'active'
-    if (!string.IsNullOrEmpty(active))
-    {
-        if (active.Equals("yes", StringComparison.OrdinalIgnoreCase))
         {
-            results = results.Where(op => op.operationType.Active).ToList();
+            // Step 1: Fetch the OperationTypes without including Specializations
+            var operationTypes = await _operationTypeRepository.GetQueryable().ToListAsync(); // Get OperationTypes
+
+            // Step 2: Fetch the Specializations from the database
+            var specializations = await _specializationRepository.GetQueryable().ToListAsync(); // Get Specializations
+
+            // Step 3: Join the data in memory using LINQ
+            var query = from operationType in operationTypes
+                        from specializationId in operationType.Specializations
+                        join specialization in specializations
+                            on specializationId equals specialization.Id
+                        select new { operationType, specialization };
+
+            // Apply additional filtering based on the 'name' parameter
+            if (!string.IsNullOrEmpty(name))
+            {
+                query = query.Where(op => op.operationType.Name.Description.Contains(name));
+            }
+
+            // Execute the query to get the filtered data
+            var results = query.ToList();
+
+            // Post-query filtering based on 'specializationDesc'
+            if (!string.IsNullOrEmpty(specializationDesc))
+            {
+                results = results.Where(op => op.specialization.Description.Value.Contains(specializationDesc)).ToList();
+            }
+
+            // Post-query filtering based on 'active'
+            if (!string.IsNullOrEmpty(active))
+            {
+                if (active.Equals("yes", StringComparison.OrdinalIgnoreCase))
+                {
+                    results = results.Where(op => op.operationType.Active).ToList();
+                }
+                else if (active.Equals("no", StringComparison.OrdinalIgnoreCase))
+                {
+                    results = results.Where(op => !op.operationType.Active).ToList();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid value for 'active'. No filtering applied.");
+                    results.Clear();
+                }
+            }
+
+            // Step 4: Group by OperationType Id to remove duplicates
+            var groupedResults = results
+                .GroupBy(op => op.operationType.Id) // Group by OperationType.Id to avoid duplicates
+                .Select(group => new SearchOperationTypeDTO
+                {
+                    Id = group.Key.AsGuid(),
+                    Name = group.First().operationType.Name,
+                    // Concatenate all specialization descriptions for this OperationType
+                    Specialization = new Description(string.Join(", ", group.Select(g => g.specialization.Description.Value))),
+                    Active = group.First().operationType.Active,
+                    RequiredStaff = group.First().operationType.RequiredStaff.Select(rs => rs.RequiredNumber).ToList(),
+                    Duration = group.First().operationType.Duration
+                })
+                .ToList();
+
+            return groupedResults;
         }
-        else if (active.Equals("no", StringComparison.OrdinalIgnoreCase))
-        {
-            results = results.Where(op => !op.operationType.Active).ToList();
-        }
-        else
-        {
-            Console.WriteLine("Invalid value for 'active'. No filtering applied.");
-            results.Clear();
-        }
-    }
-
-    // Step 4: Group by OperationType Id to remove duplicates
-    var groupedResults = results
-        .GroupBy(op => op.operationType.Id) // Group by OperationType.Id to avoid duplicates
-        .Select(group => new SearchOperationTypeDTO
-        {
-            Id = group.Key.AsGuid(),
-            Name = group.First().operationType.Name,
-            // Concatenate all specialization descriptions for this OperationType
-            Specialization = new Description(string.Join(", ", group.Select(g => g.specialization.Description.Value))),
-            Active = group.First().operationType.Active,
-            RequiredStaff = group.First().operationType.RequiredStaff.Select(rs => rs.RequiredNumber).ToList(),
-            Duration = group.First().operationType.Duration
-        })
-        .ToList();
-
-    return groupedResults;
-}
 
 
 

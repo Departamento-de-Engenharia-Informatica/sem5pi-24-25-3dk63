@@ -144,7 +144,7 @@ namespace DDDSample1.Controllers
             }
         }
 
-     /*   [HttpPatch("{id}")]
+        [HttpPatch("{id}")]
         [Authorize(Roles="Admin")]
         public async Task<ActionResult<OperationTypeDTO>> Patch(Guid id, [FromBody] UpdateOperationTypeDTO dto)
         {
@@ -162,7 +162,7 @@ namespace DDDSample1.Controllers
             {
                 return BadRequest(new { Message = ex.Message });
             }
-        }*/
+        }
 
         [HttpGet("search")]
         [Authorize(Roles = "Admin")]

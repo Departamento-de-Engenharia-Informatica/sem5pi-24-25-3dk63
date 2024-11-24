@@ -49,11 +49,14 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
 
 
   const renderActions = (opType: any) => {
+    const isInactive = opType.Active === 'No';
+  
     const options = [
       {
         label: "Edit",
-        onClick: () => handleEdit(opType.id),
-        className: "text-blue-500",
+        onClick: () => !isInactive && handleEdit(opType.id),
+        className: `text-blue-500 ${isInactive ? "opacity-50 cursor-not-allowed" : ""}`,
+        disabled: isInactive,
       },
       {
         label: "Deactivate",
@@ -61,13 +64,20 @@ const OpTypesList: React.FC<OperationTypeListProps> = ({ setAlertMessage }) => {
         className: "flex-1 min-w-[100px] px-2 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition duration-300 text-sm",
       },
     ];
-
-  return (
-    <div className="flex flex-wrap gap-2">
-      <DropdownMenu options={options} buttonLabel="Actions" />
-    </div>
-  );
-};
+  
+    return (
+      <div className="flex flex-wrap gap-2">
+        <DropdownMenu
+          options={options.map((option) => ({
+            ...option,
+            disabled: option.disabled || false,
+          }))}
+          buttonLabel="Actions"
+        />
+      </div>
+    );
+  };
+  
 
   const tableData = OTypes.map((opType) => ({
     ...opType,

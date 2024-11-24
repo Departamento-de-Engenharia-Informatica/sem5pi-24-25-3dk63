@@ -42,110 +42,112 @@ export const useOpTypesListModule = (setAlertMessage: React.Dispatch<React.SetSt
 
   ];
 
-const menuOptions = [
-  {
-    label: "Patients",
-    action: () => navigate("/admin/patient")
-  },
-  {
-    label: "Staff",
-    action: () => navigate("/admin/staff")
-  },
+  const menuOptions = [
+    {
+      label: "Patients",
+      action: () => navigate("/admin/patient")
+    },
+    {
+      label: "Staff",
+      action: () => navigate("/admin/staff")
+    },
 
-  {
-    label: "Operation Types",
-    action: () => navigate("/admin/operation-type")
-  }
-];
+    {
+      label: "Operation Types",
+      action: () => navigate("/admin/operation-type")
+    }
+  ];
 
-const fetchOperationsTypes = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const opsTypedata = await operationTypeService.getOperationTypes();
-      setTotalOTypes(opsTypedata.length);
+  const fetchOperationsTypes = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const opsTypedata = await operationTypeService.getOperationTypes();
+        setTotalOTypes(opsTypedata.length);
 
-      const filteredData = opsTypedata
-        .filter((OperationType) => {
-          if (showActive && showInactive) return true;
-          else if (showActive) return OperationType.active;
-          else if (showInactive) return !OperationType.active;
-          return false;
-        })
-        .map((OperationType) => {
-          // Criar arrays de especialização e staff requerido
-          const specializations = OperationType.specialization?.value.split(',').map((s: string) => s.trim());
-          const requiredStaff = String(OperationType.requiredStaff).split(',').map(s => s.trim());
-          const totalStaff = requiredStaff.reduce((acc, curr) => acc + parseInt(curr), 0);
-          const specializationAndStaff = specializations.map((spec: any, index: any) => {
-            const staff = requiredStaff[index] || "N/A"; // "N/A" se faltar staff para a especialização
-            return `${spec} (${staff})`;
-          }).join(', ');
+        const filteredData = opsTypedata
+          .filter((OperationType) => {
+            if (showActive && showInactive) return true;
+            else if (showActive) return OperationType.active;
+            else if (showInactive) return !OperationType.active;
+            return false;
+          })
+          .map((OperationType) => {
+            // Criar arrays de especialização e staff requerido
+            const specializations = OperationType.specialization?.value.split(',').map((s: string) => s.trim());
+            const requiredStaff = String(OperationType.requiredStaff).split(',').map(s => s.trim());
+            const totalStaff = requiredStaff.reduce((acc, curr) => acc + parseInt(curr), 0);
+            const specializationAndStaff = specializations.map((spec: any, index: any) => {
+              const staff = requiredStaff[index] || "N/A"; // "N/A" se faltar staff para a especialização
+              return `${spec} (${staff})`;
+            }).join(', ');
 
-          return {
-            id: OperationType.id,
-            Name: OperationType.name.description,
-            "Preparation Time": OperationType.duration.preparationPhase,
-            "Surgery Time": OperationType.duration.surgeryPhase,
-            "Cleaning Time": OperationType.duration.cleaningPhase,
-            "Total Time": OperationType.duration.totalDuration,
-            "Specialization and Required Staff": specializationAndStaff,
-            Active: OperationType.active ? "Yes" : "No",
-            "Total Staff": totalStaff,
-            specializationsList: specializations,
-            requiredStaffList: requiredStaff
-          };
+            return {
+              id: OperationType.id,
+              Name: OperationType.name.description,
+              "Preparation Time": OperationType.duration.preparationPhase,
+              "Surgery Time": OperationType.duration.surgeryPhase,
+              "Cleaning Time": OperationType.duration.cleaningPhase,
+              "Total Time": OperationType.duration.totalDuration,
+              "Specialization and Required Staff": specializationAndStaff,
+              Active: OperationType.active ? "Yes" : "No",
+              "Total Staff": totalStaff,
+              specializationsList: specializations,
+              requiredStaffList: requiredStaff
+            };
+          });
+
+        const startIndex = (currentPage - 1) * itemsPerPage;
+        const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
+        setOTypes(paginatedOperationTypes);
+      } catch (error: any) {
+        console.error( "Error searching operation types:", error);
+
+        // Captura a mensagem específica do backend, se existir
+        const errorMessage = error?.response?.data?.message ||
+                            error?.message ||
+                            "An unknown error occurred.";
+        setPopupMessage("Error fetching operation types: " + errorMessage);
+    } finally {
+        setLoading(false);
+      }
+    };
+
+  const handleEdit = async (id: string) => {
+    fetchSpecializations();
+    const opTypeToEdit = OTypes.find((opType) => opType.id === id && opType.Active === 'Yes');
+
+    if (!opTypeToEdit || opTypeToEdit.Active === 'No')
+    {
+      setPopupMessage("Operation type needs to be active to be edited!");
+      return;
+    }
+
+    console.log("Editing Operation Type: ", opTypeToEdit);
+
+    try{
+      if (opTypeToEdit) {
+        setCreatingOperationType({
+          id: opTypeToEdit.id,
+          name: opTypeToEdit.Name,
+          requiredStaff: opTypeToEdit.requiredStaffList || [],
+          preparation: opTypeToEdit["Preparation Time"],
+          surgery: opTypeToEdit["Surgery Time"],
+          cleaning: opTypeToEdit["Cleaning Time"],
+          totalDuration: opTypeToEdit["Total Time"],
+          specialities: opTypeToEdit.specializationsList || [],
+          showSpecializationDropdown: false,
         });
 
-      const startIndex = (currentPage - 1) * itemsPerPage;
-      const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
-      setOTypes(paginatedOperationTypes);
-    } catch (error: any) {
-      console.error( "Error searching operation types:", error);
-
-      // Captura a mensagem específica do backend, se existir
-      const errorMessage = error?.response?.data?.message ||
-                           error?.message ||
-                           "An unknown error occurred.";
-      setPopupMessage("Error fetching operation types: " + errorMessage);
-  } finally {
-      setLoading(false);
+      setIsModalVisible(true);
     }
-  };
-
-const handleEdit = async (id: string) => {
-  fetchSpecializations();
-  const opTypeToEdit = OTypes.find((opType) => opType.id === id);
-
-  if (opTypeToEdit.Active === 'No')
-  {
-    setPopupMessage("Operation type needs to be active to be edited!");
-    return;
-  }
-
-  try{
-  if (opTypeToEdit) {
-    setCreatingOperationType({
-      id: opTypeToEdit.id,
-      name: opTypeToEdit.Name,
-      requiredStaff: opTypeToEdit["Required Staff"],
-      preparationTime: opTypeToEdit["Preparation Time"],
-      surgeryTime: opTypeToEdit["Surgery Time"],
-      cleaningTime: opTypeToEdit["Cleaning Time"],
-      totalDuration: opTypeToEdit["Total Time"],
-      specialization: opTypeToEdit.Specialization,
-    });
-
-
-    setIsModalVisible(true);
-  }
-} catch (error: any) {
-  console.error("Error editing Operation Type:", error);
-  const errorMessage = error?.response?.data?.message ||
-                       error?.message ||
-                       "An unknown error occurred.";
-  setPopupMessage(errorMessage);
-}};
+  } catch (error: any) {
+    console.error("Error editing Operation Type:", error);
+    const errorMessage = error?.response?.data?.message ||
+                        error?.message ||
+                        "An unknown error occurred.";
+    setPopupMessage(errorMessage);
+  }};
 
 
   const handleDeactivate = (id: string) => {
@@ -180,9 +182,9 @@ const handleEdit = async (id: string) => {
     const newOperationTypeDTO = {
       name: "",
       requiredStaff: 0,
-      preparationTime: 0,
-      surgeryTime: 0,
-      cleaningTime: 0,
+      preparation: 0,
+      surgery: 0,
+      cleaning: 0,
       totalDuration: 0,
       specialization: [],
       active: true
@@ -210,9 +212,8 @@ const handleEdit = async (id: string) => {
         if (dto) {
           console.log("Updating Operation Type:", dto);
 
-          setAlertMessage("Updating...");
           await operationTypeService.updateOperationType(opTypeToEdit.id, dto);
-          setAlertMessage(null);
+          setPopupMessage("Operation Type created successfully.");
           setIsModalVisible(false);
           fetchOperationsTypes();
         } else {
@@ -252,16 +253,16 @@ const handleEdit = async (id: string) => {
         updateDto.name = creatingOperationType.name;
     }
 
-    if (!isEqual(creatingOperationType.preparationTime, opTypeToEdit["Preparation Time"])) {
-        updateDto.preparationTime = creatingOperationType.preparationTime;
+    if (!isEqual(creatingOperationType.preparation, opTypeToEdit["Preparation Time"])) {
+        updateDto.preparation = creatingOperationType.preparation;
     }
 
-    if (!isEqual(creatingOperationType.surgeryTime, opTypeToEdit["Surgery Time"])) {
-        updateDto.surgeryTime = creatingOperationType.surgeryTime;
+    if (!isEqual(creatingOperationType.surgery, opTypeToEdit["Surgery Time"])) {
+        updateDto.surgery = creatingOperationType.surgery;
     }
 
-    if (!isEqual(creatingOperationType.cleaningTime, opTypeToEdit["Cleaning Time"])) {
-        updateDto.cleaningTime = creatingOperationType.cleaningTime;
+    if (!isEqual(creatingOperationType.cleaning, opTypeToEdit["Cleaning Time"])) {
+        updateDto.cleaning = creatingOperationType.cleaning;
     }
 
     if (!isEqual(creatingOperationType.requiredStaff, opTypeToEdit["Required Staff"])) {

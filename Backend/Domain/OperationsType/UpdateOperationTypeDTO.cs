@@ -9,8 +9,8 @@ namespace DDDSample1.OperationsType
         public int? Preparation { get; set; }
         public int? Surgery { get; set; }
         public int? Cleaning { get; set; }
-        public int? RequiredStaff { get; set; }
-        public string? Speciality { get; set; }
+        public List<int>? RequiredStaff { get; set; }
+        public List<string>? Specialities { get; set; }
 
     }
 }
