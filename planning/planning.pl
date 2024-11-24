@@ -14,11 +14,6 @@ agenda_staff(d002, 20241028, [(540, 600, m02)]).
 agenda_staff(d003, 20241028, [(540, 600, m01)]).
 agenda_staff(d004, 20241028, [(540, 600, m01)]).
 
-agenda_staff(n001, 20241028, [(540, 600, m01)]).
-agenda_staff(n002, 20241028, [(540, 600, m01)]).
-agenda_staff(n003, 20241028, [(540, 600, m01)]).
-agenda_staff(a001, 20241028, [(540, 600, m01)]).
-
 
 % Definição dos horários gerais (início e fim) de disponibilidade de cada médico no dia
 timetable(d001, 20241028, (480, 1440)).
@@ -26,20 +21,12 @@ timetable(d002, 20241028, (480, 1440)).
 timetable(d003, 20241028, (480, 1440)).
 timetable(d004, 20241028, (480, 1440)).
 
-timetable(n001, 20241028, (480, 1440)).
-timetable(n002, 20241028, (480, 1440)).
-timetable(n003, 20241028, (480, 1440)).
-timetable(a001, 20241028, (480, 1440)).
 
 % (ID, tipo de funcionário, especialização) e as cirurgias que eles podem realizar
 staff(d001, doctor, orthopaedist, [so2, so3, so4]).
 staff(d002, doctor, orthopaedist, [so2, so3, so4]).
 staff(d003, doctor, orthopaedist, [so2, so3]).
 staff(d004, doctor, anaesthetist, [so2, so3, so4]).
-staff(n001, nurse, instrumenting, [so2, so3, so4]).
-staff(n002, nurse, circulating, [so2, so3, so4]).
-staff(n003, nurse, anaesthetist, [so2, so3, so4]).
-staff(a001, assistant , assistant_anaesthetist, [so2, so3, so4]).
 
 
 %surgery(SurgeryType,TAnesthesia,TSurgery,TCleaning).
@@ -66,22 +53,6 @@ assignment_surgery(so100002,d003).
 assignment_surgery(so100001,d004).
 assignment_surgery(so100002,d004).
 assignment_surgery(so100003,d004).
-
-assignment_surgery(so100001,n001).
-assignment_surgery(so100002,n001).
-assignment_surgery(so100003,n001).
-
-assignment_surgery(so100001,n002).
-assignment_surgery(so100002,n002).
-assignment_surgery(so100003,n002).
-
-assignment_surgery(so100001,n003).
-assignment_surgery(so100002,n003).
-assignment_surgery(so100003,n003).
-
-assignment_surgery(so100001,a001).
-assignment_surgery(so100002,a001).
-assignment_surgery(so100003,a001).
 
 % (ID da sala, data, lista de horários com cirurgia atribuída)
 agenda_operation_room(or1, 20241028, [(1000, 1059, so099998), (1100, 1200, so099999)]).
@@ -354,6 +325,9 @@ remove_equals([X|L], [X|L1]):- remove_equals(L, L1).
 %------------------------------------------------- First Heuristic -----------------------------------------------------------------------------%
 
 assign_surgeries(Date) :-
+    % Capturar o tempo inicial
+    get_time(Start),
+
     % Get all surgeries and required staff in one go
     findall(Surgery, surgery_id(Surgery, _), SurgeryList),
     find_free_agendas(Date),
@@ -370,7 +344,13 @@ assign_surgeries(Date) :-
         agenda_staff(Doctor, Date, Agenda),
         Assignments
     ),
-    format("Assignments: ~w~n", [Assignments]).
+    format("Assignments: ~w~n", [Assignments]),
+
+    % Capturar o tempo final
+    get_time(End),
+    ExecutionTime is End - Start,
+    format("Execution time: ~3f seconds~n", [ExecutionTime]).
+
 
 % Process each surgery
 process_surgery(Surgery, Date) :-
@@ -509,7 +489,7 @@ update_schedule([(Start, End) | Rest], (StartTime, EndTime), UpdatedSlots) :-
 
 %--------------------------------------------- Second Heuristic --------------------------------------------------------------%
 
-heuristic_all_staff(Room, Day, Solution, FinalTime, ExecutionTime):-
+heuristic_2_all_staff(Room, Day, Solution, ExecutionTime):-
     % tempo inicial de execução
     get_time(Ti),
 
@@ -537,17 +517,9 @@ heuristic_all_staff(Room, Day, Solution, FinalTime, ExecutionTime):-
     % obter a agenda final
     agenda_operation_room1(Room, Day, Solution),
 
-    % obter o tempo final da ultima cirurgia
-    findLast(Solution, FinalTime),
-
     % calcular o tempo de execução
     get_time(Tf),
     ExecutionTime is Tf - Ti.
-
-% predicado para obter o tempo final da ultima cirurgia
-findLast([], 0).
-findLast([(_, End, _)], End).
-findLast([_|Rest], FinalTime) :- findLast(Rest, FinalTime).
 
 % agendar cirurgias considerando todo o staff
 schedule_surgeries_all_staff(_, _, []).

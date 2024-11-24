@@ -46,12 +46,12 @@ surgery_id(so100002,so3).
 surgery_id(so100003,so4).
 surgery_id(so100004,so2).
 surgery_id(so100005,so4).
- surgery_id(so100006,so2).
- surgery_id(so100007,so3).
- surgery_id(so100008,so2).
- surgery_id(so100009,so2).
- surgery_id(so100010,so2).
- surgery_id(so100011,so4).
+surgery_id(so100006,so2).
+surgery_id(so100007,so3).
+surgery_id(so100008,so2).
+surgery_id(so100009,so2).
+surgery_id(so100010,so2).
+surgery_id(so100011,so4).
 surgery_id(so100012,so2).
 surgery_id(so100013,so2).
 
@@ -60,17 +60,17 @@ assignment_surgery(so100001,d001).
 assignment_surgery(so100002,d002).
 assignment_surgery(so100003,d003).
 assignment_surgery(so100004,d001).
- assignment_surgery(so100004,d002).
- assignment_surgery(so100005,d002).
- assignment_surgery(so100005,d003).
- assignment_surgery(so100006,d001).
- assignment_surgery(so100007,d003).
- assignment_surgery(so100008,d004).
- assignment_surgery(so100008,d003).
- assignment_surgery(so100009,d002).
- assignment_surgery(so100009,d004).
- assignment_surgery(so100010,d003).
- assignment_surgery(so100011,d001).
+assignment_surgery(so100004,d002).
+assignment_surgery(so100005,d002).
+assignment_surgery(so100005,d003).
+assignment_surgery(so100006,d001).
+assignment_surgery(so100007,d003).
+assignment_surgery(so100008,d004).
+assignment_surgery(so100008,d003).
+assignment_surgery(so100009,d002).
+assignment_surgery(so100009,d004).
+assignment_surgery(so100010,d003).
+assignment_surgery(so100011,d001).
 assignment_surgery(so100012,d001).
 assignment_surgery(so100013,d004).
 
@@ -390,7 +390,7 @@ remove_equals([X|L], [X|L1]):- remove_equals(L, L1).
 
 find_free_agendas(Date):-retractall(availability(_,_,_)),findall(_,(agenda_staff(D,Date,L),free_agenda0(L,LFA),adapt_timetable(D,Date,LFA,LFA2),assertz(availability(D,Date,LFA2))),_).
 
-heuristic_2_for_doctors_only(Room, Day, Solution, FinalTime, ExecutionTime):-
+heuristic_2_for_doctors_only(Room, Day, Solution, ExecutionTime):-
     % tempo inicial de execução
     get_time(Ti),
 
@@ -418,17 +418,9 @@ heuristic_2_for_doctors_only(Room, Day, Solution, FinalTime, ExecutionTime):-
     % obter a agenda final de acordo com a ocupação dos medicos
     agenda_operation_room1(Room, Day, Solution),
     
-    % obter o tempo final da ultima cirurgia
-    findLast(Solution, FinalTime),
-    
     % calcular o tempo de execução
     get_time(Tf),
     ExecutionTime is Tf - Ti.
-
-% predicado para obter o tempo final da ultima cirurgia
-findLast([], 0).
-findLast([(_, End, _)], End).
-findLast([_|Rest], FinalTime) :- findLast(Rest, FinalTime).
 
 % agendar cirurgias
 schedule_surgeries(_, _, []).
