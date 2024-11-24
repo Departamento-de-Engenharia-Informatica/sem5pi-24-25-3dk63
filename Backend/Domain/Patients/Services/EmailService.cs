@@ -142,11 +142,33 @@ namespace DDDSample1.Domain
         public async Task SendUpdateEmail(string email, string token, string changedFields)
         {
             var confirmationLink = $"http://localhost:5173/patient/confirm-update?token={token}";
-            var subject = "Confirm your profile update";
+            var subject = "Confirm Your Profile Update | Clinitech";
+            var logo = "../Backend/assets/image.png";
+
             var body = $@"
-                <p>The following information in your profile has been changed:</p>
-                <ul>{changedFields}</ul>
-                <p>Please click on the following link to confirm your profile update: <a href=""{confirmationLink}"">Confirm Update</a></p>";
+            <html>
+                <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+                    <div style='max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);'>
+                        <div style='text-align: center;'>
+                            <img src='{logo}' alt='Clinitech Logo' style='max-width: 150px;' />
+                        </div>
+                        <h2 style='text-align: center; color: #333;'>Confirm Your Profile Update</h2>
+                        <p style='font-size: 16px; color: #333;'>Dear User,</p>
+                        <p style='font-size: 16px; color: #333;'>The following information in your profile has been updated:</p>
+                        <ul style='list-style: none; padding: 0; margin: 20px 0;'>
+                            {changedFields}
+                        </ul>
+                        <p style='font-size: 16px; color: #333;'>To confirm the changes, please click on the link below:</p>
+                        <p style='text-align: center;'>
+                            <a href='{confirmationLink}' style='font-size: 16px; color: #ffffff; text-decoration: none; background-color: #007bff; padding: 10px 20px; border-radius: 5px; display: inline-block;'>Confirm Update</a>
+                        </p>
+                        <p style='font-size: 16px; color: #333;'>If you did not request these changes, please contact Clinitech support immediately.</p>
+                        <p style='font-size: 16px; color: #333;'>Thank you for being a part of Clinitech!</p>
+                        <p style='font-size: 16px; color: #333;'>Best regards,</p>
+                        <p style='font-size: 16px; color: #333;'>The Clinitech Team</p>
+                    </div>
+                </body>
+            </html>";
 
             await SendEmailAsync(email, subject, body);
         }
@@ -154,8 +176,28 @@ namespace DDDSample1.Domain
         public async Task SendDeletionConfirmationEmail(string email, string token)
         {
             var confirmationLink = $"http://localhost:5173/patient/confirm-account-deletion?token={token}";
-            var subject = "Confirm your account deletion";
-            var body = $"Please click on the following link to confirm your account deletion: <a href=\"{confirmationLink}\">Confirm Deletion</a>";
+            var subject = "Confirm Your Account Deletion | Clinitech";
+            var logo = "../Backend/assets/image.png";
+            var body = $@"
+            <html>
+                <body style='font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px;'>
+                    <div style='max-width: 600px; margin: auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0px 0px 10px rgba(0,0,0,0.1);'>
+                        <div style='text-align: center;'>
+                            <img src='{logo}' alt='Clinitech Logo' style='max-width: 150px;' />
+                        </div>
+                        <h2 style='text-align: center; color: #333;'>Confirm Your Account Deletion</h2>
+                        <p style='font-size: 16px; color: #333;'>Dear User,</p>
+                        <p style='font-size: 16px; color: #333;'>We have received a request to delete your Clinitech account. If you made this request, please confirm it by clicking the link below:</p>
+                        <p style='text-align: center;'>
+                            <a href='{confirmationLink}' style='font-size: 16px; color: #ffffff; text-decoration: none; background-color: #dc3545; padding: 10px 20px; border-radius: 5px; display: inline-block;'>Confirm Deletion</a>
+                        </p>
+                        <p style='font-size: 16px; color: #333;'>If you did not request this deletion, please contact Clinitech support immediately.</p>
+                        <p style='font-size: 16px; color: #333;'>Thank you for being a part of Clinitech!</p>
+                        <p style='font-size: 16px; color: #333;'>Best regards,</p>
+                        <p style='font-size: 16px; color: #333;'>The Clinitech Team</p>
+                    </div>
+                </body>
+            </html>";
 
             await SendEmailAsync(email, subject, body);
         }
