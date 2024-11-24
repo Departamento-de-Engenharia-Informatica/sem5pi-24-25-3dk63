@@ -28,7 +28,6 @@ export class OperationRequestService implements IOperationRequestService {
   
   async searchOperationRequests(query: Record<string, string>): Promise<OperationRequest[]> {
     const queryString = new URLSearchParams(query).toString();
-    console.log("Query string:", queryString);
   
     const res = await this.http.get<OperationRequest[]>(`${routeconfiguration.SEARCH_OPERATION_REQUEST}?${queryString}`, { 
       headers: { 
@@ -49,8 +48,7 @@ export class OperationRequestService implements IOperationRequestService {
   }
 
   async editOperationRequest(operationRequest: UpdateOperationRequestDTO): Promise<void> {~
-    await this.http.patch(`${routeconfiguration.SEARCH_OPERATION_REQUEST}/${operationRequest.Id}`, operationRequest);
-    console.log("Operation request updated:", operationRequest.Id);
+    await this.http.patch(`${routeconfiguration.OPERATION_REQUEST}/${operationRequest.Id}`, operationRequest);
   }
 
   async deactivateOperationRequest(id: string): Promise<void> {
