@@ -239,7 +239,7 @@ namespace DDDSample1.OperationRequests
 
             if (!requests.Any())
             {
-                throw new InvalidOperationException("No information found based on the search criteria.");
+                throw new InvalidOperationException("No operation requests found.");
             }
 
             var result = new List<ListOperationRequestDTO>();
