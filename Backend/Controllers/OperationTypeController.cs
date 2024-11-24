@@ -164,7 +164,7 @@ namespace DDDSample1.Controllers
             }
         }*/
 
-       /*[HttpGet("search")]
+        [HttpGet("search")]
         [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<SearchOperationTypeDTO>>> SearchOperationTypeAsync([FromQuery] string? name = null, [FromQuery] string? specialization = null, [FromQuery] string? active = null)
         {
@@ -176,7 +176,7 @@ namespace DDDSample1.Controllers
             }
 
             return Ok(operationTypeList);
-        }*/
+        }
 
         [HttpGet("active")]
         [Authorize(Roles="Admin")]

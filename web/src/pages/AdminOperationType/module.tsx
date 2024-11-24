@@ -74,7 +74,7 @@ const fetchOperationsTypes = async () => {
         })
         .map((OperationType) => {
           // Criar arrays de especialização e staff requerido
-          const specializations = OperationType.specialization?.value.split(',').map(s => s.trim());
+          const specializations = OperationType.specialization?.value.split(',').map((s: string) => s.trim());
           const requiredStaff = String(OperationType.requiredStaff).split(',').map(s => s.trim());
           const totalStaff = requiredStaff.reduce((acc, curr) => acc + parseInt(curr), 0);
           const specializationAndStaff = specializations.map((spec: any, index: any) => {
@@ -299,36 +299,56 @@ const handleEdit = async (id: string) => {
       console.log("Query:", query);
       const operationTypeData = await operationTypeService.searchOperationTypes(query);
       console.log("Data returned from searchOperationTypes:", operationTypeData);
-
-      const filteredData = operationTypeData.map((operationType) => ({
-        id: operationType.id,
-        Name: operationType.name.description,
-        "Required Staff": operationType.requiredStaff.requiredNumber,
-        "Preparation Time": operationType.duration.preparationPhase,
-        "Surgery Time": operationType.duration.surgeryPhase,
-        "Cleaning Time": operationType.duration.cleaningPhase,
-        "Total Time": operationType.duration.totalDuration,
-        Specialization: operationType.specialization.value,
-        Active: operationType.active ? "Yes" : "No",
-      }));
-
+  
+      // Apply the same transformation logic as in fetchOperationsTypes
+      const filteredData = operationTypeData
+        .filter((OperationType) => {
+          if (showActive && showInactive) return true;
+          else if (showActive) return OperationType.active;
+          else if (showInactive) return !OperationType.active;
+          return false;
+        })
+        .map((OperationType) => {
+          const specializations = OperationType.specialization?.value.split(',').map((s: string) => s.trim());
+          const requiredStaff = String(OperationType.requiredStaff).split(',').map(s => s.trim());
+          const totalStaff = requiredStaff.reduce((acc, curr) => acc + parseInt(curr), 0);
+          const specializationAndStaff = specializations.map((spec: any, index: any) => {
+            const staff = requiredStaff[index] || "N/A";
+            return `${spec} (${staff})`;
+          }).join(', ');
+  
+          return {
+            id: OperationType.id,
+            Name: OperationType.name.description,
+            "Preparation Time": OperationType.duration.preparationPhase,
+            "Surgery Time": OperationType.duration.surgeryPhase,
+            "Cleaning Time": OperationType.duration.cleaningPhase,
+            "Total Time": OperationType.duration.totalDuration,
+            "Specialization and Required Staff": specializationAndStaff,
+            Active: OperationType.active ? "Yes" : "No",
+            "Total Staff": totalStaff,
+            specializationsList: specializations,
+            requiredStaffList: requiredStaff,
+          };
+        });
+  
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
+  
       if (filteredData.length === 0) {
         setNoDataMessage("No data found for the requirements.");
       }
-      setOTypes(filteredData);
+      setOTypes(paginatedOperationTypes);
     } catch (error: any) {
-      setError("No data found for the requirements.");
-      console.error("Error fetching operation types:", error);
-      setAlertMessage("No data found for the requirements.");
-      const errorMessage = error?.response?.data?.message ||
-                           error?.message ||
-                           "An unknown error occurred.";
+      console.error("Error searching operation types:", error);
+      setError("Error searching operation types.");
+      const errorMessage = error?.response?.data?.message || error?.message || "An unknown error occurred.";
       setPopupMessage(errorMessage);
-      setOTypes([]);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchOperationsTypes();
