@@ -1,0 +1,7 @@
+2024-11-24 13:03:48.819 +00:00 [INF] Staff D111112222 was deactivated by Admin (diogoandre.8269@gmail.com) on 24/11/2024 13:03:48
+2024-11-24 13:04:56.451 +00:00 [INF] OperationType Operaçao ehehehe (828ec0af-a5b5-42c9-a7cf-c968a5e338fc) was deactivated by Admin (diogoandre.8269@gmail.com) on 24/11/2024 13:04:56
+2024-11-24 13:19:14.927 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 24/11/2024 13:19:14. Changes: Phone Number changed to: +351934675555, Specialization changed to: Cardiology
+2024-11-24 13:20:07.212 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 24/11/2024 13:20:07. Changes: Phone Number changed to: +3519346755559, Specialization changed to: Cardiology
+2024-11-24 13:20:41.800 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 24/11/2024 13:20:41. Changes: Specialization changed to: 4
+2024-11-24 13:21:18.561 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 24/11/2024 13:21:18. Changes: Phone Number changed to: +3519346755500, Specialization changed to: Cardiology
+2024-11-24 13:23:19.569 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 24/11/2024 13:23:19. Changes: Email changed to: d10g0r0dr1gu3s123@gail.com, Phone Number changed to: +3519346755599, Specialization changed to: 3
