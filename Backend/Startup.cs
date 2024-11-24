@@ -76,9 +76,18 @@ namespace DDDSample1
             services.AddDataProtection();
 
             services.AddDbContext<DDDSample1DbContext>(options =>
-                options.UseMySql(Configuration.GetConnectionString("MySqlConnection"),
-                    new MySqlServerVersion(new Version(8, 0, 0)))
+                options.UseMySql(
+                    Configuration.GetConnectionString("MySqlConnection"),
+                    new MySqlServerVersion(new Version(8, 0, 0)),
+                    options => options.EnableRetryOnFailure(
+                        maxRetryCount: 5,
+                        maxRetryDelay: TimeSpan.FromSeconds(5),
+                        errorNumbersToAdd: null
+                    )
+                )
                 .ReplaceService<IValueConverterSelector, StronglyEntityIdValueConverterSelector>());
+            
+
 
             services.AddAuthentication(options =>
             {

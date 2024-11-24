@@ -43,7 +43,7 @@ export class OperationRequestService implements IOperationRequestService {
   }
 
   async deleteOperationRequest(id: string): Promise<void> {
-    await this.http.delete(`${routeconfiguration.SEARCH_OPERATION_REQUEST}/${id}`);
+    await this.http.delete(`${routeconfiguration.OPERATION_REQUEST}/${id}`);
     console.log("Operation request deleted:", id);
   }
 
