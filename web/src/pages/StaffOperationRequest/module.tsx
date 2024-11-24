@@ -7,8 +7,6 @@ import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { UpdateOperationRequestDTO } from "@/dto/UpdateOperationRequestDTO";
-import { set } from "node_modules/cypress/types/lodash";
-import { StaffService } from "@/service/staffService";
 import { IStaffService } from "@/service/IService/IStaffService";
 import { IUserService } from "@/service/IService/IUserService";
 import { ISpecializationService } from "@/service/IService/ISpecializationService";
@@ -39,6 +37,8 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const [newRequest, setNewRequest] = useState<any>(null);
   const [editingRequest, setEditingRequest] = useState<any | null>(null);
   const [doctor, setDoctor] = useState<any>(null);
+  const [originalRequest, setOriginalRequest] = useState<any>(null);
+
   const itemsPerPage = 10;
 
   const headers = ["Patient Name", "Operation Type", "Priority", "Assigned Staff", "Deadline", "Status", "Actions"];
@@ -98,51 +98,78 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
     }
   };
 
-  const buildOperationUpdateDTO = (originalRequest: any, updatedFields: any) => {
-    const updatedRequestDTO: UpdateOperationRequestDTO = { Id: originalRequest.Id };
-
-    if (updatedFields.deadline) updatedRequestDTO.Deadline = updatedFields.deadline;
-    if (updatedFields.priority) updatedRequestDTO.Priority = updatedFields.priority;
-
-    return updatedRequestDTO;
-  };
-
   const handleEdit = async (request: any) => {
-    const updatedFields = {
-      deadline: request.deadline,
-      priority: request.priority,
+    const [day, month, year] = request.Deadline.split('-');
+    const formattedDate = `${year}-${month}-${day}`;
+  
+    const originalValues = {
+      Id: request.Id,
+      deadline: formattedDate,
+      priority: request.Priority
     };
-
-    const updatedRequestDTO = buildOperationUpdateDTO(request, updatedFields);
-
-    if (!updatedRequestDTO.Id) {
-      setAlertMessage("Request ID is missing.");
-      return;
-    }
-
-    setEditingRequest(updatedRequestDTO);
+    
+    setOriginalRequest(originalValues);
+    setEditingRequest(originalValues);
     setIsEditModalVisible(true);
   };
 
-  const handleEditSubmit = async () => {
-    if (editingRequest) {
-      try {
-        await operationRequestService.editOperationRequest(editingRequest);
-        setPopupMessage("Operation request updated successfully.");
-        setIsEditModalVisible(false);
-        setIsModalVisible(false);
-        fetchOperationRequests();
-      } catch (error: any) {
-      console.error( "Error editing operation request:", error);
+  const hasChanges = (original: any, current: any): boolean => {
+    if (!original || !current) return false;
+    
+    return original.deadline !== current.deadline || 
+           original.priority !== current.priority;
+  };
 
-      // Captura a mensagem específica do backend, se existir
-      const errorMessage = error?.response?.data?.message ||
-                           error?.message ||
-                           "An unknown error occurred.";
-      setPopupMessage(errorMessage);
-  } finally {
-        setEditingRequest(null);
+  const getChangedFields = (original: any, current: any): Partial<UpdateOperationRequestDTO> => {
+    const changes: Partial<UpdateOperationRequestDTO> = { 
+      Id: original.Id 
+    };
+
+    if (original.deadline !== current.deadline) {
+      changes.Deadline = current.deadline;
+    }
+    
+    if (original.priority !== current.priority) {
+      changes.Priority = current.priority;
+    }
+
+    return changes;
+  };
+
+  const handleEditSubmit = async () => {
+    if (!editingRequest || !originalRequest) return;
+
+    if (!hasChanges(originalRequest, editingRequest)) {
+      setPopupMessage("No changes were made");
+      setIsEditModalVisible(false);
+      setEditingRequest(null);
+      setOriginalRequest(null);
+      return;
+    }
+
+    try {
+      const changedFields = getChangedFields(originalRequest, editingRequest);
+      
+      if (Object.keys(changedFields).length <= 1) {
+        setPopupMessage("No changes were made");
+        setIsEditModalVisible(false);
+        return;
       }
+
+      await operationRequestService.editOperationRequest(changedFields);
+      
+      setPopupMessage("Operation request updated successfully");
+      setIsEditModalVisible(false);
+      fetchOperationRequests();
+    } catch (error: any) {
+      console.error("Error editing operation request:", error);
+      const errorMessage = error?.response?.data?.message ||
+                          error?.message ||
+                          "An unknown error occurred";
+      setPopupMessage(errorMessage);
+    } finally {
+      setEditingRequest(null);
+      setOriginalRequest(null);
     }
   };
 
@@ -226,6 +253,8 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         const operationTypes = await operationTypeService.getOperationTypes();
         const patients = await patientService.getPatients();
 
+        const activePatients = patients.filter((patient) => patient.active);
+
         const userId = await userService.getUserId();
         if (!userId) {
           throw new Error("User ID not found");
@@ -245,7 +274,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         );
         
         setOperationTypes(sameSpecializationTypes);
-        setPatients(patients);
+        setPatients(activePatients);
       }catch (error: any) {
       console.error( "Error searching additional data:", error);
 

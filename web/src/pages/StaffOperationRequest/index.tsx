@@ -257,7 +257,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
       {isEditModalVisible && (
         <Modal isVisible={isEditModalVisible} setIsVisible={setIsEditModalVisible} title="Edit operation request">
           <div className="p-4">
-            <label className="block text-sm font-medium text-gray-700 mt-4">Deadline</label>
+            <label className="block text-sm font-medium text-gray-700">Deadline</label>
             <input
               type="date"
               value={editingRequest?.deadline || ""}
@@ -282,9 +282,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
               }
               className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2"
             >
-              <option value="" disabled>
-                Select priority
-              </option>
+              <option value="" disabled>Select priority</option>
               <option value="Emergency">Emergency</option>
               <option value="Urgent">Urgent</option>
               <option value="Elective">Elective</option>
@@ -292,7 +290,7 @@ const OperationRequestList: React.FC<OperationRequestListProps> = ({ setAlertMes
 
             <button
               onClick={handleEditSubmit}
-              className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md"
+              className="mt-6 w-full bg-blue-600 text-white font-semibold py-2 rounded-md hover:bg-blue-700 transition duration-200"
             >
               Save changes
             </button>
