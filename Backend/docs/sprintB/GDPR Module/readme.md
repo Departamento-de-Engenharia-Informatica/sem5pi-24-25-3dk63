@@ -1,14 +1,66 @@
-# 6.6.1 As the entity that will implement the technical solution, I want to be sure that the team has good knowledge of the project, how it may affect patients' personal data and if the processing is done according to the law.
+# 6.6.1 Visão Geral do Projeto
 
+Como a entidade responsável pela implementação da solução técnica, queremos garantir que a equipa tenha um bom conhecimento do projeto, de como este pode afetar os dados pessoais dos pacientes e se o processamento é realizado de acordo com a legislação.
 
+## Descrição do Projeto e Funcionalidades
 
+O projeto tem como objetivo desenvolver um protótipo de sistema para gestão de solicitações cirúrgicas, marcações e recursos. O sistema permitirá que hospitais e clínicas gerenciem o agendamento de cirurgias e os registos dos pacientes, além de oferecer uma visualização 3D em tempo real da disponibilidade de recursos dentro das instalações, otimizando o agendamento e o uso dos recursos. O projeto também abordará a conformidade com o Regulamento Geral de Proteção de Dados (RGPD), garantindo que o sistema atenda aos requisitos de proteção de dados e gestão de consentimento.
 
+O sistema será composto por vários módulos:
 
+- **Aplicação Web Backoffice**
+- **Módulo de Visualização 3D**
+- **Módulo de Planeamento/Otimização**
+- **Módulo RGPD**
+- **Plano de Continuidade de Negócio (PCN)**
 
+O objetivo é expor os estudantes ao desenvolvimento web full-stack, APIs REST, gestão de bases de dados, renderização 3D, otimização usando Prolog e legislação de privacidade (RGPD).
 
+---
 
+## Dados Pessoais Processados pelo Protótipo
 
+De acordo com a descrição do projeto, o protótipo irá processar os seguintes dados pessoais:
 
+### Dados dos Pacientes:
+- Nome Completo
+- Data de Nascimento
+- Género
+- Número de Registo Médico (identificador único)
+- Informações de Contacto (email, telefone)
+- Alergias/Condições Médicas (opcional)
+- Contacto de Emergência
+- Histórico de Consultas (lista de consultas passadas e futuras)
+
+### Dados da Equipa Médica:
+- Nome Completo
+- Número de Licença (identificador único)
+- Especialização
+- Informações de Contacto (email, telefone)
+- Horário de Disponibilidade
+
+### Dados dos Utilizadores do Backoffice:
+- Nome de Utilizador
+- Função (ex.: Administrador, Médico, Enfermeiro, Técnico, Paciente)
+- Email
+
+---
+
+## Tipos de Processamento de Dados
+
+Os dados pessoais recolhidos serão sujeitos aos seguintes tipos de processamento:
+
+- **Recolha**: Os dados serão recolhidos diretamente dos pacientes durante o registo e da equipa e administradores durante a criação de perfis.
+- **Armazenamento**: Os dados serão armazenados de forma segura numa base de dados, com acesso restrito com base nas funções dos utilizadores.
+- **Utilização**: Os dados serão utilizados para gerir o agendamento de cirurgias, otimizar o uso de recursos, fornecer visualização 3D em tempo real da disponibilidade de recursos e garantir a conformidade com o RGPD.
+- **Atualização**: Pacientes e equipa poderão atualizar os seus dados pessoais através dos seus perfis. Os administradores também poderão editar os perfis de pacientes e da equipa.
+- **Eliminação**: Os pacientes poderão solicitar a eliminação das suas contas e de todos os dados associados. Os administradores podem eliminar os perfis dos pacientes e desativar os perfis da equipa.
+
+---
+
+## Base Legal para o Processamento de Dados Pessoais
+
+A base legal para o processamento de dados pessoais neste projeto é o **consentimento explícito** dos pacientes para o processamento dos seus dados para fins de cuidados de saúde. Para a equipa e administradores, a base legal é o **contrato de trabalho**, que exige o processamento dos dados para fins de gestão de colaboradores e do sistema. O projeto também garantirá a conformidade com o RGPD, o que significa que o processamento dos dados será feito de forma **legal**, **justa** e **transparente**.
 
 # 6.6.2 As a System, I want to notify both users and the responsible authority in case of a data breach, so that I comply with GDPR’s breach notification requirements.
 
