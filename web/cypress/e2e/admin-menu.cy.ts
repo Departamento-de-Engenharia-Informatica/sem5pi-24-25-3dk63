@@ -1,10 +1,8 @@
 // cypress/e2e/admin-menu.cy.ts
 describe("AdminMenu", () => {
   beforeEach(() => {
-    // Visit the admin page before each test
     cy.visit("/admin");
 
-    // Stub the module response
     cy.intercept("GET", "**/api/menu-options", {
       statusCode: 200,
       body: {
@@ -20,7 +18,6 @@ describe("AdminMenu", () => {
 
   context("Desktop View", () => {
     beforeEach(() => {
-      // Set viewport to desktop size
       cy.viewport(1024, 768);
     });
 
@@ -55,7 +52,6 @@ describe("AdminMenu", () => {
 
   context("Mobile View", () => {
     beforeEach(() => {
-      // Set viewport to mobile size
       cy.viewport(375, 667);
     });
 
@@ -65,10 +61,9 @@ describe("AdminMenu", () => {
     });
 
     it("should toggle mobile menu when hamburger is clicked", () => {
-      cy.get(".lg\\:hidden button").first().click(); // Assuming first button is hamburger
+      cy.get(".lg\\:hidden button").first().click();
       cy.get(".fixed.top-0.left-0").should("be.visible");
 
-      // Click outside to close
       cy.get(".bg-\\[rgba\\(0\\,0\\,0\\,0\\.5\\)\\]").click({ force: true });
       cy.get(".fixed.top-0.left-0").should("not.exist");
     });
@@ -85,7 +80,6 @@ describe("AdminMenu", () => {
 
   context("Alert Messages", () => {
     it("should display alert message when present", () => {
-      // Stub the module with alert message
       cy.intercept("GET", "**/api/alert-message", {
         statusCode: 200,
         body: {
@@ -99,7 +93,6 @@ describe("AdminMenu", () => {
     });
 
     it("should not display alert when there is no message", () => {
-      // Stub the module with no alert message
       cy.intercept("GET", "**/api/alert-message", {
         statusCode: 200,
         body: {
@@ -114,10 +107,8 @@ describe("AdminMenu", () => {
 
   context("Dark Mode", () => {
     it("should apply dark mode styles when enabled", () => {
-      // Assuming you have a dark mode toggle somewhere
       cy.get("html").invoke("addClass", "dark");
 
-      // Check if dark mode styles are applied
       cy.get(".dark\\:from-\\[#1f2937\\]").should("be.visible");
       cy.get(".dark\\:bg-\\[#2d2f3f\\]").should("be.visible");
     });
@@ -125,13 +116,10 @@ describe("AdminMenu", () => {
 
   context("Accessibility", () => {
     it("should have proper ARIA labels and roles", () => {
-      // Check for proper heading structure
       cy.get("h1").contains("Admin Panel").should("be.visible");
 
-      // Check for proper button accessibility
       cy.get("button").should("have.attr", "aria-label");
 
-      // Check for proper navigation role
       cy.get("nav").should("exist");
     });
   });

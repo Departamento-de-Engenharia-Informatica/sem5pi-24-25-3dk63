@@ -13,7 +13,7 @@
 
 ![UseCaseDiagram](/Backend/docs/sprintB/Backoffice%20Module/us6.2.11/assets/usecase.png)
 
-# Planing
+# Planning
 
 1- Search Staff Profiles: Implement a search functionality to locate staff profiles.
 2- Edit Profile: Enable editing of contact information, availability slots, and specialization.
@@ -22,11 +22,11 @@
 5- Real-Time Updates: Ensure data changes reflect across the system in real-time.
 6- Testing: Validate each feature, including logging, email, and real-time updates.
 
-# Client Clarifications 
+# Client Clarifications
 
 N/A
 
-# Tests 
+# Tests
 
 1- Verify the search functionality displays correct staff profiles.
 2- Confirm the ability to edit contact information, availability, and specialization fields.

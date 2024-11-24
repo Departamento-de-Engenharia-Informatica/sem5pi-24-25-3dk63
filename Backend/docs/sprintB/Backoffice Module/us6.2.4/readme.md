@@ -15,7 +15,7 @@ sent to the admin.
 
 ![UseCaseDiagram](/Backend/docs/sprintB/Backoffice%20Module/us6.2.4/assets/usecase.png)
 
-# Planing
+# Planning
 
 1-Integrate IAM Provider: Configure authentication via Google, Facebook, or hospital SSO.
 2-Redirect Post-Login: Implement redirection with a valid session token after IAM authentication.

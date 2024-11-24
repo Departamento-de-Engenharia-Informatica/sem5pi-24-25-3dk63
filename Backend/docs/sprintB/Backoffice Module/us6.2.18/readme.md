@@ -16,7 +16,7 @@ immediately.
 
 ![UseCaseDiagram](/Backend/docs/sprintB/Backoffice%20Module/us6.2.18/assets/usecase.png)
 
-# Planing
+# Planning
 
 1- Create Input Form: Develop a form for admins to input new operation type details, including:
         Operation Name
@@ -27,7 +27,7 @@ immediately.
 4- Immediate Availability: Make new operation types immediately accessible for scheduling after validation.
 5- Testing: Validate the form functionality, data persistence, and scheduling availability.
 
-# Client Clarifications 
+# Client Clarifications
 
 *Question US5.1.21 - Edit Operation Type
 
@@ -43,7 +43,7 @@ The operation is mainly associated with one specialization, but for a specific o
 cardiology, orthopedics, anaesthesist are specializations that either doctors or nurses can have.
 the circulating technician is a different type of medical professional. for now the system doesn't need to support technicians
 
-# Tests 
+# Tests
 
 1- Verify that admins can access and use the form to input new operation types.
 2- Ensure operation names are validated for uniqueness during creation.

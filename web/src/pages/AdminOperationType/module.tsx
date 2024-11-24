@@ -100,10 +100,15 @@ const fetchOperationsTypes = async () => {
       const startIndex = (currentPage - 1) * itemsPerPage;
       const paginatedOperationTypes = filteredData.slice(startIndex, startIndex + itemsPerPage);
       setOTypes(paginatedOperationTypes);
-    } catch (error) {
-      setError("Error fetching operation types.");
-      setAlertMessage("Error fetching operation types.");
-    } finally {
+    } catch (error: any) {
+      console.error( "Error searching operation types:", error);
+
+      // Captura a mensagem específica do backend, se existir
+      const errorMessage = error?.response?.data?.message ||
+                           error?.message ||
+                           "An unknown error occurred.";
+      setPopupMessage("Error fetching operation types: " + errorMessage);
+  } finally {
       setLoading(false);
     }
   };

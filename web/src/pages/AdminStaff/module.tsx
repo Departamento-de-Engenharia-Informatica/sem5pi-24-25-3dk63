@@ -323,7 +323,7 @@ const buildCreateStaffDto = (newStaff: any): CreatingStaffDTO => {
       const errorMessage = error?.response?.data?.message ||
                            error?.message ||
                            "An unknown error occurred.";
-      setPopupMessage(errorMessage);
+      setPopupMessage("Error searching staffs: " + errorMessage);
   }finally {
       setLoading(false);
     }

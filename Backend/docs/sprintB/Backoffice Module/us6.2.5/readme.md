@@ -13,7 +13,7 @@
 
 ![UseCaseDiagram](/Backend/docs/sprintB/Backoffice%20Module/us6.2.5/assets/usecase.png)
 
-# Planing
+# Planning
 
 1-Integrate IAM Provider: Configure authentication via Google, Facebook, or hospital SSO.
 2-Redirect Post-Login: Implement redirection with a valid session token after IAM authentication.
@@ -21,11 +21,11 @@
 4-Session Management: Set session expiration policies and reauthentication mechanisms.
 5-Testing: Validate login flow, session security, and feature access.
 
-# Client Clarifications 
+# Client Clarifications
 
 N/A
 
-# Tests 
+# Tests
 
 1- Verify token creation after successful login.
 2- Check redirection to the healthcare system post-login.

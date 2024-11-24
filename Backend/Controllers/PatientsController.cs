@@ -47,7 +47,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpGet("search")]
-        [Authorize (Roles = "Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<ActionResult<IEnumerable<PatientCompleteDTO>>> SearchPatientAsync([FromQuery] string? name = null, [FromQuery] string? email = null, [FromQuery] string? dateOfBirth = null, [FromQuery] string? medicalRecordNumber = null)
         {
             var patientList = await _service.SearchPatientAsync(name, email, dateOfBirth, medicalRecordNumber);
@@ -90,7 +90,7 @@ namespace DDDSample1.Controllers
         }
 
         [HttpPatch("{id}")]
-        [Authorize(Roles="Admin")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> UpdatePatientProfile(PatientUpdateDTO updateDto)
         {
             if (!ModelState.IsValid)
@@ -160,14 +160,17 @@ namespace DDDSample1.Controllers
             bool LastNameChanged = updateDto.LastName != null && updateDto.LastName != userResult.Name.LastName;
             bool emergencyContactChanged = updateDto.EmergencyContact != null && updateDto.EmergencyContact != patient.emergencyContact;
             bool medicalHistoryChanged = updateDto.MedicalHistory != null && updateDto.MedicalHistory != patient.medicalHistory;
-            
-            if(FirstNameChanged){
+
+            if (FirstNameChanged)
+            {
                 updateDto.LastName = userResult.Name.LastName;
             }
-            else if(LastNameChanged){
+            else if (LastNameChanged)
+            {
                 updateDto.FirstName = userResult.Name.FirstName;
             }
-            else{
+            else
+            {
                 updateDto.FirstName = userResult.Name.FirstName;
                 updateDto.LastName = userResult.Name.LastName;
             }
@@ -239,7 +242,7 @@ namespace DDDSample1.Controllers
                 return Unauthorized("User not found.");
             }
 
-            if(_service.FindByUserId(new UserId(user.Id)).Result.Active == false)
+            if (_service.FindByUserId(new UserId(user.Id)).Result.Active == false)
             {
                 return Unauthorized("Patient not active.");
             }
@@ -287,7 +290,7 @@ namespace DDDSample1.Controllers
 
             var patient = await _service.GetPacientByUserEmail(new Email(userEmail));
 
-             if (patient == null || patient.Active == false)
+            if (patient == null || patient.Active == false)
             {
                 return NotFound("Patient not found.");
             }

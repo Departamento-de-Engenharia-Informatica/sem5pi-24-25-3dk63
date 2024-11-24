@@ -105,7 +105,7 @@ const menuOptions = [
       const errorMessage = error?.response?.data?.message ||
                            error?.message ||
                            "An unknown error occurred.";
-      setPopupMessage(errorMessage);
+      setPopupMessage("Error searching patients");
     } finally {
       setLoading(false);
     }
@@ -354,7 +354,7 @@ const searchPatients = async (query: Record<string, string>) => {
       const errorMessage = error?.response?.data?.message ||
                            error?.message ||
                            "An unknown error occurred.";
-      setPopupMessage(errorMessage);
+      setPopupMessage("No patients found");
   } finally {
     setLoading(false);
   }

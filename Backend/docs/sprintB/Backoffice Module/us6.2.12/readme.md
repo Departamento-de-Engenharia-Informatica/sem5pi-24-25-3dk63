@@ -12,7 +12,7 @@
 
 ![UseCaseDiagram](/Backend/docs/sprintB/Backoffice%20Module/us6.2.12/assets/usecase.png)
 
-# Planing
+# Planning
 
 1- Search Staff Profiles: Implement a search functionality for locating staff profiles.
 2- Deactivate Profile: Add an option to deactivate staff profiles, ensuring only authorized users can perform this action.
@@ -20,11 +20,11 @@
 4- Confirmation and Audit Logging: Implement a confirmation step for deactivation and log the action for auditing.
 5- Testing: Validate deactivation, data retention, and audit log functionality.
 
-# Client Clarifications 
+# Client Clarifications
 
 N/A
 
-# Tests 
+# Tests
 
 1- Verify that staff profiles can be searched and selected for deactivation.
 2- Confirm that deactivating a profile removes it from the active roster.

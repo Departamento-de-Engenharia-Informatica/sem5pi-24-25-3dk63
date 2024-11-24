@@ -12,7 +12,7 @@
 
 ![UseCaseDiagram](/Backend/docs/sprintB/Backoffice%20Module/us6.2.20/assets/usecase.png)
 
-# Planing
+# Planning
 
 1- Search and Selection: Implement a search feature for admins to locate operation types.
 2- Mark as Inactive: Add functionality to mark an operation type as inactive, ensuring historical data is retained.
@@ -21,11 +21,11 @@
 5- Logging: Log all deactivation actions for audit purposes.
 6- Testing: Validate all steps to ensure smooth functionality.
 
-# Client Clarifications 
+# Client Clarifications
 
 N/A
 
-# Tests 
+# Tests
 
 1- Search Functionality
 2- Deactivate Operation Type
