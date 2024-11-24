@@ -10,7 +10,6 @@ export const useConfirmUpdateModule = () => {
 
   const [confirmationStatus, setConfirmationStatus] = useState<string>("Processing confirmation...");
   const [loading, setLoading] = useState<boolean>(true);
-  const [hasProcessed, setHasProcessed] = useState<boolean>(false);
 
   const confirmUpdate = async (token: string | null) => {
     if (!token) {
@@ -21,40 +20,22 @@ export const useConfirmUpdateModule = () => {
 
     try {
       const response = await patientService.confirmUpdate(token);
-
-      if (!response) {
-        throw new Error("No response from the server.");
-      }
-
-      let responseData;
-      try {
-        responseData = JSON.parse(response);
-      } catch (parseError) {
-        setConfirmationStatus("Failed to confirm update: Invalid response format.");
-        return;
-      }
-
-      if (responseData.Error) {
-        setConfirmationStatus("This update has already been confirmed.");
-      } else {
-        setConfirmationStatus("Update confirmed successfully. Your changes have been applied.");
-      }
-    } catch (error) {
-      setConfirmationStatus("Update confirmed successfully. Your changes have been applied.");
-    } finally {
+      setConfirmationStatus(response);
+    }
+    catch (error:any) {
+      setConfirmationStatus(error?.response?.data?.message || error?.message);
+    }
+    finally {
       setLoading(false);
-      setHasProcessed(true);
     }
   };
 
   useEffect(() => {
-    if (hasProcessed) return;
-
     const params = new URLSearchParams(location.search);
     const token = params.get("token");
 
     confirmUpdate(token);
-  }, [location.search, hasProcessed]);
+  }, [location.search]);
 
   return { confirmationStatus, loading };
 };
