@@ -116,9 +116,12 @@ describe("StaffService", () => {
     it("should edit staff details", async () => {
       const licenseNumber = "12345";
       const changes: PendingStaffChangesDTO = {
-        email: { value: "newemail@example.com" },
-        phoneNumber: { number: "987654321" },
-        specialization: "Dermatology",
+        Email: { value: "newemail@example.com" },
+        phoneNumber: { Number: "987654321" },
+        Specialization: "Dermatology",
+        AvailabilitySlots: {
+          Slots: []
+        }
       };
 
       const mockResponse: Response<string> = {
