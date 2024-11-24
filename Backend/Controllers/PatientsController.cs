@@ -154,8 +154,6 @@ namespace DDDSample1.Controllers
 
             bool emailChanged = updateDto.Email != null && updateDto.Email.Value != userResult.Email.Value;
             bool phoneChanged = updateDto.PhoneNumber != null && updateDto.PhoneNumber != userResult.phoneNumber;
-            Console.WriteLine("User result phone: " + userResult.phoneNumber);
-            Console.WriteLine("Update dto phone: " + updateDto.PhoneNumber);
             bool FirstNameChanged = updateDto.FirstName != null && updateDto.FirstName != userResult.Name.FirstName;
             bool LastNameChanged = updateDto.LastName != null && updateDto.LastName != userResult.Name.LastName;
             bool emergencyContactChanged = updateDto.EmergencyContact != null && updateDto.EmergencyContact != patient.emergencyContact;
@@ -215,14 +213,13 @@ namespace DDDSample1.Controllers
             try
             {
                 await _service.ConfirmUpdateAsync(token);
-                return Ok(new { message = "Update confirmed successfully. Your changes have been applied." });  // Sucesso
+                return Ok(new { message = "Update confirmed successfully. Your changes have been applied." });
             }
             catch (Exception ex)
             {
                 return BadRequest(new { error = $"Update confirmation failed: {ex.Message}" });
             }
         }
-
 
         [HttpPost("request-account-deletion")]
         [Authorize(Roles = "Patient")]
@@ -259,21 +256,12 @@ namespace DDDSample1.Controllers
             try
             {
                 await _service.ConfirmDeletionAsync(token);
-                return Ok(new { Message = "Account deletion confirmed successfully." });
+                return Ok(new { message = "Account deletion confirmed successfully." });
             }
             catch (Exception ex)
             {
-                var errorResponse = new
-                {
-                    Error = true,
-                    ex.Message,
-                    Code = ex.Message.Contains("confirmation token has expired or the account has been deleted") ? "USER_ALREADY_DELETED_OR_TOKEN_EXPIRED" :
-                            ex.Message.Contains("Patient data not found") ? "PATIENT_NOT_FOUND" :
-                            ex.Message.Contains("anonymizing") ? "USER_ANONYMIZATION_ERROR" :
-                            "GENERAL_ERROR"
-                };
+                return BadRequest(new { error = $"Deletion failed: {ex.Message}" });
 
-                return BadRequest(errorResponse);
             }
         }
 

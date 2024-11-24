@@ -21,6 +21,15 @@ export class PatientService implements IPatientService {
     return res.data;
   }
 
+  async getPatientById(id: string): Promise<PatientUser> {
+    const res = await this.getPatients();
+    const patient = res.find((patient) => patient.userId.value === id);
+    if (!patient) {
+      throw new Error(`Patient with id ${id} not found`);
+    }
+    return patient;
+  }
+
   async searchPatients(query: Record<string, string>): Promise<PatientUser[]> {
     let queryString = new URLSearchParams(query).toString();
     let res = await this.http.get<PatientUser[]>(
@@ -85,41 +94,39 @@ export class PatientService implements IPatientService {
 
   async confirmUpdate(token: string): Promise<string> {
     try {
-      const res = await this.http.get<{ data: string }>(
+      const res = await this.http.get<{ message: string }>(
         `${routeconfiguration.PATIENT_CONFIRM_UPDATE}?token=${token}`,
         {
           headers: { withCredentials: "true" },
         }
       );
-      return res.data.data;
-    } catch (error) {
-      throw new Error("Failed to confirm profile update.");
+      return res.data.message;
+    } catch (error:any) {
+      throw new Error(error?.response?.data?.message || error?.message || "Failed to confirm update.");
     }
   }
 
   async confirmDeletion(token: string): Promise<string> {
     try {
-      const res = await this.http.get<{ data: string }>(
+      const res = await this.http.get<{ message: string }>(
         `${routeconfiguration.PATIENT_CONFIRM_ACCOUNT_DELETION}?token=${token}`,
         {
           headers: { withCredentials: "true" },
         }
       );
-      return res.data.data;
-    } catch (error) {
-      console.log(error);
-      throw new Error("Failed to confirm account deletion.");
+      return res.data.message;
+    } catch (error:any) {
+      throw new Error(error?.response?.data?.message || error?.message || "Failed to confirm account deletion.");
     }
   }
 
   async updateProfile(data: UpdateProfileDTO): Promise<void> {
     try {
-      console.log("Data to update profile:", data);
       await this.http.patch(routeconfiguration.PATIENTS_UPDATE, data, {
         headers: { withCredentials: "true" },
       });
-    } catch (error) {
-      throw new Error("Failed to update profile.");
+    } catch (error:any) {
+      throw new Error(error?.response?.data?.message || error?.message || "Failed to update profile.");
     }
   }
 

@@ -24,6 +24,8 @@ const PatientMenu: React.FC = () => {
     phoneNumberPart,
     handleChange,
     handlePhoneNumberChange,
+    currentProfile,
+    isLoading,
     menuOptions
   } = usePatientMenuModule();
 
@@ -98,35 +100,43 @@ const PatientMenu: React.FC = () => {
           <div className="flex flex-col space-y-4">
             {isModalVisible && (
               <Modal
-                isVisible={isModalVisible}
-                setIsVisible={setIsModalVisible}
-                title="Update Profile"
-              >
+              isVisible={isModalVisible}
+              setIsVisible={setIsModalVisible}
+              title="Update Profile"
+            >
+              {isLoading ? (
+                <div className="flex justify-center items-center p-6">
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#284b62]"></div>
+                </div>
+              ) : (
                 <div className="p-6">
                   <label className="block text-sm font-medium text-gray-700">First Name</label>
                   <input
                     type="text"
-                    value={updateProfileData?.firstName || ""}
+                    value={updateProfileData?.firstName || currentProfile?.name?.firstName || ""}
                     onChange={(e) => handleChange('firstName', e.target.value)}
+                    placeholder="Enter first name"
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                   />
-
-                  <label className="block text-sm font-medium text-gray-700">Last Name</label>
+              
+                  <label className="block text-sm font-medium text-gray-700 mt-4">Last Name</label>
                   <input
                     type="text"
-                    value={updateProfileData?.lastName || ""}
+                    value={updateProfileData?.lastName || currentProfile?.name?.lastName || ""}
                     onChange={(e) => handleChange('lastName', e.target.value)}
+                    placeholder="Enter last name"
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                   />
-
-                  <label className="block text-sm font-medium text-gray-700">Email</label>
+              
+                  <label className="block text-sm font-medium text-gray-700 mt-4">Email</label>
                   <input
                     type="email"
-                    value={updateProfileData?.email?.value || ""}
+                    value={updateProfileData?.email || currentProfile?.personalEmail?.value || ""}
                     onChange={(e) => handleChange('email', e.target.value)}
+                    placeholder="Enter email"
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                   />
-
+    
                   <label className="block text-sm font-medium text-gray-700 mt-4">Phone Number</label>
                   <div className="flex mt-1">
                     <select
@@ -144,40 +154,44 @@ const PatientMenu: React.FC = () => {
                         </option>
                       ))}
                     </select>
-
+    
                     <input
                       type="tel"
-                      value={phoneNumberPart}
+                      value={phoneNumberPart || (currentProfile?.phoneNumber?.number || "").replace(/^\+\d{1,3}/, '')}
                       onChange={(e) => handlePhoneNumberChange(e.target.value)}
                       placeholder="Enter phone number"
                       className="w-full border border-l-0 border-gray-300 rounded-r-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-blue-500"
                     />
                   </div>
-
-                  <label className="block text-sm font-medium text-gray-700">Emergency Contact</label>
+    
+                  <label className="block text-sm font-medium text-gray-700 mt-4">Emergency Contact</label>
                   <input
                     type="text"
-                    value={updateProfileData?.emergencyContact?.emergencyContact || ""}
+                    value={updateProfileData?.emergencyContact || currentProfile?.emergencyContact?.emergencyContact || ""}
                     onChange={(e) => handleChange('emergencyContact', e.target.value)}
+                    placeholder="Enter emergency contact"
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                   />
-
-                  <label className="block text-sm font-medium text-gray-700">Medical History</label>
+    
+                  <label className="block text-sm font-medium text-gray-700 mt-4">Medical History</label>
                   <input
                     type="text"
-                    value={updateProfileData?.medicalHistory?.medicalHistory || ""}
+                    value={updateProfileData?.medicalHistory || currentProfile?.medicalHistory?.medicalHistory || ""}
                     onChange={(e) => handleChange('medicalHistory', e.target.value)}
+                    placeholder="Enter medical history"
                     className="mt-1 block w-full border border-gray-300 rounded-md shadow-sm p-2 focus:outline-none focus:ring focus:ring-[#284b62]"
                   />
-
+    
                   <button
                     onClick={submitProfileUpdate}
                     className="mt-6 w-full bg-[#284b62] text-white font-semibold py-2 rounded-md hover:bg-opacity-80 transition duration-200"
+                    disabled={isLoading}
                   >
-                    Update profile
+                    {isLoading ? 'Updating...' : 'Update profile'}
                   </button>
                 </div>
-              </Modal>
+              )}
+            </Modal>
             )}
           </div>
         </div>

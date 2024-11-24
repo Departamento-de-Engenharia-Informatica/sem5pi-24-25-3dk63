@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IOperationRequestService } from "@/service/IService/IOperationRequestService";
-import { IOperationTypeService } from "@/service/IService/IOperationTypeService";  // Service for operation types
-import { IPatientService } from "@/service/IService/IPatientService";  // Service for fetching patients
+import { IOperationTypeService } from "@/service/IService/IOperationTypeService";
+import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { UpdateOperationRequestDTO } from "@/dto/UpdateOperationRequestDTO";
@@ -16,15 +16,15 @@ import { ISpecializationService } from "@/service/IService/ISpecializationServic
 export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.SetStateAction<string | null>>) => {
   const navigate = useNavigate();
   const operationRequestService = useInjection<IOperationRequestService>(TYPES.operationRequestService);
-  const operationTypeService = useInjection<IOperationTypeService>(TYPES.operationTypeService); // Inject operation type service
-  const patientService = useInjection<IPatientService>(TYPES.patientService); // Inject patient service
+  const operationTypeService = useInjection<IOperationTypeService>(TYPES.operationTypeService);
+  const patientService = useInjection<IPatientService>(TYPES.patientService);
   const staffService = useInjection<IStaffService>(TYPES.staffService);
   const userService = useInjection<IUserService>(TYPES.userService);
   const specializationService = useInjection<ISpecializationService>(TYPES.specializationsService);
   const [operationRequests, setOperationRequests] = useState<any[]>([]);
   const [filterOperationRequests, setFilterOperationRequests] = useState<any[]>([]);
-  const [patients, setPatients] = useState<any[]>([]); // State to hold list of patients
-  const [operationTypes, setOperationTypes] = useState<any[]>([]); // State for operation types
+  const [patients, setPatients] = useState<any[]>([]);
+  const [operationTypes, setOperationTypes] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
@@ -33,7 +33,7 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   const [popupMessage, setPopupMessage] = useState<string | null>(null);
   const [isDialogVisible, setIsDialogVisible] = useState(false);
   const [requestIdToDelete, setRequestIdToDelete] = useState<string | null>(null);
-  const [doctorSpecialization, setDoctorSpecialization] = useState<string>(""); // State for doctor's specialization
+  const [doctorSpecialization, setDoctorSpecialization] = useState<string>("");
   const [isAddModalVisible, setIsAddModalVisible] = useState(false);
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
   const [newRequest, setNewRequest] = useState<any>(null);
@@ -239,11 +239,11 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         const resolvedSpec = await specialization;
 
         const activeOperationTypes = operationTypes.filter((operationType) => operationType.active);
-
+        
         const sameSpecializationTypes = activeOperationTypes.filter(
-          (operationType) => operationType.specialization.value === resolvedSpec.description
+          (operationType) => operationType.specialization.value.includes(resolvedSpec.description)
         );
-
+        
         setOperationTypes(sameSpecializationTypes);
         setPatients(patients);
       }catch (error: any) {
@@ -295,34 +295,34 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   };
 
   const handleSubmit = async () => {
+    if (!newRequest?.patientId || !newRequest?.operationType || !newRequest?.priority || !newRequest?.deadline) {
+      setPopupMessage("All fields are required.");
+      return;
+    }
+  
     try {
-      if (!newRequest.patientId || !newRequest.operationType || !newRequest.priority || !newRequest.deadline) {
-        setPopupMessage("All fields are required.");
-        return;
-      }
-
       const dto = await buildCreateDto(newRequest);
-
+  
       await operationRequestService.createOperationRequest(dto);
-
+  
       setPopupMessage("Operation request created successfully.");
-
+  
       fetchOperationRequests();
-
+  
       setIsModalVisible(false);
       setIsAddModalVisible(false);
       setNewRequest(null);
-
+  
     } catch (error) {
       console.error('Error during submission:', error);
-
+  
       setPopupMessage("There is already a request of this type for this patient.");
-
+  
       setIsModalVisible(false);
       setIsAddModalVisible(false);
       setNewRequest(null);
     }
-  };
+  };  
 
   const buildCreateDto = async (creatingRequest: any) => {
     try {

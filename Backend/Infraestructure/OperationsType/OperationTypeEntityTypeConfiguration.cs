@@ -47,7 +47,7 @@ namespace DDDSample1.Infraestructure.OperationTypes
                         rs => JsonSerializer.Serialize(rs, new JsonSerializerOptions { WriteIndented = false }),
                         rs => JsonSerializer.Deserialize<List<RequiredStaff>>(rs, new JsonSerializerOptions()) ?? new List<RequiredStaff>()
                     )
-                    .HasColumnName("RequiredStaff")
+                    .HasColumnName("RequiredStaffs")
                     .IsRequired(false);
 
             

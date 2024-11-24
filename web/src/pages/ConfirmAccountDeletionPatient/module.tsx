@@ -10,52 +10,42 @@ export const useConfirmDeletionModule = () => {
 
   const [confirmationStatus, setConfirmationStatus] = useState<string>("Processing confirmation...");
   const [loading, setLoading] = useState<boolean>(true);
-  const [hasProcessed, setHasProcessed] = useState<boolean>(false);
 
   const confirmDeletion = async (token: string) => {
-    try {
-      const response = await patientService.confirmDeletion(token);
-
-      if (!response) {
-        throw new Error("No response from the server.");
-      }
-
-      let responseData;
-      try {
-        responseData = JSON.parse(response);
-      } catch (parseError) {
-        setConfirmationStatus("This account has already been deleted or the token has expired.");
-        return;
-      }
-
-      if (responseData.Error) {
-        setConfirmationStatus("This account has already been deleted.");
-      } else {
-        setConfirmationStatus("Account deletion confirmed successfully.");
-      }
-    } catch (error) {
-      setConfirmationStatus("Account deletion confirmed successfully.");
-    } finally {
-      setLoading(false);
-      setHasProcessed(true);
-    }
-  };
-
-  useEffect(() => {
-    if (hasProcessed) return;
-
-    const params = new URLSearchParams(location.search);
-    const token = params.get("token");
-
     if (!token) {
       setConfirmationStatus("Token not found. Please request another deletion.");
       setLoading(false);
       return;
     }
 
+    try {
+      const response = await patientService.confirmDeletion(token);
+      setConfirmationStatus(response);
+    } catch (error: any) {
+      console.error("Deletion error:", error);
+      setConfirmationStatus(
+        error?.response?.data?.error ||
+        error?.message ||
+        "An unexpected error occurred. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
+    
+  };
+
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const token = params.get("token");
+  
     setLoading(true);
-    confirmDeletion(token);
-  }, [location.search, hasProcessed]);
+    if (token) {
+      confirmDeletion(token);
+    } else {
+      setConfirmationStatus("Token not found. Please request another deletion.");
+      setLoading(false);
+    }
+  }, [location.search]);
 
   return { confirmationStatus, loading };
-};
+}

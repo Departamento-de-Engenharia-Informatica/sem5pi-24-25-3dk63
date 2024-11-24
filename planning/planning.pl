@@ -351,9 +351,169 @@ remove_equals([], []).
 remove_equals([X|L], L1):- member(X, L), !, remove_equals(L, L1).
 remove_equals([X|L], [X|L1]):- remove_equals(L, L1).
 
-heuristic_2_for_doctors_only(Room, Day):-
+%------------------------------------------------- First Heuristic -----------------------------------------------------------------------------%
+
+assign_surgeries(Date) :-
+    % Get all surgeries and required staff in one go
+    findall(Surgery, surgery_id(Surgery, _), SurgeryList),
+    find_free_agendas(Date),
+
+    % Process each surgery
+    forall(
+        member(Surgery, SurgeryList),
+        process_surgery(Surgery, Date)
+    ),
     
-    % apagar dados anteriores
+    % Fetch all agenda assignments once
+    findall(
+        (Doctor, Agenda),
+        agenda_staff(Doctor, Date, Agenda),
+        Assignments
+    ),
+    format("Assignments: ~w~n", [Assignments]).
+
+% Process each surgery
+process_surgery(Surgery, Date) :-
+    % Get the required staff for this surgery
+    findall(Staff, assignment_surgery(Surgery, Staff), RequiredStaff),
+    assign_surgery(Date, Surgery, RequiredStaff).
+
+% Assign surgery to the operation room along with the required staff
+assign_surgery(Date, Surgery, RequiredStaff) :-
+    surgery_id(Surgery, SurgeryType),
+    surgery(SurgeryType, TAnesthesia, TSurgery, TCleaning),
+    TotalTime is TAnesthesia + TSurgery + TCleaning,
+
+    % Find the earliest available time slot for staff
+    find_earliest_available_team(Date, RequiredStaff, TotalTime, StartTime, EndTime),
+
+    % Assign surgery to the required staff
+    forall(
+        member(Staff, RequiredStaff),
+        assign_to_staff(Staff, Date, Surgery, StartTime, EndTime)
+    ),
+
+    % Find an available room for the surgery
+    find_available_room(Date, StartTime, EndTime, Room),
+    
+    % Assign the surgery to the room
+    assign_surgery_to_room(Room, Date, Surgery, StartTime, EndTime).
+
+% Find an available room for the surgery based on the time
+find_available_room(Date, StartTime, EndTime, Room) :-
+    findall(
+        Room,
+        (   agenda_operation_room(Room, Date, Agenda),
+            \+ member((StartTime, EndTime, _), Agenda)  % Room is available during the given time
+        ),
+        AvailableRooms),
+    AvailableRooms \= [],
+    member(Room, AvailableRooms).
+
+% Assign surgery to the operation room's schedule
+assign_surgery_to_room(Room, Date, Surgery, StartTime, EndTime) :-
+    agenda_operation_room(Room, Date, Agenda),
+    % Avoid duplicates in the room's schedule
+    (   member((StartTime, EndTime, Surgery), Agenda)
+    ->  UpdatedAgenda = Agenda
+    ;   append(Agenda, [(StartTime, EndTime, Surgery)], UpdatedAgenda)
+    ),
+    retract(agenda_operation_room(Room, Date, Agenda)),
+    assertz(agenda_operation_room(Room, Date, UpdatedAgenda)).
+
+% Find earliest available time for all staff
+find_earliest_available_team(Date, StaffList, TotalTime, StartTime, EndTime) :-
+    % Collect all staff availability slots in one go
+    findall(
+        StaffSlots,
+        (   member(Staff, StaffList),
+            availability(Staff, Date, StaffSlots)
+        ),
+        AllStaffSlots
+    ),
+    % Find the common available slot for all staff
+    find_common_slot(AllStaffSlots, TotalTime, StartTime, EndTime).
+
+% Find the earliest common slot that fits the surgery
+find_common_slot(AllStaffSlots, TotalTime, StartTime, EndTime) :-
+    % Find the available slots for all staff that can accommodate the total surgery time
+    find_available_slots(AllStaffSlots, TotalTime, AvailableSlots),
+    sort(AvailableSlots, SortedSlots),
+    member((StartTime, EndTime), SortedSlots),
+    fits_for_all_staff(AllStaffSlots, (StartTime, EndTime)).
+
+% Find all possible available time slots that fit the surgery duration
+find_available_slots(AllStaffSlots, TotalTime, AvailableSlots) :-
+    findall(
+        (Start, EndSlot),
+        (   member(StaffSlots, AllStaffSlots),
+            member((Start, End), StaffSlots),
+            Duration is End - Start + 1,
+            Duration >= TotalTime,
+            EndSlot is Start + TotalTime - 1
+        ),
+        AvailableSlots
+    ).
+
+% Check if the time slot fits for all staff
+fits_for_all_staff([], _).
+fits_for_all_staff([StaffSlots | Rest], (StartTime, EndTime)) :-
+    member((Start, End), StaffSlots),
+    Start =< StartTime,
+    End >= EndTime,
+    fits_for_all_staff(Rest, (StartTime, EndTime)).
+
+% Assign surgery to staff and update their schedule
+assign_to_staff(Staff, Date, Surgery, StartTime, EndTime) :-
+    retract(availability(Staff, Date, Slots)),
+    update_schedule(Slots, (StartTime, EndTime), UpdatedSlots),
+    assertz(availability(Staff, Date, UpdatedSlots)),
+
+    % Update the agenda for the staff
+    update_agenda_staff(Staff, Date, Surgery, StartTime, EndTime).
+
+% Update agenda for staff
+update_agenda_staff(Staff, Date, Surgery, StartTime, EndTime) :-
+    (   retract(agenda_staff(Staff, Date, Agenda))
+    ->  true
+    ;   Agenda = []
+    ),
+    % Avoid duplicates in the agenda
+    (   member((StartTime, EndTime, Surgery), Agenda)
+    ->  UpdatedAgenda = Agenda
+    ;   append(Agenda, [(StartTime, EndTime, Surgery)], UpdatedAgenda)
+    ),
+    assertz(agenda_staff(Staff, Date, UpdatedAgenda)).
+
+% Update availability schedule after assigning a time slot
+update_schedule([], _, []).
+update_schedule([(Start, End) | Rest], (StartTime, EndTime), UpdatedSlots) :-
+    (End < StartTime; Start > EndTime),
+    !,
+    update_schedule(Rest, (StartTime, EndTime), RemainingSlots),
+    UpdatedSlots = [(Start, End) | RemainingSlots].
+update_schedule([(Start, End) | Rest], (StartTime, EndTime), UpdatedSlots) :-
+    % Adjust slot before and after the assigned time
+    NewStart is max(Start, EndTime + 1),
+    NewEnd is min(End, StartTime - 1),
+    findall(
+        Slot,
+        (   Slot = (SlotStart, SlotEnd),
+            member((SlotStart, SlotEnd), [(Start, NewEnd), (NewStart, End)]),
+            SlotStart =< SlotEnd
+        ),
+        AdjustedSlots
+    ),
+    update_schedule(Rest, (StartTime, EndTime), RemainingSlots),
+    append(AdjustedSlots, RemainingSlots, UpdatedSlots).
+
+%--------------------------------------------- Second Heuristic --------------------------------------------------------------%
+
+heuristic_all_staff(Room, Day, Solution, FinalTime, ExecutionTime):-
+    % tempo inicial de execução
+    get_time(Ti),
+
+    % apagar dados antigos
     retractall(agenda_staff1(_,_,_)),
     retractall(agenda_operation_room1(_,_,_)),
     retractall(availability(_,_,_)),
@@ -367,66 +527,92 @@ heuristic_2_for_doctors_only(Room, Day):-
     agenda_operation_room(Room,Day,Agenda),
     assert(agenda_operation_room1(Room,Day,Agenda)),
     
-    % tempo livre dos staff (só doutores para este caso)
+    % obter tempo livre para todo o staff
     find_free_agendas(Day),
     
-    % obtém todas as cirurgias não agendadas
+    % obter todas as cirurgias não agendadas
     findall(OpCode, surgery_id(OpCode,_), AllSurgeries),
-    schedule_surgeries(Room, Day, AllSurgeries).
+    schedule_surgeries_all_staff(Room, Day, AllSurgeries),
+    
+    % obter a agenda final
+    agenda_operation_room1(Room, Day, Solution),
+    
+    % obter o tempo final da ultima cirurgia
+    findLast(Solution, FinalTime),
+    
+    % calcular o tempo de execução
+    get_time(Tf),
+    ExecutionTime is Tf - Ti.
 
-% agendar cirurgias
-schedule_surgeries(_, _, []).
-schedule_surgeries(Room, Day, Surgeries) :-
-    % calcular a ocupação para cada médico
-    calculate_doctors_occupation(Day, Surgeries, OccupationRates),
+% predicado para obter o tempo final da ultima cirurgia
+findLast([], 0).
+findLast([(_, End, _)], End).
+findLast([_|Rest], FinalTime) :- findLast(Rest, FinalTime).
+
+% agendar cirurgias considerando todo o staff
+schedule_surgeries_all_staff(_, _, []).
+schedule_surgeries_all_staff(Room, Day, Surgeries) :-
+    % calcular a ocupação média das equipes para cada cirurgia
+    calculate_teams_occupation(Day, Surgeries, TeamOccupationRates),
     
-    % encontrar médico com maior taxa de ocupação
-    find_highest_occupation(OccupationRates, Doctor, _),
+    % encontrar cirurgia com equipe de maior taxa de ocupação média
+    find_highest_team_occupation(TeamOccupationRates, NextSurgery, _),
     
-    % obter primeira cirurgia disponível para o médico
-    find_doctor_surgery(Doctor, Surgeries, NextSurgery),
-    
-    % agendar cirurgia para o médico
-    (availability_all_surgeries([NextSurgery], Room, Day) ->
-        % tirar cirurgia da lista
+    % tentar agendar a cirurgia selecionada
+    (
+        availability_all_surgeries([NextSurgery], Room, Day),
+        % remover cirurgia da lista
         delete(Surgeries, NextSurgery, RemainingSurgeries),
-        % Continua com as cirurgias restantes
-        schedule_surgeries(Room, Day, RemainingSurgeries)
+        % continuar com as cirurgias restantes
+        schedule_surgeries_all_staff(Room, Day, RemainingSurgeries)
     ;
-        % no caso de falha, tenta a proxima cirurgia
+        % se falhar, tentar próxima cirurgia
         delete(Surgeries, NextSurgery, RemainingSurgeries),
-        schedule_surgeries(Room, Day, RemainingSurgeries)
+        schedule_surgeries_all_staff(Room, Day, RemainingSurgeries)
     ).
 
-% predicado auxiliar para calcular a taxa de ocupação de cada médico
-calculate_doctors_occupation(Day, Surgeries, OccupationRates) :-
-    findall(Doctor, staff(Doctor, doctor, _, _), Doctors),
-    findall((Doctor, Rate),
-            (member(Doctor, Doctors),
-             calculate_doctor_rate(Doctor, Day, Surgeries, Rate)),
-            OccupationRates).
+% calcular taxa de ocupação das equipes para cada cirurgia
+calculate_teams_occupation(Day, Surgeries, TeamOccupationRates) :-
+    findall((Surgery, Rate),
+            (member(Surgery, Surgeries),
+             calculate_surgery_team_rate(Surgery, Day, Rate)),
+            TeamOccupationRates).
 
-% predicado auxiliar para calcular a taxa de ocupação de um médico
-calculate_doctor_rate(Doctor, Day, Surgeries, Rate) :-
-    % Calcula tempo total disponível
-    availability(Doctor, Day, FreeSlots),
+% calcular taxa de ocupação média da equipe para uma cirurgia
+calculate_surgery_team_rate(Surgery, Day, AverageRate) :-
+    % obter todos os membros da equipe necessários para a cirurgia
+    findall(Staff, assignment_surgery(Surgery, Staff), TeamMembers),
+    
+    % calcular taxa de ocupação para cada membro
+    findall(Rate,
+            (member(Staff, TeamMembers),
+             calculate_staff_rate(Staff, Day, Surgery, Rate)),
+            Rates),
+    
+    % calcular média das taxas
+    sum_list(Rates, TotalRate),
+    length(Rates, NumMembers),
+    (NumMembers > 0,
+     AverageRate is TotalRate / NumMembers
+    ;
+     AverageRate = 0).
+
+% calcular taxa de ocupação para um membro do staff
+calculate_staff_rate(Staff, Day, Surgery, Rate) :-
+    % calcular tempo total disponível
+    availability(Staff, Day, FreeSlots),
     sum_available_time(FreeSlots, AvailableTime),
     
-    % calcula o tempo total de cirurgias pendentes
-    findall(Duration,
-            (member(Surgery, Surgeries),
-             assignment_surgery(Surgery, Doctor),
-             surgery_id(Surgery, Type),
-             surgery(Type, TAnesthesia, TSurgery, TCleaning),
-             Duration is TAnesthesia + TSurgery + TCleaning),
-            Durations),
-    sum_list(Durations, TotalSurgeryTime),
+    % obter duração da cirurgia
+    surgery_id(Surgery, Type),
+    surgery(Type, TAnesthesia, TSurgery, TCleaning),
+    Duration is TAnesthesia + TSurgery + TCleaning,
     
-    (AvailableTime > 0 ->
-        Rate is (TotalSurgeryTime / AvailableTime) * 100
+    % calcular taxa
+    (AvailableTime > 0,
+     Rate is (Duration / AvailableTime) * 100
     ;
-        Rate = 0
-    ).
+     Rate = 0).
 
 % soma do tempo disponível
 sum_available_time([], 0).
@@ -434,30 +620,13 @@ sum_available_time([(Start, End)|Rest], Total) :-
     sum_available_time(Rest, RestTotal),
     Total is RestTotal + (End - Start + 1).
 
-% encontra maior taxa de ocupação
-find_highest_occupation([], none, 0).
-find_highest_occupation([(Doctor, Rate)|Rest], HighestDoctor, HighestRate) :-
-    find_highest_occupation(Rest, RestDoctor, RestRate),
-    (Rate > RestRate ->
-        HighestDoctor = Doctor,
-        HighestRate = Rate
+% encontrar cirurgia com maior taxa de ocupação média da equipe
+find_highest_team_occupation([], none, 0).
+find_highest_team_occupation([(Surgery, Rate)|Rest], HighestSurgery, HighestRate) :-
+    find_highest_team_occupation(Rest, RestSurgery, RestRate),
+    (Rate > RestRate,
+     HighestSurgery = Surgery,
+     HighestRate = Rate
     ;
-        HighestDoctor = RestDoctor,
-        HighestRate = RestRate
-    ).
-
-% encontra primeira cirurgia disponível para um médico
-find_doctor_surgery(Doctor, Surgeries, Surgery) :-
-    member(Surgery, Surgeries),
-    assignment_surgery(Surgery, Doctor).
-
-% predicado auxiliar para imprimir o horário
-print_schedule(Room, Day) :-
-    agenda_operation_room1(Room, Day, Agenda),
-    format('~nAgendamento para Sala ~w no dia ~w:~n', [Room, Day]),
-    print_operations(Agenda).
-
-print_operations([]).
-print_operations([(Start, End, OpCode)|Rest]) :-
-    format('Cirurgia ~w: ~w-~w~n', [OpCode, Start, End]),
-    print_operations(Rest).
+     HighestSurgery = RestSurgery,
+     HighestRate = RestRate).
