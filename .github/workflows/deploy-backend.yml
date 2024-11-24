@@ -76,7 +76,7 @@ jobs:
             dotnet tool restore
             echo "Setting environment variables..." | tee -a ~/deploy-Backend/deploy.log
             export ASPNETCORE_ENVIRONMENT="Production"
-            export ASPNETCORE_URLS="https://localhost:5001"
+            export ASPNETCORE_URLS="https://lapr5.sytes.net:5001"
             export DNS_DOMAIN="myhospital.com"
             echo "Updating database..." | tee -a ~/deploy-Backend/deploy.log
             dotnet ef database update
