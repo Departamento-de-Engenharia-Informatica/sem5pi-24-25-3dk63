@@ -7,3 +7,5 @@
 2024-11-22 19:08:45.442 +00:00 [INF] OperationType asd (dfe2df45-cbd0-44da-8263-d97205f5a3d3) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 19:08:45
 2024-11-22 19:16:33.657 +00:00 [INF] OperationType já está (d05c5a25-5d53-4e7d-beae-141687a9c1a1) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 19:16:33
 2024-11-22 19:19:10.964 +00:00 [INF] OperationType ehehe (f94cab4b-9924-4584-b2b1-f53fc689a373) was created by Admin (diogoandre.8269@gmail.com) on 22/11/2024 19:19:10
+2024-11-22 23:56:53.807 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 22/11/2024 23:56:53. Changes: Phone Number changed to: +351934675555, Specialization changed to: funciona
+2024-11-22 23:57:42.551 +00:00 [INF] Staff D200012349's profile was updated by d10g0r0dr1gu3s123@gmail.com on 22/11/2024 23:57:42. Changes: Specialization changed to: Cardiology
