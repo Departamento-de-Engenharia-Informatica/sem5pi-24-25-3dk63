@@ -295,34 +295,34 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
   };
 
   const handleSubmit = async () => {
+    if (!newRequest?.patientId || !newRequest?.operationType || !newRequest?.priority || !newRequest?.deadline) {
+      setPopupMessage("All fields are required.");
+      return;
+    }
+  
     try {
-      if (!newRequest.patientId || !newRequest.operationType || !newRequest.priority || !newRequest.deadline) {
-        setPopupMessage("All fields are required.");
-        return;
-      }
-
       const dto = await buildCreateDto(newRequest);
-
+  
       await operationRequestService.createOperationRequest(dto);
-
+  
       setPopupMessage("Operation request created successfully.");
-
+  
       fetchOperationRequests();
-
+  
       setIsModalVisible(false);
       setIsAddModalVisible(false);
       setNewRequest(null);
-
+  
     } catch (error) {
       console.error('Error during submission:', error);
-
+  
       setPopupMessage("There is already a request of this type for this patient.");
-
+  
       setIsModalVisible(false);
       setIsAddModalVisible(false);
       setNewRequest(null);
     }
-  };
+  };  
 
   const buildCreateDto = async (creatingRequest: any) => {
     try {
