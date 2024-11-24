@@ -43,36 +43,13 @@ surgery(so4, 45, 75, 45).
 % Atribuição de IDs às cirurgias para fácil referência
 surgery_id(so100001,so2).
 surgery_id(so100002,so3).
-surgery_id(so100003,so4).
-surgery_id(so100004,so2).
-surgery_id(so100005,so4).
-surgery_id(so100006,so2).
-surgery_id(so100007,so3).
-surgery_id(so100008,so2).
-surgery_id(so100009,so2).
-surgery_id(so100010,so2).
-surgery_id(so100011,so4).
-surgery_id(so100012,so2).
-surgery_id(so100013,so2).
+
 
 % Atribuição de cirurgias a médicos específicos para indicar quais médicos irão realizar qual cirurgia
 assignment_surgery(so100001,d001).
 assignment_surgery(so100002,d002).
 assignment_surgery(so100003,d003).
-assignment_surgery(so100004,d001).
-assignment_surgery(so100004,d002).
-assignment_surgery(so100005,d002).
-assignment_surgery(so100005,d003).
-assignment_surgery(so100006,d001).
-assignment_surgery(so100007,d003).
-assignment_surgery(so100008,d004).
-assignment_surgery(so100008,d003).
-assignment_surgery(so100009,d002).
-assignment_surgery(so100009,d004).
-assignment_surgery(so100010,d003).
-assignment_surgery(so100011,d001).
-assignment_surgery(so100012,d001).
-assignment_surgery(so100013,d004).
+
 
 % Definição da agenda da sala de operações para um determinado dia
 % Cada entrada é composta por (ID da sala, data, lista de horários com cirurgia atribuída)
