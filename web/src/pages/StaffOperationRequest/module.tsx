@@ -2,8 +2,8 @@ import { useState, useEffect } from "react";
 import { useInjection } from "inversify-react";
 import { TYPES } from "@/inversify/types";
 import { IOperationRequestService } from "@/service/IService/IOperationRequestService";
-import { IOperationTypeService } from "@/service/IService/IOperationTypeService";  // Service for operation types
-import { IPatientService } from "@/service/IService/IPatientService";  // Service for fetching patients
+import { IOperationTypeService } from "@/service/IService/IOperationTypeService";
+import { IPatientService } from "@/service/IService/IPatientService";
 import { useNavigate } from "react-router-dom";
 import React from "react";
 import { UpdateOperationRequestDTO } from "@/dto/UpdateOperationRequestDTO";
@@ -239,11 +239,11 @@ export const useOperationRequestModule = (setAlertMessage: React.Dispatch<React.
         const resolvedSpec = await specialization;
 
         const activeOperationTypes = operationTypes.filter((operationType) => operationType.active);
-
+        
         const sameSpecializationTypes = activeOperationTypes.filter(
-          (operationType) => operationType.specialization.value === resolvedSpec.description
+          (operationType) => operationType.specialization.value.includes(resolvedSpec.description)
         );
-
+        
         setOperationTypes(sameSpecializationTypes);
         setPatients(patients);
       }catch (error: any) {
