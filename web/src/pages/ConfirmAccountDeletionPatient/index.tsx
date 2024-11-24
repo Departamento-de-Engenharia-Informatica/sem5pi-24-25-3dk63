@@ -17,11 +17,12 @@ const ConfirmDeletionPage: React.FC = () => {
         ) : (
           <p
             className={`text-gray-700 ${
-              confirmationStatus.startsWith("Error") ? "text-red-500" : "text-green-500"
+              confirmationStatus?.startsWith("Error") ? "text-red-500" : "text-green-500"
             }`}
           >
             {confirmationStatus}
           </p>
+
         )}
       </div>
     </div>
