@@ -1,8 +1,0 @@
-{
-  "dependencies": {
-    "three": "^0.170.0"
-  },
-  "devDependencies": {
-    "prettier": "3.3.3"
-  }
-}
